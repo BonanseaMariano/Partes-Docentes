@@ -35,13 +35,13 @@ case "$1" in
     docker exec -it $2 sh
     ;;
   mvn ) echo "Ejecutando Maven en servidor backend: $2"
-    docker exec -t backend mvn $2
+    docker exec -t pd-backend mvn $2
     ;;
   test ) echo "Testing"
     docker compose run --rm testing
     ;;
   staging ) echo "Cargando staging $2"
-    cat ./staging/$2.sql | docker exec -i database psql -q -U APP -d labprog
+    cat ./staging/$2.sql | docker exec -i pd-database psql -q -U APP -d labprog
     ;;
   * ) echo "Opción inválida."
       ;;
