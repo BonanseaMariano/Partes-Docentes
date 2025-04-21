@@ -67,9 +67,8 @@ services:
       - ./testing:/home/node
       - ../common/testing/node_modules:/home/node/node_modules
     command: npm test
-    # comentar esto
-    # depends_on:
-    #   - backend
+    depends_on:
+      - backend
 
 volumes:
   postgres:
