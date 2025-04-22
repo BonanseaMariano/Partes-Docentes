@@ -4,7 +4,8 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "test": "cucumber-js"
+    "test": "cucumber-js",
+    "test:persona": "cucumber-js features/persona/"
   },
   "keywords": [],
   "author": "",
