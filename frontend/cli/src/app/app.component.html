@@ -1,0 +1,97 @@
+<!-- Menú y navegación principal -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm sticky-top">
+
+    <!-- Logo y nombre del sistema -->
+    <a class="navbar-brand d-flex align-items-center ps-3" href="#">
+        <i class="fa fa-school me-2" aria-hidden="true"></i>
+        <span>Partes Docentes</span>
+    </a>
+
+    <!-- Botón hamburguesa para móviles usando ngbCollapse -->
+    <button class="navbar-toggler me-3" type="button" (click)="isMenuCollapsed = !isMenuCollapsed"
+        aria-controls="navbarSupportedContent" [attr.aria-expanded]="!isMenuCollapsed" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+
+    <div class="container">
+        <!-- Contenido del menú que se colapsará en móviles -->
+        <div class="collapse navbar-collapse" [ngbCollapse]="isMenuCollapsed" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+                <!-- Dropdown para Personal -->
+                <li class="nav-item" ngbDropdown>
+                    <button class="btn nav-link border-0 bg-transparent" ngbDropdownToggle id="personalDropdown"
+                        aria-expanded="false">
+                        <i class="fa fa-users me-1"></i> Personal
+                    </button>
+                    <ul ngbDropdownMenu aria-labelledby="personalDropdown">
+                        <li><a ngbDropdownItem href="#"><i class="fa fa-list me-1"></i> Listar</a></li>
+                        <li><a ngbDropdownItem href="#"><i class="fa fa-plus me-1"></i> Nuevo</a></li>
+                    </ul>
+                </li>
+
+                <!-- Dropdown para Divisiones -->
+                <li class="nav-item" ngbDropdown>
+                    <button class="btn nav-link border-0 bg-transparent" ngbDropdownToggle id="divisionesDropdown"
+                        aria-expanded="false">
+                        <i class="fa fa-building me-1"></i> Divisiones
+                    </button>
+                    <ul ngbDropdownMenu aria-labelledby="divisionesDropdown">
+                        <li><a ngbDropdownItem href="#"><i class="fa fa-list me-1"></i> Listar</a></li>
+                        <li><a ngbDropdownItem href="#"><i class="fa fa-plus me-1"></i> Nuevo</a></li>
+                    </ul>
+                </li>
+
+                <!-- Dropdown para Cargos -->
+                <li class="nav-item" ngbDropdown>
+                    <button class="btn nav-link border-0 bg-transparent" ngbDropdownToggle id="cargosDropdown"
+                        aria-expanded="false">
+                        <i class="fa fa-briefcase me-1"></i> Cargos
+                    </button>
+                    <ul ngbDropdownMenu aria-labelledby="cargosDropdown">
+                        <li><a ngbDropdownItem href="#"><i class="fa fa-list me-1"></i> Listar</a></li>
+                        <li><a ngbDropdownItem href="#"><i class="fa fa-plus me-1"></i> Nuevo</a></li>
+                    </ul>
+                </li>
+
+                <!-- Dropdown para Designaciones -->
+                <li class="nav-item" ngbDropdown>
+                    <button class="btn nav-link border-0 bg-transparent" ngbDropdownToggle id="designacionesDropdown"
+                        aria-expanded="false">
+                        <i class="fa fa-id-card me-1"></i> Designaciones
+                    </button>
+                    <ul ngbDropdownMenu aria-labelledby="designacionesDropdown">
+                        <li><a ngbDropdownItem href="#"><i class="fa fa-list me-1"></i> Listar</a></li>
+                        <li><a ngbDropdownItem href="#"><i class="fa fa-plus me-1"></i> Nuevo</a></li>
+                    </ul>
+                </li>
+
+                <!-- Dropdown para Licencias -->
+                <li class="nav-item" ngbDropdown>
+                    <button class="btn nav-link border-0 bg-transparent" ngbDropdownToggle id="licenciasDropdown"
+                        aria-expanded="false">
+                        <i class="fa-solid fa-calendar-xmark me-1"></i> Licencias
+                    </button>
+                    <ul ngbDropdownMenu aria-labelledby="licenciasDropdown">
+                        <li><a ngbDropdownItem href="#"><i class="fa fa-list me-1"></i> Listar</a></li>
+                        <li><a ngbDropdownItem href="#"><i class="fa fa-plus me-1"></i> Nuevo</a></li>
+                        <li><a ngbDropdownItem href="#"><i class="fa-solid fa-file-lines me-1"></i> ParteDiario</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Contenido principal -->
+<div class="container mt-4">
+    <router-outlet></router-outlet>
+</div>
+
+<!-- Footer -->
+<footer class="bg-light text-center text-muted py-3 mt-5">
+    <div class="container">
+        <small>&copy; 2025 Partes Docentes - Mariano Bonansea</small>
+    </div>
+</footer>
