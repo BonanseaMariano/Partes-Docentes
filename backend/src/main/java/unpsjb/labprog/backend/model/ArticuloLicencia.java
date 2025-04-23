@@ -6,28 +6,39 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * Clase que representa un Artículo de Licencia del reglamento docente
  */
 @Entity
 @Table(name = "articulos_licencia")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class ArticuloLicencia {
-    
+
+    /**
+     * ID del artículo de licencia, generado automáticamente
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
+    /**
+     * Artículo de licencia, es unico y no nulo
+     */
+    @NotNull
     @Column(length = 10, nullable = false, unique = true)
     private String articulo;
-    
-    @Column(length = 90, nullable = false)
+
+    /**
+     * Descripción del artículo de licencia
+     */
+    @Column(length = 90)
     private String descripcion;
-    
+
 }

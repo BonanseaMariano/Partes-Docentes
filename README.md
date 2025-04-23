@@ -1,90 +1,197 @@
-### Laboratorio de Programación y Lenguajes
-### Trabajo Práctico
-# Novedades Docentes Secundarios
+<!-- omit in toc -->
+# Sistema de Gestión de Novedades Docentes - Escuela 775
 
-Para la instalación y configuración del entorno de desarrollo es necesario seguir el siguiente 
-<a href="https://git.fi.mdn.unp.edu.ar/labprog/talleres/taller-restful-uix" target="_blank">INSTRUCTIVO</a>
+<!-- omit in toc -->
+## Información del Trabajo
+- **Nombre del Trabajo:** Partes Docente
+- **Estudiante:** Mariano Bonansea
+- **Asignatura:** Laboratorio de Programación y Lenguajes
+- **Fecha de inicio:** 21/04/2025
+- **Fecha de finalización:** 
 
----
+<!-- omit in toc -->
+## Índice
+- [Introducción](#introducción)
+- [Problema](#problema)
+- [Objetivos](#objetivos)
+- [Características Principales](#características-principales)
+- [Arquitectura de la Solución](#arquitectura-de-la-solución)
+  - [Stack Tecnológico](#stack-tecnológico)
+  - [Diagrama de Arquitectura](#diagrama-de-arquitectura)
+- [Modelo de Dominio](#modelo-de-dominio)
+- [Consideraciones de Diseño](#consideraciones-de-diseño)
+  - [Atributos y Relaciones](#atributos-y-relaciones)
+    - [Licencia](#licencia)
+    - [Designación](#designación)
+    - [ArtículoLicencia](#artículolicencia)
+    - [Persona](#persona)
+    - [Cargo](#cargo)
+    - [División](#división)
+    - [Horario](#horario)
+  - [Validaciones y Restricciones](#validaciones-y-restricciones)
+- [Bitácora de Desarrollo](#bitácora-de-desarrollo)
+  - [Sprint 1: Configuración del Entorno (19/04/2025 - 25/04/2025)](#sprint-1-configuración-del-entorno-19042025---25042025)
+  - [Sprint 2:  (26/04/2025 - 30/05/2025)](#sprint-2--26042025---30052025)
+- [Referencias](#referencias)
 
-## Problema Planteado
-La escuela 775 de la ciudad de Puerto Madryn Dicta materias de nivel secudario según las normativas del Ministerio de Educación de la  Provincia del Chubut.
-La escuela cuenta con un espacio aúlico en el que se asignan las distintas divisiones de 1º a 6º año en la que se dictan durante la semana las distintas asignaturas según la currícula académica de cada año.
-Los docentes mediante la asignación de cargos se les asigna el dictado de las distintas asignaturas (materias) para cada año en las distintas divisiones con un cronograma horario según la carga de la asignatura distribuida en los días de la semana.
+## Introducción
 
-Según las normas vigentes del Ministerio de Educación existe un reglamento o manual del docente entre los que se encuantra la reglamentación de los distíntos artículos de licencias que puede solicitar cada docente. Los mismos expresan las distintas reglas que deben respetar para poder ser otorgados.
+Este proyecto implementa un sistema de gestión de novedades docentes para la Escuela 775 de Puerto Madryn. La aplicación permite administrar designaciones docentes, licencias, suplencias y generación de reportes para el seguimiento del personal.
 
-## Objetivo de solución
-Proveer una herramienta de gestión de novedades de licencias solicitadas por los docentes, permitiendo generar el "parte diario de novedades del personal".
+## Problema
 
-La solución debe administrar los tipos de designación, las divisiones y los cargos que representan la cobertura completa de cargos y espacios curriculares de la escuela para cada división año y turno. La designación de docentes a los cargos y los espacios curriculares.
+La Escuela 775 necesita gestionar el registro de licencias solicitadas por los docentes, validar su cumplimiento según la normativa del Ministerio de Educación de Chubut, y generar reportes como el "parte diario de novedades del personal". Actualmente este proceso se realiza manualmente, lo que genera inconsistencias y dificulta el seguimiento.
 
-La misión principal de la aplicación será la de gestionar las novedades de las licencias solicitadas por el personal de la escuela, la verificación del cumplimiento y requisitos para otorgar la misma, la trazabilidad de actividades de novedades y la emisión de las planillas respectivas de novedades, tanto las diarias como las anuales para conformación del concepto del personal.
+## Objetivos
 
-## La solución requiere
-### Administración de Designaciones
-La solución contará con una administración básica de altas bajas, modificaciones y consultas (_ABMC_) de:
-1. **Tipos de designación** --> representa a todos los cargos y espacios curriculares disponibles o que han estado disponibles en la escuela.
-1. **Divisiones** --> representa todas las divisiones que existen en la escuela indicando el año, numero, turno y vigencia de la misma.
-1. **Cargo** --> es la gestión de asociación de los tipos de designación que existen en la escuela, tanto de cargos como de espacios curriculares. Si se trata de un espacio curricular se deberá asignar la división donde se dicta el espacio. Representa todas las instancias de cargos y espacios curriculares de la escuela. Se cuenta con vigencia que representa a los distintos planes o diseños curriculares implementados en los distintos años de la vida de la escuela.
+- Administrar tipos de designación, divisiones y cargos docentes
+- Gestionar personal y sus designaciones a cargos o espacios curriculares
+- Procesar solicitudes de licencia con validaciones automáticas
+- Generar informes de licencias y novedades del personal
+- Visualizar la distribución de espacios curriculares y docentes en formato calendario
 
-### Administración del Personal
-Para el correcto funcionamiento de información de la escuela es muy importante conocer el detalle de personas (personal) que trabaja o trabajó en la escuela, como así sus sucesivas designaciones a los cargos o espacios curriculares.
+## Características Principales
 
-Para ello la aplicación deberá contar con la administración básica (ABMC) de Personas que representa al personal de la escuela.
+- Gestión completa de cargos, divisiones y tipos de designación
+- Administración de personal y designaciones
+- Sistema de licencias con validaciones automáticas según normativa vigente
+- Reportes: parte diario, informe anual de concepto, mapa de horarios
+- Detección de espacios curriculares sin cubrir
 
-También deberá contar con la gestión de designaciones de dichas personas a los cargos, que bien podrá ser un cargo o un espacio curricular. La gestión de designaciones se realizará mediante novedades de altas y bajas del personal.
+## Arquitectura de la Solución
 
-La administración del personal deberá realizar todas las validaciones y verificaciones requeridas para garantizar la consistencia de información del personal que trabaja en la escuela.
+### Stack Tecnológico
+- **Frontend:** Angular
+- **Backend:** Spring Boot
+- **Base de Datos:** PostgreSQL
+- **ORM:** JPA
+- **Contenedorización:** Docker y Docker Compose
+- **Control de Versiones:** Git
+- **Gestión de Proyectos:** GitLab 
 
-En el caso de una suplencia se deberá administrar por este mismo mecanismo ingresando el alta de la nueva persona y asignando a un cargo. La aplicación nuevamente deberá garantizar la consistencia de la misma, en este caso en particular verificar que para la misma designación existe una licencia otorgada a la persona del cargo o espacio curricular.
+### Diagrama de Arquitectura
 
-### Administración de Licencias
-El proceso de otorgamiento de una licencia estará sujeto primero a la correcta presentación de la misma y la debidas garantías validadas por la secretaría de la escuela. Una vez superada esta fase administrativa se procederá al ingreso de la licencia en el sistema, indicando la persona solicitante y el período solicitado.
+El sistema emplea una arquitectura en capas con separación clara entre frontend y backend:
 
-Como resultado del ingreso la aplicación deberá correr el _*Proceso de validación de Licencia*_ que indica como resultado todas las verificaciones de consistencia del otorgamiento de la misma. La secretaría, pese a las advertencias del sistema, puede otorgar igualmente la licencia y el sistema deberá registrar dicha condición.
+```mermaid
+flowchart LR
+  subgraph FE [**Cliente: Frontend - Angular**]
+    HTML[HTML Template]
+    COMP[Component]
+    SERVICE_FE[Service]
+    MODEL_FE[Model]
+  end
 
-### Informes
-La aplicación deberá como mínimo generar los siguientes informes:
-+ Parte diario de licencias.
-+ Informe anual de concepto del personal.
-+ Mapa de horarios y designaciones por división.
-+ Reporte de espacios curriculares sin cubrir, ya se por falta de designación como por licencia.
+  subgraph BE [**Servidor: Backend - Spring Boot**]
+    PRESENTER[Presenter]
+    SERVICE_BE[Service]
+    MODEL_BE[Model]
+    REPO[Repository]
+  end
 
-## Criterio de satisfacción
-### Casos y ejemplos de verificación
-La verificación de calidad se realizará utilizando las siguientes premisas para un conjunto de pruebas a realizar:
-* Contar con todos los cargos y espacios curriculares actuales de la Escuela 775.
-* Contar con todas las divisiones para todos los turnos que existen actualmente en la escuela 775.
-* Genarar al menos 6 cargos de cargos.
-* Generar al menos 25 cargos de espacios curriculares repartidas entre todas las divisiones.
-* Generar el alta de al menos 10 personas nuevas a la escuela, contemplando las siguientes condiciones:
-  + 2 personas en cargos de designación de cargo NO cubiertas en el período indicado.
-  + 1 persona en un cargo que YA cuenta con una designación para el mismo período. Informar el error respectivo y abortar la transacción.
-  + 2 personas en cargos de espacio curricular NO cubiertas en el período indicado.
-  + 1 persona en cargo de espacio curricular que YA cuenta con designación por otra persona para el mismo período. Informar el error respectivo y abortar la transacción.
-  + 1 persona en cargo que cubre una licencia de otra persona en la misma designación. Infomar que está correcto y que reemplaza al docente que solicitó licencia.
-  + 1 persona en cargo que cubre una licencia de otra persona en la misma designación, pero que no coincide el mismo período. Infomar el error respectivo y abortar la transacción.
-  + 1 persona en cargo de espacio curricular que cubre una licencia de otra persona en la misma designación. Infomar que está correcto y que reemplaza al docente que solicitó licencia.
-  + 1 personas en cargo de espacio curricular que cubre una licencia de otra persona en la misma designación, pero que no coincide el mismo período. Infomar el error respectivo y abortar la transacción.
-* Generar el otorgamiento de Licencias con las siguientes condiciones:
-  + Distintas licencias según las reglas de los distintos artículos. la menos 1 Verificación positiva por cada artículo. al menos 2 verificaciones negativas por cada artículo, demostración la violación de las condiciones de los artículos. Por ejemplo topes.
-  + Licencia de 2 personas en espacios curriculares en rango de períodos que NO tienen horario previsto (no están en la escuela en el día o días solicitados).
-  + Licencia a docente no designado.
-  + Licencia de una licencia YA otorgada.
-* Parte diario
-  1. Otorgar 5 licencia para fechas previas con vigencia de al menos 15 días. y que permanezcan vigentes hasta el otorgamiento siguiente.
-  2. Otorgar 3 licencias para la fecha de hoy.
-    + Emitir el parte diario y verificar que muestra los 8 docentes en cuestión.
-  3. Dejar pasar el tiempo hasta que caduquen las licencias de al menos 2 personas del punto 1.
-    + Emitir el parte diario y verificar que la persona ya no sale más en el mismo.
-  4. Designar un suplente para al menos 3 cargos de los de licencia.
-    + Emitir el parte diario que deberá indicar la persona de licencia y la persona que lo reemplaza.
-* Reporte de concepto
-  1. generar traza de licencias para al menos 20 docentes distribuidas a lo largo del año, especialmente considerando los artículos imputables al concepto.
-    + Emitir el reporte de concepto para cada docente y verificar lso resultados esperados según la documentación relevada,
-* Calendario de espacios curriculares y docente asignado. Deberá mostrar la semana calendario de lunes a viernes para un turno (por ejemplo mañana) mostrando el horario de 1º hora a 8º hora y que espacio curricular y docente la ocupan.
+  subgraph DB [**Database - PostgreSQL**]
+    TABLES[(Entities Tables)]
+  end
 
-## Modelo de Dominio propuesto
-![](diagram.png)
+  HTML --- COMP --- SERVICE_FE ---|HTTP Request| PRESENTER
+  PRESENTER --- SERVICE_BE --- MODEL_BE
+  SERVICE_BE --- REPO
+  REPO --- TABLES
+  PRESENTER ---|HTTP Response| COMP
+```
 
+## Modelo de Dominio
+![alt text](diagram.png)
+
+## Consideraciones de Diseño
+Se han tomado en cuenta las siguientes consideraciones para el diseño del sistema con respecto al modelo de dominio:
+
+### Atributos y Relaciones
+
+#### Licencia
+- **pedidoDesde/pedidoHasta**: Fechas obligatorias que delimitan el período de licencia solicitado.
+- **domicilio**: Campo opcional que indica dónde se encuentra la persona durante su licencia.
+- **certificadoMedico**: Indicador booleano que señala si la licencia tiene respaldo médico.
+- **Relaciones**: Una licencia siempre está asociada a una Persona y a un ArtículoLicencia específico, y puede afectar a múltiples Designaciones.
+
+#### Designación
+- **situacionRevista**: Campo obligatorio que describe la situación laboral del docente (ej. titular, suplente).
+- **fechaInicio/fechaFin**: Fechas obligatorias que delimitan la vigencia de la designación.
+- **Relaciones**: Vincula a una Persona con un Cargo específico. Una persona puede tener múltiples designaciones, pero cada designación corresponde a una única persona y cargo.
+
+#### ArtículoLicencia
+- **articulo**: Código único y obligatorio que identifica el artículo reglamentario.
+- **descripcion**: Detalle textual del artículo de licencia, puede ser de longitud extensa.
+- **Relaciones**: Un artículo puede ser utilizado en múltiples licencias.
+
+#### Persona
+- **dni**: Identificador único obligatorio (clave primaria) de la persona.
+- **cuil**: Campo único y obligatorio, con formato específico para CUIL argentino.
+- **nombre/apellido**: Campos obligatorios que identifican a la persona.
+- **titulo/sexo/domicilio/telefono**: Campos opcionales para información complementaria.
+- **Relaciones**: Una persona puede tener múltiples designaciones y solicitar múltiples licencias.
+
+#### Cargo
+- **nombre**: Campo obligatorio que identifica el cargo o espacio curricular.
+- **cargaHoraria**: Valor numérico no negativo que se inicializa en 0 si no se especifica.
+- **fechaInicio/fechaFin**: Fechas obligatorias que delimitan la vigencia del cargo.
+- **tipoDesignacion**: Valor obligatorio que especifica si es un cargo administrativo o un espacio curricular.
+- **Relaciones**: Un cargo puede estar asociado opcionalmente a una División (solo si es un espacio curricular) y debe tener al menos un Horario asignado.
+
+#### División
+- **anio**: Campo numérico obligatorio que indica el año escolar (1º a 6º).
+- **numDivision**: Campo numérico obligatorio que identifica la división dentro del año.
+- **orientacion**: Campo opcional que especifica la orientación curricular.
+- **turno**: Valor enumerado obligatorio (Mañana, Tarde, Vespertino, Noche).
+- **Relaciones**: Una división puede tener múltiples cargos (espacios curriculares) asociados.
+
+#### Horario
+- **dia**: Campo obligatorio que especifica el día de la semana.
+- **hora**: Valor numérico obligatorio que indica la hora asignada (1ª a 8ª).
+- **Relaciones**: Cada horario está asociado a un único Cargo.
+
+
+### Validaciones y Restricciones
+
+Se implementan múltiples niveles de validación:
+
+1. **Validación a nivel de modelo**: Uso de `@NotNull` (Jakarta Bean Validation) para validación en tiempo de ejecución
+2. **Validación a nivel de base de datos**: Restricciones `nullable = false` para garantizar integridad en la DB
+3. **Validación a nivel de código**: Anotaciones `@NonNull` (Lombok) para generar validaciones en constructores y setters
+
+## Bitácora de Desarrollo
+
+El desarrollo del proyecto se organizó en sprints semanales:
+
+### Sprint 1: Configuración del Entorno (19/04/2025 - 25/04/2025)
+- **Propuesto:**
+  - Configuración de Docker y Docker Compose
+  - Creación del proyecto Angular para el frontend
+  - Creación del proyecto Spring Boot para el backend
+  - Diseño inicial del modelo de datos
+
+- **Cumplido:**
+  - Configuración completa del entorno Docker con PostgreSQL
+  - Creación exitosa de la estructura básica del proyecto Angular
+  - Implementación del proyecto Spring Boot con dependencias JPA
+  - Diseño del diagrama de entidades
+
+- **Desafíos encontrados:**
+  
+
+### Sprint 2:  (26/04/2025 - 30/05/2025)
+- **Propuesto:**
+  
+
+- **Cumplido:**
+  
+
+- **Desafíos encontrados:**
+  
+
+
+
+
+## Referencias
+
+- [Consignas del Proyecto](https://git.fi.mdn.unp.edu.ar/marianobonansea/partes-doscente/-/blob/main/Consignas.md)

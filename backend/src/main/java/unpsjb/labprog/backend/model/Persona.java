@@ -11,52 +11,78 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * Clase que representa a una Persona en el sistema (personal docente)
+ * 
+ * @see Designacion
  */
 @Entity
 @Table(name = "personas")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class Persona {
 
-    // Atributos
+    /**
+     * DNI de la persona, es su identificador
+     */
     @Id
-    @NotNull
     private Long dni;
 
+    /**
+     * CUIL de la persona, es único y no nulo
+     */
     @NotNull
-    @Pattern(regexp = "^\\d{2}-\\d{8}-\\d$|^\\d{11}$", message = "El CUIL debe tener formato XX-XXXXXXXX-X o XXXXXXXXXXX")
     @Column(length = 30, unique = true, nullable = false)
     private String cuil;
 
+    /**
+     * Nombre de la persona, no nulo
+     */
     @NotNull
     @Column(length = 90, nullable = false)
     private String nombre;
 
+    /**
+     * Apellido de la persona, no nulo
+     */
     @NotNull
     @Column(length = 90, nullable = false)
     private String apellido;
 
+    /**
+     * Título de la persona
+     */
     @Column(length = 90)
     private String titulo;
 
+    /**
+     * Sexo de la persona
+     */
     @Column(length = 1)
     private Character sexo;
 
+    /**
+     * Domicilio de la persona
+     */
     @Column(length = 90)
     private String domicilio;
 
+    /**
+     * Teléfono de la persona
+     */
     @Column(length = 30)
     private String telefono;
 
     // Relaciones
+
+    /**
+     * Designaciones asociadas a la persona
+     */
     @OneToMany(mappedBy = "persona")
     @JsonIgnoreProperties("persona")
     private List<Designacion> designaciones = new ArrayList<>();
