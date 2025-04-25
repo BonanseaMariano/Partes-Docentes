@@ -1,0 +1,19 @@
+<div class="modal-header">
+    <h4 class="modal-title" id="modal-title">{{title}}</h4>
+    <button type="button" class="close" aria-describedby="modal-title" (click)="modal.dismiss()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <p>
+        <strong>{{message}}</strong>
+    </p>
+    <p *ngIf="description">
+        <strong>{{description}}</strong>
+    </p>
+</div>
+<div class="modal-footer">
+    <button *ngIf="!alertMode" type="button" class="btn btn-outline-secondary"
+        (click)="modal.dismiss()">Cancelar</button>
+    <button type="button" class="btn btn-success" (click)="modal.close()">Aceptar</button>
+</div>

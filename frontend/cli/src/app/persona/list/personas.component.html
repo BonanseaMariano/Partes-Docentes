@@ -1,0 +1,36 @@
+<h2>Personas</h2>
+&nbsp;<a routerLink="/personas/new" class="btn btn-success">Nueva persona</a>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>DNI</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>CUIL</th>
+                <th>Título</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let persona of resultsPage.content; index as i">
+                <td>{{ (resultsPage.number * resultsPage.size) + i + 1 }}</td>
+                <td>{{ persona.dni }}</td>
+                <td>{{ persona.nombre }}</td>
+                <td>{{ persona.apellido }}</td>
+                <td>{{ persona.cuil }}</td>
+                <td>{{ persona.titulo }}</td>
+                <td>
+                    <a routerLink="/personas/{{ persona.dni }}"><i class="fa fa-pencil"></i></a>
+                    <a (click)="remove(persona.dni)" [routerLink]=""><i class="fa fa-remove"></i></a>
+                </td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <app-pagination [totalPages]="resultsPage.totalPages" [currentPage]="currentPage"
+                (pageChangeRequested)="onPageChangeRequested($event)" [number]="resultsPage.number"
+                [hidden]="resultsPage.numberOfElements < 1"></app-pagination>
+        </tfoot>
+    </table>
+</div>
