@@ -31,7 +31,7 @@
   - [Validaciones y Restricciones](#validaciones-y-restricciones)
 - [Bitácora de Desarrollo](#bitácora-de-desarrollo)
   - [Sprint 1: Configuración del Entorno (19/04/2025 - 25/04/2025)](#sprint-1-configuración-del-entorno-19042025---25042025)
-  - [Sprint 2:  (26/04/2025 - 30/05/2025)](#sprint-2--26042025---30052025)
+  - [Sprint 2: Nueva Persona y Nueva División (26/04/2025 - 30/05/2025)](#sprint-2-nueva-persona-y-nueva-división-26042025---30052025)
 - [Referencias](#referencias)
 
 ## Introducción
@@ -164,31 +164,35 @@ Se implementan múltiples niveles de validación:
 El desarrollo del proyecto se organizó en sprints semanales:
 
 ### Sprint 1: Configuración del Entorno (19/04/2025 - 25/04/2025)
-- **Propuesto:**
-  - Configuración de Docker y Docker Compose
-  - Creación del proyecto Angular para el frontend
-  - Creación del proyecto Spring Boot para el backend
-  - Diseño inicial del modelo de datos
+- **⏳ Planificación:**
+  - ⏳ Configuración de Docker y Docker Compose. 
+  - ⏳ Creación del proyecto Angular para el frontend.
+  - ⏳ Creación del proyecto Spring Boot para el backend.
 
-- **Cumplido:**
-  - Configuración completa del entorno Docker con PostgreSQL
-  - Creación exitosa de la estructura básica del proyecto Angular
-  - Implementación del proyecto Spring Boot con dependencias JPA
-  - Diseño del diagrama de entidades
+- **✅ Avance:**
+  - ✅ Configuración completa del entorno Docker con PostgreSQL.
+  - ✅ Creación exitosa de la estructura básica del proyecto Angular.
+  - ✅ Implementación del proyecto Spring Boot.
+  - ➕ Creacion de los modelos en el frontend y backend.
+  - ➕ Frontend: HomePage, lista de personas y persona-detail.
+  - ➕ Primera tarjeta "Nueva persona" completada (solo CR).
 
-- **Desafíos encontrados:**
+- **🛑 Desafíos encontrados:**
+  - 🛑 Problemas al configurar el contenedor de testing - *🔧 Solución: Actualizar la version de cucumber a @Cucumber/cucumber (la ultima version con soporte)*.  
+
+### Sprint 2: Nueva Persona y Nueva División (26/04/2025 - 30/05/2025)
+- **⏳ Planificación:**
+  - ⏳ Ampliar test de persona para incluir las operaciones de CRUD restantes.
+  - ⏳ Mejorar la interfaz grafica de la lista de personas.
+  - ⏳ Implementar la funcionalidad de editar y eliminar personas (frontend).
+  - ⏳ Desarrollar la segunda tarjeta "Nueva División" completa.
+
+- **✅ Avance:**
   
-
-### Sprint 2:  (26/04/2025 - 30/05/2025)
-- **Propuesto:**
   
+- **❌ No cumplido:**
 
-- **Cumplido:**
-  
-
-- **Desafíos encontrados:**
-  
-
+- **🛑 Desafíos encontrados:**
 
 
 
