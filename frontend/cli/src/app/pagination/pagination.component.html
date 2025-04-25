@@ -1,0 +1,20 @@
+<nav aria-label="Page navigation">
+    <ul class="pagination pagination-centered">
+        <li class="page-item">
+            <a class="page-link" (click)="onPageChange(-2)">&laquo;</a>
+        </li>
+        <li class="page-item">
+            <a class="page-link" (click)="onPageChange(-1)">&lsaquo;</a>
+        </li>
+        <li *ngFor="let t of pages" [ngClass]="{ active: t === number ? 'active' : '' }">
+            <a class="page-link" (click)="onPageChange(t + 1)">{{ t + 1 }}</a>
+        </li>
+
+        <li class="page-item">
+            <a class="page-link" (click)="onPageChange(-3)">&rsaquo;</a>
+        </li>
+        <li class="page-item">
+            <a class="page-link" (click)="onPageChange(-4)">&raquo;</a>
+        </li>
+    </ul>
+</nav>

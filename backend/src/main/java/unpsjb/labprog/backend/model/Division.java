@@ -12,6 +12,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import unpsjb.labprog.backend.model.enums.Turno;
 
 /**
  * Clase que representa una División en el sistema educativo
@@ -22,16 +23,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class Division {
-
-    /**
-     * Enum para turno de la división
-     */
-    private enum Turno {
-        Mañana,
-        Tarde,
-        Vespertino,
-        Noche;
-    }
 
     /**
      * ID de la división, generado automáticamente

@@ -1,0 +1,10 @@
+{
+  "/rest": {
+    "target": "http://pd-backend:8080",
+    "secure": false,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/rest": "/"
+    }
+  }
+}
