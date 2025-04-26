@@ -3,7 +3,7 @@ export interface ResultsPage {
     totalPages: number;
     totalElements: number;
     last: boolean;
-    fitst: boolean;
+    first: boolean;
     numberOfElements: number;
     size: number;
     number: number;

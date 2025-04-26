@@ -38,29 +38,27 @@ export class PersonaDetailComponent implements OnInit {
       // Convertir el valor del sexo a un solo carácter
       this.persona.sexo = this.persona.sexo.charAt(0) as any;
     }
-    
+
+    // Asegurarse de que el DNI sea un número al guardar
+    if (typeof this.persona.dni === 'string') {
+      this.persona.dni = parseInt(this.persona.dni as string);
+    }
+
     this.personaService.save(this.persona).subscribe({
       next: (dataPackage) => {
         if (dataPackage.status !== 200) {
-          this.modalService.alert(
+          this.modalService.error(
             "Error al guardar",
             dataPackage.message,
             ""
           );
         } else {
-          this.modalService.alert(
+          this.modalService.success(
             "Éxito",
             "Persona guardada correctamente",
             ""
           ).then(() => this.goBack());
         }
-      },
-      error: (err) => {
-        this.modalService.alert(
-          "Error",
-          "Ocurrió un error al guardar la persona",
-          err.message
-        );
       }
     });
   }
@@ -70,7 +68,7 @@ export class PersonaDetailComponent implements OnInit {
     if (dni === "new") {
       // Inicializar un objeto persona vacío con las propiedades requeridas
       this.persona = {
-        dni: 0,
+        dni: '' as any, // Inicializar como string vacío para mostrar el placeholder
         nombre: '',
         apellido: '',
         cuil: '',
@@ -83,13 +81,6 @@ export class PersonaDetailComponent implements OnInit {
         next: (dataPackage) => {
           this.persona = <Persona>dataPackage.data;
           this.tituloFormulario = 'Editar Persona';
-        },
-        error: (err) => {
-          this.modalService.alert(
-            "Error",
-            "No se pudo cargar la información de la persona",
-            err.message
-          ).then(() => this.goBack());
         }
       });
     }

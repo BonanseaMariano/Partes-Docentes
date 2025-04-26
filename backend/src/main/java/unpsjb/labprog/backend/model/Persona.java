@@ -61,21 +61,24 @@ public class Persona {
     private String titulo;
 
     /**
-     * Sexo de la persona
+     * Sexo de la persona, no nulo
      */
-    @Column(length = 1)
+    @NotNull
+    @Column(length = 1, nullable = false)
     private Character sexo;
 
     /**
-     * Domicilio de la persona
+     * Domicilio de la persona, no nulo
      */
-    @Column(length = 90)
+    @NotNull
+    @Column(length = 90, nullable = false)
     private String domicilio;
 
     /**
-     * Teléfono de la persona
+     * Teléfono de la persona, no nulo
      */
-    @Column(length = 30)
+    @NotNull
+    @Column(length = 30, nullable = false)
     private String telefono;
 
     // Relaciones

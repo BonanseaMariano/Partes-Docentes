@@ -45,12 +45,17 @@ public class Division {
     @Column(nullable = false)
     private Integer numDivision;
 
-    @Column(length = 90)
+    /**
+     * Orientación de la división
+     */
+    @NotNull
+    @Column(length = 90, nullable = false)
     private String orientacion;
 
     /**
      * Turno de la división
      */
+    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Turno turno;

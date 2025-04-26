@@ -17,9 +17,9 @@ export interface Division {
     numDivision: number;
 
     /**
-     * Orientación de la división (opcional)
+     * Orientación de la división
      */
-    orientacion?: string;
+    orientacion: string;
 
     /**
      * Turno de la división

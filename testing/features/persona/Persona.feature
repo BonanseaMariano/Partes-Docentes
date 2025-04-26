@@ -4,7 +4,7 @@ Módulo responsable de administrar a las personas del sistema
 
   Esquema del escenario: ingresar nuevas personas
     Dada la persona con <nombre> <apellido> <DNI> <CUIL> <sexo> <título> <domicilio> <teléfono>
-    Cuando se presiona el botón de guardar
+    Cuando se presiona el botón de guardar para persona
     Entonces se espera el siguiente <status> con la <respuesta>
 
     Ejemplos:
