@@ -13,5 +13,13 @@ export class ModalComponent {
   title = "";
   message = "";
   description = "";
-  alertMode = false; // Para indicar que es solo alerta sin confirmación
+  modalType: 'confirm' | 'error' | 'success' = 'confirm';
+
+  /**
+   * Determina si el modal debe mostrar el botón de cancelar
+   * @returns true si debe mostrar el botón de cancelar, false en caso contrario
+   */
+  get showCancelButton(): boolean {
+    return this.modalType === 'confirm';
+  }
 }

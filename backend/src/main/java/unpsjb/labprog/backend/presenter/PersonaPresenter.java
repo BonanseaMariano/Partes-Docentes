@@ -3,6 +3,7 @@ package unpsjb.labprog.backend.presenter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -75,7 +76,7 @@ public class PersonaPresenter {
                     updatedPersona.getDni());
             return Response.ok(mensaje);
         } catch (DataIntegrityViolationException e) {
-            return Response.dbError("No se puede utilizar ese codigo porque ya existe otra obra con el mismo");
+            return Response.dbError("No se puede utilizar ese DNI porque ya existe otra obra con el mismo");
         }
     }
 
@@ -83,5 +84,27 @@ public class PersonaPresenter {
     public ResponseEntity<Object> findByPage(@RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         return Response.ok(service.findByPage(page, size));
+    }
+
+    @DeleteMapping("/{dni}")
+    public ResponseEntity<Object> delete(@PathVariable int dni) {
+        Persona persona = service.findByDni(dni);
+        try {
+            service.delete(dni);
+            // Formatear el mensaje según el formato utilizado en create y update
+            String mensaje = String.format("%s %s con DNI %d eliminado/a correctamente",
+                    persona.getNombre(),
+                    persona.getApellido(),
+                    persona.getDni());
+            return Response.ok(mensaje);
+        } catch (DataIntegrityViolationException e) {
+            return Response
+                    .dbError(
+                            String.format(
+                                    "No se puede eliminar a %s %s con DNI %d porque está asociado/a a designaciones y/o licencias",
+                                    persona.getNombre(),
+                                    persona.getApellido(),
+                                    persona.getDni()));
+        }
     }
 }

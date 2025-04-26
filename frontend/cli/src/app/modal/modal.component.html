@@ -1,19 +1,40 @@
-<div class="modal-header">
-    <h4 class="modal-title" id="modal-title">{{title}}</h4>
-    <button type="button" class="close" aria-describedby="modal-title" (click)="modal.dismiss()">
-        <span aria-hidden="true">&times;</span>
-    </button>
+<div class="modal-header" [ngClass]="{
+    'bg-primary': modalType === 'confirm', 
+    'bg-danger': modalType === 'error', 
+    'bg-success': modalType === 'success'
+}">
+    <h4 class="modal-title d-flex align-items-center text-white" id="modal-title" style="color: white !important;">
+        <i class="fa me-2 text-white" style="color: white !important;" [ngClass]="{
+            'fa-question-circle': modalType === 'confirm', 
+            'fa-exclamation-triangle': modalType === 'error',
+            'fa-check-circle': modalType === 'success'
+        }"></i>
+        {{title}}
+    </h4>
+    <button type="button" class="btn-close btn-close-white" aria-describedby="modal-title"
+        (click)="modal.dismiss('Cross click')"></button>
 </div>
 <div class="modal-body">
-    <p>
+    <p class="mb-2">
         <strong>{{message}}</strong>
     </p>
-    <p *ngIf="description">
-        <strong>{{description}}</strong>
+    <p *ngIf="description" class="text-muted">
+        {{description}}
     </p>
 </div>
 <div class="modal-footer">
-    <button *ngIf="!alertMode" type="button" class="btn btn-outline-secondary"
-        (click)="modal.dismiss()">Cancelar</button>
-    <button type="button" class="btn btn-success" (click)="modal.close()">Aceptar</button>
+    <button *ngIf="showCancelButton" type="button" class="btn btn-outline-secondary" (click)="modal.dismiss('Cancel click')">
+        <i class="fa fa-times me-1"></i>Cancelar
+    </button>
+    <button type="button" class="btn" [ngClass]="{
+        'btn-primary': modalType === 'confirm',
+        'btn-danger': modalType === 'error',
+        'btn-success': modalType === 'success'
+    }" (click)="modal.close('Close click')">
+        <i class="fa" [ngClass]="{
+            'fa-check me-1': modalType === 'confirm' || modalType === 'success',
+            'fa-exclamation me-1': modalType === 'error'
+        }"></i>
+        Aceptar
+    </button>
 </div>

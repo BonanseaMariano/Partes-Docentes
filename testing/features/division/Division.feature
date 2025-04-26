@@ -4,7 +4,7 @@ Módulo responsable de administrar a las divisiones (espacios físicos) de una e
 
   Esquema del escenario: ingresar nueva división
     Dada la el espacio físico división con <año> <número> <orientación> <turno>
-    Cuando se presiona el botón de guardar
+    Cuando se presiona el botón de guardar para división
     Entonces se espera el siguiente <status> con la "<respuesta>"
 
     Ejemplos:
