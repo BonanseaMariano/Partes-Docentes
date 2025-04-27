@@ -18,20 +18,41 @@ import unpsjb.labprog.backend.business.service.DivisionService;
 import unpsjb.labprog.backend.model.Division;
 
 /**
- * Controlador REST para la gestión de divisiones
+ * Controlador REST para la gestión de divisiones escolares.
+ * Proporciona endpoints para crear, consultar, actualizar y eliminar
+ * divisiones.
+ * Las divisiones representan cursos o grupos de estudiantes dentro de una
+ * institución educativa.
  */
 @RestController
 @RequestMapping("divisiones")
 public class DivisionPresenter {
 
+    /**
+     * Servicio que implementa la lógica de negocio para las operaciones con
+     * divisiones.
+     */
     @Autowired
     private DivisionService service;
 
+    /**
+     * Obtiene todas las divisiones registradas en el sistema.
+     * 
+     * @return ResponseEntity con la lista completa de divisiones si la operación es
+     *         exitosa
+     */
     @GetMapping
     public ResponseEntity<Object> findAll() {
         return Response.ok(service.findAll());
     }
 
+    /**
+     * Busca una división específica por su identificador único.
+     * 
+     * @param id Identificador único de la división a buscar
+     * @return ResponseEntity con la división encontrada o un mensaje de error si no
+     *         existe
+     */
     @GetMapping("/{id}")
     public ResponseEntity<Object> findById(@PathVariable Long id) {
         Division divisionOrNull = service.findById(id);
@@ -39,6 +60,13 @@ public class DivisionPresenter {
                 : Response.notFound("División con ID " + id + " no encontrada");
     }
 
+    /**
+     * Crea una nueva división en el sistema.
+     * 
+     * @param aDivision Objeto División con los datos a registrar
+     * @return ResponseEntity con un mensaje de éxito si la operación es correcta o
+     *         error en caso contrario
+     */
     @PostMapping
     public ResponseEntity<Object> create(@RequestBody Division aDivision) {
         try {
@@ -55,12 +83,15 @@ public class DivisionPresenter {
         }
     }
 
+    /**
+     * Actualiza una división existente en el sistema.
+     * 
+     * @param aDivision Objeto División con los datos actualizados
+     * @return ResponseEntity con un mensaje de éxito si la operación es correcta o
+     *         error en caso contrario
+     */
     @PutMapping
     public ResponseEntity<Object> update(@RequestBody Division aDivision) {
-        if (aDivision.getId() == null || aDivision.getId() <= 0) {
-            return Response.error(aDivision, "Debe especificar un ID válido para poder modificar una división.");
-        }
-
         // Verificar si la división existe
         Division existingDivision = service.findById(aDivision.getId());
         if (existingDivision == null) {
@@ -81,21 +112,35 @@ public class DivisionPresenter {
         }
     }
 
+    /**
+     * Elimina una división existente según su ID.
+     * 
+     * @param id Identificador único de la división a eliminar
+     * @return ResponseEntity con un mensaje de éxito si la operación es correcta o
+     *         error en caso contrario
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> delete(@PathVariable Long id) {
         Division existingDivision = service.findById(id);
-        if (existingDivision == null) {
-            return Response.notFound("División con ID " + id + " no encontrada para eliminar");
-        }
-
         try {
             service.delete(id);
-            return Response.ok("División eliminada correctamente");
+            String mensaje = String.format("División %dº %dº turno %s eliminada correctamente",
+                    existingDivision.getAnio(),
+                    existingDivision.getNumDivision(),
+                    existingDivision.getTurno().toString());
+            return Response.ok(mensaje);
         } catch (Exception e) {
             return Response.dbError("No se puede eliminar la división debido a dependencias existentes");
         }
     }
 
+    /**
+     * Obtiene una página de divisiones para implementar paginación en el cliente.
+     * 
+     * @param page Número de página solicitada (comienza en 0)
+     * @param size Cantidad de elementos por página
+     * @return ResponseEntity con la página de divisiones solicitada
+     */
     @GetMapping("/page")
     public ResponseEntity<Object> findByPage(@RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {

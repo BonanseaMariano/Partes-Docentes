@@ -39,11 +39,6 @@ export class PersonaDetailComponent implements OnInit {
       this.persona.sexo = this.persona.sexo.charAt(0) as any;
     }
 
-    // Asegurarse de que el DNI sea un número al guardar
-    if (typeof this.persona.dni === 'string') {
-      this.persona.dni = parseInt(this.persona.dni as string);
-    }
-
     this.personaService.save(this.persona).subscribe({
       next: (dataPackage) => {
         if (dataPackage.status !== 200) {
@@ -66,15 +61,8 @@ export class PersonaDetailComponent implements OnInit {
   get(): void {
     const dni = this.route.snapshot.paramMap.get("dni")!;
     if (dni === "new") {
-      // Inicializar un objeto persona vacío con las propiedades requeridas
-      this.persona = {
-        dni: '' as any, // Inicializar como string vacío para mostrar el placeholder
-        nombre: '',
-        apellido: '',
-        cuil: '',
-        sexo: '',
-        designaciones: []
-      };
+      // Inicializar la persona con valores vacíos
+      this.persona = <Persona>{};
       this.tituloFormulario = 'Nueva Persona';
     } else {
       this.personaService.get(parseInt(dni!)).subscribe({

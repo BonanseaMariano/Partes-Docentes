@@ -18,20 +18,41 @@ import unpsjb.labprog.backend.business.service.PersonaService;
 import unpsjb.labprog.backend.model.Persona;
 
 /**
- * Controlador REST para la gestión de personas
+ * Controlador REST para la gestión de personas en el sistema.
+ * Proporciona endpoints para crear, consultar, actualizar y eliminar registros
+ * de personas.
+ * Permite buscar personas por su DNI o CUIL y manejar la paginación de
+ * resultados.
  */
 @RestController
 @RequestMapping("personas")
 public class PersonaPresenter {
 
+    /**
+     * Servicio que implementa la lógica de negocio para las operaciones con
+     * personas.
+     */
     @Autowired
     private PersonaService service;
 
+    /**
+     * Obtiene todas las personas registradas en el sistema.
+     * 
+     * @return ResponseEntity con la lista completa de personas si la operación es
+     *         exitosa
+     */
     @GetMapping
     public ResponseEntity<Object> findAll() {
         return Response.ok(service.findAll());
     }
 
+    /**
+     * Busca una persona específica por su número de DNI.
+     * 
+     * @param dni Número de DNI de la persona a buscar
+     * @return ResponseEntity con la persona encontrada o un mensaje de error si no
+     *         existe
+     */
     @GetMapping("/{dni}")
     public ResponseEntity<Object> findByDni(@PathVariable int dni) {
         Persona personaOrNull = service.findByDni(dni);
@@ -39,6 +60,13 @@ public class PersonaPresenter {
                 : Response.notFound("Persona dni " + dni + " no encontrada");
     }
 
+    /**
+     * Busca una persona específica por su número de CUIL.
+     * 
+     * @param cuil CUIL de la persona a buscar en formato string
+     * @return ResponseEntity con la persona encontrada o un mensaje de error si no
+     *         existe
+     */
     @GetMapping("/cuil/{cuil}")
     public ResponseEntity<Object> findByCuil(@PathVariable String cuil) {
         Persona personaOrNull = service.findByCuil(cuil);
@@ -46,6 +74,13 @@ public class PersonaPresenter {
                 : Response.notFound("Persona cuil " + cuil + " no encontrada");
     }
 
+    /**
+     * Crea una nueva persona en el sistema.
+     * 
+     * @param aPersona Objeto Persona con los datos a registrar
+     * @return ResponseEntity con un mensaje de éxito si la operación es correcta o
+     *         error en caso contrario
+     */
     @PostMapping
     public ResponseEntity<Object> create(@RequestBody Persona aPersona) {
         try {
@@ -62,11 +97,20 @@ public class PersonaPresenter {
         }
     }
 
+    /**
+     * Actualiza los datos de una persona existente en el sistema.
+     * 
+     * @param aPersona Objeto Persona con los datos actualizados
+     * @return ResponseEntity con un mensaje de éxito si la operación es correcta o
+     *         error en caso contrario
+     */
     @PutMapping
     public ResponseEntity<Object> update(@RequestBody Persona aPersona) {
-        if (aPersona.getDni() <= 0) {
-            return Response.error(aPersona, "debe especificar un dni valido para poder modificar una persona.");
+        Persona existingPersona = service.findByDni(aPersona.getDni());
+        if (existingPersona == null) {
+            return Response.notFound("Persona con DNI " + aPersona.getDni() + " no encontrada para actualizar");
         }
+
         try {
             Persona updatedPersona = service.save(aPersona);
             // Formatear el mensaje según lo requerido en Persona.feature
@@ -80,12 +124,27 @@ public class PersonaPresenter {
         }
     }
 
+    /**
+     * Obtiene una página de personas para implementar paginación en el cliente.
+     * 
+     * @param page Número de página solicitada (comienza en 0)
+     * @param size Cantidad de elementos por página
+     * @return ResponseEntity con la página de personas solicitada
+     */
     @GetMapping("/page")
     public ResponseEntity<Object> findByPage(@RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         return Response.ok(service.findByPage(page, size));
     }
 
+    /**
+     * Elimina una persona existente según su DNI.
+     * Verifica primero si la persona tiene asociaciones con otras entidades.
+     * 
+     * @param dni Número de DNI de la persona a eliminar
+     * @return ResponseEntity con un mensaje de éxito si la operación es correcta o
+     *         error en caso contrario
+     */
     @DeleteMapping("/{dni}")
     public ResponseEntity<Object> delete(@PathVariable int dni) {
         Persona persona = service.findByDni(dni);
