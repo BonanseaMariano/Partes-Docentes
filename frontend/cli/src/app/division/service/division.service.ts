@@ -20,10 +20,10 @@ export class DivisionService {
         return this.http.get<DataPackage>(`${this.divisionesUrl}/${id}`);
     }
 
-    save(division: Division): Observable<DataPackage> {
-        return division.id
-            ? this.http.put<DataPackage>(this.divisionesUrl, division)
-            : this.http.post<DataPackage>(this.divisionesUrl, division);
+    save(division: Division, isNew: boolean = false): Observable<DataPackage> {
+        return isNew
+            ? this.http.post<DataPackage>(this.divisionesUrl, division)
+            : this.http.put<DataPackage>(this.divisionesUrl, division);
     }
 
     remove(id: number): Observable<DataPackage> {

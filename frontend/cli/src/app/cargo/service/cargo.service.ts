@@ -20,10 +20,10 @@ export class cargoService {
         return this.http.get<DataPackage>(`${this.cargosUrl}/${id}`);
     }
 
-    save(cargo: Cargo): Observable<DataPackage> {
-        return cargo.id
-            ? this.http.put<DataPackage>(this.cargosUrl, cargo)
-            : this.http.post<DataPackage>(this.cargosUrl, cargo);
+    save(cargo: Cargo, isNew: boolean = false): Observable<DataPackage> {
+        return isNew
+            ? this.http.post<DataPackage>(this.cargosUrl, cargo)
+            : this.http.put<DataPackage>(this.cargosUrl, cargo);
     }
 
     remove(id: number): Observable<DataPackage> {

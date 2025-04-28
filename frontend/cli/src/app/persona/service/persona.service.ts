@@ -20,10 +20,10 @@ export class PersonaService {
     return this.http.get<DataPackage>(`${this.personasUrl}/${dni}`);
   }
 
-  save(persona: Persona): Observable<DataPackage> {
-    return persona.dni
-      ? this.http.put<DataPackage>(this.personasUrl, persona)
-      : this.http.post<DataPackage>(this.personasUrl, persona);
+  save(persona: Persona, isNew: boolean = false): Observable<DataPackage> {
+    return isNew
+      ? this.http.post<DataPackage>(this.personasUrl, persona)
+      : this.http.put<DataPackage>(this.personasUrl, persona);
   }
 
   remove(dni: number): Observable<DataPackage> {

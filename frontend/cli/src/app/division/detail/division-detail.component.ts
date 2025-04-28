@@ -23,6 +23,7 @@ export class DivisionDetailComponent implements OnInit {
     division!: Division;
     turnos = Object.values(Turno);
     turnoEnum = Turno;
+    isNewDivision: boolean = true;
 
     tituloFormulario: string = 'Nueva División';
 
@@ -43,7 +44,7 @@ export class DivisionDetailComponent implements OnInit {
     }
 
     save(): void {
-        this.divisionService.save(this.division).subscribe({
+        this.divisionService.save(this.division, this.isNewDivision).subscribe({
             next: (dataPackage) => {
                 if (dataPackage.status !== 200) {
                     this.modalService.error(
@@ -68,11 +69,13 @@ export class DivisionDetailComponent implements OnInit {
             // Inicializar la división con valores vacios
             this.division = <Division>{};
             this.tituloFormulario = 'Nueva Division';
+            this.isNewDivision = true;  // Es una nueva división
         } else {
             this.divisionService.get(parseInt(id!)).subscribe({
                 next: (dataPackage) => {
                     this.division = <Division>dataPackage.data;
                     this.tituloFormulario = 'Editar Division';
+                    this.isNewDivision = false;  // Es una división existente
                 }
             });
         }

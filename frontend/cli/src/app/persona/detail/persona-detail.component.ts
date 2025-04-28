@@ -21,6 +21,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 export class PersonaDetailComponent implements OnInit {
   persona!: Persona;
   tituloFormulario: string = 'Nueva Persona';
+  isNewPerson: boolean = true;
 
   constructor(
     private route: ActivatedRoute,
@@ -39,7 +40,7 @@ export class PersonaDetailComponent implements OnInit {
       this.persona.sexo = this.persona.sexo.charAt(0) as any;
     }
 
-    this.personaService.save(this.persona).subscribe({
+    this.personaService.save(this.persona, this.isNewPerson).subscribe({
       next: (dataPackage) => {
         if (dataPackage.status !== 200) {
           this.modalService.error(
@@ -64,11 +65,13 @@ export class PersonaDetailComponent implements OnInit {
       // Inicializar la persona con valores vacíos
       this.persona = <Persona>{};
       this.tituloFormulario = 'Nueva Persona';
+      this.isNewPerson = true;  // Es una nueva persona
     } else {
       this.personaService.get(parseInt(dni!)).subscribe({
         next: (dataPackage) => {
           this.persona = <Persona>dataPackage.data;
           this.tituloFormulario = 'Editar Persona';
+          this.isNewPerson = false;  // Es una persona existente
         }
       });
     }
