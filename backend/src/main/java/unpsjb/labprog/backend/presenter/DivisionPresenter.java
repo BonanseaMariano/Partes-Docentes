@@ -75,7 +75,7 @@ public class DivisionPresenter {
             String mensaje = String.format("División %dº %dº turno %s ingresada correctamente",
                     savedDivision.getAnio(),
                     savedDivision.getNumDivision(),
-                    savedDivision.getTurno().toString());
+                    savedDivision.getTurno().getValor());
 
             return Response.ok(mensaje);
         } catch (DataIntegrityViolationException e) {
@@ -104,7 +104,7 @@ public class DivisionPresenter {
             String mensaje = String.format("División %dº %dº turno %s actualizada correctamente",
                     updatedDivision.getAnio(),
                     updatedDivision.getNumDivision(),
-                    updatedDivision.getTurno().toString());
+                    updatedDivision.getTurno().getValor());
 
             return Response.ok(mensaje);
         } catch (DataIntegrityViolationException e) {
@@ -127,7 +127,7 @@ public class DivisionPresenter {
             String mensaje = String.format("División %dº %dº turno %s eliminada correctamente",
                     existingDivision.getAnio(),
                     existingDivision.getNumDivision(),
-                    existingDivision.getTurno().toString());
+                    existingDivision.getTurno().getValor());
             return Response.ok(mensaje);
         } catch (Exception e) {
             return Response.dbError("No se puede eliminar la división debido a dependencias existentes");

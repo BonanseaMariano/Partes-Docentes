@@ -4,6 +4,7 @@ import { PersonasComponent } from './persona/list/personas.component';
 import { PersonaDetailComponent } from './persona/detail/persona-detail.component';
 import { DivisionesComponent } from './division/list/divisiones.component';
 import { DivisionDetailComponent } from './division/detail/division-detail.component';
+import { CargosComponent } from './cargo/list/cargos.component';
 
 export const routes: Routes = [
     { path: "", component: HomeComponent },
@@ -11,4 +12,5 @@ export const routes: Routes = [
     { path: "personas/:dni", component: PersonaDetailComponent },
     { path: "divisiones", component: DivisionesComponent },
     { path: "divisiones/:id", component: DivisionDetailComponent },
+    { path: "cargos", component: CargosComponent },
 ];

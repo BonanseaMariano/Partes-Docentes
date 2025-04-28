@@ -21,7 +21,8 @@ import { Turno } from '../../models/turno';
 })
 export class DivisionDetailComponent implements OnInit {
     division!: Division;
-    turnos = Object.keys(Turno).filter(key => isNaN(Number(key)));
+    turnos = Object.values(Turno);
+    turnoEnum = Turno;
 
     tituloFormulario: string = 'Nueva División';
 
@@ -34,6 +35,11 @@ export class DivisionDetailComponent implements OnInit {
 
     goBack(): void {
         this.location.back();
+    }
+
+    // Método para mostrar el valor amigable del enum Turno
+    getTurnoDisplay(turno: Turno): string {
+        return turno;
     }
 
     save(): void {

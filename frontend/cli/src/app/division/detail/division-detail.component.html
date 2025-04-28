@@ -63,7 +63,7 @@
                     <select id="turno" name="turno" class="form-select" [(ngModel)]="division.turno" required
                         #turno="ngModel">
                         <option *ngFor="let turnoValue of turnos" [ngValue]="turnoValue">
-                            {{ turnoValue }}
+                            {{ getTurnoDisplay(turnoValue) }}
                         </option>
                     </select>
                 </div>

@@ -83,7 +83,7 @@ public class CargoPresenter {
                         savedCargo.getNombre(),
                         savedCargo.getDivision().getAnio(),
                         savedCargo.getDivision().getNumDivision(),
-                        savedCargo.getDivision().getTurno().toString());
+                        savedCargo.getDivision().getTurno().getValor());
             } else {
                 // Para cargos normales
                 mensaje = String.format("Cargo de %s ingresado correctamente", savedCargo.getNombre());
@@ -128,7 +128,7 @@ public class CargoPresenter {
                         savedCargo.getNombre(),
                         savedCargo.getDivision().getAnio(),
                         savedCargo.getDivision().getNumDivision(),
-                        savedCargo.getDivision().getTurno().toString());
+                        savedCargo.getDivision().getTurno().getValor());
             } else {
                 // Para cargos normales
                 mensaje = String.format("Cargo de %s actualizado correctamente", savedCargo.getNombre());
@@ -159,7 +159,7 @@ public class CargoPresenter {
             service.delete(id);
 
             String mensaje = String.format("Cargo %s %s eliminado correctamente",
-                    existingCargo.getTipoDesignacion().toString(),
+                    existingCargo.getTipoDesignacion().getValor(),
                     existingCargo.getNombre());
             return Response.ok(mensaje);
         } catch (Exception e) {

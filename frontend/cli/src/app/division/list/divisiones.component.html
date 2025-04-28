@@ -11,7 +11,7 @@
             <table class="table table-hover">
                 <thead class="table-light">
                     <tr>
-                        <th scope="col">#</th>
+                        <th scope="col"></th>
                         <th scope="col">Año</th>
                         <th scope="col">Número</th>
                         <th scope="col">Orientación</th>
@@ -25,7 +25,17 @@
                         <td>{{ division.anio }}°</td>
                         <td>{{ division.numDivision }}°</td>
                         <td>{{ division.orientacion }}</td>
-                        <td><span class="badge bg-info text-dark">{{ division.turno }}</span></td>
+                        <td>
+                            <span class="badge fs-6 px-3 py-2" 
+                                  [ngClass]="{
+                                    'bg-info text-dark': division.turno === turnoEnum.MANIANA,
+                                    'bg-warning text-dark': division.turno === turnoEnum.TARDE,
+                                    'bg-secondary text-white': division.turno === turnoEnum.VESPERTINO,
+                                    'bg-dark text-white': division.turno === turnoEnum.NOCHE
+                                  }">
+                                {{ division.turno }}
+                            </span>
+                        </td>
                         <td class="text-end">
                             <a routerLink="/divisiones/{{ division.id }}" class="btn btn-sm btn-outline-primary me-1"
                                 title="Editar">

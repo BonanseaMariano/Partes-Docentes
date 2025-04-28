@@ -16,6 +16,24 @@ function CargoWorld() {
 const { setWorldConstructor } = require('@cucumber/cucumber');
 setWorldConstructor(CargoWorld);
 
+// Mapeamos los valores de tipoDesignacion para que coincidan con el backend
+const tipoDesignacionMap = {
+    'CARGO': 'Cargo',
+    'ESPACIO CURRICULAR': 'Espacio Curricular'
+};
+
+// Mapeamos los valores de turno para que coincidan con el backend
+const turnoMap = {
+    'Mañana': 'Mañana',
+    'MAÑANA': 'Mañana',
+    'Tarde': 'Tarde',
+    'TARDE': 'Tarde',
+    'Vespertino': 'Vespertino',
+    'VESPERTINO': 'Vespertino',
+    'Noche': 'Noche',
+    'NOCHE': 'Noche'
+};
+
 // Paso: Dado el cargo institucional cuyo <nombre> que da título al mismo
 Given('el cargo institucional cuyo {string} que da título al mismo', function (nombre) {
     this.currentCargo = {
@@ -25,8 +43,8 @@ Given('el cargo institucional cuyo {string} que da título al mismo', function (
 
 // Paso: Y que es del tipo de designación <tipoDesignación>
 Given('que es del tipo de designación {string}', function (tipoDesignacion) {
-    // Reemplazar espacios por guiones bajos para que coincida con la enumeración Java
-    this.currentCargo.tipoDesignacion = tipoDesignacion.replace(' ', '_');
+    // Usamos el mapa para convertir los valores al formato esperado por el backend
+    this.currentCargo.tipoDesignacion = tipoDesignacionMap[tipoDesignacion] || tipoDesignacion;
 });
 
 // Paso: Y que tiene una carga horaria de <cargaHoraria> horas, con vigencia desde "<fechaDesde>" hasta "<fechaHasta>"
@@ -43,15 +61,18 @@ Given('que tiene una carga horaria de {int} horas, con vigencia desde {string} h
 
 // Paso: Y que si el tipo es "ESPACIO CURRICULAR", opcionalmente se asigna a la división "<año>" "<número>" "<turno>"
 Given('que si el tipo es {string}, opcionalmente se asigna a la división {string} {string} {string}', function (tipo, anio, numero, turno) {
-    // Convertir "ESPACIO CURRICULAR" a "ESPACIO_CURRICULAR" para comparar
-    const tipoEnEnum = tipo.replace(' ', '_');
+    // Usamos el tipo original de la característica para comparar
+    const tipoOriginal = tipo;
+    
+    // Convertimos el turno si es necesario
+    const turnoFormateado = turnoMap[turno] || turno;
 
     // Solo guardamos la info de división si es un espacio curricular y se han proporcionado los datos
-    if (this.currentCargo.tipoDesignacion === tipoEnEnum && anio && numero && turno && anio !== '' && numero !== '' && turno !== '') {
+    if (this.currentCargo.tipoDesignacion === tipoDesignacionMap[tipoOriginal] && anio && numero && turno && anio !== '' && numero !== '' && turno !== '') {
         this.divisionInfo = {
             anio: parseInt(anio),
             numero: parseInt(numero),
-            turno: turno
+            turno: turnoFormateado
         };
     }
 });
@@ -112,8 +133,7 @@ function buscarOCrearDivision(anio, numero, turno) {
 When('se presiona el botón de guardar', function () {
     try {
         // Si tenemos información de división para un ESPACIO_CURRICULAR, buscamos o creamos la división
-        // Para el caso Auxiliar ACAD, no creamos la división porque debe fallar intencionalmente
-        if (this.divisionInfo && this.currentCargo.tipoDesignacion === 'ESPACIO_CURRICULAR') {
+        if (this.divisionInfo && this.currentCargo.tipoDesignacion === tipoDesignacionMap['ESPACIO CURRICULAR']) {
             const division = buscarOCrearDivision(
                 this.divisionInfo.anio,
                 this.divisionInfo.numero,

@@ -11,7 +11,7 @@
             <table class="table table-hover">
                 <thead class="table-light">
                     <tr>
-                        <th scope="col">#</th>
+                        <th scope="col"></th>
                         <th scope="col">DNI</th>
                         <th scope="col">Nombre</th>
                         <th scope="col">Apellido</th>
@@ -23,16 +23,18 @@
                 <tbody>
                     <tr *ngFor="let persona of resultsPage.content; index as i">
                         <td>{{ (resultsPage.number * resultsPage.size) + i + 1 }}</td>
-                        <td><span class="badge bg-light text-dark">{{ persona.dni }}</span></td>
+                        <td>{{ persona.dni }}</td>
                         <td>{{ persona.nombre }}</td>
                         <td>{{ persona.apellido }}</td>
                         <td>{{ persona.cuil }}</td>
                         <td>{{ persona.titulo }}</td>
                         <td class="text-end">
-                            <a routerLink="/personas/{{ persona.dni }}" class="btn btn-sm btn-outline-primary me-1" title="Editar">
+                            <a routerLink="/personas/{{ persona.dni }}" class="btn btn-sm btn-outline-primary me-1"
+                                title="Editar">
                                 <i class="fa fa-pencil"></i>
                             </a>
-                            <a (click)="remove(persona.dni)" [routerLink]="" class="btn btn-sm btn-outline-danger" title="Eliminar">
+                            <a (click)="remove(persona.dni)" [routerLink]="" class="btn btn-sm btn-outline-danger"
+                                title="Eliminar">
                                 <i class="fa fa-trash"></i>
                             </a>
                         </td>
@@ -46,7 +48,7 @@
             </table>
         </div>
     </div>
-    
+
     <div class="card-footer bg-light" *ngIf="resultsPage.numberOfElements > 0">
         <app-pagination [totalPages]="resultsPage.totalPages" [currentPage]="currentPage"
             (pageChangeRequested)="onPageChangeRequested($event)" [number]="resultsPage.number">
