@@ -1,13 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { PaginationConfig } from '../../core/constants/pagination.constants';
 import { ModalService } from '../../modal/modal.service';
 import { ResultsPage } from '../../models/results-page';
-import { PaginationComponent } from '../../pagination/pagination.component';
-import { cargoService } from '../service/cargo.service';
-import { PaginationConfig } from '../../core/constants/pagination.constants';
 import { TipoDesignacion } from '../../models/tipo-designacion';
-import { Cargo } from '../../models/cargo';
+import { PaginationComponent } from '../../pagination/pagination.component';
+import { CargoService } from '../service/cargo.service';
 
 
 @Component({
@@ -23,7 +22,7 @@ export class CargosComponent {
     tipoDesignacionEnum = TipoDesignacion;
 
     constructor(
-        private cargoService: cargoService,
+        private cargoService: CargoService,
         private modalService: ModalService
     ) { }
 

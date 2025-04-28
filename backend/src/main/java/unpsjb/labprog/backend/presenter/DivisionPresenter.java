@@ -146,4 +146,15 @@ public class DivisionPresenter {
             @RequestParam(defaultValue = "10") int size) {
         return Response.ok(service.findByPage(page, size));
     }
+
+    /**
+     * Busca divisiones por un término de búsqueda.
+     * 
+     * @param term el término de búsqueda
+     * @return una lista de divisiones que coinciden con el término de búsqueda
+     */
+    @GetMapping("/search/{term}")
+    public ResponseEntity<Object> search(@PathVariable String term) {
+        return Response.ok(service.search(term));
+    }
 }

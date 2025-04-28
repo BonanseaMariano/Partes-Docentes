@@ -7,7 +7,7 @@ import { DataPackage } from '../../models/data-package';
 @Injectable({
     providedIn: 'root'
 })
-export class cargoService {
+export class CargoService {
     private cargosUrl = "/rest/cargos";
 
     constructor(private http: HttpClient) { }

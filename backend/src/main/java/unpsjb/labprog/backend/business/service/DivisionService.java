@@ -72,4 +72,14 @@ public class DivisionService {
     public Page<Division> findByPage(int page, int size) {
         return repository.findAll(PageRequest.of(page, size));
     }
+
+    /**
+     * Busca divisiones por un término de búsqueda.
+     * 
+     * @param term el término de búsqueda
+     * @return una lista de divisiones que coinciden con el término de búsqueda
+     */
+    public List<Division> search(String term) {
+        return repository.search("%" + term.toUpperCase() + "%");
+    }
 }
