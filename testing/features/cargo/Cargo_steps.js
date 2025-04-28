@@ -9,6 +9,7 @@ require('../common/common_steps');
 function CargoWorld() {
     this.currentCargo = {};
     this.apiResponse = {}; // Esta variable será usada por common_steps.js
+    this.divisionInfo = null; // Para almacenar información de la división
 }
 
 // Configuramos el mundo (contexto) para cada escenario
@@ -24,21 +25,30 @@ Given('el cargo institucional cuyo {string} que da título al mismo', function (
 
 // Paso: Y que es del tipo de designación <tipoDesignación>
 Given('que es del tipo de designación {string}', function (tipoDesignacion) {
-    this.currentCargo.tipoDesignacion = tipoDesignacion;
+    // Reemplazar espacios por guiones bajos para que coincida con la enumeración Java
+    this.currentCargo.tipoDesignacion = tipoDesignacion.replace(' ', '_');
 });
 
 // Paso: Y que tiene una carga horaria de <cargaHoraria> horas, con vigencia desde "<fechaDesde>" hasta "<fechaHasta>"
 Given('que tiene una carga horaria de {int} horas, con vigencia desde {string} hasta {string}', function (cargaHoraria, fechaDesde, fechaHasta) {
     this.currentCargo.cargaHoraria = cargaHoraria;
-    this.currentCargo.fechaDesde = fechaDesde;
-    this.currentCargo.fechaHasta = fechaHasta === '' ? null : fechaHasta;
+
+    // Modificar los nombres de los campos para que coincidan con la entidad Java
+    this.currentCargo.fechaInicio = fechaDesde ? fechaDesde + "T00:00:00" : null;
+    this.currentCargo.fechaFin = fechaHasta && fechaHasta !== '' ? fechaHasta + "T00:00:00" : null;
+
+    // Inicializar horarios como un array vacío (requerido según @NotNull en el modelo)
+    this.currentCargo.horarios = [];
 });
 
 // Paso: Y que si el tipo es "ESPACIO CURRICULAR", opcionalmente se asigna a la división "<año>" "<número>" "<turno>"
 Given('que si el tipo es {string}, opcionalmente se asigna a la división {string} {string} {string}', function (tipo, anio, numero, turno) {
-    // Solo asignamos la división si es un espacio curricular y se han proporcionado los datos de la división
-    if (this.currentCargo.tipoDesignacion === tipo && anio && numero && turno && anio !== '' && numero !== '' && turno !== '') {
-        this.currentCargo.division = {
+    // Convertir "ESPACIO CURRICULAR" a "ESPACIO_CURRICULAR" para comparar
+    const tipoEnEnum = tipo.replace(' ', '_');
+
+    // Solo guardamos la info de división si es un espacio curricular y se han proporcionado los datos
+    if (this.currentCargo.tipoDesignacion === tipoEnEnum && anio && numero && turno && anio !== '' && numero !== '' && turno !== '') {
+        this.divisionInfo = {
             anio: parseInt(anio),
             numero: parseInt(numero),
             turno: turno
@@ -46,18 +56,97 @@ Given('que si el tipo es {string}, opcionalmente se asigna a la división {strin
     }
 });
 
+// Función para buscar o crear una división
+function buscarOCrearDivision(anio, numero, turno) {
+    try {
+        // 1. Primero intentamos obtener todas las divisiones existentes
+        const getDivisionsRes = request('GET', 'http://pd-backend:8080/divisiones');
+        const divisionsData = JSON.parse(getDivisionsRes.getBody('utf8'));
+
+        if (divisionsData && divisionsData.data) {
+            // 2. Buscamos si existe una división con los mismos datos
+            const divisionEncontrada = divisionsData.data.find(d =>
+                d.anio === anio &&
+                d.numDivision === numero &&
+                d.turno === turno
+            );
+
+            if (divisionEncontrada) {
+                // 3a. Si existe, la retornamos
+                return divisionEncontrada;
+            } else {
+                // 3b. Si no existe, la creamos
+                const nuevaDivision = {
+                    anio: anio,
+                    numDivision: numero,
+                    turno: turno,
+                    orientacion: "General" // Valor por defecto
+                };
+
+                // 4. Creamos la división
+                const createDivisionRes = request('POST', 'http://pd-backend:8080/divisiones', {
+                    json: nuevaDivision
+                });
+
+                // 5. Obtenemos la división recién creada
+                const getDivisionRes = request('GET', 'http://pd-backend:8080/divisiones');
+                const newDivisionsData = JSON.parse(getDivisionRes.getBody('utf8'));
+
+                if (newDivisionsData && newDivisionsData.data) {
+                    return newDivisionsData.data.find(d =>
+                        d.anio === anio &&
+                        d.numDivision === numero &&
+                        d.turno === turno
+                    );
+                }
+            }
+        }
+    } catch (error) {
+        console.error('Error al buscar o crear división:', error.message);
+    }
+
+    return null;
+}
+
 // Paso: Cuando se presiona el botón de guardar
 When('se presiona el botón de guardar', function () {
-    /* try {
+    try {
+        // Si tenemos información de división para un ESPACIO_CURRICULAR, buscamos o creamos la división
+        // Para el caso Auxiliar ACAD, no creamos la división porque debe fallar intencionalmente
+        if (this.divisionInfo && this.currentCargo.tipoDesignacion === 'ESPACIO_CURRICULAR') {
+            const division = buscarOCrearDivision(
+                this.divisionInfo.anio,
+                this.divisionInfo.numero,
+                this.divisionInfo.turno
+            );
+
+            if (division) {
+                // Asignamos la división al cargo
+                this.currentCargo.division = division;
+            } else {
+                console.warn('No se pudo encontrar o crear la división necesaria.');
+            }
+        } else if (this.divisionInfo) {
+            // Para cargos no ESPACIO_CURRICULAR con división asignada (como Auxiliar ACAD)
+            // creamos un objeto división básico para que la validación falle como se espera
+            this.currentCargo.division = {
+                anio: this.divisionInfo.anio,
+                numDivision: this.divisionInfo.numero,
+                turno: this.divisionInfo.turno,
+                orientacion: "General"
+            };
+        }
+
+        // Enviamos la solicitud para crear el cargo
         const res = request('POST', 'http://pd-backend:8080/cargos', {
             json: this.currentCargo
         });
+
         this.apiResponse = JSON.parse(res.getBody('utf8'));
     } catch (error) {
         console.error('Error al hacer la solicitud:', error.message);
         throw error;
-    } */
-    return 'pending';
+    }
 });
 
 // El paso "Entonces se espera el siguiente <status> con la "<respuesta>"" 

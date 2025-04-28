@@ -67,10 +67,9 @@ public class Cargo {
     private LocalDateTime fechaInicio;
 
     /**
-     * Fecha de finalización de vigencia del cargo.
+     * Fecha de finalización de vigencia del cargo. Puede ser nula
      */
-    @NotNull
-    @Column(name = "fecha_fin", nullable = false)
+    @Column(name = "fecha_fin")
     private LocalDateTime fechaFin;
 
     /**

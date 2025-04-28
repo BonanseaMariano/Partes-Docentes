@@ -13,6 +13,8 @@ import unpsjb.labprog.backend.model.Persona;
 
 /**
  * Servicio que implementa la lógica de negocio para la entidad Persona
+ * 
+ * @see Persona
  */
 @Service
 public class PersonaService {
@@ -37,16 +39,6 @@ public class PersonaService {
      */
     public Persona findByDni(long dni) {
         return repository.findById(dni).orElse(null);
-    }
-
-    /**
-     * Busca una persona por su CUIL
-     * 
-     * @param cuil CUIL de la persona a buscar
-     * @return Persona encontrada o null si no existe
-     */
-    public Persona findByCuil(String cuil) {
-        return repository.findByCuil(cuil).orElse(null);
     }
 
     /**

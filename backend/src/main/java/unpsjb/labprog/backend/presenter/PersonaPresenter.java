@@ -61,20 +61,6 @@ public class PersonaPresenter {
     }
 
     /**
-     * Busca una persona específica por su número de CUIL.
-     * 
-     * @param cuil CUIL de la persona a buscar en formato string
-     * @return ResponseEntity con la persona encontrada o un mensaje de error si no
-     *         existe
-     */
-    @GetMapping("/cuil/{cuil}")
-    public ResponseEntity<Object> findByCuil(@PathVariable String cuil) {
-        Persona personaOrNull = service.findByCuil(cuil);
-        return (personaOrNull != null) ? Response.ok(personaOrNull)
-                : Response.notFound("Persona cuil " + cuil + " no encontrada");
-    }
-
-    /**
      * Crea una nueva persona en el sistema.
      * 
      * @param aPersona Objeto Persona con los datos a registrar
