@@ -94,9 +94,7 @@ public class CargoPresenter {
             // Capturar excepciones de validación de negocio y devolver error 501
             return Response.notImplemented(e.getMessage());
         } catch (DataIntegrityViolationException e) {
-            return Response.dbError("No se puede crear el cargo debido a un conflicto en la base de datos");
-        } catch (Exception e) {
-            return Response.error(null, "Error al crear el cargo: " + e.getMessage());
+            return Response.dbError("No se puede crear el cargo debido a que ya existe otro identico");
         }
     }
 
@@ -139,7 +137,7 @@ public class CargoPresenter {
             // Capturar excepciones de validación de negocio y devolver error 501
             return Response.notImplemented(e.getMessage());
         } catch (DataIntegrityViolationException e) {
-            return Response.dbError("No se puede actualizar el cargo debido a un conflicto en la base de datos");
+            return Response.dbError("No se puede actualizar el cargo debido a que ya existe otro identico");
         } catch (Exception e) {
             return Response.error(null, "Error al actualizar el cargo: " + e.getMessage());
         }

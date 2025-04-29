@@ -19,7 +19,6 @@ setWorldConstructor(PersonaWorld);
 Given(
     'la persona con {word} {word} {int} {word} {word} {string} {string} {string}',
     function (nombre, apellido, dni, cuil, sexo, titulo, domicilio, telefono) {
-        // Corregido: los parámetros ahora coinciden con su uso
         this.currentPersona = {
             dni: dni,
             nombre: nombre,
@@ -30,21 +29,18 @@ Given(
             domicilio: domicilio,
             telefono: telefono
         };
+
+        // Limpiamos cualquier respuesta anterior
+        this.apiResponse = {};
     }
 );
 
 // Paso: Cuando se presiona el botón de guardar para persona
 When('se presiona el botón de guardar para persona', function () {
-    try {
-        const res = request('POST', 'http://pd-backend:8080/personas', {
-            json: this.currentPersona
-        });
-        this.apiResponse = JSON.parse(res.getBody('utf8'));
-    } catch (error) {
-        console.error('Error al hacer la solicitud:', error.message);
-        throw error;
-    }
-});
+    // Creamos la persona con POST
+    const res = request('POST', 'http://pd-backend:8080/personas', {
+        json: this.currentPersona
+    });
 
-// El paso "Entonces se espera el siguiente {int} con la {string}" 
-// ahora se encuentra en common_steps.js
+    this.apiResponse = JSON.parse(res.getBody('utf8'));
+});

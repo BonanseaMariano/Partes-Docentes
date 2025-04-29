@@ -54,7 +54,7 @@ public class DivisionPresenter {
      *         existe
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Object> findById(@PathVariable Long id) {
+    public ResponseEntity<Object> findById(@PathVariable int id) {
         Division divisionOrNull = service.findById(id);
         return (divisionOrNull != null) ? Response.ok(divisionOrNull)
                 : Response.notFound("División con ID " + id + " no encontrada");
@@ -79,7 +79,7 @@ public class DivisionPresenter {
 
             return Response.ok(mensaje);
         } catch (DataIntegrityViolationException e) {
-            return Response.dbError("No se puede crear la división debido a un conflicto en la base de datos");
+            return Response.dbError("No se puede crear la división debido a que ya existe otra idéntica");
         }
     }
 
@@ -108,7 +108,7 @@ public class DivisionPresenter {
 
             return Response.ok(mensaje);
         } catch (DataIntegrityViolationException e) {
-            return Response.dbError("No se puede actualizar la división debido a un conflicto en la base de datos");
+            return Response.dbError("No se puede actualizar la división debido a que ya existe otra idéntica");
         }
     }
 
@@ -120,7 +120,7 @@ public class DivisionPresenter {
      *         error en caso contrario
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> delete(@PathVariable Long id) {
+    public ResponseEntity<Object> delete(@PathVariable int id) {
         Division existingDivision = service.findById(id);
         try {
             service.delete(id);

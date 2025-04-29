@@ -7,8 +7,11 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -16,9 +19,30 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Clase que representa a una Persona en el sistema (personal docente)
+ * Representa a una Persona en el sistema educativo, típicamente personal
+ * docente
+ * que puede ser asignado a diferentes cargos mediante designaciones.
+ * <p>
+ * Una persona se identifica de manera única por su DNI y/o CUIL, y contiene
+ * información personal básica como nombre, apellido, domicilio y datos de
+ * contacto.
+ * <p>
+ * Cada persona puede tener múltiples designaciones asignadas a lo largo del
+ * tiempo,
+ * representando los diferentes cargos y funciones que desempeña en la
+ * institución.
+ * <p>
+ * La información almacenada en esta entidad incluye:
+ * <ul>
+ * <li>Datos identificatorios (DNI, CUIL)</li>
+ * <li>Datos personales (nombre, apellido, sexo)</li>
+ * <li>Formación académica (título)</li>
+ * <li>Datos de contacto (domicilio, teléfono)</li>
+ * </ul>
  * 
- * @see Designacion
+ * @see Designacion Entidad que vincula a la persona con cargos específicos
+ * @see Cargo Cargos a los que puede ser asignada la persona
+ * @see Licencia Licencias o permisos que puede solicitar la persona
  */
 @Entity
 @Table(name = "personas")
@@ -28,9 +52,18 @@ import lombok.Setter;
 public class Persona {
 
     /**
-     * DNI de la persona, es su identificador
+     * ID de la persona, generado automáticamente
      */
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "personas_seq_gen")
+    @SequenceGenerator(name = "personas_seq_gen", sequenceName = "personas_seq", initialValue = 1000, allocationSize = 1)
+    private int id;
+
+    /**
+     * DNI de la persona
+     */
+    @NotNull
+    @Column(unique = true, nullable = false)
     private Long dni;
 
     /**

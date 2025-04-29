@@ -47,17 +47,45 @@ public class PersonaPresenter {
     }
 
     /**
+     * Busca una persona específica por su id.
+     * 
+     * @param id id de la persona a buscar
+     * @return ResponseEntity con la persona encontrada o un mensaje de error si no
+     *         existe
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> findById(@PathVariable int id) {
+        Persona personaOrNull = service.findById(id);
+        return (personaOrNull != null) ? Response.ok(personaOrNull)
+                : Response.notFound("Persona id " + id + " no encontrada");
+    }
+
+    /**
      * Busca una persona específica por su número de DNI.
      * 
      * @param dni Número de DNI de la persona a buscar
      * @return ResponseEntity con la persona encontrada o un mensaje de error si no
      *         existe
      */
-    @GetMapping("/{dni}")
+    @GetMapping("/dni/{dni}")
     public ResponseEntity<Object> findByDni(@PathVariable int dni) {
         Persona personaOrNull = service.findByDni(dni);
         return (personaOrNull != null) ? Response.ok(personaOrNull)
                 : Response.notFound("Persona dni " + dni + " no encontrada");
+    }
+
+    /**
+     * Busca una persona específica por su número de CUIL.
+     * 
+     * @param cuil Número de CUIL de la persona a buscar
+     * @return ResponseEntity con la persona encontrada o un mensaje de error si no
+     *         existe
+     */
+    @GetMapping("/cuil/{cuil}")
+    public ResponseEntity<Object> findByCuil(@PathVariable String cuil) {
+        Persona personaOrNull = service.findByCuil(cuil);
+        return (personaOrNull != null) ? Response.ok(personaOrNull)
+                : Response.notFound("Persona cuil " + cuil + " no encontrada");
     }
 
     /**
@@ -92,7 +120,7 @@ public class PersonaPresenter {
      */
     @PutMapping
     public ResponseEntity<Object> update(@RequestBody Persona aPersona) {
-        Persona existingPersona = service.findByDni(aPersona.getDni());
+        Persona existingPersona = service.findById(aPersona.getId());
         if (existingPersona == null) {
             return Response.notFound("Persona con DNI " + aPersona.getDni() + " no encontrada para actualizar");
         }
@@ -127,15 +155,15 @@ public class PersonaPresenter {
      * Elimina una persona existente según su DNI.
      * Verifica primero si la persona tiene asociaciones con otras entidades.
      * 
-     * @param dni Número de DNI de la persona a eliminar
+     * @param id Número de DNI de la persona a eliminar
      * @return ResponseEntity con un mensaje de éxito si la operación es correcta o
      *         error en caso contrario
      */
-    @DeleteMapping("/{dni}")
-    public ResponseEntity<Object> delete(@PathVariable int dni) {
-        Persona persona = service.findByDni(dni);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> delete(@PathVariable int id) {
+        Persona persona = service.findById(id);
         try {
-            service.delete(dni);
+            service.delete(id);
             // Formatear el mensaje según el formato utilizado en create y update
             String mensaje = String.format("%s %s con DNI %d eliminado/a correctamente",
                     persona.getNombre(),

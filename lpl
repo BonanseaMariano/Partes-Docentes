@@ -37,14 +37,8 @@ case "$1" in
   mvn ) echo "Ejecutando Maven en servidor backend: $2"
     docker exec -t pd-backend mvn $2
     ;;
-  test ) 
-    if [ -z "$2" ]; then
-      echo "Ejecutando todos los tests"
+  test ) echo "Ejecutando todos los tests"
       docker compose run --rm testing
-    else
-      echo "Ejecutando test específico: $2"
-      docker compose run --rm testing npm run $2
-    fi
     ;;
   staging ) echo "Cargando staging $2"
     cat ./staging/$2.sql | docker exec -i pd-database psql -q -U APP -d labprog

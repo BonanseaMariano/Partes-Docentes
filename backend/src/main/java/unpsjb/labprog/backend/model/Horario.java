@@ -26,7 +26,7 @@ public class Horario {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
     /**
      * Día de la semana del horario

@@ -11,7 +11,7 @@ import unpsjb.labprog.backend.model.Division;
  * Repositorio para la entidad Division
  * Proporciona métodos para acceder y manipular los datos de las divisiones
  */
-public interface DivisionRepository extends JpaRepository<Division, Long> {
+public interface DivisionRepository extends JpaRepository<Division, Integer> {
 
     /**
      * Busca una división por su orientación

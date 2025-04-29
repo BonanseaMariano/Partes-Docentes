@@ -1,8 +1,15 @@
 import { Designacion } from './designacion';
 
 export interface Persona {
+
     /**
-     * DNI de la persona, es su identificador
+     * Identificador de la persona
+     * 
+    */
+    id: number;
+
+    /**
+     * DNI de la persona, es único y no nulo
      */
     dni: number;
 

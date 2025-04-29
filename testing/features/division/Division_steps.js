@@ -33,7 +33,7 @@ Given(
     function (anio, numero, orientacion, turno) {
         // Usar el mapa de turnos para asegurar valores correctos
         const turnoFormateado = turnoMap[turno] || turno;
-        
+
         this.currentDivision = {
             anio: anio,
             numDivision: numero,

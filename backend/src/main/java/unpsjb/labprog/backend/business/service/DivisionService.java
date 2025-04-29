@@ -28,7 +28,7 @@ public class DivisionService {
      * @param id ID de la división a buscar
      * @return División encontrada o null si no existe
      */
-    public Division findById(Long id) {
+    public Division findById(int id) {
         return repository.findById(id).orElse(null);
     }
 
@@ -58,7 +58,7 @@ public class DivisionService {
      * @param id ID de la división a eliminar
      */
     @Transactional
-    public void delete(Long id) {
+    public void delete(int id) {
         repository.deleteById(id);
     }
 
