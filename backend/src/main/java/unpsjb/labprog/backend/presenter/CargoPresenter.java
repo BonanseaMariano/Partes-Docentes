@@ -17,6 +17,7 @@ import unpsjb.labprog.backend.Response;
 import unpsjb.labprog.backend.business.service.CargoService;
 import unpsjb.labprog.backend.exception.BusinessLogicException;
 import unpsjb.labprog.backend.model.Cargo;
+import unpsjb.labprog.backend.model.enums.TipoDesignacion;
 
 /**
  * Controlador REST para la gestión de cargos en el sistema educativo.
@@ -71,25 +72,35 @@ public class CargoPresenter {
     @PostMapping
     public ResponseEntity<Object> create(@RequestBody Cargo aCargo) {
         try {
-            Cargo savedCargo = service.save(aCargo);
+            // Verificar explícitamente la regla de negocio para cargos con división
+            if (aCargo.getTipoDesignacion() == TipoDesignacion.CARGO && aCargo.getDivision() != null) {
+                return Response.notImplemented(
+                        String.format("Cargo de %s es CARGO y no corresponde asignar división", aCargo.getNombre()));
+            }
+            // Verificar explícitamente la regla de negocio para espacios curriculares sin división
+            if (aCargo.getTipoDesignacion() == TipoDesignacion.ESPACIO_CURRICULAR && aCargo.getDivision() == null) {
+                return Response.notImplemented(
+                        String.format("Espacio Curricular %s falta asignar división", aCargo.getNombre()));
+            }
+
+            Cargo createdCargo = service.save(aCargo);
 
             // Generar mensaje según el tipo de designación
             String mensaje;
-            if (savedCargo
-                    .getTipoDesignacion() == unpsjb.labprog.backend.model.enums.TipoDesignacion.ESPACIO_CURRICULAR) {
+            if (createdCargo.getTipoDesignacion() == TipoDesignacion.ESPACIO_CURRICULAR) {
                 // Para espacios curriculares, incluir la información de la división
                 mensaje = String.format(
                         "Espacio Curricular %s para la división %dº %dº Turno %s ingresado correctamente",
-                        savedCargo.getNombre(),
-                        savedCargo.getDivision().getAnio(),
-                        savedCargo.getDivision().getNumDivision(),
-                        savedCargo.getDivision().getTurno().getValor());
+                        createdCargo.getNombre(),
+                        createdCargo.getDivision().getAnio(),
+                        createdCargo.getDivision().getNumDivision(),
+                        createdCargo.getDivision().getTurno().getValor());
             } else {
                 // Para cargos normales
-                mensaje = String.format("Cargo de %s ingresado correctamente", savedCargo.getNombre());
+                mensaje = String.format("Cargo de %s ingresado correctamente", createdCargo.getNombre());
             }
 
-            return Response.ok(mensaje);
+            return Response.ok(createdCargo, mensaje);
         } catch (BusinessLogicException e) {
             // Capturar excepciones de validación de negocio y devolver error 501
             return Response.notImplemented(e.getMessage());
@@ -114,32 +125,30 @@ public class CargoPresenter {
         }
 
         try {
-            Cargo savedCargo = service.save(aCargo);
+            Cargo updatedCargo = service.save(aCargo);
 
             // Generar mensaje según el tipo de designación
             String mensaje;
-            if (savedCargo
+            if (updatedCargo
                     .getTipoDesignacion() == unpsjb.labprog.backend.model.enums.TipoDesignacion.ESPACIO_CURRICULAR) {
                 // Para espacios curriculares, incluir la información de la división
                 mensaje = String.format(
                         "Espacio Curricular %s para la división %dº %dº Turno %s actualizado correctamente",
-                        savedCargo.getNombre(),
-                        savedCargo.getDivision().getAnio(),
-                        savedCargo.getDivision().getNumDivision(),
-                        savedCargo.getDivision().getTurno().getValor());
+                        updatedCargo.getNombre(),
+                        updatedCargo.getDivision().getAnio(),
+                        updatedCargo.getDivision().getNumDivision(),
+                        updatedCargo.getDivision().getTurno().getValor());
             } else {
                 // Para cargos normales
-                mensaje = String.format("Cargo de %s actualizado correctamente", savedCargo.getNombre());
+                mensaje = String.format("Cargo de %s actualizado correctamente", updatedCargo.getNombre());
             }
 
-            return Response.ok(mensaje);
+            return Response.ok(updatedCargo, mensaje);
         } catch (BusinessLogicException e) {
             // Capturar excepciones de validación de negocio y devolver error 501
             return Response.notImplemented(e.getMessage());
         } catch (DataIntegrityViolationException e) {
             return Response.dbError("No se puede actualizar el cargo debido a que ya existe otro identico");
-        } catch (Exception e) {
-            return Response.error(null, "Error al actualizar el cargo: " + e.getMessage());
         }
     }
 
@@ -152,14 +161,14 @@ public class CargoPresenter {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> delete(@PathVariable Integer id) {
-        Cargo existingCargo = service.findById(id);
+        Cargo deletedCargo = service.findById(id);
         try {
             service.delete(id);
 
             String mensaje = String.format("Cargo %s %s eliminado correctamente",
-                    existingCargo.getTipoDesignacion().getValor(),
-                    existingCargo.getNombre());
-            return Response.ok(mensaje);
+                    deletedCargo.getTipoDesignacion().getValor(),
+                    deletedCargo.getNombre());
+            return Response.ok(deletedCargo, mensaje);
         } catch (Exception e) {
             return Response.dbError("No se puede eliminar el cargo debido a dependencias existentes");
         }

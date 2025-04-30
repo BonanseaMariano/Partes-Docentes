@@ -70,14 +70,14 @@ public class DivisionPresenter {
     @PostMapping
     public ResponseEntity<Object> create(@RequestBody Division aDivision) {
         try {
-            Division savedDivision = service.save(aDivision);
+            Division createdDivision = service.save(aDivision);
             // Formatear el mensaje para la respuesta según Division.feature
             String mensaje = String.format("División %dº %dº turno %s ingresada correctamente",
-                    savedDivision.getAnio(),
-                    savedDivision.getNumDivision(),
-                    savedDivision.getTurno().getValor());
+                    createdDivision.getAnio(),
+                    createdDivision.getNumDivision(),
+                    createdDivision.getTurno().getValor());
 
-            return Response.ok(mensaje);
+            return Response.ok(createdDivision, mensaje);
         } catch (DataIntegrityViolationException e) {
             return Response.dbError("No se puede crear la división debido a que ya existe otra idéntica");
         }
@@ -106,7 +106,7 @@ public class DivisionPresenter {
                     updatedDivision.getNumDivision(),
                     updatedDivision.getTurno().getValor());
 
-            return Response.ok(mensaje);
+            return Response.ok(updatedDivision, mensaje);
         } catch (DataIntegrityViolationException e) {
             return Response.dbError("No se puede actualizar la división debido a que ya existe otra idéntica");
         }
@@ -121,14 +121,14 @@ public class DivisionPresenter {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> delete(@PathVariable int id) {
-        Division existingDivision = service.findById(id);
+        Division deletedDivision = service.findById(id);
         try {
             service.delete(id);
             String mensaje = String.format("División %dº %dº turno %s eliminada correctamente",
-                    existingDivision.getAnio(),
-                    existingDivision.getNumDivision(),
-                    existingDivision.getTurno().getValor());
-            return Response.ok(mensaje);
+                    deletedDivision.getAnio(),
+                    deletedDivision.getNumDivision(),
+                    deletedDivision.getTurno().getValor());
+            return Response.ok(deletedDivision, mensaje);
         } catch (Exception e) {
             return Response.dbError("No se puede eliminar la división debido a dependencias existentes");
         }

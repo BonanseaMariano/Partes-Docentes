@@ -98,14 +98,14 @@ public class PersonaPresenter {
     @PostMapping
     public ResponseEntity<Object> create(@RequestBody Persona aPersona) {
         try {
-            Persona savedPersona = service.save(aPersona);
+            Persona createdPersona = service.save(aPersona);
             // Formatear el mensaje según lo requerido en Persona.feature
             String mensaje = String.format("%s %s con DNI %d ingresado/a correctamente",
-                    savedPersona.getNombre(),
-                    savedPersona.getApellido(),
-                    savedPersona.getDni());
+                    createdPersona.getNombre(),
+                    createdPersona.getApellido(),
+                    createdPersona.getDni());
 
-            return Response.ok(mensaje);
+            return Response.ok(createdPersona, mensaje);
         } catch (DataIntegrityViolationException e) {
             return Response.dbError("No se puede utilizar ese dni porque ya existe otra persona con el mismo");
         }
@@ -132,7 +132,7 @@ public class PersonaPresenter {
                     updatedPersona.getNombre(),
                     updatedPersona.getApellido(),
                     updatedPersona.getDni());
-            return Response.ok(mensaje);
+            return Response.ok(updatedPersona, mensaje);
         } catch (DataIntegrityViolationException e) {
             return Response.dbError("No se puede utilizar ese DNI porque ya existe otra obra con el mismo");
         }
@@ -161,23 +161,23 @@ public class PersonaPresenter {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> delete(@PathVariable int id) {
-        Persona persona = service.findById(id);
+        Persona deletedPersona = service.findById(id);
         try {
             service.delete(id);
             // Formatear el mensaje según el formato utilizado en create y update
             String mensaje = String.format("%s %s con DNI %d eliminado/a correctamente",
-                    persona.getNombre(),
-                    persona.getApellido(),
-                    persona.getDni());
-            return Response.ok(mensaje);
+                    deletedPersona.getNombre(),
+                    deletedPersona.getApellido(),
+                    deletedPersona.getDni());
+            return Response.ok(deletedPersona, mensaje);
         } catch (DataIntegrityViolationException e) {
             return Response
                     .dbError(
                             String.format(
                                     "No se puede eliminar a %s %s con DNI %d porque está asociado/a a designaciones y/o licencias",
-                                    persona.getNombre(),
-                                    persona.getApellido(),
-                                    persona.getDni()));
+                                    deletedPersona.getNombre(),
+                                    deletedPersona.getApellido(),
+                                    deletedPersona.getDni()));
         }
     }
 }

@@ -99,7 +99,10 @@ public class CargoService {
         }
         // Validaciones para CARGO
         else if (TipoDesignacion.CARGO.equals(cargo.getTipoDesignacion())) {
+            // Verificamos más estrictamente si hay una división asignada
+            // Puede venir como un objeto parcialmente inicializado desde el cliente
             if (cargo.getDivision() != null) {
+                // Si está el campo division asignado, no importa si tiene ID o no, es un error
                 throw new BusinessLogicException(
                         "Cargo de " + cargo.getNombre() + " es CARGO y no corresponde asignar división");
             }

@@ -61,14 +61,10 @@ Given('que tiene una carga horaria de {int} horas, con vigencia desde {string} h
 
 // Paso: Y que si el tipo es "ESPACIO CURRICULAR", opcionalmente se asigna a la división "<año>" "<número>" "<turno>"
 Given('que si el tipo es {string}, opcionalmente se asigna a la división {string} {string} {string}', function (tipo, anio, numero, turno) {
-    // Usamos el tipo original de la característica para comparar
-    const tipoOriginal = tipo;
-    
-    // Convertimos el turno si es necesario
-    const turnoFormateado = turnoMap[turno] || turno;
-
-    // Solo guardamos la info de división si es un espacio curricular y se han proporcionado los datos
-    if (this.currentCargo.tipoDesignacion === tipoDesignacionMap[tipoOriginal] && anio && numero && turno && anio !== '' && numero !== '' && turno !== '') {
+    // Guarda la información de división siempre que se hayan proporcionado los datos,
+    // independientemente del tipo de cargo (para que se active la validación correctamente)
+    if (anio && numero && turno && anio !== '' && numero !== '' && turno !== '') {
+        const turnoFormateado = turnoMap[turno] || turno;
         this.divisionInfo = {
             anio: parseInt(anio),
             numero: parseInt(numero),
@@ -148,13 +144,27 @@ When('se presiona el botón de guardar', function () {
             }
         } else if (this.divisionInfo) {
             // Para cargos no ESPACIO_CURRICULAR con división asignada (como Auxiliar ACAD)
-            // creamos un objeto división básico para que la validación falle como se espera
-            this.currentCargo.division = {
-                anio: this.divisionInfo.anio,
-                numDivision: this.divisionInfo.numero,
-                turno: this.divisionInfo.turno,
-                orientacion: "General"
-            };
+            // Buscamos una división real para que la validación falle como se espera
+            const division = buscarOCrearDivision(
+                this.divisionInfo.anio,
+                this.divisionInfo.numero,
+                this.divisionInfo.turno
+            );
+
+            if (division) {
+                // Asignamos la división real encontrada o creada al cargo
+                this.currentCargo.division = division;
+                console.log('Asignando división a cargo tipo no-ESPACIO_CURRICULAR:', JSON.stringify(this.currentCargo.division));
+            } else {
+                // Si no se puede encontrar o crear, usamos un objeto básico
+                this.currentCargo.division = {
+                    anio: this.divisionInfo.anio,
+                    numDivision: this.divisionInfo.numero,
+                    turno: this.divisionInfo.turno,
+                    orientacion: "General"
+                };
+                console.log('No se encontró división, usando objeto básico:', JSON.stringify(this.currentCargo.division));
+            }
         }
 
         // Enviamos la solicitud para crear el cargo
