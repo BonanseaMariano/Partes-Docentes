@@ -1,5 +1,4 @@
 export enum TipoDesignacion {
-    TITULAR = 'TITULAR',
-    SUPLENTE = 'SUPLENTE',
-    INTERINO = 'INTERINO'
+    CARGO = 'Cargo',
+    ESPACIO_CURRICULAR = 'Espacio Curricular',
 }

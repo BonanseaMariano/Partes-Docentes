@@ -38,7 +38,7 @@ public class Licencia {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
     /**
      * Fecha y hora de la solicitud de la licencia

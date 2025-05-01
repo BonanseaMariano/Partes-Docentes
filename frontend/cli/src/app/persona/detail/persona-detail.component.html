@@ -1,104 +1,130 @@
-<div *ngIf="persona">
-    <div class="d-flex justify-content-between mb-4">
-        <h2>{{ tituloFormulario }}</h2>
-        <div>
-            <button (click)="save()" class="btn btn-success me-2" [disabled]="form.invalid">
-                Guardar
-            </button>
-            <button (click)="goBack()" class="btn btn-secondary">
-                Cancelar
-            </button>
-        </div>
+<div *ngIf="persona" class="card shadow-sm mb-4">
+    <div class="card-header bg-light">
+        <h2 class="mb-0"><i class="fa fa-user me-2"></i>{{ tituloFormulario }}</h2>
     </div>
 
-    <form #form="ngForm" class="row g-3">
-        <!-- Primera fila: Nombre y Apellido -->
-        <div class="col-md-6 mb-3">
-            <div class="input-group">
-                <span class="input-group-text bg-secondary text-white">Nombre</span>
-                <input name="nombre" placeholder="Nombre" class="form-control" [(ngModel)]="persona.nombre" required
-                    #nombre="ngModel" />
-            </div>
-            <div *ngIf="nombre.invalid && (nombre.dirty || nombre.touched)" class="text-danger small">
-                <div *ngIf="nombre.errors?.['required']">
-                    El nombre es requerido
+    <div class="card-body">
+        <form #form="ngForm" class="row g-3">
+            <!-- Primera fila: Nombre y Apellido -->
+            <div class="col-md-6 mb-3">
+                <label for="nombre" class="form-label text-primary fw-bold">Nombre</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-primary text-white">
+                        <i class="fa fa-user"></i>
+                    </span>
+                    <input id="nombre" name="nombre" placeholder="Ingrese nombre" class="form-control"
+                        [(ngModel)]="persona.nombre" required #nombre="ngModel" />
+                </div>
+                <div *ngIf="nombre.invalid && (nombre.dirty || nombre.touched)" class="text-danger small mt-1">
+                    <i class="fa fa-exclamation-circle me-1"></i>El nombre es requerido
                 </div>
             </div>
-        </div>
 
-        <div class="col-md-6 mb-3">
-            <div class="input-group">
-                <span class="input-group-text bg-secondary text-white">Apellido</span>
-                <input name="apellido" placeholder="Apellido" class="form-control" [(ngModel)]="persona.apellido"
-                    required #apellido="ngModel" />
-            </div>
-            <div *ngIf="apellido.invalid && (apellido.dirty || apellido.touched)" class="text-danger small">
-                <div *ngIf="apellido.errors?.['required']">
-                    El apellido es requerido
+            <div class="col-md-6 mb-3">
+                <label for="apellido" class="form-label text-primary fw-bold">Apellido</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-primary text-white">
+                        <i class="fa fa-user"></i>
+                    </span>
+                    <input id="apellido" name="apellido" placeholder="Ingrese apellido" class="form-control"
+                        [(ngModel)]="persona.apellido" required #apellido="ngModel" />
+                </div>
+                <div *ngIf="apellido.invalid && (apellido.dirty || apellido.touched)" class="text-danger small mt-1">
+                    <i class="fa fa-exclamation-circle me-1"></i>El apellido es requerido
                 </div>
             </div>
-        </div>
 
-        <!-- Segunda fila: DNI y CUIT -->
-        <div class="col-md-6 mb-3">
-            <div class="input-group">
-                <span class="input-group-text bg-secondary text-white">DNI</span>
-                <input name="dni" type="number" placeholder="DNI" class="form-control" [(ngModel)]="persona.dni" required
-                    #dni="ngModel" />
-            </div>
-            <div *ngIf="dni.invalid && (dni.dirty || dni.touched)" class="text-danger small">
-                <div *ngIf="dni.errors?.['required']">
-                    El DNI es requerido
+            <!-- Segunda fila: DNI y CUIL -->
+            <div class="col-md-6 mb-3">
+                <label for="dni" class="form-label text-primary fw-bold">DNI</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-primary text-white">
+                        <i class="fa fa-id-card"></i>
+                    </span>
+                    <input id="dni" name="dni" type="text" placeholder="Ingrese DNI" class="form-control"
+                        oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length > 8) this.value = this.value.slice(0,8);"
+                        [(ngModel)]="persona.dni" required #dni="ngModel" />
+                </div>
+                <div *ngIf="dni.invalid && (dni.dirty || dni.touched)" class="text-danger small mt-1">
+                    <i class="fa fa-exclamation-circle me-1"></i>
+                    <span *ngIf="dni.errors?.['required']">El DNI es requerido</span>
                 </div>
             </div>
-        </div>
 
-        <div class="col-md-6 mb-3">
-            <div class="input-group">
-                <span class="input-group-text bg-secondary text-white">CUIT</span>
-                <input name="cuil" placeholder="CUIT" class="form-control" [(ngModel)]="persona.cuil" required
-                    #cuil="ngModel" />
-            </div>
-            <div *ngIf="cuil.invalid && (cuil.dirty || cuil.touched)" class="text-danger small">
-                <div *ngIf="cuil.errors?.['required']">
-                    El CUIT es requerido
+            <div class="col-md-6 mb-3">
+                <label for="cuil" class="form-label text-primary fw-bold">CUIL</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-primary text-white">
+                        <i class="fa fa-address-card"></i>
+                    </span>
+                    <input id="cuil" name="cuil" type="text" placeholder="Ingrese CUIL" class="form-control"
+                        oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length > 11) this.value = this.value.slice(0,11);"
+                        [(ngModel)]="persona.cuil" required #cuil="ngModel" />
+                </div>
+                <div *ngIf="cuil.invalid && (cuil.dirty || cuil.touched)" class="text-danger small mt-1">
+                    <i class="fa fa-exclamation-circle me-1"></i>
+                    <span *ngIf="cuil.errors?.['required']">El CUIL es requerido</span>
                 </div>
             </div>
-        </div>
 
-        <!-- Tercera fila: Sexo y Título -->
-        <div class="col-md-6 mb-3">
-            <div class="input-group">
-                <span class="input-group-text bg-secondary text-white">Sexo</span>
-                <select name="sexo" class="form-select" [(ngModel)]="persona.sexo">
-                    <option value="">Sexo</option>
-                    <option value="M">Masculino</option>
-                    <option value="F">Femenino</option>
-                    <option value="O">Otro</option>
-                </select>
+            <!-- Tercera fila: Sexo y Título -->
+            <div class="col-md-6 mb-3">
+                <label for="sexo" class="form-label text-primary fw-bold">Sexo</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-primary text-white">
+                        <i class="fa fa-venus-mars"></i>
+                    </span>
+                    <select id="sexo" name="sexo" class="form-select" [(ngModel)]="persona.sexo">
+                        <option value="">Seleccione sexo</option>
+                        <option value="M">Masculino</option>
+                        <option value="F">Femenino</option>
+                        <option value="O">Otro</option>
+                    </select>
+                </div>
             </div>
-        </div>
 
-        <div class="col-md-6 mb-3">
-            <div class="input-group">
-                <span class="input-group-text bg-secondary text-white">Título</span>
-                <input name="titulo" placeholder="Título" class="form-control" [(ngModel)]="persona.titulo" />
+            <div class="col-md-6 mb-3">
+                <label for="titulo" class="form-label text-primary fw-bold">Título</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-primary text-white">
+                        <i class="fa fa-graduation-cap"></i>
+                    </span>
+                    <input id="titulo" name="titulo" placeholder="Ingrese título académico" class="form-control"
+                        [(ngModel)]="persona.titulo" />
+                </div>
             </div>
-        </div>
 
-        <!-- Cuarta fila: Domicilio y Teléfono -->
-        <div class="col-md-6 mb-3">
-            <div class="input-group">
-                <span class="input-group-text bg-secondary text-white">Domicilio</span>
-                <input name="domicilio" placeholder="Domicilio" class="form-control" [(ngModel)]="persona.domicilio" />
+            <!-- Cuarta fila: Domicilio y Teléfono -->
+            <div class="col-md-6 mb-3">
+                <label for="domicilio" class="form-label text-primary fw-bold">Domicilio</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-primary text-white">
+                        <i class="fa fa-home"></i>
+                    </span>
+                    <input id="domicilio" name="domicilio" placeholder="Ingrese domicilio" class="form-control"
+                        [(ngModel)]="persona.domicilio" />
+                </div>
             </div>
-        </div>
 
-        <div class="col-md-6 mb-3">
-            <div class="input-group">
-                <span class="input-group-text bg-secondary text-white">Teléfono</span>
-                <input name="telefono" placeholder="Teléfono" class="form-control" [(ngModel)]="persona.telefono" />
+            <div class="col-md-6 mb-3">
+                <label for="telefono" class="form-label text-primary fw-bold">Teléfono</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-primary text-white">
+                        <i class="fa fa-phone"></i>
+                    </span>
+                    <input id="telefono" name="telefono" placeholder="Ingrese teléfono" class="form-control"
+                        [(ngModel)]="persona.telefono" />
+                </div>
             </div>
-        </div>
-    </form>
+        </form>
+    </div>
+
+    <div class="card-footer bg-light text-end">
+        <button (click)="goBack()" class="btn btn-outline-secondary me-2">
+            <i class="fa fa-arrow-left me-1"></i>Volver
+        </button>
+        <button (click)="save()" class="btn btn-success" [disabled]="form.invalid">
+            <i class="fa fa-save me-1"></i>Guardar
+        </button>
+    </div>
 </div>

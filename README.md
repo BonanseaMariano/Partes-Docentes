@@ -31,7 +31,7 @@
   - [Validaciones y Restricciones](#validaciones-y-restricciones)
 - [Bitácora de Desarrollo](#bitácora-de-desarrollo)
   - [Sprint 1: Configuración del Entorno (19/04/2025 - 25/04/2025)](#sprint-1-configuración-del-entorno-19042025---25042025)
-  - [Sprint 2: Nueva Persona y Nueva División (26/04/2025 - 30/05/2025)](#sprint-2-nueva-persona-y-nueva-división-26042025---30052025)
+  - [Sprint 2: Nueva Persona y Nueva División (26/04/2025 - 09/06/2025)](#sprint-2-nueva-persona-y-nueva-división-26042025---09062025)
 - [Referencias](#referencias)
 
 ## Introducción
@@ -180,12 +180,12 @@ El desarrollo del proyecto se organizó en sprints semanales:
 - **🛑 Desafíos encontrados:**
   - 🛑 Problemas al configurar el contenedor de testing - *🔧 Solución: Actualizar la version de cucumber a @Cucumber/cucumber (la ultima version con soporte)*.  
 
-### Sprint 2: Nueva Persona y Nueva División (26/04/2025 - 30/05/2025)
+### Sprint 2: Nueva Persona y Nueva División (26/04/2025 - 09/06/2025)
 - **⏳ Planificación:**
-  - ⏳ Ampliar test de persona para incluir las operaciones de CRUD restantes.
-  - ⏳ Mejorar la interfaz grafica de la lista de personas.
-  - ⏳ Implementar la funcionalidad de editar y eliminar personas (frontend).
-  - ⏳ Desarrollar la segunda tarjeta "Nueva División" completa.
+  - ⏳ CRUDs completos
+  - ⏳ Nueva División
+  - ⏳ Nueva Cargo institucional
+  - ⏳ Mejorar tests
 
 - **✅ Avance:**
   

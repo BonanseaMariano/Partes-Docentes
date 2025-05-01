@@ -16,7 +16,7 @@ export interface Cargo {
     /**
      * Carga horaria semanal asignada al cargo en horas.
      */
-    cargaHoraria?: number;
+    cargaHoraria: number;
 
     /**
      * Fecha de inicio de vigencia del cargo.
@@ -26,7 +26,7 @@ export interface Cargo {
     /**
      * Fecha de finalización de vigencia del cargo.
      */
-    fechaFin: Date;
+    fechaFin?: Date;
 
     /**
      * Tipo de designación del cargo (ej. suplente, titular, interino).

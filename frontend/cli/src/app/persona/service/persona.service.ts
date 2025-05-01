@@ -16,18 +16,18 @@ export class PersonaService {
     return this.http.get<DataPackage>(this.personasUrl);
   }
 
-  get(dni: number): Observable<DataPackage> {
-    return this.http.get<DataPackage>(`${this.personasUrl}/${dni}`);
+  get(id: number): Observable<DataPackage> {
+    return this.http.get<DataPackage>(`${this.personasUrl}/${id}`);
   }
 
-  save(persona: Persona): Observable<DataPackage> {
-    return persona.dni
-      ? this.http.put<DataPackage>(this.personasUrl, persona)
-      : this.http.post<DataPackage>(this.personasUrl, persona);
+  save(persona: Persona, isNew: boolean = false): Observable<DataPackage> {
+    return isNew
+      ? this.http.post<DataPackage>(this.personasUrl, persona)
+      : this.http.put<DataPackage>(this.personasUrl, persona);
   }
 
-  remove(dni: number): Observable<DataPackage> {
-    return this.http.delete<DataPackage>(`${this.personasUrl}/${dni}`);
+  remove(id: number): Observable<DataPackage> {
+    return this.http.delete<DataPackage>(`${this.personasUrl}/${id}`);
   }
 
   byPage(page: number, size: number): Observable<DataPackage> {

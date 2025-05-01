@@ -1,20 +1,44 @@
-<nav aria-label="Page navigation">
-    <ul class="pagination pagination-centered">
-        <li class="page-item">
-            <a class="page-link" (click)="onPageChange(-2)">&laquo;</a>
-        </li>
-        <li class="page-item">
-            <a class="page-link" (click)="onPageChange(-1)">&lsaquo;</a>
-        </li>
-        <li *ngFor="let t of pages" [ngClass]="{ active: t === number ? 'active' : '' }">
-            <a class="page-link" (click)="onPageChange(t + 1)">{{ t + 1 }}</a>
-        </li>
+<nav aria-label="Navegación de páginas">
+    <div class="d-flex justify-content-center">
+        <ul class="pagination pagination-sm">
+            <!-- Botón de primera página -->
+            <li class="page-item" [ngClass]="{'disabled': currentPage === 1}">
+                <button class="page-link" (click)="onPageChange(-2)" aria-label="Primera página">
+                    <span aria-hidden="true"><i class="fa fa-angle-double-left"></i></span>
+                </button>
+            </li>
+            
+            <!-- Botón anterior -->
+            <li class="page-item" [ngClass]="{'disabled': currentPage === 1}">
+                <button class="page-link" (click)="onPageChange(-1)" aria-label="Anterior">
+                    <span aria-hidden="true"><i class="fa fa-angle-left"></i></span>
+                </button>
+            </li>
+            
+            <!-- Números de página -->
+            <ng-container *ngFor="let t of pages; let i = index">
+                <li class="page-item" [ngClass]="{'active': i === number}">
+                    <button class="page-link" (click)="onPageChange(i + 1)">{{ i + 1 }}</button>
+                </li>
+            </ng-container>
 
-        <li class="page-item">
-            <a class="page-link" (click)="onPageChange(-3)">&rsaquo;</a>
-        </li>
-        <li class="page-item">
-            <a class="page-link" (click)="onPageChange(-4)">&raquo;</a>
-        </li>
-    </ul>
+            <!-- Botón siguiente -->
+            <li class="page-item" [ngClass]="{'disabled': currentPage === totalPages}">
+                <button class="page-link" (click)="onPageChange(-3)" aria-label="Siguiente">
+                    <span aria-hidden="true"><i class="fa fa-angle-right"></i></span>
+                </button>
+            </li>
+            
+            <!-- Botón de última página -->
+            <li class="page-item" [ngClass]="{'disabled': currentPage === totalPages}">
+                <button class="page-link" (click)="onPageChange(-4)" aria-label="Última página">
+                    <span aria-hidden="true"><i class="fa fa-angle-double-right"></i></span>
+                </button>
+            </li>
+        </ul>
+    </div>
+    
+    <div class="text-center text-muted mt-2 small">
+        <span>Página {{ currentPage }} de {{ totalPages || 1 }}</span>
+    </div>
 </nav>

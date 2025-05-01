@@ -1,11 +1,24 @@
 package unpsjb.labprog.backend.model.enums;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 /**
  * Enum que representa los turnos posibles para una division
  */
 public enum Turno {
-    Mañana,
-    Tarde,
-    Vespertino,
-    Noche;
+    MANIANA("Mañana"),
+    TARDE("Tarde"),
+    VESPERTINO("Vespertino"),
+    NOCHE("Noche");
+
+    private final String valor;
+
+    Turno(String valor) {
+        this.valor = valor;
+    }
+
+    @JsonValue
+    public String getValor() {
+        return valor;
+    }
 }

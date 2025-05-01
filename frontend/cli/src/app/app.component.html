@@ -21,13 +21,13 @@
 
                 <!-- Dropdown para Personal -->
                 <li class="nav-item" ngbDropdown>
-                    <button class="btn nav-link border-0 bg-transparent" ngbDropdownToggle id="personalDropdown"
+                    <button class="btn nav-link border-0 bg-transparent" ngbDropdownToggle id="personasDropdown"
                         aria-expanded="false">
-                        <i class="fa fa-users me-1"></i> Personal
+                        <i class="fa fa-users me-1"></i> Personas
                     </button>
-                    <ul ngbDropdownMenu aria-labelledby="personalDropdown">
+                    <ul ngbDropdownMenu aria-labelledby="personasDropdown">
                         <li><a ngbDropdownItem href="personas"><i class="fa fa-list me-1"></i> Listar</a></li>
-                        <li><a ngbDropdownItem href="personas/new"><i class="fa fa-plus me-1"></i> Nuevo</a></li>
+                        <li><a ngbDropdownItem href="personas/new"><i class="fa fa-plus me-1"></i> Nueva</a></li>
                     </ul>
                 </li>
 
@@ -35,11 +35,11 @@
                 <li class="nav-item" ngbDropdown>
                     <button class="btn nav-link border-0 bg-transparent" ngbDropdownToggle id="divisionesDropdown"
                         aria-expanded="false">
-                        <i class="fa fa-building me-1"></i> Divisiones
+                        <i class="fa fa-layer-group me-1"></i> Divisiones
                     </button>
                     <ul ngbDropdownMenu aria-labelledby="divisionesDropdown">
-                        <li><a ngbDropdownItem href="#"><i class="fa fa-list me-1"></i> Listar</a></li>
-                        <li><a ngbDropdownItem href="#"><i class="fa fa-plus me-1"></i> Nuevo</a></li>
+                        <li><a ngbDropdownItem href="divisiones"><i class="fa fa-list me-1"></i> Listar</a></li>
+                        <li><a ngbDropdownItem href="divisiones/new"><i class="fa fa-plus me-1"></i> Nueva</a></li>
                     </ul>
                 </li>
 
@@ -50,8 +50,8 @@
                         <i class="fa fa-briefcase me-1"></i> Cargos
                     </button>
                     <ul ngbDropdownMenu aria-labelledby="cargosDropdown">
-                        <li><a ngbDropdownItem href="#"><i class="fa fa-list me-1"></i> Listar</a></li>
-                        <li><a ngbDropdownItem href="#"><i class="fa fa-plus me-1"></i> Nuevo</a></li>
+                        <li><a ngbDropdownItem href="cargos"><i class="fa fa-list me-1"></i> Listar</a></li>
+                        <li><a ngbDropdownItem href="cargos/new"><i class="fa fa-plus me-1"></i> Nuevo</a></li>
                     </ul>
                 </li>
 
@@ -59,11 +59,11 @@
                 <li class="nav-item" ngbDropdown>
                     <button class="btn nav-link border-0 bg-transparent" ngbDropdownToggle id="designacionesDropdown"
                         aria-expanded="false">
-                        <i class="fa fa-id-card me-1"></i> Designaciones
+                        <i class="fa fa-user-plus me-1"></i> Designaciones
                     </button>
                     <ul ngbDropdownMenu aria-labelledby="designacionesDropdown">
                         <li><a ngbDropdownItem href="#"><i class="fa fa-list me-1"></i> Listar</a></li>
-                        <li><a ngbDropdownItem href="#"><i class="fa fa-plus me-1"></i> Nuevo</a></li>
+                        <li><a ngbDropdownItem href="#"><i class="fa fa-plus me-1"></i> Nueva</a></li>
                     </ul>
                 </li>
 
@@ -71,12 +71,13 @@
                 <li class="nav-item" ngbDropdown>
                     <button class="btn nav-link border-0 bg-transparent" ngbDropdownToggle id="licenciasDropdown"
                         aria-expanded="false">
-                        <i class="fa-solid fa-calendar-xmark me-1"></i> Licencias
+                        <i class="fa-solid fa-calendar-times me-1"></i> Licencias
                     </button>
                     <ul ngbDropdownMenu aria-labelledby="licenciasDropdown">
                         <li><a ngbDropdownItem href="#"><i class="fa fa-list me-1"></i> Listar</a></li>
-                        <li><a ngbDropdownItem href="#"><i class="fa fa-plus me-1"></i> Nuevo</a></li>
-                        <li><a ngbDropdownItem href="#"><i class="fa-solid fa-file-lines me-1"></i> ParteDiario</a></li>
+                        <li><a ngbDropdownItem href="#"><i class="fa fa-plus me-1"></i> Nueva</a></li>
+                        <li><a ngbDropdownItem href="#"><i class="fa-solid fa-clipboard-list me-1"></i> ParteDiario</a>
+                        </li>
                     </ul>
                 </li>
             </ul>

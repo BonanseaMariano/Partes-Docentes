@@ -1,17 +1,25 @@
 const assert = require('assert');
-const { Given, When, Then } = require('@cucumber/cucumber');
+const { Given, When } = require('@cucumber/cucumber');
 const request = require('sync-request');
 
-// Variables compartidas
-let currentPersona = {};
-let apiResponse = {};
+// Importamos los pasos compartidos
+require('../common/common_steps');
+
+// Variables compartidas que se usarán en el contexto
+function PersonaWorld() {
+    this.currentPersona = {};
+    this.apiResponse = {}; // Esta variable será usada por common_steps.js
+}
+
+// Configuramos el mundo (contexto) para cada escenario
+const { setWorldConstructor } = require('@cucumber/cucumber');
+setWorldConstructor(PersonaWorld);
 
 // Paso: Dada la persona con <nombre> <apellido> <DNI> <CUIL> <sexo> <título> <domicilio> <teléfono>
 Given(
     'la persona con {word} {word} {int} {word} {word} {string} {string} {string}',
     function (nombre, apellido, dni, cuil, sexo, titulo, domicilio, telefono) {
-        // Corregido: los parámetros ahora coinciden con su uso
-        currentPersona = {
+        this.currentPersona = {
             dni: dni,
             nombre: nombre,
             apellido: apellido,
@@ -21,27 +29,18 @@ Given(
             domicilio: domicilio,
             telefono: telefono
         };
+
+        // Limpiamos cualquier respuesta anterior
+        this.apiResponse = {};
     }
 );
 
-// Paso: Cuando se presiona el botón de guardar
-When('se presiona el botón de guardar', function () {
-    try {
-        const res = request('POST', 'http://pd-backend:8080/personas', {
-            json: currentPersona
-        });
-        apiResponse = JSON.parse(res.getBody('utf8'));
-    } catch (error) {
-        console.error('Error al hacer la solicitud:', error.message);
-        throw error;
-    }
-});
+// Paso: Cuando se presiona el botón de guardar para persona
+When('se presiona el botón de guardar para persona', function () {
+    // Creamos la persona con POST
+    const res = request('POST', 'http://pd-backend:8080/personas', {
+        json: this.currentPersona
+    });
 
-// Paso: Entonces se espera el siguiente <status> con la <respuesta>
-Then('se espera el siguiente {int} con la {string}', function (expectedStatus, expectedResponse) {
-    assert.equal(apiResponse.status, parseInt(expectedStatus),
-        `El código de estado esperado era ${expectedStatus}, pero se recibió ${apiResponse.status}`);
-
-    assert.equal(apiResponse.data, expectedResponse,
-        `La respuesta esperada era "${expectedResponse}", pero se recibió "${apiResponse.data}"`);
+    this.apiResponse = JSON.parse(res.getBody('utf8'));
 });

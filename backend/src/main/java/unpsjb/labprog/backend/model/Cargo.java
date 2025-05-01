@@ -16,7 +16,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Getter;
@@ -25,14 +27,38 @@ import lombok.Setter;
 import unpsjb.labprog.backend.model.enums.TipoDesignacion;
 
 /**
- * Clase que representa un Cargo en el sistema educativo
+ * Representa un Cargo en el sistema educativo, que puede ser asignado a
+ * docentes
+ * a través de designaciones.
+ * <p>
+ * Un cargo puede representar tanto una posición administrativa (como preceptor,
+ * director, etc.) como un espacio curricular (materia) asociado a una división
+ * específica.
+ * Cada cargo tiene una vigencia definida por su fecha de inicio y opcionalmente
+ * una
+ * fecha de finalización.
+ * <p>
+ * La unicidad de un cargo está determinada por la combinación de:
+ * <ul>
+ * <li>Nombre del cargo</li>
+ * <li>Tipo de designación</li>
+ * <li>División asociada (si existe)</li>
+ * <li>Fecha de inicio</li>
+ * </ul>
+ * <p>
+ * Cada cargo tiene asociado un conjunto de horarios que definen los días y
+ * horas
+ * en que debe cumplirse.
  * 
- * @see TipoDesignacion
- * @see Division
- * @see Horario
+ * @see TipoDesignacion Define si el cargo corresponde a un espacio curricular o
+ *      a un cargo administrativo
+ * @see Division División a la que puede estar asociado el cargo (opcional)
+ * @see Horario Detalle de los días y horas asignados al cargo
+ * @see Designacion Entidad que vincula este cargo con una persona específica
  */
 @Entity
-@Table(name = "cargos")
+@Table(name = "cargos", uniqueConstraints = @UniqueConstraint(name = "uk_cargo", columnNames = { "nombre",
+        "tipo_designacion", "division_id", "fecha_inicio" }))
 @Getter
 @Setter
 @NoArgsConstructor
@@ -42,14 +68,15 @@ public class Cargo {
      * Identificador único del cargo generado automáticamente.
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cargos_seq_gen")
+    @SequenceGenerator(name = "cargos_seq_gen", sequenceName = "cargos_seq", initialValue = 1000, allocationSize = 1)
     private int id;
 
     /**
      * Nombre o título del cargo.
      */
     @NotNull
-    @Column(nullable = false)
+    @Column(name = "nombre", nullable = false)
     private String nombre;
 
     /**
@@ -67,10 +94,9 @@ public class Cargo {
     private LocalDateTime fechaInicio;
 
     /**
-     * Fecha de finalización de vigencia del cargo.
+     * Fecha de finalización de vigencia del cargo. Puede ser nula
      */
-    @NotNull
-    @Column(name = "fecha_fin", nullable = false)
+    @Column(name = "fecha_fin")
     private LocalDateTime fechaFin;
 
     /**

@@ -21,6 +21,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 export class PersonaDetailComponent implements OnInit {
   persona!: Persona;
   tituloFormulario: string = 'Nueva Persona';
+  isNewPerson: boolean = true;
 
   constructor(
     private route: ActivatedRoute,
@@ -38,58 +39,39 @@ export class PersonaDetailComponent implements OnInit {
       // Convertir el valor del sexo a un solo carácter
       this.persona.sexo = this.persona.sexo.charAt(0) as any;
     }
-    
-    this.personaService.save(this.persona).subscribe({
+
+    this.personaService.save(this.persona, this.isNewPerson).subscribe({
       next: (dataPackage) => {
         if (dataPackage.status !== 200) {
-          this.modalService.alert(
+          this.modalService.error(
             "Error al guardar",
             dataPackage.message,
             ""
           );
         } else {
-          this.modalService.alert(
+          this.modalService.success(
             "Éxito",
             "Persona guardada correctamente",
             ""
           ).then(() => this.goBack());
         }
-      },
-      error: (err) => {
-        this.modalService.alert(
-          "Error",
-          "Ocurrió un error al guardar la persona",
-          err.message
-        );
       }
     });
   }
 
   get(): void {
-    const dni = this.route.snapshot.paramMap.get("dni")!;
-    if (dni === "new") {
-      // Inicializar un objeto persona vacío con las propiedades requeridas
-      this.persona = {
-        dni: 0,
-        nombre: '',
-        apellido: '',
-        cuil: '',
-        sexo: '',
-        designaciones: []
-      };
+    const id = this.route.snapshot.paramMap.get("id")!;
+    if (id === "new") {
+      // Inicializar la persona con valores vacíos
+      this.persona = <Persona>{};
       this.tituloFormulario = 'Nueva Persona';
+      this.isNewPerson = true;  // Es una nueva persona
     } else {
-      this.personaService.get(parseInt(dni!)).subscribe({
+      this.personaService.get(parseInt(id!)).subscribe({
         next: (dataPackage) => {
           this.persona = <Persona>dataPackage.data;
           this.tituloFormulario = 'Editar Persona';
-        },
-        error: (err) => {
-          this.modalService.alert(
-            "Error",
-            "No se pudo cargar la información de la persona",
-            err.message
-          ).then(() => this.goBack());
+          this.isNewPerson = false;  // Es una persona existente
         }
       });
     }

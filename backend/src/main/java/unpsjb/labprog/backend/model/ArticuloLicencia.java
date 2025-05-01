@@ -26,7 +26,7 @@ public class ArticuloLicencia {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
     /**
      * Artículo de licencia, es unico y no nulo
