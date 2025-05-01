@@ -2,7 +2,7 @@ import { CommonModule, Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { NgbDatepickerModule, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbCalendar, NgbDatepickerModule, NgbDateStruct, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 import { Observable, of } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators';
 import { DivisionService } from '../../division/service/division.service';
@@ -34,6 +34,10 @@ export class CargoDetailComponent implements OnInit {
     divisionSeleccionada: any = '';
     turnoEnum = Turno; // Necesario para acceder a la enumeración desde el HTML
 
+    // Propiedades para los datepickers
+    fechaInicioDate: NgbDateStruct | null = null;
+    fechaFinDate: NgbDateStruct | null = null;
+
     tituloFormulario: string = 'Nuevo Cargo Institucional';
 
     searching = false;
@@ -44,7 +48,8 @@ export class CargoDetailComponent implements OnInit {
         private cargoService: CargoService,
         private divisionService: DivisionService,
         private location: Location,
-        private modalService: ModalService
+        private modalService: ModalService,
+        public calendar: NgbCalendar
     ) { }
 
     goBack(): void {
@@ -57,6 +62,28 @@ export class CargoDetailComponent implements OnInit {
     }
 
     save(): void {
+        // Convertir las fechas de NgbDateStruct a objetos Date para el backend
+        if (this.fechaInicioDate) {
+            const fechaInicio = new Date(
+                this.fechaInicioDate.year,
+                this.fechaInicioDate.month - 1,
+                this.fechaInicioDate.day
+            );
+            this.cargo.fechaInicio = fechaInicio;
+        }
+
+        if (this.fechaFinDate) {
+            const fechaFin = new Date(
+                this.fechaFinDate.year,
+                this.fechaFinDate.month - 1,
+                this.fechaFinDate.day
+            );
+            this.cargo.fechaFin = fechaFin;
+        } else {
+            // Si no hay fecha fin, establecer a undefined (en lugar de null)
+            this.cargo.fechaFin = undefined;
+        }
+
         this.cargoService.save(this.cargo, this.isNewCargo).subscribe({
             next: (dataPackage) => {
                 if (dataPackage.status !== 200) {
@@ -83,6 +110,8 @@ export class CargoDetailComponent implements OnInit {
             this.cargo = <Cargo>{};
             this.tituloFormulario = 'Nuevo Cargo Institucional';
             this.isNewCargo = true;  // Es un nuevo cargo
+            // Establecer la fecha de inicio al día de hoy
+            this.fechaInicioDate = this.calendar.getToday();
         } else {
             this.cargoService.get(parseInt(id!)).subscribe({
                 next: (dataPackage) => {
@@ -94,6 +123,25 @@ export class CargoDetailComponent implements OnInit {
                     if (this.cargo.division) {
                         // Asignar la división completa a divisionSeleccionada
                         this.divisionSeleccionada = this.cargo.division;
+                    }
+
+                    // Convertir fechas del cargo a objetos NgbDateStruct
+                    if (this.cargo.fechaInicio) {
+                        const fechaInicio = new Date(this.cargo.fechaInicio);
+                        this.fechaInicioDate = {
+                            year: fechaInicio.getFullYear(),
+                            month: fechaInicio.getMonth() + 1,
+                            day: fechaInicio.getDate()
+                        };
+                    }
+
+                    if (this.cargo.fechaFin) {
+                        const fechaFin = new Date(this.cargo.fechaFin);
+                        this.fechaFinDate = {
+                            year: fechaFin.getFullYear(),
+                            month: fechaFin.getMonth() + 1,
+                            day: fechaFin.getDate()
+                        };
                     }
                 }
             });

@@ -29,11 +29,11 @@
                         <td>{{ persona.cuil }}</td>
                         <td>{{ persona.titulo }}</td>
                         <td class="text-end">
-                            <a routerLink="/personas/{{ persona.dni }}" class="btn btn-sm btn-outline-primary me-1"
+                            <a routerLink="/personas/{{ persona.id }}" class="btn btn-sm btn-outline-primary me-1"
                                 title="Editar">
                                 <i class="fa fa-pencil"></i>
                             </a>
-                            <a (click)="remove(persona.dni)" [routerLink]="" class="btn btn-sm btn-outline-danger"
+                            <a (click)="remove(persona.id)" [routerLink]="" class="btn btn-sm btn-outline-danger"
                                 title="Eliminar">
                                 <i class="fa fa-trash"></i>
                             </a>

@@ -78,7 +78,7 @@ public class DivisionPresenter {
                     createdDivision.getNumDivision(),
                     createdDivision.getTurno().getValor());
 
-            return Response.ok(createdDivision, mensaje);
+            return Response.ok(null, mensaje);
         } catch (DataIntegrityViolationException e) {
             return Response.dbError("No se puede crear la división debido a que ya existe otra idéntica");
         }
@@ -107,7 +107,7 @@ public class DivisionPresenter {
                     updatedDivision.getNumDivision(),
                     updatedDivision.getTurno().getValor());
 
-            return Response.ok(updatedDivision, mensaje);
+            return Response.ok(null, mensaje);
         } catch (DataIntegrityViolationException e) {
             return Response.dbError("No se puede actualizar la división debido a que ya existe otra idéntica");
         }
@@ -129,7 +129,7 @@ public class DivisionPresenter {
                     deletedDivision.getAnio(),
                     deletedDivision.getNumDivision(),
                     deletedDivision.getTurno().getValor());
-            return Response.ok(deletedDivision, mensaje);
+            return Response.ok(null, mensaje);
         } catch (Exception e) {
             return Response.dbError("No se puede eliminar la división debido a dependencias existentes");
         }

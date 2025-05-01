@@ -60,14 +60,14 @@ export class PersonaDetailComponent implements OnInit {
   }
 
   get(): void {
-    const dni = this.route.snapshot.paramMap.get("dni")!;
-    if (dni === "new") {
+    const id = this.route.snapshot.paramMap.get("id")!;
+    if (id === "new") {
       // Inicializar la persona con valores vacíos
       this.persona = <Persona>{};
       this.tituloFormulario = 'Nueva Persona';
       this.isNewPerson = true;  // Es una nueva persona
     } else {
-      this.personaService.get(parseInt(dni!)).subscribe({
+      this.personaService.get(parseInt(id!)).subscribe({
         next: (dataPackage) => {
           this.persona = <Persona>dataPackage.data;
           this.tituloFormulario = 'Editar Persona';

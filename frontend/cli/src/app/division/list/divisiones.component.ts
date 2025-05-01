@@ -41,8 +41,17 @@ export class DivisionesComponent {
                 "Si elimina la division no la podrá utilizar luego"
             )
             .then(function () {
-                that.divisionService.remove(id).subscribe((dataPackage) => {
-                    that.getDivisiones();
+                that.divisionService.remove(id).subscribe({
+                    next: (dataPackage) => {
+                        if (dataPackage.status === 409) {
+                            that.modalService.error(
+                                "Error al eliminar",
+                                dataPackage.message,
+                                ""
+                            );
+                        }
+                        that.getDivisiones();
+                    }
                 });
             });
     }

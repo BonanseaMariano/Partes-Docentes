@@ -38,8 +38,17 @@ export class PersonasComponent {
         "Si elimina la persona no la podrá utilizar luego"
       )
       .then(function () {
-        that.personaService.remove(id).subscribe((dataPackage) => {
-          that.getPersonas();
+        that.personaService.remove(id).subscribe({
+          next: (dataPackage) => {
+            if (dataPackage.status === 409) {
+              that.modalService.error(
+                "Error al eliminar",
+                dataPackage.message,
+                ""
+              );
+            }
+            that.getPersonas();
+          }
         });
       });
   }

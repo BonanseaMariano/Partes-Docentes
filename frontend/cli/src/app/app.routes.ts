@@ -10,7 +10,7 @@ import { PersonasComponent } from './persona/list/personas.component';
 export const routes: Routes = [
     { path: "", component: HomeComponent },
     { path: "personas", component: PersonasComponent },
-    { path: "personas/:dni", component: PersonaDetailComponent },
+    { path: "personas/:id", component: PersonaDetailComponent },
     { path: "divisiones", component: DivisionesComponent },
     { path: "divisiones/:id", component: DivisionDetailComponent },
     { path: "cargos", component: CargosComponent },

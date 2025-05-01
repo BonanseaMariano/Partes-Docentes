@@ -77,7 +77,8 @@ public class CargoPresenter {
                 return Response.notImplemented(
                         String.format("Cargo de %s es CARGO y no corresponde asignar división", aCargo.getNombre()));
             }
-            // Verificar explícitamente la regla de negocio para espacios curriculares sin división
+            // Verificar explícitamente la regla de negocio para espacios curriculares sin
+            // división
             if (aCargo.getTipoDesignacion() == TipoDesignacion.ESPACIO_CURRICULAR && aCargo.getDivision() == null) {
                 return Response.notImplemented(
                         String.format("Espacio Curricular %s falta asignar división", aCargo.getNombre()));
@@ -100,7 +101,7 @@ public class CargoPresenter {
                 mensaje = String.format("Cargo de %s ingresado correctamente", createdCargo.getNombre());
             }
 
-            return Response.ok(createdCargo, mensaje);
+            return Response.ok(null, mensaje);
         } catch (BusinessLogicException e) {
             // Capturar excepciones de validación de negocio y devolver error 501
             return Response.notImplemented(e.getMessage());
@@ -143,7 +144,7 @@ public class CargoPresenter {
                 mensaje = String.format("Cargo de %s actualizado correctamente", updatedCargo.getNombre());
             }
 
-            return Response.ok(updatedCargo, mensaje);
+            return Response.ok(null, mensaje);
         } catch (BusinessLogicException e) {
             // Capturar excepciones de validación de negocio y devolver error 501
             return Response.notImplemented(e.getMessage());
@@ -168,7 +169,7 @@ public class CargoPresenter {
             String mensaje = String.format("Cargo %s %s eliminado correctamente",
                     deletedCargo.getTipoDesignacion().getValor(),
                     deletedCargo.getNombre());
-            return Response.ok(deletedCargo, mensaje);
+            return Response.ok(null, mensaje);
         } catch (Exception e) {
             return Response.dbError("No se puede eliminar el cargo debido a dependencias existentes");
         }

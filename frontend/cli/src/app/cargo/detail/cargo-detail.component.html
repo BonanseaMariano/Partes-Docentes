@@ -130,8 +130,8 @@
                         <i class="fa fa-calendar-plus"></i>
                     </span>
                     <input id="fechaInicio" name="fechaInicio" class="form-control" placeholder="dd/mm/yyyy"
-                        [(ngModel)]="cargo.fechaInicio" ngbDatepicker #fechaInicioPicker="ngbDatepicker" required
-                        #fechaInicio="ngModel" />
+                        [(ngModel)]="fechaInicioDate" [startDate]="fechaInicioDate || calendar.getToday()" ngbDatepicker
+                        #fechaInicioPicker="ngbDatepicker" required #fechaInicio="ngModel" />
                     <button class="btn btn-outline-secondary calendar" (click)="fechaInicioPicker.toggle()"
                         type="button">
                         <i class="fa fa-calendar"></i>
@@ -151,8 +151,8 @@
                         <i class="fa fa-calendar-minus"></i>
                     </span>
                     <input id="fechaFin" name="fechaFin" class="form-control" placeholder="dd/mm/yyyy"
-                        [(ngModel)]="cargo.fechaFin" ngbDatepicker #fechaFinPicker="ngbDatepicker"
-                        #fechaFin="ngModel" />
+                        [(ngModel)]="fechaFinDate" [startDate]="fechaFinDate || fechaInicioDate || calendar.getToday()"
+                        ngbDatepicker #fechaFinPicker="ngbDatepicker" #fechaFin="ngModel" />
                     <button class="btn btn-outline-secondary calendar" (click)="fechaFinPicker.toggle()" type="button">
                         <i class="fa fa-calendar"></i>
                     </button>

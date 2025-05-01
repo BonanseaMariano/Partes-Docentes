@@ -41,8 +41,17 @@ export class CargosComponent {
                 "Si elimina el cargo no lo podrá utilizar luego"
             )
             .then(function () {
-                that.cargoService.remove(id).subscribe((dataPackage) => {
-                    that.getCargos();
+                that.cargoService.remove(id).subscribe({
+                    next: (dataPackage) => {
+                        if (dataPackage.status === 409) {
+                            that.modalService.error(
+                                "Error al eliminar",
+                                dataPackage.message,
+                                ""
+                            );
+                        }
+                        that.getCargos();
+                    }
                 });
             });
     }

@@ -105,7 +105,7 @@ public class PersonaPresenter {
                     createdPersona.getApellido(),
                     createdPersona.getDni());
 
-            return Response.ok(createdPersona, mensaje);
+            return Response.ok(null, mensaje);
         } catch (DataIntegrityViolationException e) {
             return Response.dbError("No se puede utilizar ese dni porque ya existe otra persona con el mismo");
         }
@@ -132,7 +132,7 @@ public class PersonaPresenter {
                     updatedPersona.getNombre(),
                     updatedPersona.getApellido(),
                     updatedPersona.getDni());
-            return Response.ok(updatedPersona, mensaje);
+            return Response.ok(null, mensaje);
         } catch (DataIntegrityViolationException e) {
             return Response.dbError("No se puede utilizar ese DNI porque ya existe otra obra con el mismo");
         }
@@ -152,10 +152,10 @@ public class PersonaPresenter {
     }
 
     /**
-     * Elimina una persona existente según su DNI.
+     * Elimina una persona existente según su id.
      * Verifica primero si la persona tiene asociaciones con otras entidades.
      * 
-     * @param id Número de DNI de la persona a eliminar
+     * @param id Número de id de la persona a eliminar
      * @return ResponseEntity con un mensaje de éxito si la operación es correcta o
      *         error en caso contrario
      */
@@ -169,7 +169,7 @@ public class PersonaPresenter {
                     deletedPersona.getNombre(),
                     deletedPersona.getApellido(),
                     deletedPersona.getDni());
-            return Response.ok(deletedPersona, mensaje);
+            return Response.ok(null, mensaje);
         } catch (DataIntegrityViolationException e) {
             return Response
                     .dbError(
