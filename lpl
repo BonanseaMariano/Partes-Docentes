@@ -10,8 +10,8 @@ fi
 
 # Comandos
 case "$1" in
-	build ) echo "Instalando..."
-  	docker compose -f docker-compose.yml build
+    build ) echo "Instalando..."
+      docker compose -f docker-compose.yml build
     # docker compose -f docker-compose.yml run frontend ./install.sh
     # docker compose -f docker-compose.yml
     ;;
@@ -21,24 +21,29 @@ case "$1" in
   down ) echo "Deteniendo servidores.."
     docker compose -f docker-compose.yml down
     ;;
-	restart ) echo "Reiniciando servicio $2..."
-		docker compose -f docker-compose.yml restart $2
-		;;
-	restart-all ) echo "Reiniciando servidores.."
-		docker compose -f docker-compose.yml restart
-		;;
-	log ) docker compose -f docker-compose.yml logs -f $2
-		;;
-	logs ) docker compose -f docker-compose.yml logs -f
-		;;
+    restart ) echo "Reiniciando servicio $2..."
+        docker compose -f docker-compose.yml restart $2
+        ;;
+    restart-all ) echo "Reiniciando servidores.."
+        docker compose -f docker-compose.yml restart
+        ;;
+    log ) docker compose -f docker-compose.yml logs -f $2
+        ;;
+    logs ) docker compose -f docker-compose.yml logs -f
+        ;;
   sh ) echo "Conectando con $2"
     docker exec -it $2 sh
     ;;
   mvn ) echo "Ejecutando Maven en servidor backend: $2"
     docker exec -t pd-backend mvn $2
     ;;
-  test ) echo "Ejecutando todos los tests"
-      docker compose run --rm testing
+  test ) 
+    echo "Preparando la base de datos para pruebas..."
+    # Ejecuta el staging para preparar la base de datos
+    cat ./staging/setUpTests.sql | docker exec -i pd-database psql -q -U APP -d labprog
+    
+    echo "Ejecutando todos los tests..."
+    docker compose run --rm testing
     ;;
   staging ) echo "Cargando staging $2"
     cat ./staging/$2.sql | docker exec -i pd-database psql -q -U APP -d labprog

@@ -24,13 +24,9 @@ const tipoDesignacionMap = {
 
 // Mapeamos los valores de turno para que coincidan con el backend
 const turnoMap = {
-    'Mañana': 'Mañana',
     'MAÑANA': 'Mañana',
-    'Tarde': 'Tarde',
     'TARDE': 'Tarde',
-    'Vespertino': 'Vespertino',
     'VESPERTINO': 'Vespertino',
-    'Noche': 'Noche',
     'NOCHE': 'Noche'
 };
 
@@ -59,69 +55,62 @@ Given('que tiene una carga horaria de {int} horas, con vigencia desde {string} h
     this.currentCargo.horarios = [];
 });
 
-// Paso: Y que si el tipo es "ESPACIO CURRICULAR", opcionalmente se asigna a la división "<año>" "<número>" "<turno>"
-Given('que si el tipo es {string}, opcionalmente se asigna a la división {string} {string} {string}', function (tipo, anio, numero, turno) {
-    // Guarda la información de división siempre que se hayan proporcionado los datos,
-    // independientemente del tipo de cargo (para que se active la validación correctamente)
-    if (anio && numero && turno && anio !== '' && numero !== '' && turno !== '') {
-        const turnoFormateado = turnoMap[turno] || turno;
-        this.divisionInfo = {
-            anio: parseInt(anio),
-            numero: parseInt(numero),
-            turno: turnoFormateado
-        };
-    }
-});
+// Paso: Y que si el tipo es "ESPACIO CURRICULAR", opcionalmente se asigna a la división "<año>" "<número>" "<orientacion>" "<turno>"
+Given('que si el tipo es {string}, opcionalmente se asigna a la división {string} {string} {string} {string}',
+    function (tipo, anio, numero, orientacion, turno) {
+        // Guarda la información de división siempre que se hayan proporcionado los datos,
+        // independientemente del tipo de cargo (para que se active la validación correctamente)
+        if (anio && numero && orientacion && turno &&
+            anio !== '' && numero !== '' && orientacion !== '' && turno !== '') {
 
-// Función para buscar o crear una división
-function buscarOCrearDivision(anio, numero, turno) {
-    try {
-        // 1. Primero intentamos obtener todas las divisiones existentes
-        const getDivisionsRes = request('GET', 'http://pd-backend:8080/divisiones');
-        const divisionsData = JSON.parse(getDivisionsRes.getBody('utf8'));
-
-        if (divisionsData && divisionsData.data) {
-            // 2. Buscamos si existe una división con los mismos datos
-            const divisionEncontrada = divisionsData.data.find(d =>
-                d.anio === anio &&
-                d.numDivision === numero &&
-                d.turno === turno
-            );
-
-            if (divisionEncontrada) {
-                // 3a. Si existe, la retornamos
-                return divisionEncontrada;
-            } else {
-                // 3b. Si no existe, la creamos
-                const nuevaDivision = {
-                    anio: anio,
-                    numDivision: numero,
-                    turno: turno,
-                    orientacion: "General" // Valor por defecto
-                };
-
-                // 4. Creamos la división
-                const createDivisionRes = request('POST', 'http://pd-backend:8080/divisiones', {
-                    json: nuevaDivision
-                });
-
-                // 5. Obtenemos la división recién creada
-                const getDivisionRes = request('GET', 'http://pd-backend:8080/divisiones');
-                const newDivisionsData = JSON.parse(getDivisionRes.getBody('utf8'));
-
-                if (newDivisionsData && newDivisionsData.data) {
-                    return newDivisionsData.data.find(d =>
-                        d.anio === anio &&
-                        d.numDivision === numero &&
-                        d.turno === turno
-                    );
-                }
-            }
+            const turnoFormateado = turnoMap[turno] || turno;
+            this.divisionInfo = {
+                anio: parseInt(anio),
+                numero: parseInt(numero),
+                orientacion: orientacion,
+                turno: turnoFormateado
+            };
         }
-    } catch (error) {
-        console.error('Error al buscar o crear división:', error.message);
+    });
+
+// Función para buscar una división usando el endpoint unique
+function buscarDivision(anio, numero, orientacion, turnoDisplay) {
+
+    // Mapeo correcto de nombres de turno a valores del backend
+    const turnoBackendMap = {
+        'Mañana': 'MANIANA',
+        'Tarde': 'TARDE',
+        'Vespertino': 'VESPERTINO',
+        'Noche': 'NOCHE'
+    };
+
+    // Usamos el mapeo directo para convertir el turno al formato que espera el backend
+    const turnoBackend = turnoBackendMap[turnoDisplay] || turnoDisplay;
+
+    // Construimos los parámetros de consulta
+    const queryParams = new URLSearchParams({
+        anio: anio,
+        numDivision: numero,
+        orientacion: orientacion,
+        turno: turnoBackend
+    }).toString();
+
+    // Realizamos la consulta al endpoint unique
+    const uniqueUrl = `http://pd-backend:8080/divisiones/unique?${queryParams}`;
+    console.log(`Buscando división con: ${queryParams}`);
+
+    const checkResponse = request('GET', uniqueUrl);
+
+    // Si la respuesta es exitosa, hemos encontrado la división
+    if (checkResponse.statusCode === 200) {
+        const responseBody = JSON.parse(checkResponse.getBody('utf8'));
+        if (responseBody && responseBody.data) {
+            console.log(`División encontrada con ID=${responseBody.data.id}`);
+            return responseBody.data;
+        }
     }
 
+    // Si no encontramos ninguna división que coincida
     return null;
 }
 
@@ -130,9 +119,10 @@ When('se presiona el botón de guardar', function () {
     try {
         // Si tenemos información de división para un ESPACIO_CURRICULAR, buscamos o creamos la división
         if (this.divisionInfo && this.currentCargo.tipoDesignacion === tipoDesignacionMap['ESPACIO CURRICULAR']) {
-            const division = buscarOCrearDivision(
+            const division = buscarDivision(
                 this.divisionInfo.anio,
                 this.divisionInfo.numero,
+                this.divisionInfo.orientacion, // Agregamos la orientación
                 this.divisionInfo.turno
             );
 
@@ -140,30 +130,28 @@ When('se presiona el botón de guardar', function () {
                 // Asignamos la división al cargo
                 this.currentCargo.division = division;
             } else {
-                console.warn('No se pudo encontrar o crear la división necesaria.');
+                console.warn('No se pudo encontrar la división necesaria.');
             }
         } else if (this.divisionInfo) {
             // Para cargos no ESPACIO_CURRICULAR con división asignada (como Auxiliar ACAD)
-            // Buscamos una división real para que la validación falle como se espera
-            const division = buscarOCrearDivision(
+            const division = buscarDivision(
                 this.divisionInfo.anio,
                 this.divisionInfo.numero,
+                this.divisionInfo.orientacion, // Agregamos la orientación
                 this.divisionInfo.turno
             );
 
             if (division) {
-                // Asignamos la división real encontrada o creada al cargo
+                // Asignamos la división real encontrada al cargo
                 this.currentCargo.division = division;
-                console.log('Asignando división a cargo tipo no-ESPACIO_CURRICULAR:', JSON.stringify(this.currentCargo.division));
             } else {
-                // Si no se puede encontrar o crear, usamos un objeto básico
+                // Si no se puede encontrar, usamos un objeto básico
                 this.currentCargo.division = {
                     anio: this.divisionInfo.anio,
                     numDivision: this.divisionInfo.numero,
-                    turno: this.divisionInfo.turno,
-                    orientacion: "General"
+                    orientacion: this.divisionInfo.orientacion, // Agregamos orientación
+                    turno: this.divisionInfo.turno
                 };
-                console.log('No se encontró división, usando objeto básico:', JSON.stringify(this.currentCargo.division));
             }
         }
 

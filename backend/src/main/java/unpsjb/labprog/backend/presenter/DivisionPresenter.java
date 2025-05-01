@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import unpsjb.labprog.backend.Response;
 import unpsjb.labprog.backend.business.service.DivisionService;
 import unpsjb.labprog.backend.model.Division;
+import unpsjb.labprog.backend.model.enums.Turno;
 
 /**
  * Controlador REST para la gestión de divisiones escolares.
@@ -156,5 +157,34 @@ public class DivisionPresenter {
     @GetMapping("/search/{term}")
     public ResponseEntity<Object> search(@PathVariable String term) {
         return Response.ok(service.search(term));
+    }
+
+    /**
+     * Busca una división por sus campos únicos (definidos en la restricción de
+     * unicidad)
+     * 
+     * @param anio        Año académico
+     * @param numDivision Número de división
+     * @param orientacion Orientación académica
+     * @param turno       Turno de la división
+     * @return ResponseEntity con la división encontrada o un mensaje de error si no
+     *         existe
+     */
+    @GetMapping("/unique")
+    public ResponseEntity<Object> findByUniqueFields(
+            @RequestParam(required = true) Integer anio,
+            @RequestParam(required = true) Integer numDivision,
+            @RequestParam(required = true) String orientacion,
+            @RequestParam(required = true) Turno turno) {
+
+        Division division = service.findByUniqueFields(anio, numDivision, orientacion, turno);
+
+        if (division == null) {
+            return Response.notFound(String.format(
+                    "No se encontró división con año: %d, número: %d, orientación: %s, turno: %s",
+                    anio, numDivision, orientacion, turno.getValor()));
+        }
+
+        return Response.ok(division);
     }
 }

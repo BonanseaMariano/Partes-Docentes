@@ -17,13 +17,9 @@ setWorldConstructor(DivisionWorld);
 
 // Mapeo de turnos para asegurar que los valores coincidan con lo esperado en el backend
 const turnoMap = {
-    'Mañana': 'Mañana',
     'MAÑANA': 'Mañana',
-    'Tarde': 'Tarde',
     'TARDE': 'Tarde',
-    'Vespertino': 'Vespertino',
     'VESPERTINO': 'Vespertino',
-    'Noche': 'Noche',
     'NOCHE': 'Noche'
 };
 

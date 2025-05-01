@@ -10,8 +10,7 @@ module.exports = {
     // Configuración para encontrar los step definitions
     require: [
       'features/**/*.js',
-      'features/step_definitions/**/*.js',
-      'features/support/**/*.js'  // Añadida esta línea para cargar los archivos de soporte
+      'features/step_definitions/**/*.js'
     ],
     // Opciones de formato
     formatOptions: {
