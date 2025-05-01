@@ -9,6 +9,6 @@ Then('se espera el siguiente {int} con la {string}', function (expectedStatus, e
     assert.equal(this.apiResponse.status, parseInt(expectedStatus),
         `El código de estado esperado era ${expectedStatus}, pero se recibió ${this.apiResponse.status}`);
 
-    assert.equal(this.apiResponse.data, expectedResponse,
-        `La respuesta esperada era "${expectedResponse}", pero se recibió "${this.apiResponse.data}"`);
+    assert.equal(this.apiResponse.message, expectedResponse,
+        `La respuesta esperada era "${expectedResponse}", pero se recibió "${this.apiResponse.message}"`);
 });

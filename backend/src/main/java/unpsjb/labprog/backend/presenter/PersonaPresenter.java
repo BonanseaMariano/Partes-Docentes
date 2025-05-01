@@ -47,13 +47,27 @@ public class PersonaPresenter {
     }
 
     /**
+     * Busca una persona específica por su id.
+     * 
+     * @param id id de la persona a buscar
+     * @return ResponseEntity con la persona encontrada o un mensaje de error si no
+     *         existe
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> findById(@PathVariable int id) {
+        Persona personaOrNull = service.findById(id);
+        return (personaOrNull != null) ? Response.ok(personaOrNull)
+                : Response.notFound("Persona id " + id + " no encontrada");
+    }
+
+    /**
      * Busca una persona específica por su número de DNI.
      * 
      * @param dni Número de DNI de la persona a buscar
      * @return ResponseEntity con la persona encontrada o un mensaje de error si no
      *         existe
      */
-    @GetMapping("/{dni}")
+    @GetMapping("/dni/{dni}")
     public ResponseEntity<Object> findByDni(@PathVariable int dni) {
         Persona personaOrNull = service.findByDni(dni);
         return (personaOrNull != null) ? Response.ok(personaOrNull)
@@ -63,7 +77,7 @@ public class PersonaPresenter {
     /**
      * Busca una persona específica por su número de CUIL.
      * 
-     * @param cuil CUIL de la persona a buscar en formato string
+     * @param cuil Número de CUIL de la persona a buscar
      * @return ResponseEntity con la persona encontrada o un mensaje de error si no
      *         existe
      */
@@ -84,14 +98,14 @@ public class PersonaPresenter {
     @PostMapping
     public ResponseEntity<Object> create(@RequestBody Persona aPersona) {
         try {
-            Persona savedPersona = service.save(aPersona);
+            Persona createdPersona = service.save(aPersona);
             // Formatear el mensaje según lo requerido en Persona.feature
             String mensaje = String.format("%s %s con DNI %d ingresado/a correctamente",
-                    savedPersona.getNombre(),
-                    savedPersona.getApellido(),
-                    savedPersona.getDni());
+                    createdPersona.getNombre(),
+                    createdPersona.getApellido(),
+                    createdPersona.getDni());
 
-            return Response.ok(mensaje);
+            return Response.ok(null, mensaje);
         } catch (DataIntegrityViolationException e) {
             return Response.dbError("No se puede utilizar ese dni porque ya existe otra persona con el mismo");
         }
@@ -106,7 +120,7 @@ public class PersonaPresenter {
      */
     @PutMapping
     public ResponseEntity<Object> update(@RequestBody Persona aPersona) {
-        Persona existingPersona = service.findByDni(aPersona.getDni());
+        Persona existingPersona = service.findById(aPersona.getId());
         if (existingPersona == null) {
             return Response.notFound("Persona con DNI " + aPersona.getDni() + " no encontrada para actualizar");
         }
@@ -118,7 +132,7 @@ public class PersonaPresenter {
                     updatedPersona.getNombre(),
                     updatedPersona.getApellido(),
                     updatedPersona.getDni());
-            return Response.ok(mensaje);
+            return Response.ok(null, mensaje);
         } catch (DataIntegrityViolationException e) {
             return Response.dbError("No se puede utilizar ese DNI porque ya existe otra obra con el mismo");
         }
@@ -138,32 +152,32 @@ public class PersonaPresenter {
     }
 
     /**
-     * Elimina una persona existente según su DNI.
+     * Elimina una persona existente según su id.
      * Verifica primero si la persona tiene asociaciones con otras entidades.
      * 
-     * @param dni Número de DNI de la persona a eliminar
+     * @param id Número de id de la persona a eliminar
      * @return ResponseEntity con un mensaje de éxito si la operación es correcta o
      *         error en caso contrario
      */
-    @DeleteMapping("/{dni}")
-    public ResponseEntity<Object> delete(@PathVariable int dni) {
-        Persona persona = service.findByDni(dni);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> delete(@PathVariable int id) {
+        Persona deletedPersona = service.findById(id);
         try {
-            service.delete(dni);
+            service.delete(id);
             // Formatear el mensaje según el formato utilizado en create y update
             String mensaje = String.format("%s %s con DNI %d eliminado/a correctamente",
-                    persona.getNombre(),
-                    persona.getApellido(),
-                    persona.getDni());
-            return Response.ok(mensaje);
+                    deletedPersona.getNombre(),
+                    deletedPersona.getApellido(),
+                    deletedPersona.getDni());
+            return Response.ok(null, mensaje);
         } catch (DataIntegrityViolationException e) {
             return Response
                     .dbError(
                             String.format(
                                     "No se puede eliminar a %s %s con DNI %d porque está asociado/a a designaciones y/o licencias",
-                                    persona.getNombre(),
-                                    persona.getApellido(),
-                                    persona.getDni()));
+                                    deletedPersona.getNombre(),
+                                    deletedPersona.getApellido(),
+                                    deletedPersona.getDni()));
         }
     }
 }

@@ -34,7 +34,7 @@ public class Designacion {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
     /**
      * Situación de la revista de la persona

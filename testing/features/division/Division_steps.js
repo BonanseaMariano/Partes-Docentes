@@ -15,15 +15,26 @@ function DivisionWorld() {
 const { setWorldConstructor } = require('@cucumber/cucumber');
 setWorldConstructor(DivisionWorld);
 
+// Mapeo de turnos para asegurar que los valores coincidan con lo esperado en el backend
+const turnoMap = {
+    'MAÑANA': 'Mañana',
+    'TARDE': 'Tarde',
+    'VESPERTINO': 'Vespertino',
+    'NOCHE': 'Noche'
+};
+
 // Paso: Dada la el espacio físico división con <año> <número> <orientación> <turno>
 Given(
     'la el espacio físico división con {int} {int} {word} {word}',
     function (anio, numero, orientacion, turno) {
+        // Usar el mapa de turnos para asegurar valores correctos
+        const turnoFormateado = turnoMap[turno] || turno;
+
         this.currentDivision = {
             anio: anio,
             numDivision: numero,
             orientacion: orientacion,
-            turno: turno
+            turno: turnoFormateado
         };
     }
 );

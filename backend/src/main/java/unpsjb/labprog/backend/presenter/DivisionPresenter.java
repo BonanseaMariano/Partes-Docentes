@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import unpsjb.labprog.backend.Response;
 import unpsjb.labprog.backend.business.service.DivisionService;
 import unpsjb.labprog.backend.model.Division;
+import unpsjb.labprog.backend.model.enums.Turno;
 
 /**
  * Controlador REST para la gestión de divisiones escolares.
@@ -54,7 +55,7 @@ public class DivisionPresenter {
      *         existe
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Object> findById(@PathVariable Long id) {
+    public ResponseEntity<Object> findById(@PathVariable int id) {
         Division divisionOrNull = service.findById(id);
         return (divisionOrNull != null) ? Response.ok(divisionOrNull)
                 : Response.notFound("División con ID " + id + " no encontrada");
@@ -70,16 +71,16 @@ public class DivisionPresenter {
     @PostMapping
     public ResponseEntity<Object> create(@RequestBody Division aDivision) {
         try {
-            Division savedDivision = service.save(aDivision);
+            Division createdDivision = service.save(aDivision);
             // Formatear el mensaje para la respuesta según Division.feature
             String mensaje = String.format("División %dº %dº turno %s ingresada correctamente",
-                    savedDivision.getAnio(),
-                    savedDivision.getNumDivision(),
-                    savedDivision.getTurno().toString());
+                    createdDivision.getAnio(),
+                    createdDivision.getNumDivision(),
+                    createdDivision.getTurno().getValor());
 
-            return Response.ok(mensaje);
+            return Response.ok(null, mensaje);
         } catch (DataIntegrityViolationException e) {
-            return Response.dbError("No se puede crear la división debido a un conflicto en la base de datos");
+            return Response.dbError("No se puede crear la división debido a que ya existe otra idéntica");
         }
     }
 
@@ -104,11 +105,11 @@ public class DivisionPresenter {
             String mensaje = String.format("División %dº %dº turno %s actualizada correctamente",
                     updatedDivision.getAnio(),
                     updatedDivision.getNumDivision(),
-                    updatedDivision.getTurno().toString());
+                    updatedDivision.getTurno().getValor());
 
-            return Response.ok(mensaje);
+            return Response.ok(null, mensaje);
         } catch (DataIntegrityViolationException e) {
-            return Response.dbError("No se puede actualizar la división debido a un conflicto en la base de datos");
+            return Response.dbError("No se puede actualizar la división debido a que ya existe otra idéntica");
         }
     }
 
@@ -120,15 +121,15 @@ public class DivisionPresenter {
      *         error en caso contrario
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> delete(@PathVariable Long id) {
-        Division existingDivision = service.findById(id);
+    public ResponseEntity<Object> delete(@PathVariable int id) {
+        Division deletedDivision = service.findById(id);
         try {
             service.delete(id);
             String mensaje = String.format("División %dº %dº turno %s eliminada correctamente",
-                    existingDivision.getAnio(),
-                    existingDivision.getNumDivision(),
-                    existingDivision.getTurno().toString());
-            return Response.ok(mensaje);
+                    deletedDivision.getAnio(),
+                    deletedDivision.getNumDivision(),
+                    deletedDivision.getTurno().getValor());
+            return Response.ok(null, mensaje);
         } catch (Exception e) {
             return Response.dbError("No se puede eliminar la división debido a dependencias existentes");
         }
@@ -145,5 +146,45 @@ public class DivisionPresenter {
     public ResponseEntity<Object> findByPage(@RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         return Response.ok(service.findByPage(page, size));
+    }
+
+    /**
+     * Busca divisiones por un término de búsqueda.
+     * 
+     * @param term el término de búsqueda
+     * @return una lista de divisiones que coinciden con el término de búsqueda
+     */
+    @GetMapping("/search/{term}")
+    public ResponseEntity<Object> search(@PathVariable String term) {
+        return Response.ok(service.search(term));
+    }
+
+    /**
+     * Busca una división por sus campos únicos (definidos en la restricción de
+     * unicidad)
+     * 
+     * @param anio        Año académico
+     * @param numDivision Número de división
+     * @param orientacion Orientación académica
+     * @param turno       Turno de la división
+     * @return ResponseEntity con la división encontrada o un mensaje de error si no
+     *         existe
+     */
+    @GetMapping("/unique")
+    public ResponseEntity<Object> findByUniqueFields(
+            @RequestParam(required = true) Integer anio,
+            @RequestParam(required = true) Integer numDivision,
+            @RequestParam(required = true) String orientacion,
+            @RequestParam(required = true) Turno turno) {
+
+        Division division = service.findByUniqueFields(anio, numDivision, orientacion, turno);
+
+        if (division == null) {
+            return Response.notFound(String.format(
+                    "No se encontró división con año: %d, número: %d, orientación: %s, turno: %s",
+                    anio, numDivision, orientacion, turno.getValor()));
+        }
+
+        return Response.ok(division);
     }
 }

@@ -11,4 +11,4 @@ Módulo responsable de administrar a las divisiones (espacios físicos) de una e
       | año | número | orientación | turno  | status | respuesta                                           |
       |   5 |      2 | Biológicas  | Mañana |    200 | División 5º 2º turno Mañana ingresada correctamente |
       |   3 |      1 | Sociales    | Tarde  |    200 | División 3º 1º turno Tarde ingresada correctamente  |
-      |   3 |      1 | Sociales    | Tarde  |    200 | División 3º 1º turno Tarde ingresada correctamente  |
+      |   3 |      1 | Informática | Tarde  |    200 | División 3º 1º turno Tarde ingresada correctamente  |

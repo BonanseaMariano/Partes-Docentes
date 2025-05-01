@@ -10,9 +10,12 @@ import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 import unpsjb.labprog.backend.business.repository.DivisionRepository;
 import unpsjb.labprog.backend.model.Division;
+import unpsjb.labprog.backend.model.enums.Turno;
 
 /**
  * Servicio que implementa la lógica de negocio para la entidad Division
+ * 
+ * @see Division
  */
 @Service
 public class DivisionService {
@@ -26,7 +29,7 @@ public class DivisionService {
      * @param id ID de la división a buscar
      * @return División encontrada o null si no existe
      */
-    public Division findById(Long id) {
+    public Division findById(int id) {
         return repository.findById(id).orElse(null);
     }
 
@@ -56,7 +59,7 @@ public class DivisionService {
      * @param id ID de la división a eliminar
      */
     @Transactional
-    public void delete(Long id) {
+    public void delete(int id) {
         repository.deleteById(id);
     }
 
@@ -69,5 +72,29 @@ public class DivisionService {
      */
     public Page<Division> findByPage(int page, int size) {
         return repository.findAll(PageRequest.of(page, size));
+    }
+
+    /**
+     * Busca divisiones por un término de búsqueda.
+     * 
+     * @param term el término de búsqueda
+     * @return una lista de divisiones que coinciden con el término de búsqueda
+     */
+    public List<Division> search(String term) {
+        return repository.search("%" + term.toUpperCase() + "%");
+    }
+
+    /**
+     * Busca una división por sus campos únicos combinados
+     * 
+     * @param anio        Año académico
+     * @param numDivision Número de división
+     * @param orientacion Orientación académica
+     * @param turno       Turno de la división
+     * @return La división encontrada o null si no existe
+     */
+    public Division findByUniqueFields(Integer anio, Integer numDivision, String orientacion, Turno turno) {
+        return repository.findByAnioAndNumDivisionAndOrientacionAndTurno(anio, numDivision, orientacion, turno)
+                .orElse(null);
     }
 }

@@ -1,8 +1,20 @@
 module.exports = {
-  default: [
-    // Asegurarse de que Cucumber encuentre los step definitions en la nueva estructura
-    '--require features/**/*.js',
-    '--require features/step_definitions/**/*.js',
-    `--format-options '{"snippetInterface": "synchronous"}'`
-  ].join(' ')
-}
+  default: {
+    // Especifica las rutas de los features en el orden deseado
+    paths: [
+      'features/persona/Persona.feature',
+      'features/division/Division.feature',
+      'features/cargo/Cargo.feature',
+      'features/designar_docente/Designar.feature'
+    ],
+    // Configuración para encontrar los step definitions
+    require: [
+      'features/**/*.js',
+      'features/step_definitions/**/*.js'
+    ],
+    // Opciones de formato
+    formatOptions: {
+      snippetInterface: "synchronous"
+    }
+  }
+};

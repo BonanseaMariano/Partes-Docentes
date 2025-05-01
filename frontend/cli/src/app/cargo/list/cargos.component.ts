@@ -1,33 +1,33 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { PaginationConfig } from '../../core/constants/pagination.constants';
 import { ModalService } from '../../modal/modal.service';
 import { ResultsPage } from '../../models/results-page';
+import { TipoDesignacion } from '../../models/tipo-designacion';
 import { PaginationComponent } from '../../pagination/pagination.component';
-import { DivisionService } from '../service/division.service';
-import { PaginationConfig } from '../../core/constants/pagination.constants';
-import { Turno } from '../../models/turno';
+import { CargoService } from '../service/cargo.service';
 
 
 @Component({
     selector: 'app-divisiones',
     imports: [CommonModule, RouterModule, PaginationComponent],
-    templateUrl: './divisiones.component.html',
+    templateUrl: './cargos.component.html',
     styles: ``
 })
-export class DivisionesComponent {
+export class CargosComponent {
     resultsPage: ResultsPage = <ResultsPage>{};
     currentPage: number = PaginationConfig.INITIAL_PAGE;
     pageSize: number = PaginationConfig.PAGE_SIZE;
-    turnoEnum = Turno;
+    tipoDesignacionEnum = TipoDesignacion;
 
     constructor(
-        private divisionService: DivisionService,
+        private cargoService: CargoService,
         private modalService: ModalService
     ) { }
 
-    getDivisiones(): void {
-        this.divisionService.byPage(this.currentPage, this.pageSize).subscribe((dataPackage) => {
+    getCargos(): void {
+        this.cargoService.byPage(this.currentPage, this.pageSize).subscribe((dataPackage) => {
             this.resultsPage = <ResultsPage>dataPackage.data;
         });
     }
@@ -36,12 +36,12 @@ export class DivisionesComponent {
         let that = this;
         this.modalService
             .confirm(
-                "Eliminar division",
-                "¿Estás seguro de que deseas eliminar esta division?",
-                "Si elimina la division no la podrá utilizar luego"
+                "Eliminar cargo",
+                "¿Estás seguro de que deseas eliminar este cargo?",
+                "Si elimina el cargo no lo podrá utilizar luego"
             )
             .then(function () {
-                that.divisionService.remove(id).subscribe({
+                that.cargoService.remove(id).subscribe({
                     next: (dataPackage) => {
                         if (dataPackage.status === 409) {
                             that.modalService.error(
@@ -50,18 +50,18 @@ export class DivisionesComponent {
                                 ""
                             );
                         }
-                        that.getDivisiones();
+                        that.getCargos();
                     }
                 });
             });
     }
 
     ngOnInit(): void {
-        this.getDivisiones();
+        this.getCargos();
     }
 
     onPageChangeRequested(page: number): void {
         this.currentPage = page;
-        this.getDivisiones();
+        this.getCargos();
     }
 }
