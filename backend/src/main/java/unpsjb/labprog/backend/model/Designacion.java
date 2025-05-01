@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -37,27 +38,29 @@ public class Designacion {
     private int id;
 
     /**
-     * Situación de la revista de la persona
+     * Situación de la revista de la persona, opcional
      */
-    @Column(name = "situacion_revista", length = 45, nullable = false)
+    @Column(name = "situacion_revista", length = 45)
     private String situacionRevista;
 
     /**
-     * Fecha y hora de inicio de la designación
+     * Fecha y hora de inicio de la designación, no puede ser nula
      */
-    @Column(name = "fecha_inicio")
+    @NotNull
+    @Column(name = "fecha_inicio", nullable = false)
     private LocalDateTime fechaInicio;
 
     /**
-     * Fecha y hora de finalización de la designación
+     * Fecha y hora de finalización de la designación, opcional
      */
     @Column(name = "fecha_fin")
     private LocalDateTime fechaFin;
 
     // Relaciones
     /**
-     * Persona a la que se le asigna la designación
+     * Persona a la que se le asigna la designación, no puede ser nula
      */
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "persona_dni", nullable = false)
     @JsonIgnoreProperties("designaciones")
@@ -66,6 +69,7 @@ public class Designacion {
     /**
      * Cargo al que se le asigna la designación
      */
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "cargo_id", nullable = false)
     private Cargo cargo;

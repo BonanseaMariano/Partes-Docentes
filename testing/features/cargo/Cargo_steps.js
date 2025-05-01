@@ -43,13 +43,13 @@ Given('que es del tipo de designación {string}', function (tipoDesignacion) {
     this.currentCargo.tipoDesignacion = tipoDesignacionMap[tipoDesignacion] || tipoDesignacion;
 });
 
-// Paso: Y que tiene una carga horaria de <cargaHoraria> horas, con vigencia desde "<fechaDesde>" hasta "<fechaHasta>"
-Given('que tiene una carga horaria de {int} horas, con vigencia desde {string} hasta {string}', function (cargaHoraria, fechaDesde, fechaHasta) {
+// Paso: Y que tiene una carga horaria de <cargaHoraria> horas, con vigencia desde "<fechaDesdeCargo>" hasta "<fechaHastaCargo>"
+Given('que tiene una carga horaria de {int} horas, con vigencia desde {string} hasta {string}', function (cargaHoraria, fechaDesdeCargo, fechaHastaCargo) {
     this.currentCargo.cargaHoraria = cargaHoraria;
 
     // Modificar los nombres de los campos para que coincidan con la entidad Java
-    this.currentCargo.fechaInicio = fechaDesde ? fechaDesde + "T00:00:00" : null;
-    this.currentCargo.fechaFin = fechaHasta && fechaHasta !== '' ? fechaHasta + "T00:00:00" : null;
+    this.currentCargo.fechaInicio = fechaDesdeCargo ? fechaDesdeCargo + "T00:00:00" : null;
+    this.currentCargo.fechaFin = fechaHastaCargo && fechaHastaCargo !== '' ? fechaHastaCargo + "T00:00:00" : null;
 
     // Inicializar horarios como un array vacío (requerido según @NotNull en el modelo)
     this.currentCargo.horarios = [];
@@ -97,7 +97,6 @@ function buscarDivision(anio, numero, orientacion, turnoDisplay) {
 
     // Realizamos la consulta al endpoint unique
     const uniqueUrl = `http://pd-backend:8080/divisiones/unique?${queryParams}`;
-    console.log(`Buscando división con: ${queryParams}`);
 
     const checkResponse = request('GET', uniqueUrl);
 
