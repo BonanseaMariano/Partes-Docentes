@@ -16,19 +16,6 @@ function CargoWorld() {
 const { setWorldConstructor } = require('@cucumber/cucumber');
 setWorldConstructor(CargoWorld);
 
-// Mapeamos los valores de tipoDesignacion para que coincidan con el backend
-const tipoDesignacionMap = {
-    'CARGO': 'Cargo',
-    'ESPACIO CURRICULAR': 'Espacio Curricular'
-};
-
-// Mapeamos los valores de turno para que coincidan con el backend
-const turnoMap = {
-    'MAÑANA': 'Mañana',
-    'TARDE': 'Tarde',
-    'VESPERTINO': 'Vespertino',
-    'NOCHE': 'Noche'
-};
 
 // Paso: Dado el cargo institucional cuyo <nombre> que da título al mismo
 Given('el cargo institucional cuyo {string} que da título al mismo', function (nombre) {
@@ -39,17 +26,17 @@ Given('el cargo institucional cuyo {string} que da título al mismo', function (
 
 // Paso: Y que es del tipo de designación <tipoDesignación>
 Given('que es del tipo de designación {string}', function (tipoDesignacion) {
-    // Usamos el mapa para convertir los valores al formato esperado por el backend
-    this.currentCargo.tipoDesignacion = tipoDesignacionMap[tipoDesignacion] || tipoDesignacion;
+    // Asignamos el tipo de designación al cargo actual
+    this.currentCargo.tipoDesignacion = tipoDesignacion;
 });
 
-// Paso: Y que tiene una carga horaria de <cargaHoraria> horas, con vigencia desde "<fechaDesde>" hasta "<fechaHasta>"
-Given('que tiene una carga horaria de {int} horas, con vigencia desde {string} hasta {string}', function (cargaHoraria, fechaDesde, fechaHasta) {
+// Paso: Y que tiene una carga horaria de <cargaHoraria> horas, con vigencia desde "<fechaDesdeCargo>" hasta "<fechaHastaCargo>"
+Given('que tiene una carga horaria de {int} horas, con vigencia desde {string} hasta {string}', function (cargaHoraria, fechaDesdeCargo, fechaHastaCargo) {
     this.currentCargo.cargaHoraria = cargaHoraria;
 
     // Modificar los nombres de los campos para que coincidan con la entidad Java
-    this.currentCargo.fechaInicio = fechaDesde ? fechaDesde + "T00:00:00" : null;
-    this.currentCargo.fechaFin = fechaHasta && fechaHasta !== '' ? fechaHasta + "T00:00:00" : null;
+    this.currentCargo.fechaInicio = fechaDesdeCargo ? fechaDesdeCargo + "T00:00:00" : null;
+    this.currentCargo.fechaFin = fechaHastaCargo && fechaHastaCargo !== '' ? fechaHastaCargo + "T00:00:00" : null;
 
     // Inicializar horarios como un array vacío (requerido según @NotNull en el modelo)
     this.currentCargo.horarios = [];
@@ -63,7 +50,7 @@ Given('que si el tipo es {string}, opcionalmente se asigna a la división {strin
         if (anio && numero && orientacion && turno &&
             anio !== '' && numero !== '' && orientacion !== '' && turno !== '') {
 
-            const turnoFormateado = turnoMap[turno] || turno;
+            const turnoFormateado = turno;
             this.divisionInfo = {
                 anio: parseInt(anio),
                 numero: parseInt(numero),
@@ -97,7 +84,6 @@ function buscarDivision(anio, numero, orientacion, turnoDisplay) {
 
     // Realizamos la consulta al endpoint unique
     const uniqueUrl = `http://pd-backend:8080/divisiones/unique?${queryParams}`;
-    console.log(`Buscando división con: ${queryParams}`);
 
     const checkResponse = request('GET', uniqueUrl);
 
@@ -105,7 +91,6 @@ function buscarDivision(anio, numero, orientacion, turnoDisplay) {
     if (checkResponse.statusCode === 200) {
         const responseBody = JSON.parse(checkResponse.getBody('utf8'));
         if (responseBody && responseBody.data) {
-            console.log(`División encontrada con ID=${responseBody.data.id}`);
             return responseBody.data;
         }
     }
@@ -118,7 +103,7 @@ function buscarDivision(anio, numero, orientacion, turnoDisplay) {
 When('se presiona el botón de guardar', function () {
     try {
         // Si tenemos información de división para un ESPACIO_CURRICULAR, buscamos o creamos la división
-        if (this.divisionInfo && this.currentCargo.tipoDesignacion === tipoDesignacionMap['ESPACIO CURRICULAR']) {
+        if (this.divisionInfo && this.currentCargo.tipoDesignacion === 'ESPACIO_CURRICULAR') {
             const division = buscarDivision(
                 this.divisionInfo.anio,
                 this.divisionInfo.numero,

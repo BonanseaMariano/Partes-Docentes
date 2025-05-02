@@ -72,20 +72,7 @@ public class CargoPresenter {
     @PostMapping
     public ResponseEntity<Object> create(@RequestBody Cargo aCargo) {
         try {
-            // Verificar explícitamente la regla de negocio para cargos con división
-            if (aCargo.getTipoDesignacion() == TipoDesignacion.CARGO && aCargo.getDivision() != null) {
-                return Response.notImplemented(
-                        String.format("Cargo de %s es CARGO y no corresponde asignar división", aCargo.getNombre()));
-            }
-            // Verificar explícitamente la regla de negocio para espacios curriculares sin
-            // división
-            if (aCargo.getTipoDesignacion() == TipoDesignacion.ESPACIO_CURRICULAR && aCargo.getDivision() == null) {
-                return Response.notImplemented(
-                        String.format("Espacio Curricular %s falta asignar división", aCargo.getNombre()));
-            }
-
             Cargo createdCargo = service.save(aCargo);
-
             // Generar mensaje según el tipo de designación
             String mensaje;
             if (createdCargo.getTipoDesignacion() == TipoDesignacion.ESPACIO_CURRICULAR) {
@@ -186,5 +173,39 @@ public class CargoPresenter {
     public ResponseEntity<Object> findByPage(@RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         return Response.ok(service.findByPage(page, size));
+    }
+
+    /**
+     * Busca personas por un término de búsqueda.
+     * 
+     * @param term el término de búsqueda
+     * @return una lista de personas que coinciden con el término de búsqueda
+     */
+    @GetMapping("/search/{term}")
+    public ResponseEntity<Object> search(@PathVariable String term) {
+        return Response.ok(service.search(term));
+    }
+
+    /**
+     * Busca un cargo por su nombre y tipo de designación
+     * 
+     * @param nombre          Nombre del cargo a buscar
+     * @param tipoDesignacion Tipo de designación del cargo a buscar (CARGO o
+     *                        ESPACIO_CURRICULAR)
+     * @return ResponseEntity con el cargo encontrado o mensaje de error si no
+     *         existe
+     */
+    @GetMapping("/unique")
+    public ResponseEntity<Object> findByNombreAndTipoDesignacion(
+            @RequestParam String nombre,
+            @RequestParam TipoDesignacion tipoDesignacion) {
+
+        Cargo cargo = service.findByNombreAndTipoDesignacion(nombre, tipoDesignacion);
+
+        return (cargo != null) ? Response.ok(cargo)
+                : Response.notFound(
+                        String.format("No se encontró cargo con nombre '%s' y tipo '%s'",
+                                nombre, tipoDesignacion.getValor()));
+
     }
 }
