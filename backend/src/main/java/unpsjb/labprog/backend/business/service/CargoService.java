@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -79,7 +80,28 @@ public class CargoService {
      * @return un objeto Page que contiene las entidades Cargo solicitadas
      */
     public Page<Cargo> findByPage(int page, int size) {
-        return repository.findAll(PageRequest.of(page, size));
+        return repository.findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id")));
+    }
+
+    /**
+     * Busca cargos por un término de búsqueda.
+     * 
+     * @param term el término de búsqueda
+     * @return una lista de cargos que coinciden con el término de búsqueda
+     */
+    public List<Cargo> search(String term) {
+        return repository.search("%" + term.toUpperCase() + "%");
+    }
+
+    /**
+     * Busca un cargo por su nombre y tipo de designación
+     * 
+     * @param nombre          Nombre del cargo a buscar
+     * @param tipoDesignacion Tipo de designación del cargo a buscar
+     * @return Cargo encontrado o null si no existe
+     */
+    public Cargo findByNombreAndTipoDesignacion(String nombre, TipoDesignacion tipoDesignacion) {
+        return repository.findByNombreAndTipoDesignacion(nombre, tipoDesignacion).orElse(null);
     }
 
     /**

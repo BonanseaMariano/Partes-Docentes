@@ -58,7 +58,7 @@
             </div>
 
             <!-- Cuarta fila: División (si es necesario) -->
-            <div class="col-md-12 mb-3">
+            <div class="col-12 mb-3">
                 <label for="division" class="form-label text-primary fw-bold">División</label>
                 <div class="row g-2">
                     <!-- Campo de Orientación con typeahead -->
@@ -90,6 +90,7 @@
                             <input type="text" class="form-control" placeholder="Año"
                                 [value]="cargo.division?.anio + '°'" readonly />
                         </div>
+                        <small class="text-secondary">Año</small>
                     </div>
 
                     <!-- Campo de Número (solo lectura) -->
@@ -101,6 +102,7 @@
                             <input type="text" class="form-control" placeholder="Número"
                                 [value]="cargo.division?.numDivision + '°'" readonly />
                         </div>
+                        <small class="text-secondary">División</small>
                     </div>
 
                     <!-- Campo de Turno (solo lectura) -->
@@ -118,6 +120,7 @@
                                 {{ cargo.division?.turno }}
                             </span>
                         </div>
+                        <small class="text-secondary">Turno</small>
                     </div>
                 </div>
             </div>

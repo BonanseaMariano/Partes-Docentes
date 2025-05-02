@@ -10,12 +10,12 @@ export interface Designacion {
     /**
      * Situación de la revista de la persona
      */
-    situacionRevista: string;
+    situacionRevista?: string;
 
     /**
      * Fecha y hora de inicio de la designación
      */
-    fechaInicio?: Date;
+    fechaInicio: Date;
 
     /**
      * Fecha y hora de finalización de la designación

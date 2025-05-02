@@ -1,8 +1,10 @@
 package unpsjb.labprog.backend.business.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import unpsjb.labprog.backend.model.Persona;
@@ -29,4 +31,13 @@ public interface PersonaRepository extends JpaRepository<Persona, Integer> {
      * @return Persona encontrada o null si no existe
      */
     Optional<Persona> findByCuil(String cuil);
+
+    /**
+     * Busca una persona por su nombre o apellido
+     * 
+     * @param term Cadena a buscar en nombre o apellido
+     * @return Personas que coinciden con la búsqueda
+     */
+    @Query("SELECT e FROM Persona e WHERE UPPER(e.nombre) LIKE ?1 OR UPPER(e.apellido) LIKE ?1")
+    List<Persona> search(String term);
 }
