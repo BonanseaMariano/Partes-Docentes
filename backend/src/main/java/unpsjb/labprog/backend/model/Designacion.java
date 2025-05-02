@@ -11,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -34,7 +35,8 @@ public class Designacion {
      * ID de la designación, generado automáticamente
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "designaciones_seq_gen")
+    @SequenceGenerator(name = "designaciones_seq_gen", sequenceName = "designaciones_seq", initialValue = 1000, allocationSize = 1)
     private int id;
 
     /**
