@@ -83,6 +83,27 @@ public class CargoService {
     }
 
     /**
+     * Busca cargos por un término de búsqueda.
+     * 
+     * @param term el término de búsqueda
+     * @return una lista de cargos que coinciden con el término de búsqueda
+     */
+    public List<Cargo> search(String term) {
+        return repository.search("%" + term.toUpperCase() + "%");
+    }
+
+    /**
+     * Busca un cargo por su nombre y tipo de designación
+     * 
+     * @param nombre          Nombre del cargo a buscar
+     * @param tipoDesignacion Tipo de designación del cargo a buscar
+     * @return Cargo encontrado o null si no existe
+     */
+    public Cargo findByNombreAndTipoDesignacion(String nombre, TipoDesignacion tipoDesignacion) {
+        return repository.findByNombreAndTipoDesignacion(nombre, tipoDesignacion).orElse(null);
+    }
+
+    /**
      * Valida las reglas de negocio específicas para los cargos:
      * 1. Si es ESPACIO CURRICULAR, debe tener una división asignada
      * 2. Si es CARGO, no debe tener una división asignada

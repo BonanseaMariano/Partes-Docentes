@@ -83,6 +83,16 @@ public class PersonaService {
     }
 
     /**
+     * Busca personas por un término de búsqueda.
+     * 
+     * @param term el término de búsqueda
+     * @return una lista de personas que coinciden con el término de búsqueda
+     */
+    public List<Persona> search(String term) {
+        return repository.search("%" + term.toUpperCase() + "%");
+    }
+
+    /**
      * Obtiene una página de entidades Persona.
      * 
      * @param page el índice de página basado en cero

@@ -180,4 +180,15 @@ public class PersonaPresenter {
                                     deletedPersona.getDni()));
         }
     }
+
+    /**
+     * Busca personas por un término de búsqueda.
+     * 
+     * @param term el término de búsqueda
+     * @return una lista de personas que coinciden con el término de búsqueda
+     */
+    @GetMapping("/search/{term}")
+    public ResponseEntity<Object> search(@PathVariable String term) {
+        return Response.ok(service.search(term));
+    }
 }
