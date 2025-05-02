@@ -72,20 +72,7 @@ public class CargoPresenter {
     @PostMapping
     public ResponseEntity<Object> create(@RequestBody Cargo aCargo) {
         try {
-            // Verificar explícitamente la regla de negocio para cargos con división
-            if (aCargo.getTipoDesignacion() == TipoDesignacion.CARGO && aCargo.getDivision() != null) {
-                return Response.notImplemented(
-                        String.format("Cargo de %s es CARGO y no corresponde asignar división", aCargo.getNombre()));
-            }
-            // Verificar explícitamente la regla de negocio para espacios curriculares sin
-            // división
-            if (aCargo.getTipoDesignacion() == TipoDesignacion.ESPACIO_CURRICULAR && aCargo.getDivision() == null) {
-                return Response.notImplemented(
-                        String.format("Espacio Curricular %s falta asignar división", aCargo.getNombre()));
-            }
-
             Cargo createdCargo = service.save(aCargo);
-
             // Generar mensaje según el tipo de designación
             String mensaje;
             if (createdCargo.getTipoDesignacion() == TipoDesignacion.ESPACIO_CURRICULAR) {
