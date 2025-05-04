@@ -47,9 +47,6 @@ export class CargoDetailComponent implements OnInit {
 
     tituloFormulario: string = 'Nuevo Cargo Institucional';
 
-    searching = false;
-    searchFailed = false;
-
     constructor(
         private route: ActivatedRoute,
         private cargoService: CargoService,
@@ -221,17 +218,12 @@ export class CargoDetailComponent implements OnInit {
             debounceTime(300),
             distinctUntilChanged(),
             filter(term => term.length >= 2),
-            tap(() => this.searching = true),
             switchMap(term =>
                 this.divisionService.search(term).pipe(
                     map(dataPackage => <Division[]>dataPackage.data),
-                    catchError(() => {
-                        this.searchFailed = true;
-                        return of([]);
-                    })
+                    catchError(() => of([]))
                 )
-            ),
-            tap(() => this.searching = false)
+            )
         );
 
     // Formateador de resultados en el dropdown

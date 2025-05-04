@@ -38,12 +38,6 @@ export class DesignacionDetailComponent implements OnInit {
     personaSeleccionada: any = '';
     cargoSeleccionado: any = '';
 
-    // Para el estado de búsqueda
-    searchingPersona = false;
-    searchFailedPersona = false;
-    searchingCargo = false;
-    searchFailedCargo = false;
-
     // Propiedades para los datepickers
     fechaInicioDate: NgbDateStruct | null = null;
     fechaFinDate: NgbDateStruct | null = null;
@@ -67,7 +61,19 @@ export class DesignacionDetailComponent implements OnInit {
     // Método para verificar si el formulario es válido
     isFormValid(): boolean {
         // Verificar que la persona y el cargo tengan un ID (lo que indica que son objetos reales)
-        return !!this.designacion.persona?.id && !!this.designacion.cargo?.id && !!this.fechaInicioDate;
+        // y que la fecha de inicio sea válida
+        const formValido = !!this.designacion.persona?.id && !!this.designacion.cargo?.id && !!this.fechaInicioDate;
+        
+        // Obtener la referencia al campo de fecha de inicio para verificar si es válido
+        const form = document.querySelector('form');
+        if (form) {
+            const fechaInicioElement = form.querySelector('#fechaInicio');
+            if (fechaInicioElement && fechaInicioElement.classList.contains('ng-invalid')) {
+                return false;
+            }
+        }
+        
+        return formValido;
     }
 
     save(): void {
@@ -170,17 +176,12 @@ export class DesignacionDetailComponent implements OnInit {
             debounceTime(300),
             distinctUntilChanged(),
             filter(term => term.length >= 2),
-            tap(() => this.searchingPersona = true),
             switchMap(term =>
                 this.personaService.search(term).pipe(
                     map(dataPackage => <Persona[]>dataPackage.data),
-                    catchError(() => {
-                        this.searchFailedPersona = true;
-                        return of([]);
-                    })
+                    catchError(() => of([]))
                 )
-            ),
-            tap(() => this.searchingPersona = false)
+            )
         );
 
     // Formateador de resultados en el dropdown para personas
@@ -217,17 +218,12 @@ export class DesignacionDetailComponent implements OnInit {
             debounceTime(300),
             distinctUntilChanged(),
             filter(term => term.length >= 2),
-            tap(() => this.searchingCargo = true),
             switchMap(term =>
                 this.cargoService.search(term).pipe(
                     map(dataPackage => <Cargo[]>dataPackage.data),
-                    catchError(() => {
-                        this.searchFailedCargo = true;
-                        return of([]);
-                    })
+                    catchError(() => of([]))
                 )
-            ),
-            tap(() => this.searchingCargo = false)
+            )
         );
 
     // Formateador de resultados en el dropdown para cargos

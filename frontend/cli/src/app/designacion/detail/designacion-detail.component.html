@@ -23,13 +23,6 @@
                                 (selectItem)="seleccionarPersona($event.item)"
                                 (ngModelChange)="onPersonaInputChange($event)" required #persona="ngModel" />
                         </div>
-                        <output *ngIf="searchingPersona" class="spinner-border spinner-border-sm text-primary mt-1"
-                            aria-live="polite">
-                            <span class="visually-hidden">Buscando...</span>
-                        </output>
-                        <div *ngIf="searchFailedPersona" class="text-danger small mt-1">
-                            <i class="fa fa-exclamation-circle me-1"></i>Error al buscar personas
-                        </div>
                         <div *ngIf="persona.invalid && persona.touched && !designacion.persona?.id"
                             class="text-danger small mt-1">
                             <i class="fa fa-exclamation-circle me-1"></i>Seleccione una persona
@@ -91,13 +84,6 @@
                                 [resultFormatter]="resultCargoFormat" [inputFormatter]="inputCargoFormat"
                                 (selectItem)="seleccionarCargo($event.item)"
                                 (ngModelChange)="onCargoInputChange($event)" required #cargo="ngModel" />
-                        </div>
-                        <output *ngIf="searchingCargo" class="spinner-border spinner-border-sm text-primary mt-1"
-                            aria-live="polite">
-                            <span class="visually-hidden">Buscando...</span>
-                        </output>
-                        <div *ngIf="searchFailedCargo" class="text-danger small mt-1">
-                            <i class="fa fa-exclamation-circle me-1"></i>Error al buscar cargos
                         </div>
                         <div *ngIf="cargo.invalid && cargo.touched && !designacion.cargo?.id"
                             class="text-danger small mt-1">
