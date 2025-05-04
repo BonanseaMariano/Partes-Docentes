@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import unpsjb.labprog.backend.business.repository.DesignacionRepository;
+import unpsjb.labprog.backend.exception.BusinessLogicException;
 import unpsjb.labprog.backend.model.Designacion;
 
 /**
@@ -46,9 +47,13 @@ public class DesignacionService {
      * 
      * @param designacion Designación a guardar
      * @return Designación guardada
+     * @throws BusinessLogicException si no se cumplen las reglas de negocio
      */
     @Transactional
-    public Designacion save(Designacion designacion) {
+    public Designacion save(Designacion designacion) throws BusinessLogicException {
+        // Validar reglas de negocio antes de guardar
+        validarReglasDeNegocio(designacion);
+
         return repository.save(designacion);
     }
 
@@ -73,4 +78,18 @@ public class DesignacionService {
         return repository.findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id")));
     }
 
+    /**
+     * Valida las reglas de negocio específicas para las designaciones:
+     * - La fecha de inicio debe ser anterior a la fecha de finalización
+     * 
+     * @param designacion Designación a validar
+     * @throws BusinessLogicException si no se cumplen las reglas
+     */
+    private void validarReglasDeNegocio(Designacion designacion) throws BusinessLogicException {
+        // Validación: fechaInicio debe ser anterior a fechaFin
+        if (designacion.getFechaFin() != null && designacion.getFechaInicio().isAfter(designacion.getFechaFin())) {
+            throw new BusinessLogicException(
+                    "La fecha de inicio no puede ser posterior a la fecha de finalización para la designación");
+        }
+    }
 }

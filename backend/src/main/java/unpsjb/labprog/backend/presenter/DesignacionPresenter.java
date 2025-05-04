@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import unpsjb.labprog.backend.Response;
 import unpsjb.labprog.backend.business.repository.DesignacionRepository;
 import unpsjb.labprog.backend.business.service.DesignacionService;
+import unpsjb.labprog.backend.exception.BusinessLogicException;
 import unpsjb.labprog.backend.model.Designacion;
 import unpsjb.labprog.backend.model.enums.TipoDesignacion;
 
@@ -101,6 +102,10 @@ public class DesignacionPresenter {
             }
 
             return Response.ok(null, mensaje);
+        } catch (BusinessLogicException e) {
+            // Capturar excepciones de validación de negocio y devolver error 422 (Entidad
+            // no procesable)
+            return Response.unprocessableEntity(e.getMessage());
         } catch (DataIntegrityViolationException e) {
             return Response.dbError("No se puede crear la designación debido a que ya existe otra idéntica");
         }

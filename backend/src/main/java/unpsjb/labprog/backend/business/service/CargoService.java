@@ -108,6 +108,7 @@ public class CargoService {
      * Valida las reglas de negocio específicas para los cargos:
      * 1. Si es ESPACIO CURRICULAR, debe tener una división asignada
      * 2. Si es CARGO, no debe tener una división asignada
+     * 3. La fecha de inicio debe ser anterior a la fecha de finalización
      * 
      * @param cargo Cargo a validar
      * @throws BusinessLogicException si no se cumplen las reglas
@@ -128,6 +129,13 @@ public class CargoService {
                 throw new BusinessLogicException(
                         "Cargo de " + cargo.getNombre() + " es CARGO y no corresponde asignar división");
             }
+        }
+
+        // Validación adicional: fechaInicio debe ser anterior a fechaFin
+        if (cargo.getFechaFin() != null && cargo.getFechaInicio().isAfter(cargo.getFechaFin())) {
+            throw new BusinessLogicException(
+                    "La fecha de inicio no puede ser posterior a la fecha de finalización para el cargo "
+                            + cargo.getNombre());
         }
     }
 }

@@ -90,8 +90,9 @@ public class CargoPresenter {
 
             return Response.ok(null, mensaje);
         } catch (BusinessLogicException e) {
-            // Capturar excepciones de validación de negocio y devolver error 501
-            return Response.notImplemented(e.getMessage());
+            // Capturar excepciones de validación de negocio y devolver error 422 (Entidad
+            // no procesable)
+            return Response.unprocessableEntity(e.getMessage());
         } catch (DataIntegrityViolationException e) {
             return Response.dbError("No se puede crear el cargo debido a que ya existe otro identico");
         }
@@ -134,7 +135,7 @@ public class CargoPresenter {
             return Response.ok(null, mensaje);
         } catch (BusinessLogicException e) {
             // Capturar excepciones de validación de negocio y devolver error 501
-            return Response.notImplemented(e.getMessage());
+            return Response.unprocessableEntity(e.getMessage());
         } catch (DataIntegrityViolationException e) {
             return Response.dbError("No se puede actualizar el cargo debido a que ya existe otro identico");
         }

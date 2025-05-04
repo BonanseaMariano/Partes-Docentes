@@ -42,7 +42,7 @@ public class Response {
 		return response(HttpStatus.CONFLICT, msj, null);
 	}
 
-	public static ResponseEntity<Object> notImplemented(String msj) {
-		return response(HttpStatus.NOT_IMPLEMENTED, msj, null);
+	public static ResponseEntity<Object> unprocessableEntity(String msj) {
+		return response(HttpStatus.UNPROCESSABLE_ENTITY, msj, null);
 	}
 }
