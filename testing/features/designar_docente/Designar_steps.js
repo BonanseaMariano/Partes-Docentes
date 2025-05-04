@@ -56,9 +56,9 @@ Given('se designa por el período {string} {string}', function (fechaDesdeDesign
     }
 
     // Aplicamos el mismo formato que en Cargo_steps.js
-    this.currentDesignacion.fechaInicio = fechaDesdeDesignacion ? fechaDesdeDesignacion + "T00:00:00" : null;
+    this.currentDesignacion.fechaInicio = fechaDesdeDesignacion ? fechaDesdeDesignacion + "T03:00:00" : null;
     this.currentDesignacion.fechaFin = fechaHastaDesignacion && fechaHastaDesignacion !== '' ?
-        fechaHastaDesignacion + "T00:00:00" : null;
+        fechaHastaDesignacion + "T03:00:00" : null;
 
     // Asignar situacionRevista por defecto si no existe
     if (!this.currentDesignacion.situacionRevista) {

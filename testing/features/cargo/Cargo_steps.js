@@ -35,8 +35,8 @@ Given('que tiene una carga horaria de {int} horas, con vigencia desde {string} h
     this.currentCargo.cargaHoraria = cargaHoraria;
 
     // Modificar los nombres de los campos para que coincidan con la entidad Java
-    this.currentCargo.fechaInicio = fechaDesdeCargo ? fechaDesdeCargo + "T00:00:00" : null;
-    this.currentCargo.fechaFin = fechaHastaCargo && fechaHastaCargo !== '' ? fechaHastaCargo + "T00:00:00" : null;
+    this.currentCargo.fechaInicio = fechaDesdeCargo ? fechaDesdeCargo + "T03:00:00" : null;
+    this.currentCargo.fechaFin = fechaHastaCargo && fechaHastaCargo !== '' ? fechaHastaCargo + "T03:00:00" : null;
 
     // Inicializar horarios como un array vacío (requerido según @NotNull en el modelo)
     this.currentCargo.horarios = [];

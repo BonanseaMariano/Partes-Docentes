@@ -58,7 +58,7 @@ import unpsjb.labprog.backend.model.enums.TipoDesignacion;
  */
 @Entity
 @Table(name = "cargos", uniqueConstraints = @UniqueConstraint(name = "uk_cargo", columnNames = { "nombre",
-        "tipo_designacion", "division_id" }))
+        "fecha_inicio", "tipo_designacion", "division_id" }))
 @Getter
 @Setter
 @NoArgsConstructor
