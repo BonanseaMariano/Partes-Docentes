@@ -1,5 +1,5 @@
 import { CommonModule, Location } from '@angular/common';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewChecked, ChangeDetectorRef } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { NgbCalendar, NgbDatepickerModule, NgbDateStruct, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
@@ -27,7 +27,7 @@ import { CargoService } from '../service/cargo.service';
     }
   `
 })
-export class CargoDetailComponent implements OnInit {
+export class CargoDetailComponent implements OnInit, AfterViewChecked {
     @ViewChild('form') form!: NgForm;
 
     cargo!: Cargo;
@@ -40,6 +40,7 @@ export class CargoDetailComponent implements OnInit {
     // Para validaciones
     divisionValida: boolean = true; // Por defecto true porque no es obligatoria para todos los tipos
     mostrarErrorDivision: boolean = false;
+    formularioValido: boolean = false;
 
     // Propiedades para los datepickers
     fechaInicioDate: NgbDateStruct | null = null;
@@ -53,7 +54,8 @@ export class CargoDetailComponent implements OnInit {
         private divisionService: DivisionService,
         private location: Location,
         private modalService: ModalService,
-        public calendar: NgbCalendar
+        public calendar: NgbCalendar,
+        private cdr: ChangeDetectorRef
     ) { }
 
     goBack(): void {
@@ -61,10 +63,11 @@ export class CargoDetailComponent implements OnInit {
     }
 
     // Método para verificar si el formulario es válido
-    isFormValid(): boolean {
+    verificarFormularioValido(): void {
         // Verificar campos básicos obligatorios
         if (!this.form) {
-            return false;
+            this.formularioValido = false;
+            return;
         }
 
         // Verificar la fecha de inicio de forma segura
@@ -82,11 +85,17 @@ export class CargoDetailComponent implements OnInit {
             const divisionId = this.cargo.division?.id;
             this.divisionValida = divisionId !== undefined && divisionId !== null;
 
-            return formIsValid && fechaInicioValida && this.divisionValida;
+            this.formularioValido = formIsValid && fechaInicioValida && this.divisionValida;
+        } else {
+            // Si no es espacio curricular, la división no es necesaria
+            this.formularioValido = formIsValid && fechaInicioValida;
         }
+    }
 
-        // Si no es espacio curricular, la división no es necesaria
-        return formIsValid && fechaInicioValida;
+    // Este método se ejecuta después de cada ciclo de detección de cambios
+    ngAfterViewChecked() {
+        this.verificarFormularioValido();
+        this.cdr.detectChanges();
     }
 
     // Método para mostrar el valor amigable del enum TipoDesignacion
@@ -106,6 +115,7 @@ export class CargoDetailComponent implements OnInit {
             // Si cambia a Espacio Curricular, marcar como inválido si no hay división
             this.divisionValida = !!this.cargo.division?.id;
         }
+        this.verificarFormularioValido();
     }
 
     // Método para manejar cambios en el input de división
@@ -118,6 +128,12 @@ export class CargoDetailComponent implements OnInit {
             // Si es texto pero no corresponde a una división seleccionada
             this.divisionValida = false;
         }
+        this.verificarFormularioValido();
+    }
+
+    // Método para detectar cambios en los datepickers
+    onDateChange(): void {
+        this.verificarFormularioValido();
     }
 
     save(): void {
@@ -177,6 +193,9 @@ export class CargoDetailComponent implements OnInit {
             this.isNewCargo = true;  // Es un nuevo cargo
             // Establecer la fecha de inicio al día de hoy
             this.fechaInicioDate = this.calendar.getToday();
+
+            // Verificar el estado inicial del formulario
+            setTimeout(() => this.verificarFormularioValido(), 0);
         } else {
             this.cargoService.get(parseInt(id!)).subscribe({
                 next: (dataPackage) => {
@@ -208,6 +227,9 @@ export class CargoDetailComponent implements OnInit {
                             day: fechaFin.getDate()
                         };
                     }
+
+                    // Verificar el estado inicial del formulario
+                    setTimeout(() => this.verificarFormularioValido(), 0);
                 }
             });
         }
@@ -245,6 +267,7 @@ export class CargoDetailComponent implements OnInit {
             this.divisionSeleccionada = division;
             this.divisionValida = true;
             this.mostrarErrorDivision = false;
+            this.verificarFormularioValido();
         }
     }
 

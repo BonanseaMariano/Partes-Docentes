@@ -156,7 +156,8 @@
                     </span>
                     <input id="fechaInicio" name="fechaInicio" class="form-control" placeholder="dd/mm/yyyy"
                         [(ngModel)]="fechaInicioDate" [startDate]="fechaInicioDate || calendar.getToday()" ngbDatepicker
-                        #fechaInicioPicker="ngbDatepicker" required #fechaInicio="ngModel" />
+                        #fechaInicioPicker="ngbDatepicker" required #fechaInicio="ngModel"
+                        (ngModelChange)="onDateChange()" />
                     <button class="btn btn-outline-secondary calendar" (click)="fechaInicioPicker.toggle()"
                         type="button">
                         <i class="fa fa-calendar"></i>
@@ -176,7 +177,8 @@
                     </span>
                     <input id="fechaFin" name="fechaFin" class="form-control" placeholder="dd/mm/yyyy"
                         [(ngModel)]="fechaFinDate" [startDate]="fechaFinDate || fechaInicioDate || calendar.getToday()"
-                        ngbDatepicker #fechaFinPicker="ngbDatepicker" #fechaFin="ngModel" />
+                        ngbDatepicker #fechaFinPicker="ngbDatepicker" #fechaFin="ngModel"
+                        (ngModelChange)="onDateChange()" />
                     <button class="btn btn-outline-secondary calendar" (click)="fechaFinPicker.toggle()" type="button">
                         <i class="fa fa-calendar"></i>
                     </button>
@@ -189,7 +191,7 @@
         <button (click)="goBack()" class="btn btn-outline-secondary me-2">
             <i class="fa fa-arrow-left me-1"></i>Cancelar
         </button>
-        <button (click)="save()" class="btn btn-success" [disabled]="!isFormValid()">
+        <button (click)="save()" class="btn btn-success" [disabled]="!formularioValido">
             <i class="fa fa-save me-1"></i>Guardar
         </button>
     </div>
