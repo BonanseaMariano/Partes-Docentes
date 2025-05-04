@@ -30,6 +30,7 @@ import { CargoService } from '../service/cargo.service';
 export class CargoDetailComponent implements OnInit {
     cargo!: Cargo;
     tiposDesignacion = Object.values(TipoDesignacion);
+    tipoDesignacionEnum = TipoDesignacion; // Para acceder a la enumeración desde el HTML
     isNewCargo: boolean = true;
     divisionSeleccionada: any = '';
     turnoEnum = Turno; // Necesario para acceder a la enumeración desde el HTML
@@ -59,6 +60,23 @@ export class CargoDetailComponent implements OnInit {
     // Método para mostrar el valor amigable del enum TipoDesignacion
     getTipoDisplay(tipoDesignacion: TipoDesignacion): string {
         return tipoDesignacion;
+    }
+
+    // Método para manejar cambios en el tipo de designación
+    onTipoDesignacionChange(): void {
+        if (this.cargo.tipoDesignacion !== TipoDesignacion.ESPACIO_CURRICULAR) {
+            // Si el tipo no es "Espacio Curricular", limpiar la división
+            this.cargo.division = undefined;
+            this.divisionSeleccionada = '';
+        }
+    }
+
+    // Método simplificado para manejar cambios en el input de división
+    onDivisionInputChange(value: any): void {
+        // Si el campo está vacío, limpiar la división asignada
+        if (value === '') {
+            this.cargo.division = undefined;
+        }
     }
 
     save(): void {

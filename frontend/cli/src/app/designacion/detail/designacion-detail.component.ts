@@ -197,6 +197,14 @@ export class DesignacionDetailComponent implements OnInit {
         }
     }
 
+    // Método para manejar cambios en el input de persona
+    onPersonaInputChange(value: any): void {
+        // Si el campo está vacío, limpiar la persona asignada
+        if (value === '') {
+            this.designacion.persona = <Persona>{};
+        }
+    }
+
     // Métodos para la búsqueda de cargos
     searchCargo = (text$: Observable<string>): Observable<Cargo[]> =>
         text$.pipe(
@@ -238,6 +246,14 @@ export class DesignacionDetailComponent implements OnInit {
         if (cargo) {
             this.designacion.cargo = cargo;
             this.cargoSeleccionado = cargo;
+        }
+    }
+
+    // Método para manejar cambios en el input de cargo
+    onCargoInputChange(value: any): void {
+        // Si el campo está vacío, limpiar el cargo asignado
+        if (value === '') {
+            this.designacion.cargo = <Cargo>{};
         }
     }
 

@@ -18,7 +18,8 @@
                             <input id="persona" name="persona" type="text" placeholder="Buscar por nombre o apellido..."
                                 class="form-control" [(ngModel)]="personaSeleccionada" [ngbTypeahead]="searchPersona"
                                 [resultFormatter]="resultPersonaFormat" [inputFormatter]="inputPersonaFormat"
-                                (selectItem)="seleccionarPersona($event.item)" required #persona="ngModel" />
+                                (selectItem)="seleccionarPersona($event.item)"
+                                (ngModelChange)="onPersonaInputChange($event)" required #persona="ngModel" />
                         </div>
                         <output *ngIf="searchingPersona" class="spinner-border spinner-border-sm text-primary mt-1"
                             aria-live="polite">
@@ -84,7 +85,8 @@
                             <input id="cargo" name="cargo" type="text" placeholder="Buscar por nombre del cargo..."
                                 class="form-control" [(ngModel)]="cargoSeleccionado" [ngbTypeahead]="searchCargo"
                                 [resultFormatter]="resultCargoFormat" [inputFormatter]="inputCargoFormat"
-                                (selectItem)="seleccionarCargo($event.item)" required #cargo="ngModel" />
+                                (selectItem)="seleccionarCargo($event.item)"
+                                (ngModelChange)="onCargoInputChange($event)" required #cargo="ngModel" />
                         </div>
                         <output *ngIf="searchingCargo" class="spinner-border spinner-border-sm text-primary mt-1"
                             aria-live="polite">

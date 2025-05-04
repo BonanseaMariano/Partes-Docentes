@@ -45,7 +45,8 @@
                         <i class="fa fa-list"></i>
                     </span>
                     <select id="tipoDesignacion" name="tipoDesignacion" class="form-select"
-                        [(ngModel)]="cargo.tipoDesignacion" required #tipoDesignacion="ngModel">
+                        [(ngModel)]="cargo.tipoDesignacion" required #tipoDesignacion="ngModel"
+                        (change)="onTipoDesignacionChange()">
                         <option *ngFor="let tipo of tiposDesignacion" [ngValue]="tipo">
                             {{ getTipoDisplay(tipo) }}
                         </option>
@@ -57,8 +58,8 @@
                 </div>
             </div>
 
-            <!-- Cuarta fila: División (si es necesario) -->
-            <div class="col-12 mb-3">
+            <!-- Cuarta fila: División (solo si el tipo es Espacio Curricular) -->
+            <div class="col-12 mb-3" *ngIf="cargo.tipoDesignacion === tipoDesignacionEnum.ESPACIO_CURRICULAR">
                 <label for="division" class="form-label text-primary fw-bold">División</label>
                 <div class="row g-2">
                     <!-- Campo de Orientación con typeahead -->
@@ -70,7 +71,8 @@
                             <input id="division" name="division" type="text" placeholder="Buscar por orientación..."
                                 class="form-control" [(ngModel)]="divisionSeleccionada" [ngbTypeahead]="searchDivision"
                                 [resultFormatter]="resultDivisionFormat" [inputFormatter]="inputDivisionFormat"
-                                (selectItem)="seleccionarDivision($event.item)" />
+                                (selectItem)="seleccionarDivision($event.item)"
+                                (ngModelChange)="onDivisionInputChange($event)" />
                         </div>
                         <output *ngIf="searching" class="spinner-border spinner-border-sm text-primary mt-1"
                             aria-live="polite">
