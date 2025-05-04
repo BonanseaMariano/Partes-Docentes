@@ -19,7 +19,8 @@ export class ModalService {
     const modal = this.modalService.open(ModalComponent, {
       backdrop: 'static', // Previene que se cierre al hacer clic fuera
       keyboard: false,    // Previene que se cierre con la tecla Escape
-      centered: true
+      centered: true,
+      windowClass: 'modal-confirm' // Clase para la ventana modal completa
     });
     modal.componentInstance.title = title;
     modal.componentInstance.message = message;
@@ -32,6 +33,11 @@ export class ModalService {
         result => resolve(result),
         reason => {
           // Simplemente ignoramos el rechazo sin propagarlo
+          if (reason === 'Cross click' || reason === 'Cancel click') {
+            // No hacemos nada, solo evitamos que el error se propague
+          } else {
+            reject(reason);
+          }
         }
       );
     });
@@ -48,7 +54,8 @@ export class ModalService {
     const modal = this.modalService.open(ModalComponent, {
       backdrop: 'static', // Previene que se cierre al hacer clic fuera
       keyboard: false,    // Previene que se cierre con la tecla Escape
-      centered: true
+      centered: true,
+      windowClass: 'modal-error' // Clase para la ventana modal completa
     });
     modal.componentInstance.title = title;
     modal.componentInstance.message = message;
@@ -77,7 +84,8 @@ export class ModalService {
     const modal = this.modalService.open(ModalComponent, {
       backdrop: 'static', // Previene que se cierre al hacer clic fuera
       keyboard: false,    // Previene que se cierre con la tecla Escape
-      centered: true
+      centered: true,
+      windowClass: 'modal-success' // Clase para la ventana modal completa
     });
     modal.componentInstance.title = title;
     modal.componentInstance.message = message;
