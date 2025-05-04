@@ -11,8 +11,7 @@
         }"></i>
         {{title}}
     </h4>
-    <button type="button" class="btn-close btn-close-white" aria-describedby="modal-title"
-        (click)="modal.dismiss('Cross click')"></button>
+    <!-- Botón de cierre eliminado para evitar errores -->
 </div>
 <div class="modal-body">
     <p class="mb-2">
@@ -23,7 +22,8 @@
     </p>
 </div>
 <div class="modal-footer">
-    <button *ngIf="showCancelButton" type="button" class="btn btn-outline-secondary" (click)="modal.dismiss('Cancel click')">
+    <button *ngIf="showCancelButton" type="button" class="btn btn-outline-secondary"
+        (click)="modal.dismiss('Cancel click')">
         <i class="fa fa-times me-1"></i>Cancelar
     </button>
     <button type="button" class="btn" [ngClass]="{
