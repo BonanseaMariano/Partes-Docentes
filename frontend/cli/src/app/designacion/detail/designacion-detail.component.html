@@ -16,7 +16,9 @@
                                 <i class="fa fa-user"></i>
                             </span>
                             <input id="persona" name="persona" type="text" placeholder="Buscar por nombre o apellido..."
-                                class="form-control" [(ngModel)]="personaSeleccionada" [ngbTypeahead]="searchPersona"
+                                class="form-control"
+                                [ngClass]="{'is-invalid': persona.invalid && persona.touched && !designacion.persona.id}"
+                                [(ngModel)]="personaSeleccionada" [ngbTypeahead]="searchPersona"
                                 [resultFormatter]="resultPersonaFormat" [inputFormatter]="inputPersonaFormat"
                                 (selectItem)="seleccionarPersona($event.item)"
                                 (ngModelChange)="onPersonaInputChange($event)" required #persona="ngModel" />
@@ -28,9 +30,9 @@
                         <div *ngIf="searchFailedPersona" class="text-danger small mt-1">
                             <i class="fa fa-exclamation-circle me-1"></i>Error al buscar personas
                         </div>
-                        <div *ngIf="persona.invalid && (persona.dirty || persona.touched)"
+                        <div *ngIf="persona.invalid && persona.touched && !designacion.persona?.id"
                             class="text-danger small mt-1">
-                            <i class="fa fa-exclamation-circle me-1"></i>La persona es requerida
+                            <i class="fa fa-exclamation-circle me-1"></i>Seleccione una persona
                         </div>
                     </div>
                 </div>
@@ -83,7 +85,9 @@
                                 <i class="fa fa-briefcase"></i>
                             </span>
                             <input id="cargo" name="cargo" type="text" placeholder="Buscar por nombre del cargo..."
-                                class="form-control" [(ngModel)]="cargoSeleccionado" [ngbTypeahead]="searchCargo"
+                                class="form-control"
+                                [ngClass]="{'is-invalid': cargo.invalid && cargo.touched && !designacion.cargo.id}"
+                                [(ngModel)]="cargoSeleccionado" [ngbTypeahead]="searchCargo"
                                 [resultFormatter]="resultCargoFormat" [inputFormatter]="inputCargoFormat"
                                 (selectItem)="seleccionarCargo($event.item)"
                                 (ngModelChange)="onCargoInputChange($event)" required #cargo="ngModel" />
@@ -95,8 +99,9 @@
                         <div *ngIf="searchFailedCargo" class="text-danger small mt-1">
                             <i class="fa fa-exclamation-circle me-1"></i>Error al buscar cargos
                         </div>
-                        <div *ngIf="cargo.invalid && (cargo.dirty || cargo.touched)" class="text-danger small mt-1">
-                            <i class="fa fa-exclamation-circle me-1"></i>El cargo es requerido
+                        <div *ngIf="cargo.invalid && cargo.touched && !designacion.cargo?.id"
+                            class="text-danger small mt-1">
+                            <i class="fa fa-exclamation-circle me-1"></i>Seleccione un cargo
                         </div>
                     </div>
                 </div>
@@ -198,7 +203,7 @@
         <button (click)="goBack()" class="btn btn-outline-secondary me-2">
             <i class="fa fa-arrow-left me-1"></i>Cancelar
         </button>
-        <button (click)="save()" class="btn btn-success" [disabled]="form.invalid">
+        <button (click)="save()" class="btn btn-success" [disabled]="!isFormValid()">
             <i class="fa fa-save me-1"></i>Guardar
         </button>
     </div>

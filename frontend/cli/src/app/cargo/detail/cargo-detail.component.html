@@ -69,10 +69,13 @@
                                 <i class="fa fa-layer-group"></i>
                             </span>
                             <input id="division" name="division" type="text" placeholder="Buscar por orientación..."
-                                class="form-control" [(ngModel)]="divisionSeleccionada" [ngbTypeahead]="searchDivision"
+                                class="form-control" 
+                                [ngClass]="{'is-invalid': mostrarErrorDivision || (cargo.tipoDesignacion === tipoDesignacionEnum.ESPACIO_CURRICULAR && !divisionValida)}"
+                                [(ngModel)]="divisionSeleccionada" [ngbTypeahead]="searchDivision"
                                 [resultFormatter]="resultDivisionFormat" [inputFormatter]="inputDivisionFormat"
                                 (selectItem)="seleccionarDivision($event.item)"
-                                (ngModelChange)="onDivisionInputChange($event)" />
+                                (ngModelChange)="onDivisionInputChange($event)"
+                                (focus)="mostrarErrorDivision = false" />
                         </div>
                         <output *ngIf="searching" class="spinner-border spinner-border-sm text-primary mt-1"
                             aria-live="polite">
@@ -80,6 +83,10 @@
                         </output>
                         <div *ngIf="searchFailed" class="text-danger small mt-1">
                             <i class="fa fa-exclamation-circle me-1"></i>Error al buscar divisiones
+                        </div>
+                        <div *ngIf="mostrarErrorDivision || (cargo.tipoDesignacion === tipoDesignacionEnum.ESPACIO_CURRICULAR && !divisionValida && divisionSeleccionada)"
+                            class="text-danger small mt-1">
+                            <i class="fa fa-exclamation-circle me-1"></i>Debe seleccionar una división válida
                         </div>
                     </div>
 
@@ -170,7 +177,7 @@
         <button (click)="goBack()" class="btn btn-outline-secondary me-2">
             <i class="fa fa-arrow-left me-1"></i>Cancelar
         </button>
-        <button (click)="save()" class="btn btn-success" [disabled]="form.invalid">
+        <button (click)="save()" class="btn btn-success" [disabled]="!isFormValid()">
             <i class="fa fa-save me-1"></i>Guardar
         </button>
     </div>

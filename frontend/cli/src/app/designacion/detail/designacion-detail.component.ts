@@ -64,6 +64,12 @@ export class DesignacionDetailComponent implements OnInit {
         this.location.back();
     }
 
+    // Método para verificar si el formulario es válido
+    isFormValid(): boolean {
+        // Verificar que la persona y el cargo tengan un ID (lo que indica que son objetos reales)
+        return !!this.designacion.persona?.id && !!this.designacion.cargo?.id && !!this.fechaInicioDate;
+    }
+
     save(): void {
         // Convertir las fechas de NgbDateStruct a objetos Date para el backend
         if (this.fechaInicioDate) {

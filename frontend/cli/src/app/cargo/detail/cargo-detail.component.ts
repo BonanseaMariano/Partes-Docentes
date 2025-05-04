@@ -1,6 +1,6 @@
 import { CommonModule, Location } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { NgbCalendar, NgbDatepickerModule, NgbDateStruct, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 import { Observable, of } from 'rxjs';
@@ -28,12 +28,18 @@ import { CargoService } from '../service/cargo.service';
   `
 })
 export class CargoDetailComponent implements OnInit {
+    @ViewChild('form') form!: NgForm;
+
     cargo!: Cargo;
     tiposDesignacion = Object.values(TipoDesignacion);
     tipoDesignacionEnum = TipoDesignacion; // Para acceder a la enumeración desde el HTML
     isNewCargo: boolean = true;
     divisionSeleccionada: any = '';
     turnoEnum = Turno; // Necesario para acceder a la enumeración desde el HTML
+
+    // Para validaciones
+    divisionValida: boolean = true; // Por defecto true porque no es obligatoria para todos los tipos
+    mostrarErrorDivision: boolean = false;
 
     // Propiedades para los datepickers
     fechaInicioDate: NgbDateStruct | null = null;
@@ -57,6 +63,35 @@ export class CargoDetailComponent implements OnInit {
         this.location.back();
     }
 
+    // Método para verificar si el formulario es válido
+    isFormValid(): boolean {
+        // Verificar campos básicos obligatorios
+        if (!this.form) {
+            return false;
+        }
+
+        // Verificar la fecha de inicio de forma segura
+        let fechaInicioValida = false;
+        if (this.form && this.form.controls['fechaInicio']) {
+            const control = this.form.controls['fechaInicio'];
+            fechaInicioValida = control.valid === true;
+        }
+
+        // Verificar si necesita una división válida (solo para ESPACIO_CURRICULAR)
+        const formIsValid = this.form.valid === true;
+
+        if (this.cargo && this.cargo.tipoDesignacion === TipoDesignacion.ESPACIO_CURRICULAR) {
+            // Si es espacio curricular, la división es obligatoria
+            const divisionId = this.cargo.division?.id;
+            this.divisionValida = divisionId !== undefined && divisionId !== null;
+
+            return formIsValid && fechaInicioValida && this.divisionValida;
+        }
+
+        // Si no es espacio curricular, la división no es necesaria
+        return formIsValid && fechaInicioValida;
+    }
+
     // Método para mostrar el valor amigable del enum TipoDesignacion
     getTipoDisplay(tipoDesignacion: TipoDesignacion): string {
         return tipoDesignacion;
@@ -68,18 +103,33 @@ export class CargoDetailComponent implements OnInit {
             // Si el tipo no es "Espacio Curricular", limpiar la división
             this.cargo.division = undefined;
             this.divisionSeleccionada = '';
+            this.divisionValida = true; // No se necesita división, por lo que es "válido"
+            this.mostrarErrorDivision = false;
+        } else {
+            // Si cambia a Espacio Curricular, marcar como inválido si no hay división
+            this.divisionValida = !!this.cargo.division?.id;
         }
     }
 
-    // Método simplificado para manejar cambios en el input de división
+    // Método para manejar cambios en el input de división
     onDivisionInputChange(value: any): void {
         // Si el campo está vacío, limpiar la división asignada
         if (value === '') {
             this.cargo.division = undefined;
+            this.divisionValida = false;
+        } else if (typeof value === 'string' && !this.cargo.division?.id) {
+            // Si es texto pero no corresponde a una división seleccionada
+            this.divisionValida = false;
         }
     }
 
     save(): void {
+        // Verificar si se necesita división (para ESPACIO_CURRICULAR)
+        if (this.cargo.tipoDesignacion === TipoDesignacion.ESPACIO_CURRICULAR && !this.cargo.division?.id) {
+            this.mostrarErrorDivision = true;
+            return;
+        }
+
         // Convertir las fechas de NgbDateStruct a objetos Date para el backend
         if (this.fechaInicioDate) {
             const fechaInicio = new Date(
@@ -201,6 +251,8 @@ export class CargoDetailComponent implements OnInit {
         if (division) {
             this.cargo.division = division;
             this.divisionSeleccionada = division;
+            this.divisionValida = true;
+            this.mostrarErrorDivision = false;
         }
     }
 
