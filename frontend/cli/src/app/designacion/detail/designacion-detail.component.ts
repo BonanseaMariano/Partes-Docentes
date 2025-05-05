@@ -58,7 +58,13 @@ export class DesignacionDetailComponent implements OnInit, AfterViewChecked {
         private modalService: ModalService,
         public calendar: NgbCalendar,
         private cdr: ChangeDetectorRef
-    ) { }
+    ) {
+        // Inicializar la designación con valores por defecto
+        this.designacion = <Designacion>{};
+        // Inicializar objetos vacíos para evitar problemas de null en el HTML
+        this.designacion.persona = <Persona>{};
+        this.designacion.cargo = <Cargo>{};
+    }
 
     goBack(): void {
         this.location.back();
@@ -66,6 +72,12 @@ export class DesignacionDetailComponent implements OnInit, AfterViewChecked {
 
     // Método para verificar si el formulario es válido
     verificarFormularioValido(): void {
+        // Primero verificar que la designación y sus propiedades existan
+        if (!this.designacion) {
+            this.formularioValido = false;
+            return;
+        }
+
         // Verificar que la persona y el cargo tengan un ID (lo que indica que son objetos reales)
         // y que la fecha de inicio sea válida
         this.formularioValido = !!this.designacion.persona?.id &&
@@ -131,11 +143,8 @@ export class DesignacionDetailComponent implements OnInit, AfterViewChecked {
     get(): void {
         const id = this.route.snapshot.paramMap.get("id")!;
         if (id === "new") {
-            // Inicializar la designación con valores vacíos
-            this.designacion = <Designacion>{};
-            // Inicializar objetos vacíos para evitar problemas de null en el HTML
-            this.designacion.persona = <Persona>{};
-            this.designacion.cargo = <Cargo>{};
+            // Ya no necesitamos inicializar nuevamente la designación y sus propiedades
+            // porque lo hacemos en el constructor
 
             this.tituloFormulario = 'Nueva Designación';
             this.isNewDesignacion = true;  // Es una nueva designación

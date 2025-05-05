@@ -17,13 +17,13 @@
                             </span>
                             <input id="persona" name="persona" type="text" placeholder="Buscar por nombre o apellido..."
                                 class="form-control"
-                                [ngClass]="{'is-invalid': persona.invalid && persona.touched && !designacion.persona.id}"
+                                [ngClass]="{'is-invalid': persona.invalid && persona.touched && designacion.persona && !designacion.persona.id}"
                                 [(ngModel)]="personaSeleccionada" [ngbTypeahead]="searchPersona"
                                 [resultFormatter]="resultPersonaFormat" [inputFormatter]="inputPersonaFormat"
                                 (selectItem)="seleccionarPersona($event.item)"
                                 (ngModelChange)="onPersonaInputChange($event)" required #persona="ngModel" />
                         </div>
-                        <div *ngIf="persona.invalid && persona.touched && !designacion.persona?.id"
+                        <div *ngIf="persona.invalid && persona.touched && designacion.persona && !designacion.persona.id"
                             class="text-danger small mt-1">
                             <i class="fa fa-exclamation-circle me-1"></i>Seleccione una persona
                         </div>
@@ -32,7 +32,7 @@
             </div>
 
             <!-- Campos de información de la persona seleccionada -->
-            <div *ngIf="designacion.persona?.dni" class="row mb-3">
+            <div *ngIf="designacion.persona && designacion.persona.dni" class="row mb-3">
                 <div class="col-md-4">
                     <div class="input-group">
                         <span class="input-group-text bg-secondary text-white">
@@ -79,13 +79,13 @@
                             </span>
                             <input id="cargo" name="cargo" type="text" placeholder="Buscar por nombre del cargo..."
                                 class="form-control"
-                                [ngClass]="{'is-invalid': cargo.invalid && cargo.touched && !designacion.cargo.id}"
+                                [ngClass]="{'is-invalid': cargo.invalid && cargo.touched && designacion.cargo && !designacion.cargo.id}"
                                 [(ngModel)]="cargoSeleccionado" [ngbTypeahead]="searchCargo"
                                 [resultFormatter]="resultCargoFormat" [inputFormatter]="inputCargoFormat"
                                 (selectItem)="seleccionarCargo($event.item)"
                                 (ngModelChange)="onCargoInputChange($event)" required #cargo="ngModel" />
                         </div>
-                        <div *ngIf="cargo.invalid && cargo.touched && !designacion.cargo?.id"
+                        <div *ngIf="cargo.invalid && cargo.touched && designacion.cargo && !designacion.cargo.id"
                             class="text-danger small mt-1">
                             <i class="fa fa-exclamation-circle me-1"></i>Seleccione un cargo
                         </div>
@@ -94,7 +94,7 @@
             </div>
 
             <!-- Información del cargo seleccionado -->
-            <div *ngIf="designacion.cargo?.tipoDesignacion" class="row mb-3">
+            <div *ngIf="designacion.cargo && designacion.cargo.tipoDesignacion" class="row mb-3">
                 <div class="col-md-4">
                     <div class="input-group">
                         <span class="input-group-text bg-secondary text-white">

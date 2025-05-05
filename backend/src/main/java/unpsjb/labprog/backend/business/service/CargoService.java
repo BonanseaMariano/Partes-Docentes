@@ -121,21 +121,16 @@ public class CargoService {
             }
         }
         // Validaciones para CARGO
-        else if (TipoDesignacion.CARGO.equals(cargo.getTipoDesignacion())) {
-            // Verificamos más estrictamente si hay una división asignada
-            // Puede venir como un objeto parcialmente inicializado desde el cliente
-            if (cargo.getDivision() != null) {
-                // Si está el campo division asignado, no importa si tiene ID o no, es un error
-                throw new BusinessLogicException(
-                        "Cargo de " + cargo.getNombre() + " es CARGO y no corresponde asignar división");
-            }
+        else if (TipoDesignacion.CARGO.equals(cargo.getTipoDesignacion()) && cargo.getDivision() != null) {
+            // Si está el campo division asignado, no importa si tiene ID o no, es un error
+            throw new BusinessLogicException(
+                    "Cargo de " + cargo.getNombre() + " es CARGO y no corresponde asignar división");
         }
 
         // Validación adicional: fechaInicio debe ser anterior a fechaFin
         if (cargo.getFechaFin() != null && cargo.getFechaInicio().isAfter(cargo.getFechaFin())) {
             throw new BusinessLogicException(
-                    "La fecha de inicio no puede ser posterior a la fecha de finalización para el cargo "
-                            + cargo.getNombre());
+                    "La fecha de inicio no puede ser posterior a la fecha de finalización");
         }
     }
 }

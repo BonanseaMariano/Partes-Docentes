@@ -89,7 +89,7 @@ public class DesignacionService {
         // Validación: fechaInicio debe ser anterior a fechaFin
         if (designacion.getFechaFin() != null && designacion.getFechaInicio().isAfter(designacion.getFechaFin())) {
             throw new BusinessLogicException(
-                    "La fecha de inicio no puede ser posterior a la fecha de finalización para la designación");
+                    "La fecha de inicio no puede ser posterior a la fecha de finalización");
         }
     }
 }
