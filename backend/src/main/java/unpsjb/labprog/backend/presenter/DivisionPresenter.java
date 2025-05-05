@@ -17,6 +17,7 @@ import unpsjb.labprog.backend.Response;
 import unpsjb.labprog.backend.business.service.DivisionService;
 import unpsjb.labprog.backend.model.Division;
 import unpsjb.labprog.backend.model.enums.Turno;
+import unpsjb.labprog.backend.utils.constants.AppConstants;
 
 /**
  * Controlador REST para la gestión de divisiones escolares.
@@ -143,8 +144,8 @@ public class DivisionPresenter {
      * @return ResponseEntity con la página de divisiones solicitada
      */
     @GetMapping("/page")
-    public ResponseEntity<Object> findByPage(@RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<Object> findByPage(@RequestParam(defaultValue = AppConstants.DEFAULT_PAGE) int page,
+            @RequestParam(defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size) {
         return Response.ok(service.findByPage(page, size));
     }
 
