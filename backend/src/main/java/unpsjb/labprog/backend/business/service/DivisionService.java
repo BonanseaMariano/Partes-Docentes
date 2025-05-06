@@ -94,8 +94,8 @@ public class DivisionService {
      * @param turno       Turno de la división
      * @return La división encontrada o null si no existe
      */
-    public Division findByUniqueFields(Integer anio, Integer numDivision, String orientacion, Turno turno) {
-        return repository.findByAnioAndNumDivisionAndOrientacionAndTurno(anio, numDivision, orientacion, turno)
+    public Division findByAnioNumTruno(Integer anio, Integer numDivision, Turno turno) {
+        return repository.findByAnioAndNumDivisionAndTurno(anio, numDivision, turno)
                 .orElse(null);
     }
 }

@@ -98,10 +98,11 @@ public class CargoService {
      * 
      * @param nombre          Nombre del cargo a buscar
      * @param tipoDesignacion Tipo de designación del cargo a buscar
-     * @return Cargo encontrado o null si no existe
+     * @return Cargos encontrados que coinciden con el nombre y tipo de designación
+     *         o una lista vacía si no existen
      */
-    public Cargo findByNombreAndTipoDesignacion(String nombre, TipoDesignacion tipoDesignacion) {
-        return repository.findByNombreAndTipoDesignacion(nombre, tipoDesignacion).orElse(null);
+    public List<Cargo> findByNombreAndTipoDesignacion(String nombre, TipoDesignacion tipoDesignacion) {
+        return repository.findByNombreAndTipoDesignacion(nombre, tipoDesignacion);
     }
 
     /**

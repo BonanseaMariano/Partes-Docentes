@@ -1,7 +1,5 @@
 package unpsjb.labprog.backend.model.enums;
 
-import com.fasterxml.jackson.annotation.JsonValue;
-
 /**
  * Enum que representa los turnos posibles para una division
  */
@@ -17,7 +15,6 @@ public enum Turno {
         this.valor = valor;
     }
 
-    @JsonValue
     public String getValor() {
         return valor;
     }

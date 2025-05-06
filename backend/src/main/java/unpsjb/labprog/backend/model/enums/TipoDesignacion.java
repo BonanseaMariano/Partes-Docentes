@@ -1,7 +1,5 @@
 package unpsjb.labprog.backend.model.enums;
 
-import com.fasterxml.jackson.annotation.JsonValue;
-
 /**
  * Enum que representa los tipos de designación posibles
  */
@@ -15,7 +13,6 @@ public enum TipoDesignacion {
         this.valor = valor;
     }
 
-    @JsonValue
     public String getValor() {
         return valor;
     }

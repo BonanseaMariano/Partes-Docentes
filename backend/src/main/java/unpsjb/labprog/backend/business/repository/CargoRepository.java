@@ -1,7 +1,6 @@
 package unpsjb.labprog.backend.business.repository;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -26,12 +25,12 @@ public interface CargoRepository extends JpaRepository<Cargo, Integer> {
     List<Cargo> search(String term);
 
     /**
-     * Busca un cargo por su nombre y tipo de designación
+     * Busca cargos por su nombre y tipo de designación
      * 
      * @param nombre          Nombre del cargo a buscar
      * @param tipoDesignacion Tipo de designación del cargo a buscar
-     * @return Cargo encontrado o null si no existe
+     * @return Lista de cargos que coinciden con el nombre y tipo de designación
      */
-    Optional<Cargo> findByNombreAndTipoDesignacion(String nombre, TipoDesignacion tipoDesignacion);
+    List<Cargo> findByNombreAndTipoDesignacion(String nombre, TipoDesignacion tipoDesignacion);
 
 }

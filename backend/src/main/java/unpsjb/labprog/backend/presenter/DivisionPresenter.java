@@ -161,31 +161,25 @@ public class DivisionPresenter {
     }
 
     /**
-     * Busca una división por sus campos únicos (definidos en la restricción de
-     * unicidad)
+     * Busca una división por sus campos anio, numDivision, orientacion y turno.
      * 
      * @param anio        Año académico
      * @param numDivision Número de división
-     * @param orientacion Orientación académica
      * @param turno       Turno de la división
      * @return ResponseEntity con la división encontrada o un mensaje de error si no
      *         existe
      */
-    @GetMapping("/unique")
-    public ResponseEntity<Object> findByUniqueFields(
+    @GetMapping("/find")
+    public ResponseEntity<Object> findByAnioNumTruno(
             @RequestParam(required = true) Integer anio,
             @RequestParam(required = true) Integer numDivision,
-            @RequestParam(required = true) String orientacion,
             @RequestParam(required = true) Turno turno) {
 
-        Division division = service.findByUniqueFields(anio, numDivision, orientacion, turno);
+        Division division = service.findByAnioNumTruno(anio, numDivision, turno);
 
-        if (division == null) {
-            return Response.notFound(String.format(
-                    "No se encontró división con año: %d, número: %d, orientación: %s, turno: %s",
-                    anio, numDivision, orientacion, turno.getValor()));
-        }
+        return division != null ? Response.ok(division)
+                : Response.notFound(String.format("No se encontró división con año: %d, número: %d, turno: %s", anio,
+                        numDivision, turno.getValor()));
 
-        return Response.ok(division);
     }
 }

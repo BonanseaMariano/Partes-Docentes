@@ -1,5 +1,7 @@
 package unpsjb.labprog.backend.presenter;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
@@ -194,20 +196,20 @@ public class CargoPresenter {
      * @param nombre          Nombre del cargo a buscar
      * @param tipoDesignacion Tipo de designación del cargo a buscar (CARGO o
      *                        ESPACIO_CURRICULAR)
-     * @return ResponseEntity con el cargo encontrado o mensaje de error si no
-     *         existe
+     * @return ResponseEntity con la lista de cargos encontrados o mensaje de error
+     *         si no existe ninguno
      */
-    @GetMapping("/unique")
+    @GetMapping("/find")
     public ResponseEntity<Object> findByNombreAndTipoDesignacion(
             @RequestParam String nombre,
             @RequestParam TipoDesignacion tipoDesignacion) {
 
-        Cargo cargo = service.findByNombreAndTipoDesignacion(nombre, tipoDesignacion);
+        List<Cargo> cargos = service.findByNombreAndTipoDesignacion(nombre, tipoDesignacion);
 
-        return (cargo != null) ? Response.ok(cargo)
+        return (!cargos.isEmpty()) ? Response.ok(cargos)
                 : Response.notFound(
                         String.format("No se encontró cargo con nombre '%s' y tipo '%s'",
                                 nombre, tipoDesignacion.getValor()));
-
     }
+
 }

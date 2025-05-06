@@ -29,13 +29,11 @@ public interface DivisionRepository extends JpaRepository<Division, Integer> {
      * 
      * @param anio        Año académico
      * @param numDivision Número de división
-     * @param orientacion Orientación académica
      * @param turno       Turno de la división
      * @return La división que coincide con todos los criterios o un Optional vacío
      */
-    Optional<Division> findByAnioAndNumDivisionAndOrientacionAndTurno(
+    Optional<Division> findByAnioAndNumDivisionAndTurno(
             Integer anio,
             Integer numDivision,
-            String orientacion,
             Turno turno);
 }

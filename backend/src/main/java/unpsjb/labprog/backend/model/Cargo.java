@@ -42,7 +42,6 @@ import unpsjb.labprog.backend.model.enums.TipoDesignacion;
  * <li>Nombre del cargo</li>
  * <li>Tipo de designación</li>
  * <li>División asociada (si existe)</li>
- * <li>Fecha de inicio</li>
  * </ul>
  * <p>
  * Cada cargo tiene asociado un conjunto de horarios que definen los días y
@@ -57,7 +56,7 @@ import unpsjb.labprog.backend.model.enums.TipoDesignacion;
  */
 @Entity
 @Table(name = "cargos", uniqueConstraints = @UniqueConstraint(name = "uk_cargo", columnNames = { "nombre",
-        "fecha_inicio", "tipo_designacion", "division_id" }))
+        "tipo_designacion", "division_id" }))
 @Getter
 @Setter
 @NoArgsConstructor
@@ -120,7 +119,7 @@ public class Cargo {
      * del cargo.
      */
     @NotNull
-    @OneToMany(cascade = CascadeType.PERSIST)
+    @OneToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinColumn(name = "cargo_id", nullable = false)
     private List<Horario> horarios = new ArrayList<>();
 }
