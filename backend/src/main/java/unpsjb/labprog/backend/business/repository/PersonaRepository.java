@@ -33,11 +33,14 @@ public interface PersonaRepository extends JpaRepository<Persona, Integer> {
     Optional<Persona> findByCuil(String cuil);
 
     /**
-     * Busca una persona por su nombre o apellido
+     * Busca una persona por su DNI, nombre o apellido
      * 
-     * @param term Cadena a buscar en nombre o apellido
+     * @param term Cadena a buscar en DNI, nombre o apellido
      * @return Personas que coinciden con la búsqueda
      */
-    @Query("SELECT e FROM Persona e WHERE UPPER(e.nombre) LIKE ?1 OR UPPER(e.apellido) LIKE ?1")
+    @Query("SELECT e FROM Persona e WHERE " +
+            "CAST(e.dni AS string) LIKE CONCAT('%', ?1, '%') OR " +
+            "UPPER(e.nombre) LIKE CONCAT('%', UPPER(?1), '%') OR " +
+            "UPPER(e.apellido) LIKE CONCAT('%', UPPER(?1), '%')")
     List<Persona> search(String term);
 }

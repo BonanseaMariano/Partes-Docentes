@@ -15,8 +15,8 @@
                             <span class="input-group-text bg-primary text-white">
                                 <i class="fa fa-user"></i>
                             </span>
-                            <input id="persona" name="persona" type="text" placeholder="Buscar por nombre o apellido..."
-                                class="form-control"
+                            <input id="persona" name="persona" type="text"
+                                placeholder="Buscar persona por dni, nombre o apellido..." class="form-control"
                                 [ngClass]="{'is-invalid': persona.invalid && persona.touched && designacion.persona && !designacion.persona.id}"
                                 [(ngModel)]="personaSeleccionada" [ngbTypeahead]="searchPersona"
                                 [resultFormatter]="resultPersonaFormat" [inputFormatter]="inputPersonaFormat"
@@ -77,7 +77,8 @@
                             <span class="input-group-text bg-primary text-white">
                                 <i class="fa fa-briefcase"></i>
                             </span>
-                            <input id="cargo" name="cargo" type="text" placeholder="Buscar por nombre del cargo..."
+                            <input id="cargo" name="cargo" type="text"
+                                placeholder="Buscar cargo por nombre, tipo, carga horaria o división..."
                                 class="form-control"
                                 [ngClass]="{'is-invalid': cargo.invalid && cargo.touched && designacion.cargo && !designacion.cargo.id}"
                                 [(ngModel)]="cargoSeleccionado" [ngbTypeahead]="searchCargo"

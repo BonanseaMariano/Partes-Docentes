@@ -16,12 +16,21 @@ import unpsjb.labprog.backend.model.enums.TipoDesignacion;
 @Repository
 public interface CargoRepository extends JpaRepository<Cargo, Integer> {
     /**
-     * Busca un cargo por su nombre
+     * Busca un cargo por cualquiera de sus campos o por los campos de la División
+     * asociada
      * 
-     * @param term Cadena a buscar en el nombre
+     * @param term Cadena a buscar en los campos del cargo o de su división asociada
      * @return Cargos que coinciden con la búsqueda
      */
-    @Query("SELECT e FROM Cargo e WHERE UPPER(e.nombre) LIKE ?1")
+    @Query("SELECT c FROM Cargo c LEFT JOIN c.division d WHERE " +
+            "UPPER(c.nombre) LIKE CONCAT('%', UPPER(?1), '%') OR " +
+            "CAST(c.cargaHoraria AS string) LIKE ?1 OR " +
+            "UPPER(c.tipoDesignacion) LIKE CONCAT('%', UPPER(?1), '%') OR " +
+            "(d IS NOT NULL AND (" +
+            "CAST(d.anio AS string) LIKE ?1 OR " +
+            "CAST(d.numDivision AS string) LIKE ?1 OR " +
+            "UPPER(d.orientacion) LIKE CONCAT('%', UPPER(?1), '%') OR " +
+            "UPPER(d.turno) LIKE CONCAT('%', UPPER(?1), '%')))")
     List<Cargo> search(String term);
 
     /**
