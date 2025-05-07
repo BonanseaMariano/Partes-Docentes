@@ -1,5 +1,7 @@
 package unpsjb.labprog.backend.presenter;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,7 @@ import unpsjb.labprog.backend.business.service.CargoService;
 import unpsjb.labprog.backend.exception.BusinessLogicException;
 import unpsjb.labprog.backend.model.Cargo;
 import unpsjb.labprog.backend.model.enums.TipoDesignacion;
+import unpsjb.labprog.backend.utils.constants.AppConstants;
 
 /**
  * Controlador REST para la gestión de cargos en el sistema educativo.
@@ -90,8 +93,9 @@ public class CargoPresenter {
 
             return Response.ok(null, mensaje);
         } catch (BusinessLogicException e) {
-            // Capturar excepciones de validación de negocio y devolver error 501
-            return Response.notImplemented(e.getMessage());
+            // Capturar excepciones de validación de negocio y devolver error 422 (Entidad
+            // no procesable)
+            return Response.unprocessableEntity(e.getMessage());
         } catch (DataIntegrityViolationException e) {
             return Response.dbError("No se puede crear el cargo debido a que ya existe otro identico");
         }
@@ -134,7 +138,7 @@ public class CargoPresenter {
             return Response.ok(null, mensaje);
         } catch (BusinessLogicException e) {
             // Capturar excepciones de validación de negocio y devolver error 501
-            return Response.notImplemented(e.getMessage());
+            return Response.unprocessableEntity(e.getMessage());
         } catch (DataIntegrityViolationException e) {
             return Response.dbError("No se puede actualizar el cargo debido a que ya existe otro identico");
         }
@@ -170,8 +174,8 @@ public class CargoPresenter {
      * @return ResponseEntity con la página de divisiones solicitada
      */
     @GetMapping("/page")
-    public ResponseEntity<Object> findByPage(@RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<Object> findByPage(@RequestParam(defaultValue = AppConstants.DEFAULT_PAGE) int page,
+            @RequestParam(defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size) {
         return Response.ok(service.findByPage(page, size));
     }
 
@@ -192,20 +196,20 @@ public class CargoPresenter {
      * @param nombre          Nombre del cargo a buscar
      * @param tipoDesignacion Tipo de designación del cargo a buscar (CARGO o
      *                        ESPACIO_CURRICULAR)
-     * @return ResponseEntity con el cargo encontrado o mensaje de error si no
-     *         existe
+     * @return ResponseEntity con la lista de cargos encontrados o mensaje de error
+     *         si no existe ninguno
      */
-    @GetMapping("/unique")
+    @GetMapping("/find")
     public ResponseEntity<Object> findByNombreAndTipoDesignacion(
             @RequestParam String nombre,
             @RequestParam TipoDesignacion tipoDesignacion) {
 
-        Cargo cargo = service.findByNombreAndTipoDesignacion(nombre, tipoDesignacion);
+        List<Cargo> cargos = service.findByNombreAndTipoDesignacion(nombre, tipoDesignacion);
 
-        return (cargo != null) ? Response.ok(cargo)
+        return (!cargos.isEmpty()) ? Response.ok(cargos)
                 : Response.notFound(
                         String.format("No se encontró cargo con nombre '%s' y tipo '%s'",
                                 nombre, tipoDesignacion.getValor()));
-
     }
+
 }

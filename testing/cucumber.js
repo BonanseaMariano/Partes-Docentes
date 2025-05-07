@@ -5,7 +5,8 @@ module.exports = {
       'features/persona/Persona.feature',
       'features/division/Division.feature',
       'features/cargo/Cargo.feature',
-      'features/designar_docente/Designar.feature'
+      'features/designar_docente/Designar.feature',
+      'features/designar_docente/Control_designacion.feature'
     ],
     // Configuración para encontrar los step definitions
     require: [

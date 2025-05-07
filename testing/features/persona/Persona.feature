@@ -21,3 +21,5 @@ Módulo responsable de administrar a las personas del sistema
       | 99100000 | Ermenegildo | Sabat        | 20991000003 | M    | Profesor de Física      | Belgrano 742   | +54 (280) 499-9999 |    200 | Ermenegildo Sabat con DNI 99100000 ingresado/a correctamente   |
       | 99200000 | María Rosa  | Gallo        | 27992000009 | F    | Profesora de Matemática | Sarmiento 829  | +54 (280) 410-0000 |    200 | María Rosa Gallo con DNI 99200000 ingresado/a correctamente    |
       | 99300000 | Homero      | Manzi        | 20993000008 | M    | Profesor de Tecnología  | San Martín 427 | +54 (280) 430-0000 |    200 | Homero Manzi con DNI 99300000 ingresado/a correctamente        |
+      | 99300000 | Luis        | Perez        | 20884000008 | M    | Profesor de Quimica     | Rivadavia 123  | +54 (280) 420-0000 |    409 | Ya existe una persona con el mismo DNI o CUIL                  | # Validar DNI identico
+      | 88400000 | Carla       | Guitierrez   | 20993000008 | F    | Profesora de Artes      | Lavalle 1425   | +54 (280) 450-0000 |    409 | Ya existe una persona con el mismo DNI o CUIL                  | # Validar CUIL identico

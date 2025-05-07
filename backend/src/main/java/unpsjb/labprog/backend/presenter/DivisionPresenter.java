@@ -17,6 +17,7 @@ import unpsjb.labprog.backend.Response;
 import unpsjb.labprog.backend.business.service.DivisionService;
 import unpsjb.labprog.backend.model.Division;
 import unpsjb.labprog.backend.model.enums.Turno;
+import unpsjb.labprog.backend.utils.constants.AppConstants;
 
 /**
  * Controlador REST para la gestión de divisiones escolares.
@@ -143,8 +144,8 @@ public class DivisionPresenter {
      * @return ResponseEntity con la página de divisiones solicitada
      */
     @GetMapping("/page")
-    public ResponseEntity<Object> findByPage(@RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<Object> findByPage(@RequestParam(defaultValue = AppConstants.DEFAULT_PAGE) int page,
+            @RequestParam(defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size) {
         return Response.ok(service.findByPage(page, size));
     }
 
@@ -160,31 +161,25 @@ public class DivisionPresenter {
     }
 
     /**
-     * Busca una división por sus campos únicos (definidos en la restricción de
-     * unicidad)
+     * Busca una división por sus campos anio, numDivision, orientacion y turno.
      * 
      * @param anio        Año académico
      * @param numDivision Número de división
-     * @param orientacion Orientación académica
      * @param turno       Turno de la división
      * @return ResponseEntity con la división encontrada o un mensaje de error si no
      *         existe
      */
-    @GetMapping("/unique")
-    public ResponseEntity<Object> findByUniqueFields(
+    @GetMapping("/find")
+    public ResponseEntity<Object> findByAnioNumTruno(
             @RequestParam(required = true) Integer anio,
             @RequestParam(required = true) Integer numDivision,
-            @RequestParam(required = true) String orientacion,
             @RequestParam(required = true) Turno turno) {
 
-        Division division = service.findByUniqueFields(anio, numDivision, orientacion, turno);
+        Division division = service.findByAnioNumTruno(anio, numDivision, turno);
 
-        if (division == null) {
-            return Response.notFound(String.format(
-                    "No se encontró división con año: %d, número: %d, orientación: %s, turno: %s",
-                    anio, numDivision, orientacion, turno.getValor()));
-        }
+        return division != null ? Response.ok(division)
+                : Response.notFound(String.format("No se encontró división con año: %d, número: %d, turno: %s", anio,
+                        numDivision, turno.getValor()));
 
-        return Response.ok(division);
     }
 }

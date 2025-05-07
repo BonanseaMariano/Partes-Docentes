@@ -45,7 +45,8 @@
                         <i class="fa fa-list"></i>
                     </span>
                     <select id="tipoDesignacion" name="tipoDesignacion" class="form-select"
-                        [(ngModel)]="cargo.tipoDesignacion" required #tipoDesignacion="ngModel">
+                        [(ngModel)]="cargo.tipoDesignacion" required #tipoDesignacion="ngModel"
+                        (change)="onTipoDesignacionChange()">
                         <option *ngFor="let tipo of tiposDesignacion" [ngValue]="tipo">
                             {{ getTipoDisplay(tipo) }}
                         </option>
@@ -57,8 +58,8 @@
                 </div>
             </div>
 
-            <!-- Cuarta fila: División (si es necesario) -->
-            <div class="col-12 mb-3">
+            <!-- Cuarta fila: División (solo si el tipo es Espacio Curricular) -->
+            <div class="col-12 mb-3" *ngIf="cargo.tipoDesignacion === tipoDesignacionEnum.ESPACIO_CURRICULAR">
                 <label for="division" class="form-label text-primary fw-bold">División</label>
                 <div class="row g-2">
                     <!-- Campo de Orientación con typeahead -->
@@ -67,17 +68,19 @@
                             <span class="input-group-text bg-primary text-white">
                                 <i class="fa fa-layer-group"></i>
                             </span>
-                            <input id="division" name="division" type="text" placeholder="Buscar por orientación..."
-                                class="form-control" [(ngModel)]="divisionSeleccionada" [ngbTypeahead]="searchDivision"
+                            <input id="division" name="division" type="text"
+                                placeholder="Buscar division por año, numero, orientación o turno..."
+                                class="form-control"
+                                [ngClass]="{'is-invalid': mostrarErrorDivision || (cargo.tipoDesignacion === tipoDesignacionEnum.ESPACIO_CURRICULAR && !divisionValida)}"
+                                [(ngModel)]="divisionSeleccionada" [ngbTypeahead]="searchDivision"
                                 [resultFormatter]="resultDivisionFormat" [inputFormatter]="inputDivisionFormat"
-                                (selectItem)="seleccionarDivision($event.item)" />
+                                (selectItem)="seleccionarDivision($event.item)"
+                                (ngModelChange)="onDivisionInputChange($event)"
+                                (focus)="mostrarErrorDivision = false" />
                         </div>
-                        <output *ngIf="searching" class="spinner-border spinner-border-sm text-primary mt-1"
-                            aria-live="polite">
-                            <span class="visually-hidden">Buscando...</span>
-                        </output>
-                        <div *ngIf="searchFailed" class="text-danger small mt-1">
-                            <i class="fa fa-exclamation-circle me-1"></i>Error al buscar divisiones
+                        <div *ngIf="mostrarErrorDivision || (cargo.tipoDesignacion === tipoDesignacionEnum.ESPACIO_CURRICULAR && !divisionValida && divisionSeleccionada)"
+                            class="text-danger small mt-1">
+                            <i class="fa fa-exclamation-circle me-1"></i>Debe seleccionar una división válida
                         </div>
                     </div>
 
@@ -134,7 +137,8 @@
                     </span>
                     <input id="fechaInicio" name="fechaInicio" class="form-control" placeholder="dd/mm/yyyy"
                         [(ngModel)]="fechaInicioDate" [startDate]="fechaInicioDate || calendar.getToday()" ngbDatepicker
-                        #fechaInicioPicker="ngbDatepicker" required #fechaInicio="ngModel" />
+                        #fechaInicioPicker="ngbDatepicker" required #fechaInicio="ngModel"
+                        (ngModelChange)="onDateChange()" />
                     <button class="btn btn-outline-secondary calendar" (click)="fechaInicioPicker.toggle()"
                         type="button">
                         <i class="fa fa-calendar"></i>
@@ -155,7 +159,8 @@
                     </span>
                     <input id="fechaFin" name="fechaFin" class="form-control" placeholder="dd/mm/yyyy"
                         [(ngModel)]="fechaFinDate" [startDate]="fechaFinDate || fechaInicioDate || calendar.getToday()"
-                        ngbDatepicker #fechaFinPicker="ngbDatepicker" #fechaFin="ngModel" />
+                        ngbDatepicker #fechaFinPicker="ngbDatepicker" #fechaFin="ngModel"
+                        (ngModelChange)="onDateChange()" />
                     <button class="btn btn-outline-secondary calendar" (click)="fechaFinPicker.toggle()" type="button">
                         <i class="fa fa-calendar"></i>
                     </button>
@@ -168,7 +173,7 @@
         <button (click)="goBack()" class="btn btn-outline-secondary me-2">
             <i class="fa fa-arrow-left me-1"></i>Cancelar
         </button>
-        <button (click)="save()" class="btn btn-success" [disabled]="form.invalid">
+        <button (click)="save()" class="btn btn-success" [disabled]="!formularioValido">
             <i class="fa fa-save me-1"></i>Guardar
         </button>
     </div>

@@ -7,8 +7,6 @@ package unpsjb.labprog.backend.exception;
  */
 public class BusinessLogicException extends Exception {
 
-    private static final long serialVersionUID = 1L;
-
     /**
      * Constructor para la excepción con un mensaje descriptivo
      * 

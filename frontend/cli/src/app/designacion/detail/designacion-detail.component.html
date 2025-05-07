@@ -15,28 +15,24 @@
                             <span class="input-group-text bg-primary text-white">
                                 <i class="fa fa-user"></i>
                             </span>
-                            <input id="persona" name="persona" type="text" placeholder="Buscar por nombre o apellido..."
-                                class="form-control" [(ngModel)]="personaSeleccionada" [ngbTypeahead]="searchPersona"
+                            <input id="persona" name="persona" type="text"
+                                placeholder="Buscar persona por dni, nombre o apellido..." class="form-control"
+                                [ngClass]="{'is-invalid': persona.invalid && persona.touched && designacion.persona && !designacion.persona.id}"
+                                [(ngModel)]="personaSeleccionada" [ngbTypeahead]="searchPersona"
                                 [resultFormatter]="resultPersonaFormat" [inputFormatter]="inputPersonaFormat"
-                                (selectItem)="seleccionarPersona($event.item)" required #persona="ngModel" />
+                                (selectItem)="seleccionarPersona($event.item)"
+                                (ngModelChange)="onPersonaInputChange($event)" required #persona="ngModel" />
                         </div>
-                        <output *ngIf="searchingPersona" class="spinner-border spinner-border-sm text-primary mt-1"
-                            aria-live="polite">
-                            <span class="visually-hidden">Buscando...</span>
-                        </output>
-                        <div *ngIf="searchFailedPersona" class="text-danger small mt-1">
-                            <i class="fa fa-exclamation-circle me-1"></i>Error al buscar personas
-                        </div>
-                        <div *ngIf="persona.invalid && (persona.dirty || persona.touched)"
+                        <div *ngIf="persona.invalid && persona.touched && designacion.persona && !designacion.persona.id"
                             class="text-danger small mt-1">
-                            <i class="fa fa-exclamation-circle me-1"></i>La persona es requerida
+                            <i class="fa fa-exclamation-circle me-1"></i>Seleccione una persona
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Campos de información de la persona seleccionada -->
-            <div *ngIf="designacion.persona?.dni" class="row mb-3">
+            <div *ngIf="designacion.persona && designacion.persona.dni" class="row mb-3">
                 <div class="col-md-4">
                     <div class="input-group">
                         <span class="input-group-text bg-secondary text-white">
@@ -81,27 +77,25 @@
                             <span class="input-group-text bg-primary text-white">
                                 <i class="fa fa-briefcase"></i>
                             </span>
-                            <input id="cargo" name="cargo" type="text" placeholder="Buscar por nombre del cargo..."
-                                class="form-control" [(ngModel)]="cargoSeleccionado" [ngbTypeahead]="searchCargo"
+                            <input id="cargo" name="cargo" type="text"
+                                placeholder="Buscar cargo por nombre, tipo, carga horaria o división..."
+                                class="form-control"
+                                [ngClass]="{'is-invalid': cargo.invalid && cargo.touched && designacion.cargo && !designacion.cargo.id}"
+                                [(ngModel)]="cargoSeleccionado" [ngbTypeahead]="searchCargo"
                                 [resultFormatter]="resultCargoFormat" [inputFormatter]="inputCargoFormat"
-                                (selectItem)="seleccionarCargo($event.item)" required #cargo="ngModel" />
+                                (selectItem)="seleccionarCargo($event.item)"
+                                (ngModelChange)="onCargoInputChange($event)" required #cargo="ngModel" />
                         </div>
-                        <output *ngIf="searchingCargo" class="spinner-border spinner-border-sm text-primary mt-1"
-                            aria-live="polite">
-                            <span class="visually-hidden">Buscando...</span>
-                        </output>
-                        <div *ngIf="searchFailedCargo" class="text-danger small mt-1">
-                            <i class="fa fa-exclamation-circle me-1"></i>Error al buscar cargos
-                        </div>
-                        <div *ngIf="cargo.invalid && (cargo.dirty || cargo.touched)" class="text-danger small mt-1">
-                            <i class="fa fa-exclamation-circle me-1"></i>El cargo es requerido
+                        <div *ngIf="cargo.invalid && cargo.touched && designacion.cargo && !designacion.cargo.id"
+                            class="text-danger small mt-1">
+                            <i class="fa fa-exclamation-circle me-1"></i>Seleccione un cargo
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Información del cargo seleccionado -->
-            <div *ngIf="designacion.cargo?.tipoDesignacion" class="row mb-3">
+            <div *ngIf="designacion.cargo && designacion.cargo.tipoDesignacion" class="row mb-3">
                 <div class="col-md-4">
                     <div class="input-group">
                         <span class="input-group-text bg-secondary text-white">
@@ -163,7 +157,8 @@
                     </span>
                     <input id="fechaInicio" name="fechaInicio" class="form-control" placeholder="dd/mm/yyyy"
                         [(ngModel)]="fechaInicioDate" [startDate]="fechaInicioDate || calendar.getToday()" ngbDatepicker
-                        #fechaInicioPicker="ngbDatepicker" required #fechaInicio="ngModel" />
+                        #fechaInicioPicker="ngbDatepicker" required #fechaInicio="ngModel"
+                        (ngModelChange)="onDateChange()" />
                     <button class="btn btn-outline-secondary calendar" (click)="fechaInicioPicker.toggle()"
                         type="button">
                         <i class="fa fa-calendar"></i>
@@ -183,7 +178,8 @@
                     </span>
                     <input id="fechaFin" name="fechaFin" class="form-control" placeholder="dd/mm/yyyy"
                         [(ngModel)]="fechaFinDate" [startDate]="fechaFinDate || fechaInicioDate || calendar.getToday()"
-                        ngbDatepicker #fechaFinPicker="ngbDatepicker" #fechaFin="ngModel" />
+                        ngbDatepicker #fechaFinPicker="ngbDatepicker" #fechaFin="ngModel"
+                        (ngModelChange)="onDateChange()" />
                     <button class="btn btn-outline-secondary calendar" (click)="fechaFinPicker.toggle()" type="button">
                         <i class="fa fa-calendar"></i>
                     </button>
@@ -196,7 +192,7 @@
         <button (click)="goBack()" class="btn btn-outline-secondary me-2">
             <i class="fa fa-arrow-left me-1"></i>Cancelar
         </button>
-        <button (click)="save()" class="btn btn-success" [disabled]="form.invalid">
+        <button (click)="save()" class="btn btn-success" [disabled]="!formularioValido">
             <i class="fa fa-save me-1"></i>Guardar
         </button>
     </div>

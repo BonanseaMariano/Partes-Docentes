@@ -98,16 +98,18 @@ public class CargoService {
      * 
      * @param nombre          Nombre del cargo a buscar
      * @param tipoDesignacion Tipo de designación del cargo a buscar
-     * @return Cargo encontrado o null si no existe
+     * @return Cargos encontrados que coinciden con el nombre y tipo de designación
+     *         o una lista vacía si no existen
      */
-    public Cargo findByNombreAndTipoDesignacion(String nombre, TipoDesignacion tipoDesignacion) {
-        return repository.findByNombreAndTipoDesignacion(nombre, tipoDesignacion).orElse(null);
+    public List<Cargo> findByNombreAndTipoDesignacion(String nombre, TipoDesignacion tipoDesignacion) {
+        return repository.findByNombreAndTipoDesignacion(nombre, tipoDesignacion);
     }
 
     /**
      * Valida las reglas de negocio específicas para los cargos:
      * 1. Si es ESPACIO CURRICULAR, debe tener una división asignada
      * 2. Si es CARGO, no debe tener una división asignada
+     * 3. La fecha de inicio debe ser anterior a la fecha de finalización
      * 
      * @param cargo Cargo a validar
      * @throws BusinessLogicException si no se cumplen las reglas
@@ -120,14 +122,16 @@ public class CargoService {
             }
         }
         // Validaciones para CARGO
-        else if (TipoDesignacion.CARGO.equals(cargo.getTipoDesignacion())) {
-            // Verificamos más estrictamente si hay una división asignada
-            // Puede venir como un objeto parcialmente inicializado desde el cliente
-            if (cargo.getDivision() != null) {
-                // Si está el campo division asignado, no importa si tiene ID o no, es un error
-                throw new BusinessLogicException(
-                        "Cargo de " + cargo.getNombre() + " es CARGO y no corresponde asignar división");
-            }
+        else if (TipoDesignacion.CARGO.equals(cargo.getTipoDesignacion()) && cargo.getDivision() != null) {
+            // Si está el campo division asignado, no importa si tiene ID o no, es un error
+            throw new BusinessLogicException(
+                    "Cargo de " + cargo.getNombre() + " es CARGO y no corresponde asignar división");
+        }
+
+        // Validación adicional: fechaInicio debe ser anterior a fechaFin
+        if (cargo.getFechaFin() != null && cargo.getFechaInicio().isAfter(cargo.getFechaFin())) {
+            throw new BusinessLogicException(
+                    "La fecha de inicio no puede ser posterior a la fecha de finalización");
         }
     }
 }
