@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import unpsjb.labprog.backend.Response;
 import unpsjb.labprog.backend.business.service.PersonaService;
 import unpsjb.labprog.backend.model.Persona;
+import unpsjb.labprog.backend.utils.constants.AppConstants;
 
 /**
  * Controlador REST para la gestión de personas en el sistema.
@@ -107,7 +108,7 @@ public class PersonaPresenter {
 
             return Response.ok(null, mensaje);
         } catch (DataIntegrityViolationException e) {
-            return Response.dbError("No se puede utilizar ese dni porque ya existe otra persona con el mismo");
+            return Response.dbError("Ya existe una persona con el mismo DNI o CUIL");
         }
     }
 
@@ -134,7 +135,7 @@ public class PersonaPresenter {
                     updatedPersona.getDni());
             return Response.ok(null, mensaje);
         } catch (DataIntegrityViolationException e) {
-            return Response.dbError("No se puede utilizar ese DNI porque ya existe otra obra con el mismo");
+            return Response.dbError("Ya existe una persona con el mismo DNI o CUIL");
         }
     }
 
@@ -146,8 +147,8 @@ public class PersonaPresenter {
      * @return ResponseEntity con la página de personas solicitada
      */
     @GetMapping("/page")
-    public ResponseEntity<Object> findByPage(@RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<Object> findByPage(@RequestParam(defaultValue = AppConstants.DEFAULT_PAGE) int page,
+            @RequestParam(defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size) {
         return Response.ok(service.findByPage(page, size));
     }
 

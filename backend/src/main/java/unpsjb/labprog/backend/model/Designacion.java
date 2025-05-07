@@ -13,6 +13,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,7 +26,8 @@ import lombok.Setter;
  * @see Persona
  */
 @Entity
-@Table(name = "designaciones")
+@Table(name = "designaciones", uniqueConstraints = @UniqueConstraint(name = "uk_designacion", columnNames = {
+        "persona_dni", "cargo_id", "fecha_inicio" }))
 @Getter
 @Setter
 @NoArgsConstructor

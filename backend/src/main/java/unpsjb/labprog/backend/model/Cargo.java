@@ -9,7 +9,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -43,7 +42,6 @@ import unpsjb.labprog.backend.model.enums.TipoDesignacion;
  * <li>Nombre del cargo</li>
  * <li>Tipo de designación</li>
  * <li>División asociada (si existe)</li>
- * <li>Fecha de inicio</li>
  * </ul>
  * <p>
  * Cada cargo tiene asociado un conjunto de horarios que definen los días y
@@ -121,7 +119,7 @@ public class Cargo {
      * del cargo.
      */
     @NotNull
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinColumn(name = "cargo_id", nullable = false)
     private List<Horario> horarios = new ArrayList<>();
 }

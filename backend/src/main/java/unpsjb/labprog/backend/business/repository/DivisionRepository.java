@@ -16,12 +16,16 @@ import unpsjb.labprog.backend.model.enums.Turno;
 public interface DivisionRepository extends JpaRepository<Division, Integer> {
 
     /**
-     * Busca una división por su orientación
+     * Busca una división por cualquiera de sus campos
      * 
-     * @param term Cadena a buscar en la orientación
-     * @return Divisiones que coinciden con la búsqueda
+     * @param term Cadena a buscar en los campos de la división
+     * @return Divisiones que coinciden con la búsqueda en cualquier parte del texto
      */
-    @Query("SELECT e FROM Division e WHERE UPPER(e.orientacion) LIKE ?1")
+    @Query("SELECT e FROM Division e WHERE " +
+            "CAST(e.anio AS string) LIKE ?1 OR " +
+            "CAST(e.numDivision AS string) LIKE ?1OR " +
+            "UPPER(e.orientacion) LIKE CONCAT('%', UPPER(?1), '%') OR " +
+            "UPPER(e.turno) LIKE CONCAT('%', UPPER(?1), '%')")
     List<Division> search(String term);
 
     /**
@@ -29,13 +33,11 @@ public interface DivisionRepository extends JpaRepository<Division, Integer> {
      * 
      * @param anio        Año académico
      * @param numDivision Número de división
-     * @param orientacion Orientación académica
      * @param turno       Turno de la división
      * @return La división que coincide con todos los criterios o un Optional vacío
      */
-    Optional<Division> findByAnioAndNumDivisionAndOrientacionAndTurno(
+    Optional<Division> findByAnioAndNumDivisionAndTurno(
             Integer anio,
             Integer numDivision,
-            String orientacion,
             Turno turno);
 }

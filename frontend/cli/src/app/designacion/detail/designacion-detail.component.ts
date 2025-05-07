@@ -1,6 +1,6 @@
 import { CommonModule, Location } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, OnInit, ChangeDetectorRef, AfterViewChecked, ViewChild } from '@angular/core';
+import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { NgbCalendar, NgbDatepickerModule, NgbDateStruct, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 import { Observable, of } from 'rxjs';
@@ -29,7 +29,9 @@ import { DesignacionService } from '../service/designacion.service';
     }
   `
 })
-export class DesignacionDetailComponent implements OnInit {
+export class DesignacionDetailComponent implements OnInit, AfterViewChecked {
+    @ViewChild('form') form!: NgForm;
+
     designacion!: Designacion;
     isNewDesignacion: boolean = true;
     tipoDesignacionEnum = TipoDesignacion; // Para acceder al enum desde la plantilla
@@ -38,17 +40,14 @@ export class DesignacionDetailComponent implements OnInit {
     personaSeleccionada: any = '';
     cargoSeleccionado: any = '';
 
-    // Para el estado de búsqueda
-    searchingPersona = false;
-    searchFailedPersona = false;
-    searchingCargo = false;
-    searchFailedCargo = false;
-
     // Propiedades para los datepickers
     fechaInicioDate: NgbDateStruct | null = null;
     fechaFinDate: NgbDateStruct | null = null;
 
     tituloFormulario: string = 'Nueva Designación';
+
+    // Propiedad para determinar si el formulario es válido
+    formularioValido: boolean = false;
 
     constructor(
         private route: ActivatedRoute,
@@ -57,11 +56,46 @@ export class DesignacionDetailComponent implements OnInit {
         private cargoService: CargoService,
         private location: Location,
         private modalService: ModalService,
-        public calendar: NgbCalendar
-    ) { }
+        public calendar: NgbCalendar,
+        private cdr: ChangeDetectorRef
+    ) {
+        // Inicializar la designación con valores por defecto
+        this.designacion = <Designacion>{};
+        // Inicializar objetos vacíos para evitar problemas de null en el HTML
+        this.designacion.persona = <Persona>{};
+        this.designacion.cargo = <Cargo>{};
+    }
 
     goBack(): void {
         this.location.back();
+    }
+
+    // Método para verificar si el formulario es válido
+    verificarFormularioValido(): void {
+        // Primero verificar que la designación y sus propiedades existan
+        if (!this.designacion) {
+            this.formularioValido = false;
+            return;
+        }
+
+        // Verificar que la persona y el cargo tengan un ID (lo que indica que son objetos reales)
+        // y que la fecha de inicio sea válida
+        this.formularioValido = !!this.designacion.persona?.id &&
+            !!this.designacion.cargo?.id &&
+            !!this.fechaInicioDate;
+
+        // Verificar si la fecha de inicio es válida a través del formulario
+        if (this.form && this.form.controls['fechaInicio']) {
+            if (this.form.controls['fechaInicio'].invalid) {
+                this.formularioValido = false;
+            }
+        }
+    }
+
+    // Este método se ejecuta después de cada ciclo de detección de cambios
+    ngAfterViewChecked() {
+        this.verificarFormularioValido();
+        this.cdr.detectChanges();
     }
 
     save(): void {
@@ -109,16 +143,16 @@ export class DesignacionDetailComponent implements OnInit {
     get(): void {
         const id = this.route.snapshot.paramMap.get("id")!;
         if (id === "new") {
-            // Inicializar la designación con valores vacíos
-            this.designacion = <Designacion>{};
-            // Inicializar objetos vacíos para evitar problemas de null en el HTML
-            this.designacion.persona = <Persona>{};
-            this.designacion.cargo = <Cargo>{};
+            // Ya no necesitamos inicializar nuevamente la designación y sus propiedades
+            // porque lo hacemos en el constructor
 
             this.tituloFormulario = 'Nueva Designación';
             this.isNewDesignacion = true;  // Es una nueva designación
             // Establecer la fecha de inicio al día de hoy
             this.fechaInicioDate = this.calendar.getToday();
+
+            // Verificar el estado inicial del formulario
+            setTimeout(() => this.verificarFormularioValido(), 0);
         } else {
             this.designacionService.get(parseInt(id!)).subscribe({
                 next: (dataPackage) => {
@@ -153,6 +187,9 @@ export class DesignacionDetailComponent implements OnInit {
                             day: fechaFin.getDate()
                         };
                     }
+
+                    // Verificar el estado inicial del formulario
+                    setTimeout(() => this.verificarFormularioValido(), 0);
                 }
             });
         }
@@ -164,17 +201,12 @@ export class DesignacionDetailComponent implements OnInit {
             debounceTime(300),
             distinctUntilChanged(),
             filter(term => term.length >= 2),
-            tap(() => this.searchingPersona = true),
             switchMap(term =>
                 this.personaService.search(term).pipe(
                     map(dataPackage => <Persona[]>dataPackage.data),
-                    catchError(() => {
-                        this.searchFailedPersona = true;
-                        return of([]);
-                    })
+                    catchError(() => of([]))
                 )
-            ),
-            tap(() => this.searchingPersona = false)
+            )
         );
 
     // Formateador de resultados en el dropdown para personas
@@ -194,7 +226,17 @@ export class DesignacionDetailComponent implements OnInit {
         if (persona) {
             this.designacion.persona = persona;
             this.personaSeleccionada = persona;
+            this.verificarFormularioValido();
         }
+    }
+
+    // Método para manejar cambios en el input de persona
+    onPersonaInputChange(value: any): void {
+        // Si el campo está vacío, limpiar la persona asignada
+        if (value === '') {
+            this.designacion.persona = <Persona>{};
+        }
+        this.verificarFormularioValido();
     }
 
     // Métodos para la búsqueda de cargos
@@ -203,17 +245,12 @@ export class DesignacionDetailComponent implements OnInit {
             debounceTime(300),
             distinctUntilChanged(),
             filter(term => term.length >= 2),
-            tap(() => this.searchingCargo = true),
             switchMap(term =>
                 this.cargoService.search(term).pipe(
                     map(dataPackage => <Cargo[]>dataPackage.data),
-                    catchError(() => {
-                        this.searchFailedCargo = true;
-                        return of([]);
-                    })
+                    catchError(() => of([]))
                 )
-            ),
-            tap(() => this.searchingCargo = false)
+            )
         );
 
     // Formateador de resultados en el dropdown para cargos
@@ -238,7 +275,22 @@ export class DesignacionDetailComponent implements OnInit {
         if (cargo) {
             this.designacion.cargo = cargo;
             this.cargoSeleccionado = cargo;
+            this.verificarFormularioValido();
         }
+    }
+
+    // Método para manejar cambios en el input de cargo
+    onCargoInputChange(value: any): void {
+        // Si el campo está vacío, limpiar el cargo asignado
+        if (value === '') {
+            this.designacion.cargo = <Cargo>{};
+        }
+        this.verificarFormularioValido();
+    }
+
+    // Método para detectar cambios en los datepickers
+    onDateChange(): void {
+        this.verificarFormularioValido();
     }
 
     // Método para formatear la información de división

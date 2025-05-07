@@ -15,41 +15,27 @@ function DivisionWorld() {
 const { setWorldConstructor } = require('@cucumber/cucumber');
 setWorldConstructor(DivisionWorld);
 
-// Mapeo de turnos para asegurar que los valores coincidan con lo esperado en el backend
-const turnoMap = {
-    'MAÑANA': 'Mañana',
-    'TARDE': 'Tarde',
-    'VESPERTINO': 'Vespertino',
-    'NOCHE': 'Noche'
-};
+
 
 // Paso: Dada la el espacio físico división con <año> <número> <orientación> <turno>
 Given(
     'la el espacio físico división con {int} {int} {word} {word}',
     function (anio, numero, orientacion, turno) {
-        // Usar el mapa de turnos para asegurar valores correctos
-        const turnoFormateado = turnoMap[turno] || turno;
-
         this.currentDivision = {
             anio: anio,
             numDivision: numero,
             orientacion: orientacion,
-            turno: turnoFormateado
+            turno: turno
         };
     }
 );
 
 // Paso: Cuando se presiona el botón de guardar para división
 When('se presiona el botón de guardar para división', function () {
-    try {
-        const res = request('POST', 'http://pd-backend:8080/divisiones', {
-            json: this.currentDivision
-        });
-        this.apiResponse = JSON.parse(res.getBody('utf8'));
-    } catch (error) {
-        console.error('Error al hacer la solicitud:', error.message);
-        throw error;
-    }
+    const res = request('POST', 'http://pd-backend:8080/divisiones', {
+        json: this.currentDivision
+    });
+    this.apiResponse = JSON.parse(res.getBody('utf8'));
 });
 
 // El paso "Entonces se espera el siguiente {int} con la {string}" 

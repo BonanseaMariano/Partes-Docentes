@@ -27,8 +27,6 @@ import unpsjb.labprog.backend.model.enums.Turno;
  * <ul>
  * <li>Año académico (por ejemplo: 1°, 2°, etc.)</li>
  * <li>Número de división (por ejemplo: 1, 2, 3, etc.)</li>
- * <li>Orientación académica (por ejemplo: "Ciencias Sociales", "Economía",
- * etc.)</li>
  * <li>Turno (Mañana, Tarde, Vespertino, Noche)</li>
  * </ul>
  * <p>
@@ -43,7 +41,6 @@ import unpsjb.labprog.backend.model.enums.Turno;
 @Entity
 @Table(name = "divisiones", uniqueConstraints = @UniqueConstraint(name = "uk_division", columnNames = { "anio",
         "numDivision",
-        "orientacion",
         "turno" }))
 @Getter
 @Setter

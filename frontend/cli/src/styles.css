@@ -11,13 +11,18 @@ body {
 }
 
 /* Estilo para los encabezados */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   color: #0d6efd;
   margin-bottom: 1rem;
 }
 
 /* Estilos para los iconos en los menús */
-.nav-link .fa, 
+.nav-link .fa,
 .dropdown-item .fa {
   width: 18px;
   text-align: center;
@@ -70,4 +75,87 @@ footer {
   border: none;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   border-radius: 6px;
+}
+
+/* Animaciones para modales */
+/* Modal de confirmación - viene desde abajo y rebota de forma más suave */
+.modal-confirm .modal-dialog {
+  animation: smoothBounceInUp 0.7s ease-out;
+}
+
+/* Modal de error - viene desde la derecha con un movimiento más suave */
+.modal-error .modal-dialog {
+  animation: gentleShakeX 0.8s ease-in-out;
+}
+
+/* Modal de éxito - aparece con un zoom más suave */
+.modal-success .modal-dialog {
+  animation: smoothZoomIn 0.6s ease-in-out;
+}
+
+/* Keyframes para animación smoothBounceInUp - más suave */
+@keyframes smoothBounceInUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 100px, 0);
+  }
+
+  70% {
+    opacity: 1;
+    transform: translate3d(0, -10px, 0);
+  }
+
+  85% {
+    transform: translate3d(0, 5px, 0);
+  }
+
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* Keyframes para animación gentleShakeX - más sutil */
+@keyframes gentleShakeX {
+  from {
+    opacity: 0;
+    transform: translate3d(40px, 0, 0);
+  }
+
+  20% {
+    transform: translate3d(-8px, 0, 0);
+  }
+
+  40% {
+    transform: translate3d(6px, 0, 0);
+  }
+
+  60% {
+    opacity: 1;
+    transform: translate3d(-4px, 0, 0);
+  }
+
+  80% {
+    transform: translate3d(2px, 0, 0);
+  }
+
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* Keyframes para animación smoothZoomIn - más elegante */
+@keyframes smoothZoomIn {
+  from {
+    opacity: 0;
+    transform: scale3d(0.8, 0.8, 0.8);
+  }
+
+  60% {
+    opacity: 1;
+    transform: scale3d(1.03, 1.03, 1.03);
+  }
+
+  to {
+    transform: scale3d(1, 1, 1);
+  }
 }
