@@ -80,14 +80,16 @@ public class CargoPresenter {
             if (createdCargo.getTipoDesignacion() == TipoDesignacion.ESPACIO_CURRICULAR) {
                 // Para espacios curriculares, incluir la información de la división
                 mensaje = String.format(
-                        "Espacio Curricular %s para la división %dº %dº Turno %s ingresado correctamente",
+                        "%s %s para la división %dº %dº Turno %s ingresado correctamente",
+                        createdCargo.getTipoDesignacion().getValor(),
                         createdCargo.getNombre(),
                         createdCargo.getDivision().getAnio(),
                         createdCargo.getDivision().getNumDivision(),
                         createdCargo.getDivision().getTurno());
             } else {
                 // Para cargos normales
-                mensaje = String.format("Cargo de %s ingresado correctamente", createdCargo.getNombre());
+                mensaje = String.format("%s de %s ingresado correctamente", createdCargo.getTipoDesignacion().getValor(),
+                        createdCargo.getNombre());
             }
 
             return Response.ok(null, mensaje);
