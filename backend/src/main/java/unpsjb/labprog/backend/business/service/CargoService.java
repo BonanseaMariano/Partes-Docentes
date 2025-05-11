@@ -13,6 +13,7 @@ import unpsjb.labprog.backend.business.repository.CargoRepository;
 import unpsjb.labprog.backend.exception.BusinessLogicException;
 import unpsjb.labprog.backend.model.Cargo;
 import unpsjb.labprog.backend.model.enums.TipoDesignacion;
+import unpsjb.labprog.backend.model.enums.Turno;
 
 /**
  * Servicio que implementa la lógica de negocio para la entidad Cargo
@@ -94,15 +95,25 @@ public class CargoService {
     }
 
     /**
-     * Busca un cargo por su nombre y tipo de designación
+     * Busca un cargo por su nombre, tipo de designación y opcionalmente por los
+     * atributos de la división
      * 
      * @param nombre          Nombre del cargo a buscar
      * @param tipoDesignacion Tipo de designación del cargo a buscar
-     * @return Cargos encontrados que coinciden con el nombre y tipo de designación
-     *         o una lista vacía si no existen
+     * @param anio            Año de la división (opcional)
+     * @param numDivision     Número de la división (opcional)
+     * @param turno           Turno de la división (opcional)
+     * @return Cargo encontrado que coincide con los criterios de búsqueda o null si
+     *         no existe
      */
-    public List<Cargo> findByNombreAndTipoDesignacion(String nombre, TipoDesignacion tipoDesignacion) {
-        return repository.findByNombreAndTipoDesignacion(nombre, tipoDesignacion);
+    public Cargo findByNombreAndTipoDesignacionAndDivision(
+            String nombre,
+            TipoDesignacion tipoDesignacion,
+            Integer anio,
+            Integer numDivision,
+            Turno turno) {
+        return repository.findByNombreAndTipoDesignacionAndDivision(
+                nombre, tipoDesignacion, anio, numDivision, turno).orElse(null);
     }
 
     /**

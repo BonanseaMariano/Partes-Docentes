@@ -1,7 +1,5 @@
 package unpsjb.labprog.backend.presenter;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +18,7 @@ import unpsjb.labprog.backend.business.service.CargoService;
 import unpsjb.labprog.backend.exception.BusinessLogicException;
 import unpsjb.labprog.backend.model.Cargo;
 import unpsjb.labprog.backend.model.enums.TipoDesignacion;
+import unpsjb.labprog.backend.model.enums.Turno;
 import unpsjb.labprog.backend.utils.constants.AppConstants;
 
 /**
@@ -191,25 +190,39 @@ public class CargoPresenter {
     }
 
     /**
-     * Busca un cargo por su nombre y tipo de designación
+     * Busca un cargo por su nombre, tipo de designación y opcionalmente por los
+     * atributos de la división
      * 
      * @param nombre          Nombre del cargo a buscar
      * @param tipoDesignacion Tipo de designación del cargo a buscar (CARGO o
      *                        ESPACIO_CURRICULAR)
-     * @return ResponseEntity con la lista de cargos encontrados o mensaje de error
-     *         si no existe ninguno
+     * @param anio            Año de la división (opcional)
+     * @param numDivision     Número de la división (opcional)
+     * @param turno           Turno de la división (opcional)
+     * @return ResponseEntity con el cargo encontrado o mensaje de error si no
+     *         existe
      */
     @GetMapping("/find")
-    public ResponseEntity<Object> findByNombreAndTipoDesignacion(
+    public ResponseEntity<Object> findByNombreAndTipoDesignacionAndDivision(
             @RequestParam String nombre,
-            @RequestParam TipoDesignacion tipoDesignacion) {
+            @RequestParam TipoDesignacion tipoDesignacion,
+            @RequestParam(required = false) Integer anio,
+            @RequestParam(required = false) Integer numDivision,
+            @RequestParam(required = false) Turno turno) {
 
-        List<Cargo> cargos = service.findByNombreAndTipoDesignacion(nombre, tipoDesignacion);
+        Cargo cargo = service.findByNombreAndTipoDesignacionAndDivision(
+                nombre, tipoDesignacion, anio, numDivision, turno);
 
-        return (!cargos.isEmpty()) ? Response.ok(cargos)
+        String divisionMessage = (anio != null || numDivision != null || turno != null)
+                ? " para la división especificada"
+                : "";
+
+        return (cargo != null) ? Response.ok(cargo)
                 : Response.notFound(
-                        String.format("No se encontró cargo con nombre '%s' y tipo '%s'",
-                                nombre, tipoDesignacion.getValor()));
+                        String.format("No se encontró cargo con nombre '%s' y tipo '%s'%s",
+                                nombre,
+                                tipoDesignacion.getValor(),
+                                divisionMessage));
     }
 
 }
