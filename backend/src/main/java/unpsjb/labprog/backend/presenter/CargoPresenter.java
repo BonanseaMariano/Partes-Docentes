@@ -84,7 +84,7 @@ public class CargoPresenter {
                         createdCargo.getNombre(),
                         createdCargo.getDivision().getAnio(),
                         createdCargo.getDivision().getNumDivision(),
-                        createdCargo.getDivision().getTurno().getValor());
+                        createdCargo.getDivision().getTurno());
             } else {
                 // Para cargos normales
                 mensaje = String.format("Cargo de %s ingresado correctamente", createdCargo.getNombre());
@@ -128,7 +128,7 @@ public class CargoPresenter {
                         updatedCargo.getNombre(),
                         updatedCargo.getDivision().getAnio(),
                         updatedCargo.getDivision().getNumDivision(),
-                        updatedCargo.getDivision().getTurno().getValor());
+                        updatedCargo.getDivision().getTurno());
             } else {
                 // Para cargos normales
                 mensaje = String.format("Cargo de %s actualizado correctamente", updatedCargo.getNombre());
