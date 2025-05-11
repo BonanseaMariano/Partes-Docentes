@@ -72,10 +72,7 @@ When('se presiona el botón guardar', function () {
             json: this.currentDesignacion
         });
 
-        // Log para verificar la respuesta completa
-        console.log('Respuesta del servidor:', res.statusCode);
         const responseBody = res.getBody('utf8');
-        console.log('Cuerpo de la respuesta:', responseBody);
 
         this.apiResponse = JSON.parse(responseBody);
     } catch (error) {
