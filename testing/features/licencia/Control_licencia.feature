@@ -43,8 +43,8 @@ Característica: otorgar o denegar licencia a una persona a un cargo docente
     Entonces se recupera el mensaje
       """
       {
-         "StatusCode": 200,
-         "StatusText": "Jorge Dismal ha sido designado/a al cargo prceptor/a exitosamente, en reemplado de Susana Álvarez"
+         "status": 200,
+         "message": "Jorge Dismal ha sido designado/a al cargo prceptor/a exitosamente, en reemplado de Susana Álvarez"
       }
       """
 
@@ -63,7 +63,7 @@ Característica: otorgar o denegar licencia a una persona a un cargo docente
     Entonces se recupera el mensaje
       """
       {
-         "StatusCode": 500,
-         "StatusText": "Analía Rojas NO ha sido designado/a al cargo auxiliar ya cuenta con Rosalía Fernandez asignada al mismo en el período"
+         "status": 500,
+         "message": "Analía Rojas NO ha sido designado/a al cargo auxiliar ya cuenta con Rosalía Fernandez asignada al mismo en el período"
       }
       """
