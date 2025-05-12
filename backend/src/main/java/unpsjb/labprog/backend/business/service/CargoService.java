@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import unpsjb.labprog.backend.business.repository.CargoRepository;
+import unpsjb.labprog.backend.business.validator.CargoValidator;
 import unpsjb.labprog.backend.exception.BusinessLogicException;
 import unpsjb.labprog.backend.model.Cargo;
 import unpsjb.labprog.backend.model.enums.TipoDesignacion;
@@ -25,6 +26,9 @@ public class CargoService {
 
     @Autowired
     private CargoRepository repository;
+
+    @Autowired
+    private CargoValidator validator;
 
     /**
      * Busca un cargo por su ID
@@ -55,9 +59,8 @@ public class CargoService {
      */
     @Transactional
     public Cargo save(Cargo cargo) throws BusinessLogicException {
-        // Validar reglas de negocio para el tipo de designación y división antes de
-        // guardar
-        validarReglasDeNegocio(cargo);
+        // Validar reglas de negocio usando el validador específico
+        validator.validar(cargo);
 
         // Si pasa las validaciones, guardar el cargo
         return repository.save(cargo);
@@ -116,33 +119,4 @@ public class CargoService {
                 nombre, tipoDesignacion, anio, numDivision, turno).orElse(null);
     }
 
-    /**
-     * Valida las reglas de negocio específicas para los cargos:
-     * 1. Si es ESPACIO CURRICULAR, debe tener una división asignada
-     * 2. Si es CARGO, no debe tener una división asignada
-     * 3. La fecha de inicio debe ser anterior a la fecha de finalización
-     * 
-     * @param cargo Cargo a validar
-     * @throws BusinessLogicException si no se cumplen las reglas
-     */
-    private void validarReglasDeNegocio(Cargo cargo) throws BusinessLogicException {
-        // Validaciones para ESPACIO_CURRICULAR
-        if (TipoDesignacion.ESPACIO_CURRICULAR.equals(cargo.getTipoDesignacion())) {
-            if (cargo.getDivision() == null) {
-                throw new BusinessLogicException("Espacio Curricular " + cargo.getNombre() + " falta asignar división");
-            }
-        }
-        // Validaciones para CARGO
-        else if (TipoDesignacion.CARGO.equals(cargo.getTipoDesignacion()) && cargo.getDivision() != null) {
-            // Si está el campo division asignado, no importa si tiene ID o no, es un error
-            throw new BusinessLogicException(
-                    "Cargo de " + cargo.getNombre() + " es CARGO y no corresponde asignar división");
-        }
-
-        // Validación adicional: fechaInicio debe ser anterior a fechaFin
-        if (cargo.getFechaFin() != null && cargo.getFechaInicio().isAfter(cargo.getFechaFin())) {
-            throw new BusinessLogicException(
-                    "La fecha de inicio no puede ser posterior a la fecha de finalización");
-        }
-    }
 }
