@@ -106,7 +106,7 @@ public class DivisionPresenter {
             String mensaje = String.format("División %dº %dº turno %s actualizada correctamente",
                     updatedDivision.getAnio(),
                     updatedDivision.getNumDivision(),
-                    updatedDivision.getTurno().getValor());
+                    updatedDivision.getTurno());
 
             return Response.ok(null, mensaje);
         } catch (DataIntegrityViolationException e) {
