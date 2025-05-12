@@ -29,16 +29,13 @@ Given(
             domicilio: domicilio,
             telefono: telefono
         };
-
-        // Limpiamos cualquier respuesta anterior
-        this.apiResponse = {};
     }
 );
 
 // Paso: Cuando se presiona el botón de guardar para persona
 When('se presiona el botón de guardar para persona', function () {
     // Creamos la persona con POST
-    const res = request('POST', 'http://pd-backend:8080/personas', {
+    const res = request('POST', encodeURI('http://pd-backend:8080/personas'), {
         json: this.currentPersona
     });
 
