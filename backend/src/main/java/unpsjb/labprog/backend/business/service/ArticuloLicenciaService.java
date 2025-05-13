@@ -1,9 +1,11 @@
 package unpsjb.labprog.backend.business.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,30 +24,9 @@ public class ArticuloLicenciaService {
     private ArticuloLicenciaRepository repository;
 
     /**
-     * Busca un artículo de licencia por su código o lo crea si no existe
+     * Busca todas las licencias registradas
      * 
-     * @param articulo    Código del artículo (ej: "5A")
-     * @param descripcion Descripción del artículo (usado solo si se crea nuevo)
-     * @return Artículo de licencia encontrado o creado
-     */
-    @Transactional
-    public ArticuloLicencia findOrCreate(String articulo, String descripcion) {
-        Optional<ArticuloLicencia> existente = repository.findByArticulo(articulo);
-
-        if (existente.isPresent()) {
-            return existente.get();
-        } else {
-            ArticuloLicencia nuevo = new ArticuloLicencia();
-            nuevo.setArticulo(articulo);
-            nuevo.setDescripcion(descripcion);
-            return repository.save(nuevo);
-        }
-    }
-
-    /**
-     * Obtiene todos los artículos de licencia
-     * 
-     * @return Lista de todos los artículos de licencia
+     * @return Lista de todas las licencias
      */
     public List<ArticuloLicencia> findAll() {
         return repository.findAll();
@@ -80,5 +61,27 @@ public class ArticuloLicenciaService {
     @Transactional
     public ArticuloLicencia save(ArticuloLicencia articuloLicencia) {
         return repository.save(articuloLicencia);
+    }
+
+    /**
+     * Elimina un artículo de licencia por su id
+     * 
+     * @param id id del artículo de licencia a eliminar
+     */
+    @Transactional
+    public void delete(int id) {
+        repository.deleteById(id);
+    }
+
+    /**
+     * Obtiene una página de entidades artículo de licencia.
+     * 
+     * @param page el índice de página basado en cero
+     * @param size el tamaño de la página a devolver
+     * @return un objeto Page que contiene las entidades artículo de licencia
+     *         solicitadas
+     */
+    public Page<ArticuloLicencia> findByPage(int page, int size) {
+        return repository.findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id")));
     }
 }

@@ -139,7 +139,7 @@ public class LicenciaPresenter {
     public ResponseEntity<Object> delete(@PathVariable int id) {
         Licencia deletedLicencia = service.findById(id);
         if (deletedLicencia == null) {
-            return Response.notFound("Designación con ID " + id + " no encontrada para eliminar");
+            return Response.notFound("Licencia con ID " + id + " no encontrada para eliminar");
         }
 
         try {

@@ -12,7 +12,6 @@ import jakarta.transaction.Transactional;
 import unpsjb.labprog.backend.business.repository.LicenciaRepository;
 import unpsjb.labprog.backend.business.validator.LicenciaValidator;
 import unpsjb.labprog.backend.exception.BusinessLogicException;
-import unpsjb.labprog.backend.model.ArticuloLicencia;
 import unpsjb.labprog.backend.model.Licencia;
 
 /**
@@ -26,9 +25,6 @@ public class LicenciaService {
 
     @Autowired
     private LicenciaValidator validator;
-
-    @Autowired
-    private ArticuloLicenciaService articuloLicenciaService;
 
     /**
      * Busca todas las licencias registradas
@@ -50,9 +46,7 @@ public class LicenciaService {
     }
 
     /**
-     * Guarda una nueva licencia o actualiza una existente, verificando el artículo
-     * de licencia
-     * y creándolo si no existe
+     * Guarda una nueva licencia o actualiza una existente
      * 
      * @param licencia Licencia a guardar
      * @return Licencia guardada
@@ -60,18 +54,6 @@ public class LicenciaService {
      */
     @Transactional
     public Licencia save(Licencia licencia) throws BusinessLogicException {
-        // Verificar si el artículo existe o necesita ser creado
-        if (licencia.getArticuloLicencia() != null) {
-            String codigoArticulo = licencia.getArticuloLicencia().getArticulo();
-            if (codigoArticulo != null && !codigoArticulo.trim().isEmpty()
-                    && licencia.getArticuloLicencia().getId() <= 0) {
-                // No tiene ID, buscar por código o crear uno nuevo
-                String descripcion = licencia.getArticuloLicencia().getDescripcion();
-                ArticuloLicencia articuloExistente = articuloLicenciaService.findOrCreate(codigoArticulo, descripcion);
-                licencia.setArticuloLicencia(articuloExistente);
-            }
-
-        }
 
         // Validar reglas de negocio antes de guardar usando el validador específico
         validator.validar(licencia);

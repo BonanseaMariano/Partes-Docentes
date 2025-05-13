@@ -49,12 +49,11 @@ Given('el docente con DNI {int}, nombre {string} y apellido {string}', function 
 
 // Paso: Cuando solicita una licencia artículo <articulo> con descripción <descripcion> para el período <desde> <hasta>
 When('solicita una licencia artículo {string} con descripción {string} para el período {string} {string}', function (articulo, descripcion, desde, hasta) {
-    // En lugar de buscar el artículo, simplemente enviamos el código y la descripción
-    // y dejamos que el backend se encargue de buscarlo o crearlo
-    this.currentLicencia.articuloLicencia = {
-        articulo: articulo,
-        descripcion: descripcion
-    };
+    // Buscamos el artículo de licencia usando el endpoint específico
+    // Asumimos que el artículo siempre existe en la base de datos
+    const articuloRes = request('GET', encodeURI(`http://pd-backend:8080/articulos-licencias/articulo/${articulo}`));
+    const articuloData = JSON.parse(articuloRes.getBody('utf8'));
+    this.currentLicencia.articuloLicencia = articuloData.data;
 
     // Asignamos las fechas en formato ISO
     this.currentLicencia.pedidoDesde = desde ? desde + "T03:00:00" : null;
@@ -130,6 +129,12 @@ Given('que la instancia de designación está asignada a la persona con licencia
         designacionHasta: personaConLicencia.Hasta + "T03:00:00"
     };
 
+    // Buscamos el artículo de licencia
+    // Asumimos que el artículo siempre existe en la base de datos
+    const articuloRes = request('GET', encodeURI(`http://pd-backend:8080/articulos-licencias/articulo/${articulo}`));
+    const articuloData = JSON.parse(articuloRes.getBody('utf8'));
+    const articuloLicenciaObj = articuloData.data;
+
     // Creamos la licencia para esta persona
     this.licenciaExistente = {
         persona: {
@@ -137,9 +142,7 @@ Given('que la instancia de designación está asignada a la persona con licencia
             nombre: this.personaConLicencia.nombre,
             apellido: this.personaConLicencia.apellido
         },
-        articuloLicencia: {
-            articulo: articulo
-        },
+        articuloLicencia: articuloLicenciaObj,
         pedidoDesde: desde + "T03:00:00",
         pedidoHasta: hasta + "T03:00:00",
         certificadoMedico: true
