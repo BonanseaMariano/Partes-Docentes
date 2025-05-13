@@ -27,7 +27,7 @@ import lombok.Setter;
  */
 @Entity
 @Table(name = "designaciones", uniqueConstraints = @UniqueConstraint(name = "uk_designacion", columnNames = {
-        "persona_dni", "cargo_id", "fecha_inicio" }))
+        "persona_dni", "cargo_id", "situacion_revista" }))
 @Getter
 @Setter
 @NoArgsConstructor

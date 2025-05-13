@@ -32,7 +32,7 @@ public class DesignacionValidator {
      */
     public void validar(Designacion designacion) throws BusinessLogicException {
         validarFechas(designacion);
-        /* validarSolapamiento(designacion); */
+        validarSolapamiento(designacion);
     }
 
     /**

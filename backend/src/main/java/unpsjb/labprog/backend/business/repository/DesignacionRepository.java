@@ -15,23 +15,22 @@ public interface DesignacionRepository extends JpaRepository<Designacion, Intege
          * Busca designaciones que se solapen con el periodo especificado para el mismo
          * cargo.
          * 
-         * Si fechaFin es null, esto quiere decir que la designación es para un día
-         * específico (solo fecha de inicio).
+         * Asume que fechaInicio y fechaFin nunca son nulos, es decir, siempre se
+         * especifica un período completo. La consulta está simplificada para verificar
+         * solo los casos donde hay solapamiento real entre períodos.
          *
          * @param cargoId       El ID del cargo a verificar
          * @param fechaInicio   Fecha de inicio del periodo a verificar
-         * @param fechaFin      Fecha de fin del periodo a verificar (null si es solo
-         *                      para un día)
+         * @param fechaFin      Fecha de fin del periodo a verificar
          * @param designacionId ID de la designación a excluir (útil para
          *                      actualizaciones, puede ser null para nuevas)
          * @return Lista de designaciones que se solapan con el periodo especificado
          */
         @Query(value = "SELECT d FROM Designacion d WHERE d.cargo.id = :cargo " +
                         "AND (:designacionId IS NULL OR d.id != :designacionId) " +
-                        "AND (" +
-                        "  (:fechaInicio <= d.fechaFin OR d.fechaFin IS NULL) " +
-                        "  AND " +
-                        "  (COALESCE(:fechaFin, :fechaInicio) >= d.fechaInicio)" +
+                        "AND NOT (" +
+                        "  (:fechaFin < d.fechaInicio) OR " +
+                        "  (:fechaInicio > d.fechaFin)" +
                         ")")
         List<Designacion> findDesignacionesSuperpuestas(
                         @Param("cargo") Integer cargoId,
