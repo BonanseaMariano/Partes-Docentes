@@ -30,9 +30,9 @@ public interface DesignacionRepository extends JpaRepository<Designacion, Intege
         @Query(value = "SELECT d FROM Designacion d WHERE d.cargo.id = :cargo " +
                         "AND (:designacionId IS NULL OR d.id != :designacionId) " +
                         "AND (" +
-                        "  (d.fechaInicio <= COALESCE(:fechaFin, CAST('9999-12-31' as java.time.LocalDateTime))) " +
-                        "  AND " +
-                        "  (COALESCE(d.fechaFin, CAST('9999-12-31' as java.time.LocalDateTime)) >= :fechaInicio)" +
+                        "  (d.fechaInicio <= COALESCE(:fechaFin, d.fechaInicio) " +
+                        "   AND COALESCE(d.fechaFin, :fechaFin) >= :fechaInicio)" +
+                        "  OR (d.fechaFin IS NULL AND CAST(:fechaFin AS java.time.LocalDateTime) IS NULL)" +
                         ")")
         List<Designacion> findDesignacionesSuperpuestas(
                         @Param("cargo") Integer cargoId,
