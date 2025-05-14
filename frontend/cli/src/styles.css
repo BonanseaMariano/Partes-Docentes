@@ -1,6 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 @import "bootstrap/dist/css/bootstrap.min.css";
 @import "font-awesome/css/font-awesome.css";
+@import "animate.css/animate.min.css";
 
 /* Estilos globales personalizados */
 body {
@@ -77,85 +78,26 @@ footer {
   border-radius: 6px;
 }
 
-/* Animaciones para modales */
+/* Animaciones para modales usando Animate.css */
 /* Modal de confirmación - viene desde abajo y rebota de forma más suave */
 .modal-confirm .modal-dialog {
-  animation: smoothBounceInUp 0.7s ease-out;
+  animation-duration: 0.7s;
+  animation-fill-mode: both;
+  animation-name: bounceInUp;
 }
 
 /* Modal de error - viene desde la derecha con un movimiento más suave */
 .modal-error .modal-dialog {
-  animation: gentleShakeX 0.8s ease-in-out;
+  animation-duration: 0.8s;
+  animation-fill-mode: both;
+  animation-name: shakeX;
 }
 
 /* Modal de éxito - aparece con un zoom más suave */
 .modal-success .modal-dialog {
-  animation: smoothZoomIn 0.6s ease-in-out;
+  animation-duration: 0.6s;
+  animation-fill-mode: both;
+  animation-name: zoomIn;
 }
 
-/* Keyframes para animación smoothBounceInUp - más suave */
-@keyframes smoothBounceInUp {
-  from {
-    opacity: 0;
-    transform: translate3d(0, 100px, 0);
-  }
-
-  70% {
-    opacity: 1;
-    transform: translate3d(0, -10px, 0);
-  }
-
-  85% {
-    transform: translate3d(0, 5px, 0);
-  }
-
-  to {
-    transform: translate3d(0, 0, 0);
-  }
-}
-
-/* Keyframes para animación gentleShakeX - más sutil */
-@keyframes gentleShakeX {
-  from {
-    opacity: 0;
-    transform: translate3d(40px, 0, 0);
-  }
-
-  20% {
-    transform: translate3d(-8px, 0, 0);
-  }
-
-  40% {
-    transform: translate3d(6px, 0, 0);
-  }
-
-  60% {
-    opacity: 1;
-    transform: translate3d(-4px, 0, 0);
-  }
-
-  80% {
-    transform: translate3d(2px, 0, 0);
-  }
-
-  to {
-    transform: translate3d(0, 0, 0);
-  }
-}
-
-/* Keyframes para animación smoothZoomIn - más elegante */
-@keyframes smoothZoomIn {
-  from {
-    opacity: 0;
-    transform: scale3d(0.8, 0.8, 0.8);
-  }
-
-  60% {
-    opacity: 1;
-    transform: scale3d(1.03, 1.03, 1.03);
-  }
-
-  to {
-    transform: scale3d(1, 1, 1);
-  }
-}
+/* Aquí se eliminaron los keyframes personalizados ya que ahora estamos usando Animate.css */

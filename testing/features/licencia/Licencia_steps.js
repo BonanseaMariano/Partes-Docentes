@@ -69,22 +69,8 @@ When('solicita una licencia artículo {string} con descripción {string} para el
 Given('que existe la persona', function (dataTable) {
     // Obtenemos la primera fila de la tabla de datos (sin encabezados)
     const persona = dataTable.hashes()[0];
-
-    // Guardamos los datos de la persona reemplazante
-    this.reemplazante = {
-        dni: persona.DNI,
-        nombre: persona.Nombre,
-        apellido: persona.Apellido
-    };
-
-    // Verificamos si la persona existe en el sistema
-    try {
-        const personaRes = request('GET', encodeURI(`http://pd-backend:8080/personas/dni/${persona.DNI}`));
-        // Si existe, usamos esa información
-        this.reemplazante = JSON.parse(personaRes.getBody('utf8')).data;
-    } catch (error) {
-        console.log(`Persona reemplazante con DNI ${persona.DNI} no encontrada, se usarán los datos proporcionados`);
-    }
+    // Guardamos la información de la persona
+    this.reemplazante = JSON.parse(request('GET', encodeURI(`http://pd-backend:8080/personas/dni/${persona.DNI}`)).getBody('utf8')).data;
 });
 
 // Paso: Y que existen las siguientes instancias de designación asignada
