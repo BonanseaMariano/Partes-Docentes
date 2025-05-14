@@ -105,7 +105,7 @@
                                 'bg-primary': designacion.cargo.tipoDesignacion === tipoDesignacionEnum.CARGO,
                                 'bg-success': designacion.cargo.tipoDesignacion === tipoDesignacionEnum.ESPACIO_CURRICULAR
                               }">
-                            {{ designacion.cargo.tipoDesignacion }}
+                            {{ designacion.cargo.tipoDesignacion | tipoDesignacionFormat }}
                         </span>
                     </div>
                     <small class="text-secondary">Tipo</small>

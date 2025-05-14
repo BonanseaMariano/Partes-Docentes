@@ -31,7 +31,7 @@
                                     'bg-primary text-white': cargo.tipoDesignacion === tipoDesignacionEnum.CARGO,
                                     'bg-success text-white': cargo.tipoDesignacion === tipoDesignacionEnum.ESPACIO_CURRICULAR
                                   }">
-                                {{ cargo.tipoDesignacion }}
+                                {{ cargo.tipoDesignacion | tipoDesignacionFormat }}
                             </span>
                         </td>
                         <td>{{ cargo.fechaInicio | date:'dd/MM/yyyy' }}</td>

@@ -39,4 +39,6 @@ export class CargoService {
     search(searchTerm: string): Observable<DataPackage> {
         return this.http.get<DataPackage>(encodeURI(`${this.cargosUrl}/search/${searchTerm}`));
     }
+
+    // El formateo de TipoDesignacion ahora se maneja a través del pipe TipoDesignacionPipe
 }

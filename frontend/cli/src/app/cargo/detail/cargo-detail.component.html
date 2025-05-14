@@ -48,7 +48,7 @@
                         [(ngModel)]="cargo.tipoDesignacion" required #tipoDesignacion="ngModel"
                         (change)="onTipoDesignacionChange()">
                         <option *ngFor="let tipo of tiposDesignacion" [ngValue]="tipo">
-                            {{ getTipoDisplay(tipo) }}
+                            {{ tipo | tipoDesignacionFormat }}
                         </option>
                     </select>
                 </div>

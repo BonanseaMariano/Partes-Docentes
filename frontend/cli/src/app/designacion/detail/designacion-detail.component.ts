@@ -13,12 +13,13 @@ import { Division } from '../../models/division';
 import { Persona } from '../../models/persona';
 import { TipoDesignacion } from '../../models/tipo-designacion';
 import { PersonaService } from '../../persona/service/persona.service';
+import { TipoDesignacionPipe } from '../../pipes/tipo-designacion.pipe';
 import { DesignacionService } from '../service/designacion.service';
 
 @Component({
     selector: 'app-designacion-detail',
     standalone: true,
-    imports: [CommonModule, FormsModule, NgbDatepickerModule, NgbTypeaheadModule],
+    imports: [CommonModule, FormsModule, NgbDatepickerModule, NgbTypeaheadModule, TipoDesignacionPipe],
     templateUrl: './designacion-detail.component.html',
     styles: `
     .input-group-text {

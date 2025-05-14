@@ -32,7 +32,7 @@
                                     'bg-primary text-white': designacion.cargo.tipoDesignacion === tipoDesignacionEnum.CARGO,
                                     'bg-success text-white': designacion.cargo.tipoDesignacion === tipoDesignacionEnum.ESPACIO_CURRICULAR
                                   }">
-                                {{ designacion.cargo.tipoDesignacion }}
+                                {{ designacion.cargo.tipoDesignacion | tipoDesignacionFormat }}
                             </span>
                         </td>
                         <td>{{ designacion.situacionRevista }}</td>
