@@ -3,12 +3,39 @@
 @import "font-awesome/css/font-awesome.css";
 @import "animate.css/animate.min.css";
 
+/* Variables de color - Paleta de colores centralizada */
+:root {
+  /* Colores primarios */
+  --color-primary: #0d6efd;
+  --color-primary-dark: #0b5ed7;
+  --color-primary-darker: #0a58ca;
+  --color-primary-light: rgba(13, 110, 253, 0.05);
+  --color-primary-border: rgba(13, 110, 253, 0.2);
+
+  /* Colores neutros */
+  --color-background: #f8f9fa;
+  --color-border: #e9ecef;
+  --color-text: #212529;
+  --color-text-secondary: #495057;
+  --color-text-muted: #6c757d;
+
+  /* Colores de estado */
+  --color-success: #198754;
+  --color-danger: #dc3545;
+  --color-warning: #ffc107;
+  --color-info: #0dcaf0;
+
+  /* Sombras */
+  --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
 /* Estilos globales personalizados */
 body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: #f8f9fa;
+  background-color: var(--color-background);
 }
 
 /* Estilo para los encabezados */
@@ -18,7 +45,7 @@ h3,
 h4,
 h5,
 h6 {
-  color: #0d6efd;
+  color: var(--color-primary);
   margin-bottom: 1rem;
 }
 
@@ -48,33 +75,41 @@ footer {
 
 /* Estilo para las tarjetas */
 .card {
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-sm);
   border: none;
   margin-bottom: 20px;
   border-radius: 8px;
 }
 
 .card-header {
-  background-color: rgba(13, 110, 253, 0.05);
-  border-bottom: 1px solid rgba(13, 110, 253, 0.2);
+  background-color: var(--color-primary-light);
+  border-bottom: 1px solid var(--color-primary-border);
   font-weight: 600;
+}
+
+/* Estilo para el pie de tarjeta, especialmente para el componente de paginación */
+.card-footer {
+  background-color: var(--color-primary-light);
+  border-top: 1px solid var(--color-primary-border);
+  padding: 0.75rem 1rem;
+  border-radius: 0 0 8px 8px;
 }
 
 /* Estilos para botones */
 .btn-primary {
-  background-color: #0d6efd;
-  border-color: #0d6efd;
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
 }
 
 .btn-primary:hover {
-  background-color: #0b5ed7;
-  border-color: #0a58ca;
+  background-color: var(--color-primary-dark);
+  border-color: var(--color-primary-darker);
 }
 
 /* Mejora para los dropdowns */
 .dropdown-menu {
   border: none;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
   border-radius: 6px;
 }
 
@@ -100,4 +135,82 @@ footer {
   animation-name: zoomIn;
 }
 
-/* Aquí se eliminaron los keyframes personalizados ya que ahora estamos usando Animate.css */
+/* Estilos comunes para las tablas en los componentes list */
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Estilo mejorado para tablas */
+.table {
+  width: 100%;
+  margin-bottom: 1rem;
+  border-collapse: collapse;
+}
+
+/* Estilos para encabezados de tabla */
+.table thead th {
+  vertical-align: middle;
+  border-bottom: 2px solid var(--color-border);
+  font-weight: bold;
+  color: var(--color-text-secondary);
+  background-color: var(--color-background);
+  padding: 0.75rem;
+}
+
+/* Estilos para celdas de tabla */
+.table tbody td {
+  padding: 0.75rem;
+  vertical-align: middle;
+  border-top: 1px solid var(--color-border);
+}
+
+/* Mejorar hover sobre filas */
+.table-hover tbody tr:hover {
+  background-color: var(--color-primary-light);
+  transition: background-color 0.2s ease;
+}
+
+/* Estilo para filas sin resultados */
+.table tbody tr.no-results td {
+  padding: 2rem 1rem;
+  text-align: center;
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+/* Estilo para los botones de acción en las tablas */
+.table .btn-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  border-radius: 0.2rem;
+}
+
+/* Estilo para los íconos dentro de los botones */
+.table .btn-sm .fa {
+  font-size: 0.875rem;
+}
+
+/* Estilo para la paginación debajo de tablas */
+.pagination-container {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+/* Mejora de badges en tablas */
+.table .badge {
+  font-weight: 500;
+  padding: 0.35em 0.65em;
+}
+
+/* Estilos para tablas responsivas en móviles */
+@media (max-width: 768px) {
+  .table-responsive {
+    border: 0;
+  }
+
+  .table-responsive .table {
+    min-width: 650px;
+  }
+}

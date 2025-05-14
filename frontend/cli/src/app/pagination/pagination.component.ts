@@ -11,7 +11,7 @@ import {
   selector: "app-pagination",
   imports: [CommonModule],
   templateUrl: "./pagination.component.html",
-  styles: ``,
+  styleUrl: "./pagination.component.css",
 })
 export class PaginationComponent {
   @Input() totalPages: number = 0;
