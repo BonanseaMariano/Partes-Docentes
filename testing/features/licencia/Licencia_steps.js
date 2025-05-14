@@ -43,7 +43,7 @@ Given('el docente con DNI {int}, nombre {string} y apellido {string}', function 
     try {
         this.currentLicencia.persona = JSON.parse(request('GET', encodeURI(`http://pd-backend:8080/personas/dni/${dni}`)).getBody('utf8')).data;
     } catch (error) {
-        console.log(`Persona con DNI ${dni} no encontrada en el sistema`);
+        console.error(`Persona con DNI ${dni} no encontrada en el sistema`);
     }
 });
 

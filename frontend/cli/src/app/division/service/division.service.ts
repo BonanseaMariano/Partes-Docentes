@@ -13,30 +13,30 @@ export class DivisionService {
     constructor(private http: HttpClient) { }
 
     all(): Observable<DataPackage> {
-        return this.http.get<DataPackage>(this.divisionesUrl);
+        return this.http.get<DataPackage>(encodeURI(this.divisionesUrl));
     }
 
     get(id: number): Observable<DataPackage> {
-        return this.http.get<DataPackage>(`${this.divisionesUrl}/${id}`);
+        return this.http.get<DataPackage>(encodeURI(`${this.divisionesUrl}/${id}`));
     }
 
     save(division: Division, isNew: boolean = false): Observable<DataPackage> {
         return isNew
-            ? this.http.post<DataPackage>(this.divisionesUrl, division)
-            : this.http.put<DataPackage>(this.divisionesUrl, division);
+            ? this.http.post<DataPackage>(encodeURI(this.divisionesUrl), division)
+            : this.http.put<DataPackage>(encodeURI(this.divisionesUrl), division);
     }
 
     remove(id: number): Observable<DataPackage> {
-        return this.http.delete<DataPackage>(`${this.divisionesUrl}/${id}`);
+        return this.http.delete<DataPackage>(encodeURI(`${this.divisionesUrl}/${id}`));
     }
 
     byPage(page: number, size: number): Observable<DataPackage> {
         return this.http.get<DataPackage>(
-            `${this.divisionesUrl}/page?page=${page - 1}&size=${size}`
+            encodeURI(`${this.divisionesUrl}/page?page=${page - 1}&size=${size}`)
         );
     }
 
     search(searchTerm: string): Observable<DataPackage> {
-        return this.http.get<DataPackage>(`${this.divisionesUrl}/search/${searchTerm}`);
+        return this.http.get<DataPackage>(encodeURI(`${this.divisionesUrl}/search/${searchTerm}`));
     }
 }

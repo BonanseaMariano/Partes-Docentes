@@ -13,30 +13,30 @@ export class CargoService {
     constructor(private http: HttpClient) { }
 
     all(): Observable<DataPackage> {
-        return this.http.get<DataPackage>(this.cargosUrl);
+        return this.http.get<DataPackage>(encodeURI(this.cargosUrl));
     }
 
     get(id: number): Observable<DataPackage> {
-        return this.http.get<DataPackage>(`${this.cargosUrl}/${id}`);
+        return this.http.get<DataPackage>(encodeURI(`${this.cargosUrl}/${id}`));
     }
 
     save(cargo: Cargo, isNew: boolean = false): Observable<DataPackage> {
         return isNew
-            ? this.http.post<DataPackage>(this.cargosUrl, cargo)
-            : this.http.put<DataPackage>(this.cargosUrl, cargo);
+            ? this.http.post<DataPackage>(encodeURI(this.cargosUrl), cargo)
+            : this.http.put<DataPackage>(encodeURI(this.cargosUrl), cargo);
     }
 
     remove(id: number): Observable<DataPackage> {
-        return this.http.delete<DataPackage>(`${this.cargosUrl}/${id}`);
+        return this.http.delete<DataPackage>(encodeURI(`${this.cargosUrl}/${id}`));
     }
 
     byPage(page: number, size: number): Observable<DataPackage> {
         return this.http.get<DataPackage>(
-            `${this.cargosUrl}/page?page=${page - 1}&size=${size}`
+            encodeURI(`${this.cargosUrl}/page?page=${page - 1}&size=${size}`)
         );
     }
 
     search(searchTerm: string): Observable<DataPackage> {
-        return this.http.get<DataPackage>(`${this.cargosUrl}/search/${searchTerm}`);
+        return this.http.get<DataPackage>(encodeURI(`${this.cargosUrl}/search/${searchTerm}`));
     }
 }

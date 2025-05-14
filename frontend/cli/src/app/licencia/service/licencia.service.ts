@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { DataPackage } from '../../models/data-package';
-import { Designacion as Licencia } from '../../models/designacion';
+import { Licencia } from '../../models/licencia';
 
 @Injectable({
     providedIn: 'root'
@@ -13,30 +13,30 @@ export class LicenciaService {
     constructor(private http: HttpClient) { }
 
     all(): Observable<DataPackage> {
-        return this.http.get<DataPackage>(this.licenciasUrl);
+        return this.http.get<DataPackage>(encodeURI(this.licenciasUrl));
     }
 
     get(id: number): Observable<DataPackage> {
-        return this.http.get<DataPackage>(`${this.licenciasUrl}/${id}`);
+        return this.http.get<DataPackage>(encodeURI(`${this.licenciasUrl}/${id}`));
     }
 
     save(licencia: Licencia, isNew: boolean = false): Observable<DataPackage> {
         return isNew
-            ? this.http.post<DataPackage>(this.licenciasUrl, licencia)
-            : this.http.put<DataPackage>(this.licenciasUrl, licencia);
+            ? this.http.post<DataPackage>(encodeURI(this.licenciasUrl), licencia)
+            : this.http.put<DataPackage>(encodeURI(this.licenciasUrl), licencia);
     }
 
     remove(id: number): Observable<DataPackage> {
-        return this.http.delete<DataPackage>(`${this.licenciasUrl}/${id}`);
+        return this.http.delete<DataPackage>(encodeURI(`${this.licenciasUrl}/${id}`));
     }
 
     byPage(page: number, size: number): Observable<DataPackage> {
         return this.http.get<DataPackage>(
-            `${this.licenciasUrl}/page?page=${page - 1}&size=${size}`
+            encodeURI(`${this.licenciasUrl}/page?page=${page - 1}&size=${size}`)
         );
     }
 
     search(searchTerm: string): Observable<DataPackage> {
-        return this.http.get<DataPackage>(`${this.licenciasUrl}/search/${searchTerm}`);
+        return this.http.get<DataPackage>(encodeURI(`${this.licenciasUrl}/search/${searchTerm}`));
     }
 }

@@ -9,6 +9,7 @@ import { PersonasComponent } from './persona/list/personas.component';
 import { DesignacionesComponent } from './designacion/list/designaciones.component';
 import { DesignacionDetailComponent } from './designacion/detail/designacion-detail.component';
 import { LicenciasComponent } from './licencia/list/licencias.component';
+import { LicenciaDetailComponent } from './licencia/detail/licencia-detail.component';
 
 export const routes: Routes = [
     { path: "", component: HomeComponent },
@@ -21,4 +22,5 @@ export const routes: Routes = [
     { path: "designaciones", component: DesignacionesComponent },
     { path: "designaciones/:id", component: DesignacionDetailComponent },
     { path: "licencias", component: LicenciasComponent },
+    { path: "licencias/:id", component: LicenciaDetailComponent },
 ];
