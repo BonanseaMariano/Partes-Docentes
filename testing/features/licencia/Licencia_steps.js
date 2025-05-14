@@ -40,20 +40,15 @@ Given('el docente con DNI {int}, nombre {string} y apellido {string}', function 
     }
 
     // Buscamos la persona por DNI y la asignamos al contexto
-    try {
-        this.currentLicencia.persona = JSON.parse(request('GET', encodeURI(`http://pd-backend:8080/personas/dni/${dni}`)).getBody('utf8')).data;
-    } catch (error) {
-        console.error(`Persona con DNI ${dni} no encontrada en el sistema`);
-    }
+    this.currentLicencia.persona = JSON.parse(request('GET', encodeURI(`http://pd-backend:8080/personas/dni/${dni}`)).getBody('utf8')).data;
 });
+
 
 // Paso: Cuando solicita una licencia artículo <articulo> con descripción <descripcion> para el período <desde> <hasta>
 When('solicita una licencia artículo {string} con descripción {string} para el período {string} {string}', function (articulo, descripcion, desde, hasta) {
     // Buscamos el artículo de licencia usando el endpoint específico
     // Asumimos que el artículo siempre existe en la base de datos
-    const articuloRes = request('GET', encodeURI(`http://pd-backend:8080/articulos-licencias/articulo/${articulo}`));
-    const articuloData = JSON.parse(articuloRes.getBody('utf8'));
-    this.currentLicencia.articuloLicencia = articuloData.data;
+    this.currentLicencia.articuloLicencia = JSON.parse(request('GET', encodeURI(`http://pd-backend:8080/articulos-licencias/articulo/${articulo}`)).getBody('utf8')).data;
 
     // Asignamos las fechas en formato ISO
     this.currentLicencia.pedidoDesde = desde ? desde + "T03:00:00" : null;
@@ -63,22 +58,12 @@ When('solicita una licencia artículo {string} con descripción {string} para el
     this.currentLicencia.certificadoMedico = true;
 
     // Enviamos la solicitud para crear la licencia
-    try {
-        const res = request('POST', 'http://pd-backend:8080/licencias', {
-            json: this.currentLicencia
-        });
-
-        const responseBody = res.getBody('utf8');
-        this.apiResponse = JSON.parse(responseBody);
-    } catch (error) {
-        console.error('Error al procesar la solicitud de licencia:', error);
-        // Guardamos el error para validarlo en el paso "Entonces"
-        this.apiResponse = {
-            StatusCode: 500,
-            StatusText: error.message || "Error al procesar la licencia"
-        };
-    }
+    const res = request('POST', encodeURI('http://pd-backend:8080/licencias'), {
+        json: this.currentLicencia
+    });
+    this.apiResponse = JSON.parse(res.getBody('utf8'));
 });
+
 
 // Paso: Dado que existe la persona (para escenario de reemplazo)
 Given('que existe la persona', function (dataTable) {
@@ -213,20 +198,8 @@ When('se solicita el servicio de designación de la persona al cargo en el perí
     }
 });
 
-// Paso: Entonces debería obtener la siguiente resultado de <status> y "<Respuesta>"
-Then('debería obtener la siguiente resultado de {int} y {string}', function (status, respuesta) {
-    // Validamos el status code y el mensaje de respuesta
-    // La respuesta puede tener status o StatusCode dependiendo de dónde venga
-    const actualStatus = this.apiResponse.status || this.apiResponse.StatusCode || this.apiResponse.statusCode;
-    assert.equal(actualStatus, status,
-        `Esperaba código de estado ${status} pero obtuve ${actualStatus}`);
-
-    // Comparamos el mensaje de respuesta
-    // La respuesta puede tener message o StatusText dependiendo de dónde venga
-    const actualMessage = this.apiResponse.message || this.apiResponse.StatusText || this.apiResponse.msg || "";
-    assert.equal(actualMessage, respuesta,
-        `Esperaba mensaje "${respuesta}" pero obtuve "${actualMessage}"`);
-});
+// El paso "Entonces se espera el siguiente <status> con la <respuesta>"
+// está definido en common_steps.js
 
 // Paso: Entonces se recupera el mensaje (para los escenarios con docstring JSON)
 Then('se recupera el mensaje', function (docString) {

@@ -5,10 +5,10 @@ Característica: otorgar o denegar licencia a una persona a un cargo docente
   Esquema del escenario: Otorgar Distintas licencias según las reglas de los distintos artículos
     Dado el docente con DNI <DNI>, nombre "<Nombre>" y apellido "<Apellido>"
     Cuando solicita una licencia artículo "<Artículo>" con descripción "<Descripción>" para el período "<Desde>" "<Hasta>"
-    Entonces debería obtener la siguiente resultado de <status> y "<Respuesta>"
+    Entonces se espera el siguiente <status> con la "<respuesta>"
 
     Ejemplos:
-      | DNI      | Nombre      | Apellido   | Artículo | Descripción                   | Desde      | Hasta      | status | Respuesta                                                                                                                  |
+      | DNI      | Nombre      | Apellido   | Artículo | Descripción                   | Desde      | Hasta      | status | respuesta                                                                                                                  |
       | 99100000 | Ermenegildo | Sabat      |       5A | ENFERMEDAD DE CORTA EVOLUCIÓN | 2023-05-07 | 2023-05-17 |    200 | Se otorga Licencia artículo 5A a Ermenegildo Sabat                                                                         |
       | 99100000 | Ermenegildo | Sabat      |       5A | ENFERMEDAD DE CORTA EVOLUCIÓN | 2023-05-18 | 2023-05-31 |    200 | Se otorga Licencia artículo 5A a Ermenegildo Sabat                                                                         |
       | 99100000 | Ermenegildo | Sabat      |       5A | ENFERMEDAD DE CORTA EVOLUCIÓN | 2023-06-01 | 2023-06-12 |    500 | NO se otorga Licencia artículo 5A a Ermenegildo Sabat debido a que supera el tope de 30 días de licencia                   |
