@@ -16,8 +16,7 @@
 }
 
 .navbar-brand:hover img {
-    transform: scale(1.05);
-    animation: pulse 1s;
+    animation: swing 1s;
     animation-fill-mode: both;
 }
 
@@ -69,9 +68,35 @@
 }
 
 .navbar {
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
-    background: linear-gradient(to right, var(--color-primary), var(--color-primary-dark)) !important;
+    box-shadow: var(--shadow-md);
+    background: var(--gradient-primary) !important;
     padding: 0.5rem 1rem;
+    position: relative;
+}
+
+/* Efecto de brillo sutil */
+.navbar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--gradient-light-top);
+}
+
+/* Efecto de iluminación sutil */
+.navbar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--gradient-radial);
+    pointer-events: none;
+    z-index: 1;
+    /* Asegura que esté por debajo de los elementos del navbar */
 }
 
 .navbar-toggler {
