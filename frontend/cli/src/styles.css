@@ -290,23 +290,6 @@ h6 {
   font-size: 0.75rem;
 }
 
-/* Filas con énfasis o estado particular */
-.table tr.highlighted {
-  background-color: rgba(13, 110, 253, 0.03);
-}
-
-.table tr.success {
-  background-color: rgba(25, 135, 84, 0.03);
-}
-
-.table tr.warning {
-  background-color: rgba(255, 193, 7, 0.03);
-}
-
-.table tr.danger {
-  background-color: rgba(220, 53, 69, 0.03);
-}
-
 /* Estilos para tablas responsivas en móviles */
 @media (max-width: 768px) {
   .table-responsive {
@@ -427,65 +410,3 @@ figcaption {
   margin-right: 6px;
   font-size: 0.9em;
 }
-
-/* Personalización de clases comunes de Bootstrap */
-
-/* Estilos para display headings */
-.display-1,
-.display-2,
-.display-3,
-.display-4,
-.display-5,
-.display-6 {
-  font-family: var(--font-secondary);
-  font-weight: var(--font-weight-light);
-  letter-spacing: var(--letter-spacing-tight);
-  color: var(--color-primary-darker);
-}
-
-.display-1 {
-  font-size: 5rem;
-}
-
-.display-2 {
-  font-size: 4.5rem;
-}
-
-.display-3 {
-  font-size: 4rem;
-}
-
-.display-4 {
-  font-size: 3.5rem;
-}
-
-.display-5 {
-  font-size: 3rem;
-}
-
-.display-6 {
-  font-size: 2.5rem;
-}
-
-/* Estilo para texto lead */
-.lead {
-  font-family: var(--font-primary);
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-normal);
-  line-height: var(--line-height-relaxed);
-}
-
-/* Personalización para etiquetas descriptivas */
-dt {
-  font-family: var(--font-primary);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-text-secondary);
-}
-
-dd {
-  font-family: var(--font-primary);
-  margin-bottom: 1rem;
-  color: var(--color-text);
-}
-
-/* Estilos para tablas */

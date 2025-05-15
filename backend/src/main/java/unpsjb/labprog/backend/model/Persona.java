@@ -101,17 +101,15 @@ public class Persona {
     private Character sexo;
 
     /**
-     * Domicilio de la persona, no nulo
+     * Domicilio de la persona, opcional
      */
-    @NotNull
-    @Column(length = 90, nullable = false)
+    @Column(length = 90)
     private String domicilio;
 
     /**
-     * Teléfono de la persona, no nulo
+     * Teléfono de la persona, opcional
      */
-    @NotNull
-    @Column(length = 30, nullable = false)
+    @Column(length = 30)
     private String telefono;
 
     // Relaciones
