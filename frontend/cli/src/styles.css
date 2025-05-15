@@ -148,56 +148,110 @@ h6 {
 .table-responsive {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
 }
 
 /* Estilo mejorado para tablas */
 .table {
   width: 100%;
   margin-bottom: 1rem;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-family: var(--font-primary);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
 }
 
 /* Estilos para encabezados de tabla */
 .table thead th {
+  position: relative;
   vertical-align: middle;
-  border-bottom: 2px solid var(--color-border);
-  font-weight: bold;
-  color: var(--color-text-secondary);
-  background-color: var(--color-background);
-  padding: 0.75rem;
+  border-bottom: 2px solid var(--color-primary-border);
+  font-weight: var(--font-weight-semibold);
+  font-size: 0.95rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--color-primary-darker);
+  background-color: var(--color-primary-light);
+  padding: 1rem 0.75rem;
+  text-align: center;
+  /* Centrar el texto horizontalmente */
+}
+
+.table thead th:first-child {
+  border-top-left-radius: 8px;
+}
+
+.table thead th:last-child {
+  border-top-right-radius: 8px;
 }
 
 /* Estilos para celdas de tabla */
 .table tbody td {
-  padding: 0.75rem;
+  padding: 1rem 0.75rem;
   vertical-align: middle;
   border-top: 1px solid var(--color-border);
+  border-right: 1px solid rgba(233, 236, 239, 0.7);
+  /* Separador de columna más visible */
+  font-size: var(--font-size-sm);
+  color: var(--color-text);
+  transition: all 0.2s ease;
+  text-align: center;
+  /* Centrar el texto horizontalmente */
+}
+
+.table tbody td:last-child {
+  border-right: none;
+  /* Eliminar borde en la última columna */
+}
+
+/* Estilo para filas alternadas - ayuda a diferenciar visualmente sin depender solo de separadores */
+.table tbody tr:nth-child(even) {
+  background-color: rgba(248, 249, 250, 0.5);
+}
+
+/* Efecto sutil para separadores verticales en hover */
+.table-hover tbody tr:hover td {
+  border-right-color: rgba(13, 110, 253, 0.2);
 }
 
 /* Mejorar hover sobre filas */
 .table-hover tbody tr:hover {
   background-color: var(--color-primary-light);
-  transition: background-color 0.2s ease;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 5px rgba(13, 110, 253, 0.1);
+  transition: all 0.3s ease;
 }
 
 /* Estilo para filas sin resultados */
 .table tbody tr.no-results td {
-  padding: 2rem 1rem;
+  padding: 3rem 1rem;
   text-align: center;
+  /* Ya estaba centrado pero lo mantenemos explícito */
   color: var(--color-text-muted);
   font-style: italic;
+  background-color: rgba(248, 249, 250, 0.7);
 }
 
 /* Estilo para los botones de acción en las tablas */
 .table .btn-sm {
-  padding: 0.25rem 0.5rem;
+  padding: 0.3rem 0.6rem;
   font-size: 0.875rem;
-  border-radius: 0.2rem;
+  border-radius: 4px;
+  margin: 0 0.1rem;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.table .btn-sm:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
 }
 
 /* Estilo para los íconos dentro de los botones */
 .table .btn-sm .fa {
-  font-size: 0.875rem;
+  font-size: 0.8rem;
 }
 
 /* Estilo para la paginación debajo de tablas */
@@ -207,20 +261,68 @@ h6 {
   justify-content: center;
 }
 
+.pagination {
+  border-radius: 30px;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.pagination .page-link {
+  border: none;
+  padding: 0.7rem 1rem;
+  font-weight: var(--font-weight-medium);
+  transition: all 0.3s ease;
+}
+
+.pagination .page-item.active .page-link {
+  background-color: var(--color-primary);
+  color: white;
+}
+
 /* Mejora de badges en tablas */
 .table .badge {
   font-weight: 500;
-  padding: 0.35em 0.65em;
+  padding: 0.5em 0.75em;
+  letter-spacing: 0.02em;
+  border-radius: 30px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  text-transform: uppercase;
+  font-size: 0.75rem;
+}
+
+/* Filas con énfasis o estado particular */
+.table tr.highlighted {
+  background-color: rgba(13, 110, 253, 0.03);
+}
+
+.table tr.success {
+  background-color: rgba(25, 135, 84, 0.03);
+}
+
+.table tr.warning {
+  background-color: rgba(255, 193, 7, 0.03);
+}
+
+.table tr.danger {
+  background-color: rgba(220, 53, 69, 0.03);
 }
 
 /* Estilos para tablas responsivas en móviles */
 @media (max-width: 768px) {
   .table-responsive {
     border: 0;
+    box-shadow: none;
   }
 
   .table-responsive .table {
     min-width: 650px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+
+  /* Mantener alineación a la derecha para columnas de acciones */
+  .table td.text-end,
+  .table th.text-end {
+    text-align: right !important;
   }
 }
 
