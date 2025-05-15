@@ -2,40 +2,23 @@
 @import "bootstrap/dist/css/bootstrap.min.css";
 @import "font-awesome/css/font-awesome.css";
 @import "animate.css/animate.min.css";
-
-/* Variables de color - Paleta de colores centralizada */
-:root {
-  /* Colores primarios */
-  --color-primary: #0d6efd;
-  --color-primary-dark: #0b5ed7;
-  --color-primary-darker: #0a58ca;
-  --color-primary-light: rgba(13, 110, 253, 0.05);
-  --color-primary-border: rgba(13, 110, 253, 0.2);
-
-  /* Colores neutros */
-  --color-background: #f8f9fa;
-  --color-border: #e9ecef;
-  --color-text: #212529;
-  --color-text-secondary: #495057;
-  --color-text-muted: #6c757d;
-
-  /* Colores de estado */
-  --color-success: #198754;
-  --color-danger: #dc3545;
-  --color-warning: #ffc107;
-  --color-info: #0dcaf0;
-
-  /* Sombras */
-  --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
+@import "./variables.css";
 
 /* Estilos globales personalizados */
+html {
+  font-size: var(--font-size-root);
+}
+
 body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   background-color: var(--color-background);
+  font-family: var(--font-primary);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-base);
+  color: var(--color-text);
 }
 
 /* Estilo para los encabezados */
@@ -45,26 +28,35 @@ h3,
 h4,
 h5,
 h6 {
+  font-family: var(--font-secondary);
   color: var(--color-primary);
   margin-bottom: 1rem;
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
 }
 
-/* Estilos para los iconos en los menús */
-.nav-link .fa,
-.dropdown-item .fa {
-  width: 18px;
-  text-align: center;
+h1 {
+  font-size: var(--font-size-h1);
 }
 
-/* Efectos hover mejorados */
-.nav-link:hover {
-  transform: translateY(-1px);
-  transition: all 0.2s;
+h2 {
+  font-size: var(--font-size-h2);
 }
 
-/* Estilo personalizado para el footer */
-footer {
-  margin-top: auto;
+h3 {
+  font-size: var(--font-size-h3);
+}
+
+h4 {
+  font-size: var(--font-size-h4);
+}
+
+h5 {
+  font-size: var(--font-size-h5);
+}
+
+h6 {
+  font-size: var(--font-size-h6);
 }
 
 /* Mejoras para los contenedores */
@@ -95,6 +87,30 @@ footer {
   border-radius: 0 0 8px 8px;
 }
 
+/* Estilos mejorados para tarjetas */
+.card-title {
+  font-family: var(--font-secondary);
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-lg);
+  margin-bottom: 0.75rem;
+  color: var(--color-primary-darker);
+}
+
+.card-subtitle {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.card-text {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+  color: var(--color-text);
+}
+
 /* Estilos para botones */
 .btn-primary {
   background-color: var(--color-primary);
@@ -106,19 +122,12 @@ footer {
   border-color: var(--color-primary-darker);
 }
 
-/* Mejora para los dropdowns */
-.dropdown-menu {
-  border: none;
-  box-shadow: var(--shadow-md);
-  border-radius: 6px;
-}
-
 /* Animaciones para modales usando Animate.css */
 /* Modal de confirmación - viene desde abajo y rebota de forma más suave */
 .modal-confirm .modal-dialog {
-  animation-duration: 0.7s;
+  animation-duration: 0.8s;
   animation-fill-mode: both;
-  animation-name: bounceInUp;
+  animation-name: tada;
 }
 
 /* Modal de error - viene desde la derecha con un movimiento más suave */
@@ -130,9 +139,9 @@ footer {
 
 /* Modal de éxito - aparece con un zoom más suave */
 .modal-success .modal-dialog {
-  animation-duration: 0.6s;
+  animation-duration: 0.8s;
   animation-fill-mode: both;
-  animation-name: zoomIn;
+  animation-name: shakeY;
 }
 
 /* Estilos comunes para las tablas en los componentes list */
@@ -214,3 +223,136 @@ footer {
     min-width: 650px;
   }
 }
+
+/* Estilos para código y elementos preformateados */
+code,
+pre,
+kbd,
+samp {
+  font-family: var(--font-monospace);
+  font-size: var(--font-size-sm);
+}
+
+/* Estilos para textos pequeños y caption */
+small,
+.small {
+  font-size: var(--font-size-sm);
+}
+
+.caption,
+figcaption {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+/* Clases utilitarias de texto */
+.text-tight {
+  line-height: var(--line-height-tight);
+}
+
+.text-relaxed {
+  line-height: var(--line-height-relaxed);
+}
+
+.text-monospace {
+  font-family: var(--font-monospace);
+}
+
+.letter-spacing-tight {
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+.letter-spacing-wide {
+  letter-spacing: var(--letter-spacing-wide);
+}
+
+/* Estilos para elementos de formulario */
+.form-label {
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-sm);
+  margin-bottom: 0.25rem;
+  color: var(--color-text-secondary);
+}
+
+.form-control {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-base);
+}
+
+.form-text {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+/* Estilos para alerts */
+.alert {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-sm);
+}
+
+.alert-heading {
+  font-family: var(--font-secondary);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* Personalización de clases comunes de Bootstrap */
+
+/* Estilos para display headings */
+.display-1,
+.display-2,
+.display-3,
+.display-4,
+.display-5,
+.display-6 {
+  font-family: var(--font-secondary);
+  font-weight: var(--font-weight-light);
+  letter-spacing: var(--letter-spacing-tight);
+  color: var(--color-primary-darker);
+}
+
+.display-1 {
+  font-size: 5rem;
+}
+
+.display-2 {
+  font-size: 4.5rem;
+}
+
+.display-3 {
+  font-size: 4rem;
+}
+
+.display-4 {
+  font-size: 3.5rem;
+}
+
+.display-5 {
+  font-size: 3rem;
+}
+
+.display-6 {
+  font-size: 2.5rem;
+}
+
+/* Estilo para texto lead */
+.lead {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-relaxed);
+}
+
+/* Personalización para etiquetas descriptivas */
+dt {
+  font-family: var(--font-primary);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+}
+
+dd {
+  font-family: var(--font-primary);
+  margin-bottom: 1rem;
+  color: var(--color-text);
+}
+
+/* Estilos para tablas */

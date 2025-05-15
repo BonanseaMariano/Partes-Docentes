@@ -1,0 +1,122 @@
+.navbar-brand {
+    font-family: var(--font-secondary);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: var(--letter-spacing-wide);
+    font-size: var(--font-size-lg);
+    color: white !important;
+}
+
+.navbar-brand span {
+    margin-left: 5px;
+    letter-spacing: var(--letter-spacing-tight);
+}
+
+.navbar-brand img {
+    transition: transform 0.3s ease;
+}
+
+.navbar-brand:hover img {
+    transform: scale(1.05);
+    animation: pulse 1s;
+    animation-fill-mode: both;
+}
+
+.navbar-nav .nav-link {
+    font-family: var(--font-primary);
+    font-weight: var(--font-weight-medium);
+    color: rgba(255, 255, 255, 0.9) !important;
+    transition: all 0.2s ease;
+    padding: 0.5rem 0.8rem;
+    letter-spacing: 0.01em;
+    border-radius: 4px;
+}
+
+.navbar-nav .nav-link:hover {
+    color: white;
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: translateY(-1px);
+}
+
+.navbar-nav .nav-link i {
+    width: 20px;
+    text-align: center;
+    margin-right: 5px;
+    opacity: 0.9;
+}
+
+.dropdown-item {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-sm);
+    color: var(--color-text);
+    padding: 0.6rem 1rem;
+    transition: all 0.2s ease;
+    border-left: 2px solid transparent;
+}
+
+.dropdown-item:hover {
+    background-color: var(--color-primary-light);
+    color: var(--color-primary-darker);
+    border-left: 2px solid var(--color-primary);
+    padding-left: 1.2rem;
+}
+
+.dropdown-item i {
+    color: var(--color-primary);
+    width: 20px;
+    text-align: center;
+    margin-right: 5px;
+    opacity: 0.85;
+}
+
+.navbar {
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+    background: linear-gradient(to right, var(--color-primary), var(--color-primary-dark)) !important;
+    padding: 0.5rem 1rem;
+}
+
+.navbar-toggler {
+    border-color: rgba(255, 255, 255, 0.3);
+    padding: 0.25rem 0.5rem;
+    transition: all 0.2s;
+}
+
+.navbar-toggler:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.navbar-toggler-icon {
+    opacity: 0.9;
+}
+
+.navbar-nav .nav-item {
+    margin: 0 2px;
+    position: relative;
+    z-index: 1010;
+    /* Mayor que el dropdown para estar por encima */
+}
+
+/* Activo y hover para items de navegación */
+.navbar-nav .nav-item.active .nav-link {
+    background-color: rgba(255, 255, 255, 0.1);
+    font-weight: var(--font-weight-semibold);
+}
+
+/* Estilo para dropdown - usar clases de Animate.css */
+.dropdown-menu {
+    border: none;
+    animation-name: fadeInDown;
+    animation-duration: 0.3s;
+    animation-fill-mode: both;
+    box-shadow: var(--shadow-md);
+    border-radius: 0 0 6px 6px;
+    /* Ligeramente más ancho que el botón padre */
+    min-width: calc(100% + 10px);
+}
+
+footer {
+    margin-top: auto;
+    border-top: 1px solid var(--color-border);
+    background-color: var(--color-background) !important;
+    color: var(--color-text-muted);
+    padding: 1.5rem 0;
+}
