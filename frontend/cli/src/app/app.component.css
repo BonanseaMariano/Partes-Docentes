@@ -68,10 +68,11 @@
 }
 
 .navbar {
-    box-shadow: var(--shadow-md);
+    box-shadow: var(--shadow-md), 0 3px 5px rgba(0, 0, 0, 0.15);
     background: var(--gradient-primary) !important;
     padding: 0.5rem 1rem;
-    position: relative;
+    z-index: 1030;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 /* Efecto de brillo sutil */
@@ -144,4 +145,18 @@ footer {
     background-color: var(--color-background) !important;
     color: var(--color-text-muted);
     padding: 1.5rem 0;
+}
+
+/* Estilo para el contenido principal con navbar fijo */
+.main-content {
+    margin-top: 85px;
+    /* Ajustar según la altura del navbar */
+    padding-top: 10px;
+}
+
+/* Ajuste para pantallas pequeñas */
+@media (max-width: 768px) {
+    .main-content {
+        margin-top: 70px;
+    }
 }
