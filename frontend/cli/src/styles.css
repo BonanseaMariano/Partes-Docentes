@@ -295,6 +295,37 @@ figcaption {
   font-weight: var(--font-weight-semibold);
 }
 
+/* Botón personalizado para "Nueva/Nuevo" en componentes list */
+.btn-nuevo {
+  background: var(--gradient-primary);
+  border: none;
+  color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-family: var(--font-secondary);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-sm);
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  transition: all 0.25s ease-in-out;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  margin: 0.5rem 0;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-nuevo:hover {
+  background: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary-darker) 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(13, 110, 253, 0.25);
+  color: #fff;
+}
+
+.btn-nuevo i {
+  margin-right: 6px;
+  font-size: 0.9em;
+}
+
 /* Personalización de clases comunes de Bootstrap */
 
 /* Estilos para display headings */
