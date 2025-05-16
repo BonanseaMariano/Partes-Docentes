@@ -124,7 +124,7 @@
                         <i class="fa fa-calendar-alt"></i>
                     </span>
                     <input #fechaDesde="ngModel" id="fechaDesde" name="fechaDesde" class="form-control"
-                        placeholder="dd/mm/yyyy" [(ngModel)]="fechaDesdeDate" ngbDatepicker
+                        placeholder="yyyy-mm-dd" [(ngModel)]="fechaDesdeDate" ngbDatepicker
                         #fechaDesdePicker="ngbDatepicker" required (ngModelChange)="onDateChange()" />
                     <button class="btn btn-outline-secondary calendar" (click)="fechaDesdePicker.toggle()"
                         type="button">
@@ -143,7 +143,7 @@
                     <span class="input-group-text bg-primary text-white">
                         <i class="fa fa-calendar-alt"></i>
                     </span>
-                    <input id="fechaHasta" name="fechaHasta" class="form-control" placeholder="dd/mm/yyyy"
+                    <input id="fechaHasta" name="fechaHasta" class="form-control" placeholder="yyyy-mm-dd"
                         [(ngModel)]="fechaHastaDate" ngbDatepicker #fechaHastaPicker="ngbDatepicker"
                         (ngModelChange)="onDateChange()" />
                     <button class="btn btn-outline-secondary calendar" (click)="fechaHastaPicker.toggle()"
