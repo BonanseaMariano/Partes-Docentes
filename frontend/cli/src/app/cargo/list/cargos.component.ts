@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { PaginationConfig } from '../../core/constants/pagination.constants';
+import { ValidationService } from '../../core/services/validation.service';
 import { ModalService } from '../../modal/modal.service';
 import { ResultsPage } from '../../models/results-page';
 import { TipoDesignacion } from '../../models/tipo-designacion';
@@ -24,8 +25,37 @@ export class CargosComponent {
 
     constructor(
         private cargoService: CargoService,
-        private modalService: ModalService
+        private modalService: ModalService,
+        private validationService: ValidationService,
+        private router: Router
     ) { }
+
+    /**
+     * Método para crear un nuevo cargo con validación previa
+     */
+    crearNuevo(): void {
+        this.validationService.checkDivisiones().subscribe(result => {
+            const hayDivisiones = result.isValid;
+            
+            // Si hay divisiones, navegamos directamente
+            if (hayDivisiones) {
+                this.router.navigate(['/cargos/new']);
+                return;
+            }
+            
+            // Si no hay divisiones, mostramos confirmación
+            this.modalService.confirm(
+                result.errorTitle || 'No existen divisiones',
+                result.errorMessage || 'No hay divisiones en el sistema',
+                result.errorDescription || 'Solo se podrán crear cargos de tipo "Cargo". Los cargos de tipo "Espacio Curricular" requieren una división asociada.'
+            ).then(() => {
+                // Si el usuario acepta, navegamos con restricción
+                this.router.navigate(['/cargos/new'], { queryParams: { restringirTipo: 'true' } });
+            }, () => {
+                // Si cancela, no hacemos nada
+            });
+        });
+    }
 
     getCargos(): void {
         this.cargoService.byPage(this.currentPage, this.pageSize).subscribe((dataPackage) => {
@@ -65,7 +95,4 @@ export class CargosComponent {
         this.currentPage = page;
         this.getCargos();
     }
-
-    // Ya no necesitamos el método formatearTipoDesignacion
-    // pues ahora usamos el pipe TipoDesignacionPipe
 }

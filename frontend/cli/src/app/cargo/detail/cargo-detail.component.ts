@@ -43,6 +43,9 @@ export class CargoDetailComponent implements OnInit, AfterViewChecked {
     mostrarErrorDivision: boolean = false;
     formularioValido: boolean = false;
 
+    // Nueva propiedad para controlar la restricción del tipo de cargo
+    tipoRestringido: boolean = false;
+
     // Propiedades para los datepickers
     fechaInicioDate: NgbDateStruct | null = null;
     fechaFinDate: NgbDateStruct | null = null;
@@ -184,9 +187,24 @@ export class CargoDetailComponent implements OnInit, AfterViewChecked {
 
     get(): void {
         const id = this.route.snapshot.paramMap.get("id")!;
+
+        // Verificar si hay un parámetro de restricción de tipo en la URL
+        this.tipoRestringido = this.route.snapshot.queryParams['restringirTipo'] === 'true';
+
+        if (this.tipoRestringido) {
+            // Filtrar los tipos disponibles para mostrar solo "Cargo"
+            this.tiposDesignacion = [TipoDesignacion.CARGO];
+        }
+
         if (id === "new") {
             // Inicializar el cargo con valores vacíos
             this.cargo = <Cargo>{};
+
+            // Si el tipo está restringido, establecer el tipo como Cargo automáticamente
+            if (this.tipoRestringido) {
+                this.cargo.tipoDesignacion = TipoDesignacion.CARGO;
+            }
+
             this.tituloFormulario = 'Nuevo Cargo Institucional';
             this.isNewCargo = true;  // Es un nuevo cargo
             // Establecer la fecha de inicio al día de hoy
