@@ -23,10 +23,10 @@
                 <tbody>
                     <tr *ngFor="let persona of resultsPage.content; index as i">
                         <td>{{ (resultsPage.number * resultsPage.size) + i + 1 }}</td>
-                        <td>{{ persona.dni }}</td>
+                        <td>{{ persona.dni | dniFormat }}</td>
                         <td>{{ persona.nombre }}</td>
                         <td>{{ persona.apellido }}</td>
-                        <td>{{ persona.cuil }}</td>
+                        <td>{{ persona.cuil | cuilFormat }}</td>
                         <td>{{ persona.titulo }}</td>
                         <td class="text-end">
                             <a routerLink="/personas/{{ persona.id }}" class="btn btn-sm btn-outline-primary me-1"
