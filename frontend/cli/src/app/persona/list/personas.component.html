@@ -1,8 +1,8 @@
 <div class="card shadow-sm mb-4">
     <div class="card-header bg-light d-flex justify-content-between align-items-center">
         <h2 class="mb-0"><i class="fa fa-users me-2"></i>Personas</h2>
-        <a routerLink="/personas/new" class="btn btn-success btn-sm">
-            <i class="fa fa-plus me-1"></i>Nueva persona
+        <a routerLink="/personas/new" class="btn-nuevo">
+            <i class="fa fa-plus"></i>Nueva persona
         </a>
     </div>
 
@@ -23,10 +23,10 @@
                 <tbody>
                     <tr *ngFor="let persona of resultsPage.content; index as i">
                         <td>{{ (resultsPage.number * resultsPage.size) + i + 1 }}</td>
-                        <td>{{ persona.dni }}</td>
+                        <td>{{ persona.dni | dniFormat }}</td>
                         <td>{{ persona.nombre }}</td>
                         <td>{{ persona.apellido }}</td>
-                        <td>{{ persona.cuil }}</td>
+                        <td>{{ persona.cuil | cuilFormat }}</td>
                         <td>{{ persona.titulo }}</td>
                         <td class="text-end">
                             <a routerLink="/personas/{{ persona.id }}" class="btn btn-sm btn-outline-primary me-1"

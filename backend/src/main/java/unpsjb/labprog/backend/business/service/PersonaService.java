@@ -74,13 +74,13 @@ public class PersonaService {
     }
 
     /**
-     * Elimina una persona por su DNI
+     * Elimina una persona por su id
      * 
-     * @param dni DNI de la persona a eliminar
+     * @param id id de la persona a eliminar
      */
     @Transactional
-    public void delete(int dni) {
-        repository.deleteById(dni);
+    public void delete(int id) {
+        repository.deleteById(id);
     }
 
     /**

@@ -13,6 +13,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -37,7 +38,8 @@ public class Licencia {
      * ID de la licencia, generado automáticamente
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "licencias_seq_gen")
+    @SequenceGenerator(name = "licencias_seq_gen", sequenceName = "licencias_seq", initialValue = 1000, allocationSize = 1)
     private int id;
 
     /**

@@ -1,9 +1,10 @@
 <!-- Menú y navegación principal -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm sticky-top">
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm fixed-top">
 
     <!-- Logo y nombre del sistema -->
     <a class="navbar-brand d-flex align-items-center ps-3" href="">
-        <i class="fa fa-school me-2" aria-hidden="true"></i>
+        <img src="Logo.ico" alt="Logo Partes Docentes" class="me-2"
+            style="height: 40px; width: auto; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.3));">
         <span>Partes Docentes</span>
     </a>
 
@@ -71,11 +72,11 @@
                 <li class="nav-item" ngbDropdown>
                     <button class="btn nav-link border-0 bg-transparent" ngbDropdownToggle id="licenciasDropdown"
                         aria-expanded="false">
-                        <i class="fa-solid fa-calendar-times me-1"></i> Licencias
+                        <i class="fa-solid fa fa-calendar-check me-2"></i> Licencias
                     </button>
                     <ul ngbDropdownMenu aria-labelledby="licenciasDropdown">
-                        <li><a ngbDropdownItem href="#"><i class="fa fa-list me-1"></i> Listar</a></li>
-                        <li><a ngbDropdownItem href="#"><i class="fa fa-plus me-1"></i> Nueva</a></li>
+                        <li><a ngbDropdownItem href="licencias"><i class="fa fa-list me-1"></i> Listar</a></li>
+                        <li><a ngbDropdownItem href="licencias/new"><i class="fa fa-plus me-1"></i> Nueva</a></li>
                         <li><a ngbDropdownItem href="#"><i class="fa-solid fa-clipboard-list me-1"></i> ParteDiario</a>
                         </li>
                     </ul>
@@ -86,7 +87,7 @@
 </nav>
 
 <!-- Contenido principal -->
-<div class="container mt-4">
+<div class="container main-content">
     <router-outlet></router-outlet>
 </div>
 

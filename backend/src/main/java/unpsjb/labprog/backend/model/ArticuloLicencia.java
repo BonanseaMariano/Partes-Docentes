@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -25,7 +26,8 @@ public class ArticuloLicencia {
      * ID del artículo de licencia, generado automáticamente
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "articulosLicencia_seq_gen")
+    @SequenceGenerator(name = "articulosLicencia_seq_gen", sequenceName = "articulosLicencia_seq", initialValue = 1000, allocationSize = 1)
     private int id;
 
     /**

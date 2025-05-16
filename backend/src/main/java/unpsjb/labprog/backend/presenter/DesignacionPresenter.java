@@ -93,7 +93,7 @@ public class DesignacionPresenter {
                         createdDesignacion.getCargo().getNombre(),
                         createdDesignacion.getCargo().getDivision().getAnio(),
                         createdDesignacion.getCargo().getDivision().getNumDivision(),
-                        createdDesignacion.getCargo().getDivision().getTurno().getValor());
+                        createdDesignacion.getCargo().getDivision().getTurno());
             } else {
                 // Formato para cargos
                 mensaje = String.format("%s %s ha sido designado/a como %s exitosamente",
@@ -144,7 +144,7 @@ public class DesignacionPresenter {
                         updatedDesignacion.getCargo().getNombre(),
                         updatedDesignacion.getCargo().getDivision().getAnio(),
                         updatedDesignacion.getCargo().getDivision().getNumDivision(),
-                        updatedDesignacion.getCargo().getDivision().getTurno().getValor());
+                        updatedDesignacion.getCargo().getDivision().getTurno());
             } else {
                 // Formato para cargos
                 mensaje = String.format("Designación de %s %s como %s actualizada exitosamente",

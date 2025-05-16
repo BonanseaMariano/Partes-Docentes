@@ -6,10 +6,12 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { PaginationComponent } from '../../pagination/pagination.component';
 import { PaginationConfig } from '../../core/constants/pagination.constants';
+import { CuilFormatPipe } from '../../pipes/cuil-format.pipe';
+import { DniFormatPipe } from '../../pipes/dni-format.pipe';
 
 @Component({
   selector: 'app-persona',
-  imports: [CommonModule, RouterModule, PaginationComponent],
+  imports: [CommonModule, RouterModule, PaginationComponent, CuilFormatPipe, DniFormatPipe],
   templateUrl: './personas.component.html',
   styles: ``
 })

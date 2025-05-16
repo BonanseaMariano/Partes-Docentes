@@ -1,8 +1,8 @@
 <div class="card shadow-sm mb-4">
     <div class="card-header bg-light d-flex justify-content-between align-items-center">
         <h2 class="mb-0"><i class="fa fa-layer-group me-2"></i>Divisiones</h2>
-        <a routerLink="/divisiones/new" class="btn btn-success btn-sm">
-            <i class="fa fa-plus me-1"></i>Nueva división
+        <a routerLink="/divisiones/new" class="btn-nuevo">
+            <i class="fa fa-plus"></i>Nueva división
         </a>
     </div>
 
@@ -26,8 +26,7 @@
                         <td>{{ division.numDivision }}°</td>
                         <td>{{ division.orientacion }}</td>
                         <td>
-                            <span class="badge fs-6 px-3 py-2" 
-                                  [ngClass]="{
+                            <span class="badge fs-6 px-3 py-2" [ngClass]="{
                                     'bg-info text-dark': division.turno === turnoEnum.MANIANA,
                                     'bg-warning text-dark': division.turno === turnoEnum.TARDE,
                                     'bg-secondary text-white': division.turno === turnoEnum.VESPERTINO,

@@ -13,30 +13,30 @@ export class PersonaService {
   constructor(private http: HttpClient) { }
 
   all(): Observable<DataPackage> {
-    return this.http.get<DataPackage>(this.personasUrl);
+    return this.http.get<DataPackage>(encodeURI(this.personasUrl));
   }
 
   get(id: number): Observable<DataPackage> {
-    return this.http.get<DataPackage>(`${this.personasUrl}/${id}`);
+    return this.http.get<DataPackage>(encodeURI(`${this.personasUrl}/${id}`));
   }
 
   save(persona: Persona, isNew: boolean = false): Observable<DataPackage> {
     return isNew
-      ? this.http.post<DataPackage>(this.personasUrl, persona)
-      : this.http.put<DataPackage>(this.personasUrl, persona);
+      ? this.http.post<DataPackage>(encodeURI(this.personasUrl), persona)
+      : this.http.put<DataPackage>(encodeURI(this.personasUrl), persona);
   }
 
   remove(id: number): Observable<DataPackage> {
-    return this.http.delete<DataPackage>(`${this.personasUrl}/${id}`);
+    return this.http.delete<DataPackage>(encodeURI(`${this.personasUrl}/${id}`));
   }
 
   byPage(page: number, size: number): Observable<DataPackage> {
     return this.http.get<DataPackage>(
-      `${this.personasUrl}/page?page=${page - 1}&size=${size}`
+      encodeURI(`${this.personasUrl}/page?page=${page - 1}&size=${size}`)
     );
   }
 
   search(searchTerm: string): Observable<DataPackage> {
-    return this.http.get<DataPackage>(`${this.personasUrl}/search/${searchTerm}`);
+    return this.http.get<DataPackage>(encodeURI(`${this.personasUrl}/search/${searchTerm}`));
   }
 }

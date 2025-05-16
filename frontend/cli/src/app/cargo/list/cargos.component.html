@@ -1,8 +1,8 @@
 <div class="card shadow-sm mb-4">
     <div class="card-header bg-light d-flex justify-content-between align-items-center">
         <h2 class="mb-0"><i class="fa fa-briefcase me-2"></i>Cargos</h2>
-        <a routerLink="/cargos/new" class="btn btn-success btn-sm">
-            <i class="fa fa-plus me-1"></i>Nuevo cargo
+        <a routerLink="/cargos/new" class="btn-nuevo">
+            <i class="fa fa-plus"></i>Nuevo cargo
         </a>
     </div>
 
@@ -31,7 +31,7 @@
                                     'bg-primary text-white': cargo.tipoDesignacion === tipoDesignacionEnum.CARGO,
                                     'bg-success text-white': cargo.tipoDesignacion === tipoDesignacionEnum.ESPACIO_CURRICULAR
                                   }">
-                                {{ cargo.tipoDesignacion }}
+                                {{ cargo.tipoDesignacion | tipoDesignacionFormat }}
                             </span>
                         </td>
                         <td>{{ cargo.fechaInicio | date:'dd/MM/yyyy' }}</td>

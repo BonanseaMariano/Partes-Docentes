@@ -34,11 +34,11 @@ Given('que es del tipo de designación {string}', function (tipoDesignacion) {
 Given('que tiene una carga horaria de {int} horas, con vigencia desde {string} hasta {string}', function (cargaHoraria, fechaDesdeCargo, fechaHastaCargo) {
     this.currentCargo.cargaHoraria = cargaHoraria;
 
-    // Modificar los nombres de los campos para que coincidan con la entidad Java
+    // Cargar las fechas
     this.currentCargo.fechaInicio = fechaDesdeCargo ? fechaDesdeCargo + "T03:00:00" : null;
     this.currentCargo.fechaFin = fechaHastaCargo && fechaHastaCargo !== '' ? fechaHastaCargo + "T03:00:00" : null;
 
-    // Inicializar horarios como un array vacío (requerido según @NotNull en el modelo)
+    // Inicializar horarios como un array vacío
     this.currentCargo.horarios = [];
 });
 
@@ -51,40 +51,16 @@ Given('que si el tipo es espacio curricular, opcionalmente se asigna a la divisi
             return;
         }
 
-        // Buscar la división directamente
-        const division = buscarDivision(
-            parseInt(anio),
-            parseInt(numero),
-            turno // Usamos el valor original para la búsqueda
-        );
-
         // Asignamos la división al cargo actual
-        this.currentCargo.division = division;
+        this.currentCargo.division = JSON.parse(request('GET', encodeURI(`http://pd-backend:8080/divisiones/find?anio=${parseInt(anio)}&numDivision=${parseInt(numero)}&turno=${turno}`)).getBody('utf8')).data;
     });
 
-// Función para buscar una división usando el endpoint find
-function buscarDivision(anio, numero, turno) {
-    // Construimos los parámetros de consulta
-    const queryParams = new URLSearchParams({
-        anio: anio,
-        numDivision: numero,
-        turno: turno
-    }).toString();
-
-    // Realizamos la consulta al endpoint find  
-    const findUrl = `http://pd-backend:8080/divisiones/find?${queryParams}`;
-
-    const checkResponse = request('GET', findUrl);
-
-    // Retornamos la división si la respuesta es exitosa o null si no se encuentra
-    return checkResponse.statusCode === 200 ? JSON.parse(checkResponse.getBody('utf8')).data : null;
-}
 
 // Cuando se presiona el botón de guardar
 When('se presiona el botón de guardar', function () {
 
     // Enviamos la solicitud para crear el cargo directamente
-    const res = request('POST', 'http://pd-backend:8080/cargos', {
+    const res = request('POST', encodeURI('http://pd-backend:8080/cargos'), {
         json: this.currentCargo
     });
 

@@ -1,13 +1,24 @@
 /* You can add global styles to this file, and also import other style files */
 @import "bootstrap/dist/css/bootstrap.min.css";
 @import "font-awesome/css/font-awesome.css";
+@import "animate.css/animate.min.css";
+@import "./variables.css";
 
 /* Estilos globales personalizados */
+html {
+  font-size: var(--font-size-root);
+}
+
 body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: #f8f9fa;
+  background-color: var(--color-background);
+  font-family: var(--font-primary);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-base);
+  color: var(--color-text);
 }
 
 /* Estilo para los encabezados */
@@ -17,26 +28,35 @@ h3,
 h4,
 h5,
 h6 {
-  color: #0d6efd;
+  font-family: var(--font-secondary);
+  color: var(--color-primary);
   margin-bottom: 1rem;
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
 }
 
-/* Estilos para los iconos en los menús */
-.nav-link .fa,
-.dropdown-item .fa {
-  width: 18px;
-  text-align: center;
+h1 {
+  font-size: var(--font-size-h1);
 }
 
-/* Efectos hover mejorados */
-.nav-link:hover {
-  transform: translateY(-1px);
-  transition: all 0.2s;
+h2 {
+  font-size: var(--font-size-h2);
 }
 
-/* Estilo personalizado para el footer */
-footer {
-  margin-top: auto;
+h3 {
+  font-size: var(--font-size-h3);
+}
+
+h4 {
+  font-size: var(--font-size-h4);
+}
+
+h5 {
+  font-size: var(--font-size-h5);
+}
+
+h6 {
+  font-size: var(--font-size-h6);
 }
 
 /* Mejoras para los contenedores */
@@ -47,115 +67,346 @@ footer {
 
 /* Estilo para las tarjetas */
 .card {
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-sm);
   border: none;
   margin-bottom: 20px;
   border-radius: 8px;
 }
 
 .card-header {
-  background-color: rgba(13, 110, 253, 0.05);
-  border-bottom: 1px solid rgba(13, 110, 253, 0.2);
+  background-color: var(--color-primary-light);
+  border-bottom: 1px solid var(--color-primary-border);
   font-weight: 600;
+}
+
+/* Estilo para el pie de tarjeta, especialmente para el componente de paginación */
+.card-footer {
+  background-color: var(--color-primary-light);
+  border-top: 1px solid var(--color-primary-border);
+  padding: 0.75rem 1rem;
+  border-radius: 0 0 8px 8px;
+}
+
+/* Estilos mejorados para tarjetas */
+.card-title {
+  font-family: var(--font-secondary);
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-lg);
+  margin-bottom: 0.75rem;
+  color: var(--color-primary-darker);
+}
+
+.card-subtitle {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.card-text {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+  color: var(--color-text);
 }
 
 /* Estilos para botones */
 .btn-primary {
-  background-color: #0d6efd;
-  border-color: #0d6efd;
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
 }
 
 .btn-primary:hover {
-  background-color: #0b5ed7;
-  border-color: #0a58ca;
+  background-color: var(--color-primary-dark);
+  border-color: var(--color-primary-darker);
 }
 
-/* Mejora para los dropdowns */
-.dropdown-menu {
-  border: none;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  border-radius: 6px;
-}
-
-/* Animaciones para modales */
+/* Animaciones para modales usando Animate.css */
 /* Modal de confirmación - viene desde abajo y rebota de forma más suave */
 .modal-confirm .modal-dialog {
-  animation: smoothBounceInUp 0.7s ease-out;
+  animation-duration: 0.8s;
+  animation-fill-mode: both;
+  animation-name: tada;
 }
 
 /* Modal de error - viene desde la derecha con un movimiento más suave */
 .modal-error .modal-dialog {
-  animation: gentleShakeX 0.8s ease-in-out;
+  animation-duration: 0.8s;
+  animation-fill-mode: both;
+  animation-name: shakeX;
 }
 
 /* Modal de éxito - aparece con un zoom más suave */
 .modal-success .modal-dialog {
-  animation: smoothZoomIn 0.6s ease-in-out;
+  animation-duration: 0.8s;
+  animation-fill-mode: both;
+  animation-name: shakeY;
 }
 
-/* Keyframes para animación smoothBounceInUp - más suave */
-@keyframes smoothBounceInUp {
-  from {
-    opacity: 0;
-    transform: translate3d(0, 100px, 0);
+/* Estilos comunes para las tablas en los componentes list */
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+/* Estilo mejorado para tablas */
+.table {
+  width: 100%;
+  margin-bottom: 1rem;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-family: var(--font-primary);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+
+/* Estilos para encabezados de tabla */
+.table thead th {
+  position: relative;
+  vertical-align: middle;
+  border-bottom: 2px solid var(--color-primary-border);
+  font-weight: var(--font-weight-semibold);
+  font-size: 0.95rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--color-primary-darker);
+  background-color: var(--color-primary-light);
+  padding: 1rem 0.75rem;
+  text-align: center;
+  /* Centrar el texto horizontalmente */
+}
+
+.table thead th:first-child {
+  border-top-left-radius: 8px;
+}
+
+.table thead th:last-child {
+  border-top-right-radius: 8px;
+}
+
+/* Estilos para celdas de tabla */
+.table tbody td {
+  padding: 1rem 0.75rem;
+  vertical-align: middle;
+  border-top: 1px solid var(--color-border);
+  border-right: 1px solid rgba(233, 236, 239, 0.7);
+  /* Separador de columna más visible */
+  font-size: var(--font-size-sm);
+  color: var(--color-text);
+  transition: all 0.2s ease;
+  text-align: center;
+  /* Centrar el texto horizontalmente */
+}
+
+.table tbody td:last-child {
+  border-right: none;
+  /* Eliminar borde en la última columna */
+}
+
+/* Estilo para filas alternadas - ayuda a diferenciar visualmente sin depender solo de separadores */
+.table tbody tr:nth-child(even) {
+  background-color: rgba(248, 249, 250, 0.5);
+}
+
+/* Efecto sutil para separadores verticales en hover */
+.table-hover tbody tr:hover td {
+  border-right-color: rgba(13, 110, 253, 0.2);
+}
+
+/* Mejorar hover sobre filas */
+.table-hover tbody tr:hover {
+  background-color: var(--color-primary-light);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 5px rgba(13, 110, 253, 0.1);
+  transition: all 0.3s ease;
+}
+
+/* Estilo para filas sin resultados */
+.table tbody tr.no-results td {
+  padding: 3rem 1rem;
+  text-align: center;
+  /* Ya estaba centrado pero lo mantenemos explícito */
+  color: var(--color-text-muted);
+  font-style: italic;
+  background-color: rgba(248, 249, 250, 0.7);
+}
+
+/* Estilo para los botones de acción en las tablas */
+.table .btn-sm {
+  padding: 0.3rem 0.6rem;
+  font-size: 0.875rem;
+  border-radius: 4px;
+  margin: 0 0.1rem;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.table .btn-sm:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo para los íconos dentro de los botones */
+.table .btn-sm .fa {
+  font-size: 0.8rem;
+}
+
+/* Estilo para la paginación debajo de tablas */
+.pagination-container {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.pagination {
+  border-radius: 30px;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.pagination .page-link {
+  border: none;
+  padding: 0.7rem 1rem;
+  font-weight: var(--font-weight-medium);
+  transition: all 0.3s ease;
+}
+
+.pagination .page-item.active .page-link {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+/* Mejora de badges en tablas */
+.table .badge {
+  font-weight: 500;
+  padding: 0.5em 0.75em;
+  letter-spacing: 0.02em;
+  border-radius: 30px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  text-transform: uppercase;
+  font-size: 0.75rem;
+}
+
+/* Estilos para tablas responsivas en móviles */
+@media (max-width: 768px) {
+  .table-responsive {
+    border: 0;
+    box-shadow: none;
   }
 
-  70% {
-    opacity: 1;
-    transform: translate3d(0, -10px, 0);
+  .table-responsive .table {
+    min-width: 650px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   }
 
-  85% {
-    transform: translate3d(0, 5px, 0);
-  }
-
-  to {
-    transform: translate3d(0, 0, 0);
+  /* Mantener alineación a la derecha para columnas de acciones */
+  .table td.text-end,
+  .table th.text-end {
+    text-align: right !important;
   }
 }
 
-/* Keyframes para animación gentleShakeX - más sutil */
-@keyframes gentleShakeX {
-  from {
-    opacity: 0;
-    transform: translate3d(40px, 0, 0);
-  }
-
-  20% {
-    transform: translate3d(-8px, 0, 0);
-  }
-
-  40% {
-    transform: translate3d(6px, 0, 0);
-  }
-
-  60% {
-    opacity: 1;
-    transform: translate3d(-4px, 0, 0);
-  }
-
-  80% {
-    transform: translate3d(2px, 0, 0);
-  }
-
-  to {
-    transform: translate3d(0, 0, 0);
-  }
+/* Estilos para código y elementos preformateados */
+code,
+pre,
+kbd,
+samp {
+  font-family: var(--font-monospace);
+  font-size: var(--font-size-sm);
 }
 
-/* Keyframes para animación smoothZoomIn - más elegante */
-@keyframes smoothZoomIn {
-  from {
-    opacity: 0;
-    transform: scale3d(0.8, 0.8, 0.8);
-  }
+/* Estilos para textos pequeños y caption */
+small,
+.small {
+  font-size: var(--font-size-sm);
+}
 
-  60% {
-    opacity: 1;
-    transform: scale3d(1.03, 1.03, 1.03);
-  }
+.caption,
+figcaption {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
 
-  to {
-    transform: scale3d(1, 1, 1);
-  }
+/* Clases utilitarias de texto */
+.text-tight {
+  line-height: var(--line-height-tight);
+}
+
+.text-relaxed {
+  line-height: var(--line-height-relaxed);
+}
+
+.text-monospace {
+  font-family: var(--font-monospace);
+}
+
+.letter-spacing-tight {
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+.letter-spacing-wide {
+  letter-spacing: var(--letter-spacing-wide);
+}
+
+/* Estilos para elementos de formulario */
+.form-label {
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-sm);
+  margin-bottom: 0.25rem;
+  color: var(--color-text-secondary);
+}
+
+.form-control {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-base);
+}
+
+.form-text {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+/* Estilos para alerts */
+.alert {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-sm);
+}
+
+.alert-heading {
+  font-family: var(--font-secondary);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* Botón personalizado para "Nueva/Nuevo" en componentes list */
+.btn-nuevo {
+  background: var(--gradient-primary);
+  border: none;
+  color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-family: var(--font-secondary);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-sm);
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  transition: all 0.25s ease-in-out;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  margin: 0.5rem 0;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-nuevo:hover {
+  background: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary-darker) 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(13, 110, 253, 0.25);
+  color: #fff;
+}
+
+.btn-nuevo i {
+  margin-right: 6px;
+  font-size: 0.9em;
 }

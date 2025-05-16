@@ -6,12 +6,13 @@ import { ModalService } from '../../modal/modal.service';
 import { ResultsPage } from '../../models/results-page';
 import { TipoDesignacion } from '../../models/tipo-designacion';
 import { PaginationComponent } from '../../pagination/pagination.component';
+import { TipoDesignacionPipe } from '../../pipes/tipo-designacion.pipe';
 import { CargoService } from '../service/cargo.service';
 
 
 @Component({
     selector: 'app-divisiones',
-    imports: [CommonModule, RouterModule, PaginationComponent],
+    imports: [CommonModule, RouterModule, PaginationComponent, TipoDesignacionPipe],
     templateUrl: './cargos.component.html',
     styles: ``
 })
@@ -64,4 +65,7 @@ export class CargosComponent {
         this.currentPage = page;
         this.getCargos();
     }
+
+    // Ya no necesitamos el método formatearTipoDesignacion
+    // pues ahora usamos el pipe TipoDesignacionPipe
 }

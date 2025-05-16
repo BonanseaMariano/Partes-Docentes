@@ -15,8 +15,6 @@ function DivisionWorld() {
 const { setWorldConstructor } = require('@cucumber/cucumber');
 setWorldConstructor(DivisionWorld);
 
-
-
 // Paso: Dada la el espacio físico división con <año> <número> <orientación> <turno>
 Given(
     'la el espacio físico división con {int} {int} {word} {word}',
@@ -32,7 +30,7 @@ Given(
 
 // Paso: Cuando se presiona el botón de guardar para división
 When('se presiona el botón de guardar para división', function () {
-    const res = request('POST', 'http://pd-backend:8080/divisiones', {
+    const res = request('POST', encodeURI('http://pd-backend:8080/divisiones'), {
         json: this.currentDivision
     });
     this.apiResponse = JSON.parse(res.getBody('utf8'));

@@ -1,0 +1,162 @@
+.navbar-brand {
+    font-family: var(--font-secondary);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: var(--letter-spacing-wide);
+    font-size: var(--font-size-lg);
+    color: white !important;
+}
+
+.navbar-brand span {
+    margin-left: 5px;
+    letter-spacing: var(--letter-spacing-tight);
+}
+
+.navbar-brand img {
+    transition: transform 0.3s ease;
+}
+
+.navbar-brand:hover img {
+    animation: swing 1s;
+    animation-fill-mode: both;
+}
+
+.navbar-nav .nav-link {
+    font-family: var(--font-primary);
+    font-weight: var(--font-weight-medium);
+    color: rgba(255, 255, 255, 0.9) !important;
+    transition: all 0.2s ease;
+    padding: 0.5rem 0.8rem;
+    letter-spacing: 0.01em;
+    border-radius: 4px;
+}
+
+.navbar-nav .nav-link:hover {
+    color: white;
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: translateY(-1px);
+}
+
+.navbar-nav .nav-link i {
+    width: 20px;
+    text-align: center;
+    margin-right: 5px;
+    opacity: 0.9;
+}
+
+.dropdown-item {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-sm);
+    color: var(--color-text);
+    padding: 0.6rem 1rem;
+    transition: all 0.2s ease;
+    border-left: 2px solid transparent;
+}
+
+.dropdown-item:hover {
+    background-color: var(--color-primary-light);
+    color: var(--color-primary-darker);
+    border-left: 2px solid var(--color-primary);
+    padding-left: 1.2rem;
+}
+
+.dropdown-item i {
+    color: var(--color-primary);
+    width: 20px;
+    text-align: center;
+    margin-right: 5px;
+    opacity: 0.85;
+}
+
+.navbar {
+    box-shadow: var(--shadow-md), 0 3px 5px rgba(0, 0, 0, 0.15);
+    background: var(--gradient-primary) !important;
+    padding: 0.5rem 1rem;
+    z-index: 1030;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Efecto de brillo sutil */
+.navbar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--gradient-light-top);
+}
+
+/* Efecto de iluminación sutil */
+.navbar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--gradient-radial);
+    pointer-events: none;
+    z-index: 1;
+    /* Asegura que esté por debajo de los elementos del navbar */
+}
+
+.navbar-toggler {
+    border-color: rgba(255, 255, 255, 0.3);
+    padding: 0.25rem 0.5rem;
+    transition: all 0.2s;
+}
+
+.navbar-toggler:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.navbar-toggler-icon {
+    opacity: 0.9;
+}
+
+.navbar-nav .nav-item {
+    margin: 0 2px;
+    position: relative;
+    z-index: 1010;
+    /* Mayor que el dropdown para estar por encima */
+}
+
+/* Activo y hover para items de navegación */
+.navbar-nav .nav-item.active .nav-link {
+    background-color: rgba(255, 255, 255, 0.1);
+    font-weight: var(--font-weight-semibold);
+}
+
+/* Estilo para dropdown - usar clases de Animate.css */
+.dropdown-menu {
+    border: none;
+    animation-name: fadeInDown;
+    animation-duration: 0.3s;
+    animation-fill-mode: both;
+    box-shadow: var(--shadow-md);
+    border-radius: 0 0 6px 6px;
+    /* Ligeramente más ancho que el botón padre */
+    min-width: calc(100% + 10px);
+}
+
+footer {
+    margin-top: auto;
+    border-top: 1px solid var(--color-border);
+    background-color: var(--color-background) !important;
+    color: var(--color-text-muted);
+    padding: 1.5rem 0;
+}
+
+/* Estilo para el contenido principal con navbar fijo */
+.main-content {
+    margin-top: 85px;
+    /* Ajustar según la altura del navbar */
+    padding-top: 10px;
+}
+
+/* Ajuste para pantallas pequeñas */
+@media (max-width: 768px) {
+    .main-content {
+        margin-top: 70px;
+    }
+}

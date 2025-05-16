@@ -10,9 +10,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import unpsjb.labprog.backend.business.repository.CargoRepository;
+import unpsjb.labprog.backend.business.validator.CargoValidator;
 import unpsjb.labprog.backend.exception.BusinessLogicException;
 import unpsjb.labprog.backend.model.Cargo;
 import unpsjb.labprog.backend.model.enums.TipoDesignacion;
+import unpsjb.labprog.backend.model.enums.Turno;
 
 /**
  * Servicio que implementa la lógica de negocio para la entidad Cargo
@@ -24,6 +26,9 @@ public class CargoService {
 
     @Autowired
     private CargoRepository repository;
+
+    @Autowired
+    private CargoValidator validator;
 
     /**
      * Busca un cargo por su ID
@@ -54,9 +59,8 @@ public class CargoService {
      */
     @Transactional
     public Cargo save(Cargo cargo) throws BusinessLogicException {
-        // Validar reglas de negocio para el tipo de designación y división antes de
-        // guardar
-        validarReglasDeNegocio(cargo);
+        // Validar reglas de negocio usando el validador específico
+        validator.validar(cargo);
 
         // Si pasa las validaciones, guardar el cargo
         return repository.save(cargo);
@@ -94,44 +98,25 @@ public class CargoService {
     }
 
     /**
-     * Busca un cargo por su nombre y tipo de designación
+     * Busca un cargo por su nombre, tipo de designación y opcionalmente por los
+     * atributos de la división
      * 
      * @param nombre          Nombre del cargo a buscar
      * @param tipoDesignacion Tipo de designación del cargo a buscar
-     * @return Cargos encontrados que coinciden con el nombre y tipo de designación
-     *         o una lista vacía si no existen
+     * @param anio            Año de la división (opcional)
+     * @param numDivision     Número de la división (opcional)
+     * @param turno           Turno de la división (opcional)
+     * @return Cargo encontrado que coincide con los criterios de búsqueda o null si
+     *         no existe
      */
-    public List<Cargo> findByNombreAndTipoDesignacion(String nombre, TipoDesignacion tipoDesignacion) {
-        return repository.findByNombreAndTipoDesignacion(nombre, tipoDesignacion);
+    public Cargo findByNombreAndTipoDesignacionAndDivision(
+            String nombre,
+            TipoDesignacion tipoDesignacion,
+            Integer anio,
+            Integer numDivision,
+            Turno turno) {
+        return repository.findByNombreAndTipoDesignacionAndDivision(
+                nombre, tipoDesignacion, anio, numDivision, turno).orElse(null);
     }
 
-    /**
-     * Valida las reglas de negocio específicas para los cargos:
-     * 1. Si es ESPACIO CURRICULAR, debe tener una división asignada
-     * 2. Si es CARGO, no debe tener una división asignada
-     * 3. La fecha de inicio debe ser anterior a la fecha de finalización
-     * 
-     * @param cargo Cargo a validar
-     * @throws BusinessLogicException si no se cumplen las reglas
-     */
-    private void validarReglasDeNegocio(Cargo cargo) throws BusinessLogicException {
-        // Validaciones para ESPACIO_CURRICULAR
-        if (TipoDesignacion.ESPACIO_CURRICULAR.equals(cargo.getTipoDesignacion())) {
-            if (cargo.getDivision() == null) {
-                throw new BusinessLogicException("Espacio Curricular " + cargo.getNombre() + " falta asignar división");
-            }
-        }
-        // Validaciones para CARGO
-        else if (TipoDesignacion.CARGO.equals(cargo.getTipoDesignacion()) && cargo.getDivision() != null) {
-            // Si está el campo division asignado, no importa si tiene ID o no, es un error
-            throw new BusinessLogicException(
-                    "Cargo de " + cargo.getNombre() + " es CARGO y no corresponde asignar división");
-        }
-
-        // Validación adicional: fechaInicio debe ser anterior a fechaFin
-        if (cargo.getFechaFin() != null && cargo.getFechaInicio().isAfter(cargo.getFechaFin())) {
-            throw new BusinessLogicException(
-                    "La fecha de inicio no puede ser posterior a la fecha de finalización");
-        }
-    }
 }

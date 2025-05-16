@@ -2,6 +2,7 @@ import { CommonModule, Location } from '@angular/common';
 import { Component, OnInit, ViewChild, AfterViewChecked, ChangeDetectorRef } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { TipoDesignacionPipe } from '../../pipes/tipo-designacion.pipe';
 import { NgbCalendar, NgbDatepickerModule, NgbDateStruct, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 import { Observable, of } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators';
@@ -16,7 +17,7 @@ import { CargoService } from '../service/cargo.service';
 @Component({
     selector: 'app-cargo-detail',
     standalone: true,
-    imports: [CommonModule, FormsModule, NgbDatepickerModule, NgbTypeaheadModule],
+    imports: [CommonModule, FormsModule, NgbDatepickerModule, NgbTypeaheadModule, TipoDesignacionPipe],
     templateUrl: './cargo-detail.component.html',
     styles: `
     .input-group-text {
@@ -98,10 +99,7 @@ export class CargoDetailComponent implements OnInit, AfterViewChecked {
         this.cdr.detectChanges();
     }
 
-    // Método para mostrar el valor amigable del enum TipoDesignacion
-    getTipoDisplay(tipoDesignacion: TipoDesignacion): string {
-        return tipoDesignacion;
-    }
+    // Ya no necesitamos este método, usaremos el pipe TipoDesignacionPipe en su lugar
 
     // Método para manejar cambios en el tipo de designación
     onTipoDesignacionChange(): void {

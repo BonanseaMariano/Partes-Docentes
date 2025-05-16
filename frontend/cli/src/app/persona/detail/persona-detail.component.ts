@@ -63,7 +63,9 @@ export class PersonaDetailComponent implements OnInit {
     const id = this.route.snapshot.paramMap.get("id")!;
     if (id === "new") {
       // Inicializar la persona con valores vacíos
-      this.persona = <Persona>{};
+      this.persona = <Persona>{
+        sexo: '',
+      };
       this.tituloFormulario = 'Nueva Persona';
       this.isNewPerson = true;  // Es una nueva persona
     } else {

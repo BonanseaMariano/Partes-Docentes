@@ -43,11 +43,13 @@
                     </span>
                     <input id="dni" name="dni" type="text" placeholder="Ingrese DNI" class="form-control"
                         oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length > 8) this.value = this.value.slice(0,8);"
-                        [(ngModel)]="persona.dni" required #dni="ngModel" />
+                        [(ngModel)]="persona.dni" required minlength="8" maxlength="8" #dni="ngModel" />
                 </div>
                 <div *ngIf="dni.invalid && (dni.dirty || dni.touched)" class="text-danger small mt-1">
                     <i class="fa fa-exclamation-circle me-1"></i>
                     <span *ngIf="dni.errors?.['required']">El DNI es requerido</span>
+                    <span *ngIf="dni.errors?.['minlength'] || dni.errors?.['maxlength']">Ingrese un DNI válido (8
+                        dígitos)</span>
                 </div>
             </div>
 
@@ -59,11 +61,13 @@
                     </span>
                     <input id="cuil" name="cuil" type="text" placeholder="Ingrese CUIL" class="form-control"
                         oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length > 11) this.value = this.value.slice(0,11);"
-                        [(ngModel)]="persona.cuil" required #cuil="ngModel" />
+                        [(ngModel)]="persona.cuil" required minlength="11" maxlength="11" #cuil="ngModel" />
                 </div>
                 <div *ngIf="cuil.invalid && (cuil.dirty || cuil.touched)" class="text-danger small mt-1">
                     <i class="fa fa-exclamation-circle me-1"></i>
                     <span *ngIf="cuil.errors?.['required']">El CUIL es requerido</span>
+                    <span *ngIf="cuil.errors?.['minlength'] || cuil.errors?.['maxlength']">Ingrese un CUIL válido (11
+                        dígitos)</span>
                 </div>
             </div>
 
@@ -74,12 +78,16 @@
                     <span class="input-group-text bg-primary text-white">
                         <i class="fa fa-venus-mars"></i>
                     </span>
-                    <select id="sexo" name="sexo" class="form-select" [(ngModel)]="persona.sexo">
-                        <option value="">Seleccione sexo</option>
+                    <select id="sexo" name="sexo" class="form-select" [(ngModel)]="persona.sexo" required
+                        #sexo="ngModel">
+                        <option value="" *ngIf="!persona.sexo">Seleccione sexo</option>
                         <option value="M">Masculino</option>
                         <option value="F">Femenino</option>
                         <option value="O">Otro</option>
                     </select>
+                </div>
+                <div *ngIf="sexo.invalid && (sexo.dirty || sexo.touched)" class="text-danger small mt-1">
+                    <i class="fa fa-exclamation-circle me-1"></i>El sexo es requerido
                 </div>
             </div>
 

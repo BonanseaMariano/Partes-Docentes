@@ -1,13 +1,16 @@
 package unpsjb.labprog.backend.business.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import unpsjb.labprog.backend.model.Cargo;
 import unpsjb.labprog.backend.model.enums.TipoDesignacion;
+import unpsjb.labprog.backend.model.enums.Turno;
 
 /**
  * Repositorio para la entidad Cargo
@@ -34,12 +37,27 @@ public interface CargoRepository extends JpaRepository<Cargo, Integer> {
     List<Cargo> search(String term);
 
     /**
-     * Busca cargos por su nombre y tipo de designación
+     * Busca un cargo por nombre, tipo designación y, opcionalmente, por los
+     * atributos de la división (año, número y turno).
      * 
      * @param nombre          Nombre del cargo a buscar
      * @param tipoDesignacion Tipo de designación del cargo a buscar
-     * @return Lista de cargos que coinciden con el nombre y tipo de designación
+     * @param anio            Año de la división (opcional)
+     * @param numDivision     Número de la división (opcional)
+     * @param turno           Turno de la división (opcional)
+     * @return Un cargo que coincida con los criterios de búsqueda o vacío si no se
+     *         encuentra
      */
-    List<Cargo> findByNombreAndTipoDesignacion(String nombre, TipoDesignacion tipoDesignacion);
+    @Query("SELECT c FROM Cargo c LEFT JOIN c.division d " +
+            "WHERE c.nombre = :nombre AND c.tipoDesignacion = :tipoDesignacion " +
+            "AND (:anio IS NULL OR d.anio = :anio) " +
+            "AND (:numDivision IS NULL OR d.numDivision = :numDivision) " +
+            "AND (:turno IS NULL OR d.turno = :turno)")
+    Optional<Cargo> findByNombreAndTipoDesignacionAndDivision(
+            @Param("nombre") String nombre,
+            @Param("tipoDesignacion") TipoDesignacion tipoDesignacion,
+            @Param("anio") Integer anio,
+            @Param("numDivision") Integer numDivision,
+            @Param("turno") Turno turno);
 
 }
