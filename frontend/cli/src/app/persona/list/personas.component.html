@@ -17,6 +17,9 @@
                         <th scope="col">Apellido</th>
                         <th scope="col">CUIL</th>
                         <th scope="col">Título</th>
+                        <th scope="col">Sexo</th>
+                        <th scope="col">Domicilio</th>
+                        <th scope="col">Teléfono</th>
                         <th scope="col" class="text-end">Acciones</th>
                     </tr>
                 </thead>
@@ -28,6 +31,16 @@
                         <td>{{ persona.apellido }}</td>
                         <td>{{ persona.cuil | cuilFormat }}</td>
                         <td>{{ persona.titulo }}</td>
+                        <td>
+                            <i class="fa fa-lg" [ngClass]="{
+                                'fa-female text-danger': persona.sexo === 'F',
+                                'fa-male text-primary': persona.sexo === 'M',
+                                'fa-genderless text-secondary': !persona.sexo || persona.sexo === 'O'
+                            }"
+                                title="{{ persona.sexo === 'F' ? 'Femenino' : (persona.sexo === 'M' ? 'Masculino' : 'Otro/No especificado') }}"></i>
+                        </td>
+                        <td>{{ persona.domicilio || '-' }}</td>
+                        <td>{{ persona.telefono || '-' }}</td>
                         <td class="text-end">
                             <a routerLink="/personas/{{ persona.id }}" class="btn btn-sm btn-outline-primary me-1"
                                 title="Editar">
@@ -40,7 +53,7 @@
                         </td>
                     </tr>
                     <tr *ngIf="!resultsPage.content || resultsPage.content.length === 0">
-                        <td colspan="7" class="text-center py-4 text-muted">
+                        <td colspan="10" class="text-center py-4 text-muted">
                             <i class="fa fa-info-circle me-2"></i>No hay personas registradas
                         </td>
                     </tr>
