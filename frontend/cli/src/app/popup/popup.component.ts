@@ -1,5 +1,5 @@
-import { Component, Input, TemplateRef, ViewEncapsulation } from "@angular/core";
 import { CommonModule } from "@angular/common";
+import { Component, Input, TemplateRef, ViewEncapsulation } from "@angular/core";
 
 @Component({
   selector: "app-popup",
@@ -18,21 +18,21 @@ export class PopupComponent {
   @Input() maxHeight: string = "80vh";
   @Input() contentTemplate?: TemplateRef<any>;
   @Input() data: any;
-  
+
   visible: boolean = false;
-  
+
   constructor() { }
-  
+
   // Método para mostrar el popup
   show(): void {
     this.visible = true;
   }
-  
+
   // Método para ocultar el popup
   hide(): void {
     this.visible = false;
   }
-  
+
   // Método para manejar el clic fuera del popup
   onBackdropClick(event: MouseEvent): void {
     // Asegurarse de que el clic fue directamente en el fondo, no en el contenido

@@ -21,7 +21,7 @@ export class PopupService {
   constructor(
     private appRef: ApplicationRef,
     private environmentInjector: EnvironmentInjector
-  ) {}
+  ) { }
 
   /**
    * Muestra un popup con el contenido de la plantilla proporcionada
@@ -79,12 +79,12 @@ export class PopupService {
     if (this.popupRef) {
       // Detach the view
       this.appRef.detachView(this.popupRef.hostView);
-      
+
       // Remove the component from the DOM
       if (this.hostElement && this.hostElement.parentNode) {
         this.hostElement.parentNode.removeChild(this.hostElement);
       }
-      
+
       // Destroy the component
       this.popupRef.destroy();
       this.popupRef = null;

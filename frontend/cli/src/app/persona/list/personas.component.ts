@@ -1,23 +1,22 @@
-import { Component, TemplateRef, ViewChild } from '@angular/core';
-import { ResultsPage } from '../../models/results-page';
-import { PersonaService } from '../service/persona.service';
-import { ModalService } from '../../modal/modal.service';
 import { CommonModule } from '@angular/common';
+import { Component, TemplateRef, ViewChild } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { PaginationComponent } from '../../pagination/pagination.component';
 import { PaginationConfig } from '../../core/constants/pagination.constants';
-import { CuilFormatPipe } from '../../pipes/cuil-format.pipe';
-import { DniFormatPipe } from '../../pipes/dni-format.pipe';
+import { DesignacionService } from '../../designacion/service/designacion.service';
+import { ModalService } from '../../modal/modal.service';
 import { Designacion } from '../../models/designacion';
 import { Persona } from '../../models/persona';
+import { ResultsPage } from '../../models/results-page';
+import { PaginationComponent } from '../../pagination/pagination.component';
+import { CuilFormatPipe } from '../../pipes/cuil-format.pipe';
+import { DniFormatPipe } from '../../pipes/dni-format.pipe';
 import { PopupService } from '../../popup/popup.service';
-import { DesignacionService } from '../../designacion/service/designacion.service';
+import { PersonaService } from '../service/persona.service';
 
 @Component({
   selector: 'app-persona',
   imports: [CommonModule, RouterModule, PaginationComponent, CuilFormatPipe, DniFormatPipe],
   templateUrl: './personas.component.html',
-  styleUrls: ['./personas.component.css']
 })
 export class PersonasComponent {
   resultsPage: ResultsPage = <ResultsPage>{};

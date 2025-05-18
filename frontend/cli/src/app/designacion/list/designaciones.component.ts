@@ -1,19 +1,20 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { RouterModule, Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { PaginationConfig } from '../../core/constants/pagination.constants';
 import { ValidationService } from '../../core/services/validation.service';
 import { ModalService } from '../../modal/modal.service';
 import { ResultsPage } from '../../models/results-page';
 import { TipoDesignacion } from '../../models/tipo-designacion';
 import { PaginationComponent } from '../../pagination/pagination.component';
+import { DniFormatPipe } from '../../pipes/dni-format.pipe';
 import { TipoDesignacionPipe } from '../../pipes/tipo-designacion.pipe';
 import { DesignacionService } from '../service/designacion.service';
 
 
 @Component({
     selector: 'app-divisiones',
-    imports: [CommonModule, RouterModule, PaginationComponent, TipoDesignacionPipe],
+    imports: [CommonModule, RouterModule, PaginationComponent, TipoDesignacionPipe, DniFormatPipe],
     templateUrl: './designaciones.component.html',
     styles: ``
 })

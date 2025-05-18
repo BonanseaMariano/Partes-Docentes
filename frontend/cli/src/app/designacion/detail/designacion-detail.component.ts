@@ -1,10 +1,12 @@
 import { CommonModule, Location } from '@angular/common';
-import { Component, OnInit, ChangeDetectorRef, AfterViewChecked, ViewChild } from '@angular/core';
+import { AfterViewChecked, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { NgbCalendar, NgbDatepickerModule, NgbDateStruct, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
+import { ActivatedRoute, RouterModule } from '@angular/router';
+
+import { NgbCalendar, NgbDatepickerModule, NgbDateStruct, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { Observable, of } from 'rxjs';
-import { catchError, debounceTime, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, debounceTime, distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators';
+
 import { CargoService } from '../../cargo/service/cargo.service';
 import { ModalService } from '../../modal/modal.service';
 import { Cargo } from '../../models/cargo';
@@ -13,13 +15,22 @@ import { Division } from '../../models/division';
 import { Persona } from '../../models/persona';
 import { TipoDesignacion } from '../../models/tipo-designacion';
 import { PersonaService } from '../../persona/service/persona.service';
+import { DniFormatPipe } from '../../pipes/dni-format.pipe';
 import { TipoDesignacionPipe } from '../../pipes/tipo-designacion.pipe';
 import { DesignacionService } from '../service/designacion.service';
 
 @Component({
     selector: 'app-designacion-detail',
     standalone: true,
-    imports: [CommonModule, FormsModule, NgbDatepickerModule, NgbTypeaheadModule, TipoDesignacionPipe],
+    imports: [
+        CommonModule,
+        FormsModule,
+        RouterModule,
+        NgbModule,
+        NgbDatepickerModule,
+        TipoDesignacionPipe,
+        DniFormatPipe
+    ],
     templateUrl: './designacion-detail.component.html',
     styles: `
     .input-group-text {

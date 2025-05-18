@@ -25,7 +25,8 @@
                 <tbody>
                     <tr *ngFor="let designacion of resultsPage.content; index as i">
                         <td>{{ (resultsPage.number * resultsPage.size) + i + 1 }}</td>
-                        <td>{{ designacion.persona.apellido }}, {{ designacion.persona.nombre }}</td>
+                        <td>{{ designacion.persona.dni | dniFormat }} - {{ designacion.persona.apellido }}, {{
+                            designacion.persona.nombre }}</td>
                         <td>{{ designacion.cargo.nombre }}</td>
                         <td>
                             <span class="badge fs-6 px-3 py-2" [ngClass]="{
