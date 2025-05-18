@@ -2,20 +2,25 @@ package unpsjb.labprog.backend.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import unpsjb.labprog.backend.model.enums.DiaSemana;
 
 /**
  * Clase que representa un Horario asignado a un Cargo
  */
 @Entity
-@Table(name = "horarios")
+@Table(name = "horarios", uniqueConstraints = @UniqueConstraint(name = "uk_horario", columnNames = { "dia", "hora",
+        "cargo" }))
 @Getter
 @Setter
 @NoArgsConstructor
@@ -32,8 +37,9 @@ public class Horario {
      * Día de la semana del horario
      */
     @NotNull
-    @Column(length = 10, nullable = false)
-    private String dia;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private DiaSemana dia;
 
     /**
      * Hora del horario

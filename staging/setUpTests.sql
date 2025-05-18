@@ -13,7 +13,10 @@ DELETE FROM licencias;
 -- 3. Luego eliminamos los artículos de licencia si existieran
 DELETE FROM articulos_licencia;
 
--- 4. Luego eliminamos los cargos que referencian a divisiones
+-- 4. Luego eliminamos los horarios si existieran
+DELETE FROM horarios;
+
+-- 5. Luego eliminamos los cargos que referencian a divisiones
 -- Identificamos todos los cargos mencionados en los archivos feature
 DELETE FROM cargos
 WHERE
@@ -55,7 +58,7 @@ WHERE
             )
     );
 
--- 5. Eliminamos por nombre todos los cargos específicos mencionados en los features
+-- 6. Eliminamos por nombre todos los cargos específicos mencionados en los features
 DELETE FROM cargos
 WHERE
     (
@@ -95,7 +98,7 @@ WHERE
         AND tipo_designacion = 'ESPACIO_CURRICULAR'
     );
 
--- 6. Eliminamos las divisiones específicas mencionadas en los features
+-- 7. Eliminamos las divisiones específicas mencionadas en los features
 DELETE FROM divisiones
 WHERE
     (
@@ -129,7 +132,7 @@ WHERE
         AND orientacion = 'Informatica'
     );
 
--- 7. Eliminamos las personas específicas mencionadas en los features por DNI
+-- 8. Eliminamos las personas específicas mencionadas en los features por DNI
 DELETE FROM personas
 WHERE
     dni IN (

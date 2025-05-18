@@ -411,7 +411,38 @@ figcaption {
   font-size: 0.9em;
 }
 
-/* Botón para mostrar designaciones en tablas */
+/* Botón para mostrar popups en tablas (designaciones, horarios, etc.) */
+.btn-popup {
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 12px;
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-popup:hover {
+  background-color: var(--color-primary-dark);
+}
+
+/* Estilo para botón de popup cuando está vacío */
+.btn-popup-empty {
+  background-color: #6c757d;
+  /* gris */
+  color: white;
+}
+
+.btn-popup-empty:hover {
+  background-color: #5a6268;
+  /* gris oscuro al pasar el mouse */
+}
+
+/* Mantenemos las clases antiguas por compatibilidad */
 .btn-designaciones {
   background-color: var(--color-primary);
   color: white;
@@ -430,7 +461,6 @@ figcaption {
   background-color: var(--color-primary-dark);
 }
 
-/* Estilo para botón de designaciones cuando está vacío */
 .btn-designaciones-empty {
   background-color: #6c757d;
   /* gris */

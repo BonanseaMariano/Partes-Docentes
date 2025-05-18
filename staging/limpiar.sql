@@ -4,6 +4,8 @@ DELETE FROM articulos_licencia;
 
 DELETE FROM designaciones;
 
+DELETE FROM horarios;
+
 DELETE FROM cargos;
 
 DELETE FROM divisiones;

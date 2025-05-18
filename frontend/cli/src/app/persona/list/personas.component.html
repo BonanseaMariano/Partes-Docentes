@@ -43,8 +43,8 @@
                         <td>{{ persona.domicilio || '-' }}</td>
                         <td>{{ persona.telefono || '-' }}</td>
                         <td>
-                            <button class="btn-designaciones"
-                                [ngClass]="{'btn-designaciones-empty': getDesignacionCount(persona) === 0}"
+                            <button class="btn-popup"
+                                [ngClass]="{'btn-popup-empty': getDesignacionCount(persona) === 0}"
                                 (click)="openDesignacionesPopup(persona)">
                                 <i class="fa fa-list"></i> {{ getDesignacionCount(persona) }}
                             </button>

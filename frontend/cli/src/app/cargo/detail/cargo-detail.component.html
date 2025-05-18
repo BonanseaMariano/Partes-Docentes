@@ -166,6 +166,86 @@
                     </button>
                 </div>
             </div>
+
+            <!-- Sección de Horarios -->
+            <div class="col-12 mb-4">
+                <div class="horarios-container">
+                    <div class="horarios-header">
+                        <h4><i class="fa fa-clock-o me-2"></i>Horarios</h4>
+                        <button type="button" class="btn btn-sm btn-primary" (click)="mostrarFormularioHorario()">
+                            <i class="fa fa-plus me-1"></i>Añadir horario
+                        </button>
+                    </div>
+
+                    <!-- Lista de horarios -->
+                    <div *ngIf="cargo.horarios && cargo.horarios.length > 0" class="table-responsive">
+                        <table class="table table-hover horarios-table">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col">Día</th>
+                                    <th scope="col">Hora</th>
+                                    <th scope="col" class="text-end">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let horario of cargo.horarios; let i = index" class="horario-row">
+                                    <td>{{ getDiaSemanaLabel(horario.dia) }}</td>
+                                    <td>{{ horario.hora }}° hora</td>
+                                    <td class="text-end">
+                                        <button type="button" class="btn btn-sm btn-outline-danger"
+                                            (click)="eliminarHorario(i)">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Mensaje cuando no hay horarios -->
+                    <div *ngIf="!cargo.horarios || cargo.horarios.length === 0" class="no-horarios">
+                        <i class="fa fa-info-circle me-2"></i>
+                        No hay horarios asignados a este cargo. Puede añadir horarios si lo necesita.
+                    </div>
+
+                    <!-- Formulario para añadir nuevo horario -->
+                    <div *ngIf="mostrarFormNuevoHorario" class="nuevo-horario-form">
+                        <div class="row g-3 align-items-end mb-3">
+                            <div class="col-md-5">
+                                <label for="diaSemana" class="form-label">Día</label>
+                                <select id="diaSemana" class="form-select" [(ngModel)]="nuevoHorario.dia"
+                                    name="nuevoDia">
+                                    <option *ngFor="let dia of diasSemana" [value]="dia">
+                                        {{ getDiaSemanaLabel(dia) }}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="hora" class="form-label">Hora</label>
+                                <select id="hora" class="form-select" [(ngModel)]="nuevoHorario.hora" name="nuevaHora">
+                                    <option *ngFor="let hora of horasPosibles" [value]="hora">
+                                        {{ hora }}° hora
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-md-3 d-flex align-items-center">
+                                <button type="button" class="btn btn-icon btn-success me-2" title="Confirmar"
+                                    (click)="agregarHorario()">
+                                    <i class="fa fa-plus"></i>
+                                </button>
+                                <button type="button" class="btn btn-icon btn-light" title="Cancelar"
+                                    (click)="cancelarNuevoHorario()">
+                                    <i class="fa fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div *ngIf="errorHorarioDuplicado" class="alert alert-danger">
+                            Ya existe un horario asignado para este día y hora. Por favor, elija otra combinación.
+                        </div>
+                    </div>
+                </div>
+            </div>
         </form>
     </div>
 
