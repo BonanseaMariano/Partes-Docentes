@@ -39,4 +39,17 @@ export class DesignacionService {
     search(searchTerm: string): Observable<DataPackage> {
         return this.http.get<DataPackage>(encodeURI(`${this.designacionesUrl}/search/${searchTerm}`));
     }
+
+    /**
+     * Determina si una designación está activa basándose en su fecha de fin
+     * @param designacion La designación a evaluar
+     * @returns `true` si la designación está activa, `false` en caso contrario
+     */
+    isActive(designacion: Designacion): boolean {
+        // Si no hay fecha de fin o es posterior a la fecha actual, está activa
+        if (!designacion.fechaFin) return true;
+
+        const fechaFin = designacion.fechaFin instanceof Date ? designacion.fechaFin : new Date(designacion.fechaFin);
+        return fechaFin >= new Date();
+    }
 }
