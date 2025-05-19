@@ -1,5 +1,6 @@
 package unpsjb.labprog.backend.business.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,4 +82,33 @@ public class DesignacionService {
     public Page<Designacion> findByPage(int page, int size) {
         return repository.findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id")));
     }
+
+    /**
+     * Busca designaciones activas para una persona específica durante un período
+     * determinado.
+     * 
+     * @param personaDni  El DNI de la persona a buscar
+     * @param fechaInicio Fecha de inicio del período a verificar
+     * @param fechaFin    Fecha de fin del período a verificar
+     * @return Lista de designaciones activas para la persona durante el período
+     *         especificado
+     */
+    public List<Designacion> findDesignacionesActivasPorPersonaYPeriodo(
+            Long personaDni, LocalDateTime fechaInicio, LocalDateTime fechaFin) {
+        return repository.findDesignacionesActivasPorPersonaYPeriodo(personaDni, fechaInicio, fechaFin);
+    }
+
+    /**
+     * Verifica si una persona tiene al menos una designación (cargo) en la
+     * institución,
+     * independientemente del período.
+     *
+     * @param personaDni El DNI de la persona a verificar
+     * @return true si la persona tiene al menos una designación, false en caso
+     *         contrario
+     */
+    public boolean existsDesignacionesPorPersona(Long personaDni) {
+        return repository.existsDesignacionesPorPersona(personaDni);
+    }
+
 }

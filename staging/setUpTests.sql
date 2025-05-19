@@ -148,6 +148,8 @@ WHERE
         '99100000', -- Ermenegildo Sabat
         '99200000', -- María Rosa Gallo
         '99300000', -- Homero Manzi
+        '88888888', -- Marisa Balaguer
+        '99999999', -- Raúl Guitierrez
         '88400000', -- Carla Gutierrez (mencionada en Persona.feature para validar CUIL idéntico)
         '99400000' -- Se agrega por si se incluye en futuros tests
     );

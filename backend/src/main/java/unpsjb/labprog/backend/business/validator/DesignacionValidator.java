@@ -22,7 +22,7 @@ import unpsjb.labprog.backend.model.enums.TipoDesignacion;
 public class DesignacionValidator {
 
     @Autowired
-    private DesignacionRepository designacionRepository;
+    private DesignacionRepository repository;
 
     /**
      * Valida todas las reglas de negocio específicas para las designaciones
@@ -62,7 +62,7 @@ public class DesignacionValidator {
         Integer designacionId = designacion.getId() > 0 ? designacion.getId() : null;
 
         // Buscamos designaciones que se solapen con la misma
-        List<Designacion> designacionesSuperpuestas = designacionRepository.findDesignacionesSuperpuestas(
+        List<Designacion> designacionesSuperpuestas = repository.findDesignacionesSuperpuestas(
                 designacion.getCargo().getId(),
                 designacion.getFechaInicio(),
                 designacion.getFechaFin(),

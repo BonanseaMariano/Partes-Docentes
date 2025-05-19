@@ -39,10 +39,18 @@ public class Response {
 	}
 
 	public static ResponseEntity<Object> dbError(String msj) {
-		return response(HttpStatus.CONFLICT, msj, null);
+		return response(HttpStatus.INTERNAL_SERVER_ERROR, msj, null);
 	}
 
 	public static ResponseEntity<Object> unprocessableEntity(String msj) {
 		return response(HttpStatus.UNPROCESSABLE_ENTITY, msj, null);
+	}
+
+	public static ResponseEntity<Object> unauthorized(String msj) {
+		return response(HttpStatus.UNAUTHORIZED, msj, null);
+	}
+
+	public static ResponseEntity<Object> internalServerError(String msj) {
+		return response(HttpStatus.INTERNAL_SERVER_ERROR, msj, null);
 	}
 }

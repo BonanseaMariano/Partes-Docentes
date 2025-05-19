@@ -106,7 +106,7 @@ public class DesignacionPresenter {
         } catch (BusinessLogicException e) {
             // Capturar excepciones de validación de negocio y devolver error 422 (Entidad
             // no procesable)
-            return Response.unprocessableEntity(e.getMessage());
+            return Response.internalServerError(e.getMessage());
         } catch (DataIntegrityViolationException e) {
             return Response.dbError("No se puede crear la designación debido a que ya existe otra idéntica");
         }
@@ -157,7 +157,7 @@ public class DesignacionPresenter {
         } catch (BusinessLogicException e) {
             // Capturar excepciones de validación de negocio y devolver error 422 (Entidad
             // no procesable)
-            return Response.unprocessableEntity(e.getMessage());
+            return Response.internalServerError(e.getMessage());
         } catch (DataIntegrityViolationException e) {
             return Response.dbError("No se puede actualizar la designación debido a que ya existe otra idéntica");
         }
