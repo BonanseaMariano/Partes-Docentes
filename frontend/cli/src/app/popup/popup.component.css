@@ -19,7 +19,6 @@
   border-radius: 8px;
   box-shadow: var(--shadow-md);
   overflow: hidden;
-  animation: fadeIn 0.3s ease;
 }
 
 /* Estilo específico para el encabezado del popup */
@@ -78,14 +77,4 @@
   /* Sin estilos específicos ya que utilizará la clase global */
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+/* Se usa la animación global .popup-animated definida en styles.css */

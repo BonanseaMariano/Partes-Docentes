@@ -1,5 +1,7 @@
-<div class="popup-backdrop" *ngIf="visible" (click)="onBackdropClick($event)">
-  <div class="popup-content" [style.width]="width" [style.max-width]="maxWidth" [style.max-height]="maxHeight">
+<div class="popup-backdrop" *ngIf="visible" (click)="onBackdropClick($event)" role="dialog" aria-modal="true"
+  tabindex="-1">
+  <div class="popup-content animate__animated animate__bounceInDown popup-animated" [style.width]="width"
+    [style.max-width]="maxWidth" [style.max-height]="maxHeight">
     <div class="popup-header">
       <h3>
         <i *ngIf="icon" class="fa {{ icon }} popup-icon" aria-hidden="true"></i>
