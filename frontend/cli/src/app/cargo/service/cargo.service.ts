@@ -28,7 +28,7 @@ export class CargoService {
         if (!cargo.horarios) {
             cargo.horarios = [];
         }
-        
+
         return isNew
             ? this.http.post<DataPackage>(encodeURI(this.cargosUrl), cargo)
             : this.http.put<DataPackage>(encodeURI(this.cargosUrl), cargo);
@@ -62,7 +62,7 @@ export class CargoService {
                 cargo.horarios = [];
             }
         }
-        
+
         // Si la respuesta contiene una lista de cargos (ej: paginación)
         if (response.data && typeof response.data === 'object' && 'content' in response.data) {
             const page = response.data as { content: Cargo[] };
@@ -74,7 +74,7 @@ export class CargoService {
                 });
             }
         }
-        
+
         // Si la respuesta es un array de cargos
         if (response.data && Array.isArray(response.data)) {
             (response.data as Cargo[]).forEach(cargo => {
@@ -83,7 +83,7 @@ export class CargoService {
                 }
             });
         }
-        
+
         return response;
     }
 
@@ -110,24 +110,13 @@ export class CargoService {
 
         return [...horarios].sort((a, b) => {
             // Primero ordenar por día
-            const dayDiff = daysOrder[a.dia] - daysOrder[b.dia];
-            if (dayDiff !== 0) return dayDiff;
-            
-            // Si es el mismo día, ordenar por hora
-            return a.hora - b.hora;
-        });
-    }
+            const dayDiffA = daysOrder[a.dia];
+            const dayDiffB = daysOrder[b.dia];
+            if (dayDiffA !== dayDiffB) return dayDiffA - dayDiffB;
 
-    /**
-     * Obtiene la cantidad total de horas semanales de un cargo según sus horarios
-     * @param cargo El cargo para calcular las horas totales
-     * @returns Número total de horas semanales
-     */
-    getTotalHoursPerWeek(cargo: Cargo): number {
-        if (!cargo || !cargo.horarios) {
-            return 0;
-        }
-        return cargo.horarios.length;
+            // Si es el mismo día, ordenar por hora (comparando los strings hora)
+            return a.hora.localeCompare(b.hora);
+        });
     }
 
     /**
@@ -159,22 +148,22 @@ export class CargoService {
         }
 
         const result: { [key: string]: Horario[] } = {};
-        
+
         for (const horario of cargo.horarios) {
             // Usamos el nombre para mostrar del día como clave
             const displayName = this.getDiaSemanaLabel(horario.dia);
-            
+
             if (!result[displayName]) {
                 result[displayName] = [];
             }
             result[displayName].push(horario);
         }
-        
+
         // Ordenar los horarios dentro de cada día
         for (const day in result) {
-            result[day].sort((a, b) => a.hora - b.hora);
+            result[day].sort((a, b) => a.hora.localeCompare(b.hora));
         }
-        
+
         return result;
     }
 }

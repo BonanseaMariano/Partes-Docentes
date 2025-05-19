@@ -9,6 +9,7 @@ import { Dia } from '../../models/horario';
 import { ResultsPage } from '../../models/results-page';
 import { TipoDesignacion } from '../../models/tipo-designacion';
 import { PaginationComponent } from '../../pagination/pagination.component';
+import { HoraFormatPipe } from '../../pipes/hora-format.pipe';
 import { TipoDesignacionPipe } from '../../pipes/tipo-designacion.pipe';
 import { PopupService } from '../../popup/popup.service';
 import { CargoService } from '../service/cargo.service';
@@ -16,7 +17,7 @@ import { CargoService } from '../service/cargo.service';
 
 @Component({
     selector: 'app-divisiones',
-    imports: [CommonModule, RouterModule, PaginationComponent, TipoDesignacionPipe],
+    imports: [CommonModule, RouterModule, PaginationComponent, TipoDesignacionPipe, HoraFormatPipe],
     templateUrl: './cargos.component.html',
     styles: ``
 })
@@ -45,13 +46,13 @@ export class CargosComponent {
     crearNuevo(): void {
         this.validationService.checkDivisiones().subscribe(result => {
             const hayDivisiones = result.isValid;
-            
+
             // Si hay divisiones, navegamos directamente
             if (hayDivisiones) {
                 this.router.navigate(['/cargos/new']);
                 return;
             }
-            
+
             // Si no hay divisiones, mostramos confirmación
             this.modalService.confirm(
                 result.errorTitle || 'No existen divisiones',

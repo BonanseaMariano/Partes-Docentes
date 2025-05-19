@@ -73,14 +73,9 @@
   max-height: calc(80vh - 120px);
 }
 
-/* Mensaje cuando no hay elementos */
+/* Mensaje cuando no hay elementos - usando la clase global .empty-state-message */
 .no-results {
-  padding: 3rem 1rem;
-  text-align: center;
-  color: var(--color-text-muted);
-  font-style: italic;
-  background-color: rgba(248, 249, 250, 0.7);
-  border-radius: 8px;
+  /* Sin estilos específicos ya que utilizará la clase global */
 }
 
 @keyframes fadeIn {

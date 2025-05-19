@@ -2,7 +2,7 @@ import { CommonModule, Location } from '@angular/common';
 import { AfterViewChecked, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { NgbCalendar, NgbDatepickerModule, NgbDateStruct, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbCalendar, NgbDatepickerModule, NgbDateStruct, NgbTimeStruct, NgbTimepickerModule, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 import { Observable, of } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators';
 import { DivisionService } from '../../division/service/division.service';
@@ -12,6 +12,7 @@ import { Division } from '../../models/division';
 import { DiaSemana, DiaSemanaLabels, Horario } from '../../models/horario';
 import { TipoDesignacion } from '../../models/tipo-designacion';
 import { Turno } from '../../models/turno';
+import { HoraFormatPipe } from '../../pipes/hora-format.pipe';
 import { TipoDesignacionPipe } from '../../pipes/tipo-designacion.pipe';
 import { CargoService } from '../service/cargo.service';
 
@@ -19,7 +20,7 @@ import { CargoService } from '../service/cargo.service';
 @Component({
     selector: 'app-cargo-detail',
     standalone: true,
-    imports: [CommonModule, FormsModule, NgbDatepickerModule, NgbTypeaheadModule, TipoDesignacionPipe],
+    imports: [CommonModule, FormsModule, NgbDatepickerModule, NgbTimepickerModule, NgbTypeaheadModule, TipoDesignacionPipe, HoraFormatPipe],
     templateUrl: './cargo-detail.component.html',
     styleUrl: './cargo-detail.component.css'
 })
@@ -50,13 +51,14 @@ export class CargoDetailComponent implements OnInit, AfterViewChecked {
     // Propiedades para la gestión de horarios
     diasSemana = Object.values(DiaSemana);
     diasSemanaLabels = DiaSemanaLabels;
-    horasPosibles = Array.from({ length: 8 }, (_, i) => i + 1); // Horarios del 1 al 8
     nuevoHorario: Horario = {
         dia: DiaSemana.LUNES,
-        hora: 1
+        hora: '01:00:00'
     };
+    timeStruct: NgbTimeStruct = { hour: 1, minute: 0, second: 0 };
     mostrarFormNuevoHorario: boolean = false;
     errorHorarioDuplicado: boolean = false;
+    errorHorarioInvalido: boolean = false;
 
     constructor(
         private route: ActivatedRoute,
@@ -141,16 +143,17 @@ export class CargoDetailComponent implements OnInit, AfterViewChecked {
         this.verificarFormularioValido();
     }
 
+    // Método para manejar cambios en el timepicker
+    onTimeChange(): void {
+        // No aplicamos restricciones, permitimos cualquier valor
+        this.errorHorarioInvalido = false;
+    }
+
     save(): void {
         // Verificar si se necesita división (para ESPACIO_CURRICULAR)
         if (this.cargo.tipoDesignacion === TipoDesignacion.ESPACIO_CURRICULAR && !this.cargo.division?.id) {
             this.mostrarErrorDivision = true;
             return;
-        }
-
-        // Asegurar que el cargo siempre tenga un array de horarios inicializado
-        if (!this.cargo.horarios) {
-            this.cargo.horarios = [];
         }
 
         // Convertir las fechas de NgbDateStruct a objetos Date para el backend
@@ -309,26 +312,38 @@ export class CargoDetailComponent implements OnInit, AfterViewChecked {
         this.mostrarFormNuevoHorario = true;
         this.nuevoHorario = {
             dia: DiaSemana.LUNES,
-            hora: 1
+            hora: '01:00:00'
         };
+        this.timeStruct = { hour: 1, minute: 0, second: 0 };
         this.errorHorarioDuplicado = false;
+        this.errorHorarioInvalido = false;
     }
 
     cancelarNuevoHorario(): void {
         this.mostrarFormNuevoHorario = false;
         this.errorHorarioDuplicado = false;
+        this.errorHorarioInvalido = false;
     }
 
     agregarHorario(): void {
-        // Verificar si ya existe un horario con el mismo día y hora
+        // Formatear la hora y los minutos desde el timeStruct a formato LocalTime (HH:MM:SS)
+        const horaStr = this.timeStruct.hour.toString().padStart(2, '0');
+        const minutos = this.timeStruct.minute.toString().padStart(2, '0');
+        this.nuevoHorario.hora = `${horaStr}:${minutos}:00`;
+
+        // Verificar si ya existe un horario con el mismo día y hora exacta
         const horarioDuplicado = this.cargo.horarios.some(
-            h => h.dia === this.nuevoHorario.dia && h.hora === this.nuevoHorario.hora
+            h => h.dia === this.nuevoHorario.dia &&
+                h.hora === this.nuevoHorario.hora
         );
 
         if (horarioDuplicado) {
             this.errorHorarioDuplicado = true;
+            this.errorHorarioInvalido = false;
             return;
         }
+
+        this.errorHorarioInvalido = false;
 
         // Agregar el nuevo horario a la lista
         this.cargo.horarios.push({ ...this.nuevoHorario });
@@ -338,8 +353,10 @@ export class CargoDetailComponent implements OnInit, AfterViewChecked {
 
         // Cerrar el formulario y resetear
         this.mostrarFormNuevoHorario = false;
-        this.nuevoHorario = { dia: DiaSemana.LUNES, hora: 1 };
+        this.nuevoHorario = { dia: DiaSemana.LUNES, hora: '01:00:00' };
+        this.timeStruct = { hour: 1, minute: 0, second: 0 };
         this.errorHorarioDuplicado = false;
+        this.errorHorarioInvalido = false;
 
         // Actualizar validación del formulario
         this.verificarFormularioValido();
@@ -363,9 +380,23 @@ export class CargoDetailComponent implements OnInit, AfterViewChecked {
         return this.diasSemanaLabels[dia] || dia;
     }
 
-    // Método para verificar si un día y hora ya están asignados
-    existeHorario(dia: DiaSemana, hora: number): boolean {
-        return this.cargo.horarios.some(h => h.dia === dia && h.hora === hora);
+    // Método para formatear la hora en formato legible
+    formatHoraTiempo(horaTiempo: string): string {
+        if (!horaTiempo) return '';
+
+        // Asumimos que horaTiempo viene en formato 'HH:MM:SS'
+        const partes = horaTiempo.split(':');
+        if (partes.length < 2) return horaTiempo;
+
+        return `${partes[0]}:${partes[1]}`;
+    }
+
+    // Método para verificar si un día y hora exacta ya están asignados
+    existeHorario(dia: DiaSemana, hora: string): boolean {
+        return this.cargo.horarios.some(h =>
+            h.dia === dia &&
+            h.hora === hora
+        );
     }
 
     ngOnInit(): void {

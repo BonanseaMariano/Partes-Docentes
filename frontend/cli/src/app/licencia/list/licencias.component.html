@@ -25,7 +25,8 @@
                 <tbody>
                     <tr *ngFor="let licencia of resultsPage.content; index as i">
                         <td>{{ (resultsPage.number * resultsPage.size) + i + 1 }}</td>
-                        <td>{{ licencia.persona.dni | dniFormat }} - {{ licencia.persona.apellido }}, {{ licencia.persona.nombre }}
+                        <td>{{ licencia.persona.dni | dniFormat }} - {{ licencia.persona.apellido }}, {{
+                            licencia.persona.nombre }}
                         </td>
                         <td>{{ licencia.pedidoDesde | date:'dd/MM/yyyy' }}</td>
                         <td>{{ licencia.pedidoHasta | date:'dd/MM/yyyy' }}</td>
@@ -38,7 +39,7 @@
                         <td>
                             <button class="btn-designaciones"
                                 [ngClass]="{'btn-designaciones-empty': getDesignacionCount(licencia) === 0}"
-                                (click)="openDesignacionesPopup(licencia)">
+                                (click)="openDesignacionesPopup(licencia)" title="Mostrar designaciones">
                                 <i class="fa fa-list"></i> {{ getDesignacionCount(licencia) }}
                             </button>
                         </td>
@@ -54,7 +55,7 @@
                         </td>
                     </tr>
                     <tr *ngIf="!resultsPage.content || resultsPage.content.length === 0">
-                        <td colspan="9" class="text-center py-4 text-muted">
+                        <td colspan="9" class="empty-state-cell">
                             <i class="fa fa-info-circle me-2"></i>No hay licencias registradas
                         </td>
                     </tr>
@@ -106,7 +107,7 @@
             </tbody>
         </table>
     </div>
-    <div *ngIf="!licencia.designaciones || licencia.designaciones.length === 0" class="no-results">
+    <div *ngIf="!licencia.designaciones || licencia.designaciones.length === 0" class="empty-state-message">
         <i class="fa fa-info-circle me-2"></i>
         Esta licencia no tiene designaciones registradas
     </div>

@@ -43,7 +43,7 @@
                         <td>{{ cargo.fechaFin ? (cargo.fechaFin | date:'dd/MM/yyyy') : '' }}</td>
                         <td>
                             <button class="btn-popup" [ngClass]="{'btn-popup-empty': getHorarioCount(cargo) === 0}"
-                                (click)="openHorariosPopup(cargo)">
+                                (click)="openHorariosPopup(cargo)" title="Mostrar horarios">
                                 <i class="fa fa-clock-o"></i> {{ getHorarioCount(cargo) }}
                             </button>
                         </td>
@@ -59,7 +59,7 @@
                         </td>
                     </tr>
                     <tr *ngIf="!resultsPage.content || resultsPage.content.length === 0">
-                        <td colspan="9" class="text-center py-4 text-muted">
+                        <td colspan="9" class="empty-state-cell">
                             <i class="fa fa-info-circle me-2"></i>No hay cargos registrados
                         </td>
                     </tr>
@@ -86,19 +86,13 @@
                 <div class="horarios-list">
                     <div *ngFor="let horario of getHorariosByDay(cargo)[dia]" class="horario-item">
                         <i class="fa fa-clock-o me-2"></i>
-                        {{ horario.hora }}° hora
+                        {{ horario.hora | horaFormat }}
                     </div>
                 </div>
             </div>
         </div>
-
-        <div class="horarios-summary mt-3">
-            <p class="mb-1"><strong>Total de horas semanales:</strong> {{ cargoService.getTotalHoursPerWeek(cargo) }}
-            </p>
-            <p><strong>Carga horaria asignada:</strong> {{ cargo.cargaHoraria }} hs</p>
-        </div>
     </div>
-    <div *ngIf="!cargoService.hasHorarios(cargo)" class="no-results">
+    <div *ngIf="!cargoService.hasHorarios(cargo)" class="empty-state-message">
         <i class="fa fa-info-circle me-2"></i>
         Este cargo no tiene horarios registrados
     </div>

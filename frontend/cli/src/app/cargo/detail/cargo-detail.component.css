@@ -11,15 +11,21 @@
     border: 1px solid #dee2e6;
     border-radius: 8px;
     overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.horarios-container:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .horarios-header {
-    background-color: var(--color-secondary-light);
-    padding: 10px 15px;
+    background-color: var(--color-primary-light);
+    padding: 12px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid #dee2e6;
+    border-bottom: 1px solid var(--color-primary-border);
 }
 
 .horarios-header h4 {
@@ -27,40 +33,46 @@
     font-size: 1.1rem;
 }
 
-.horarios-table {
-    margin-bottom: 0;
-}
+/* La clase horarios-table ya no es necesaria porque la tabla usa las clases globales de Bootstrap */
 
 .horario-actions {
     display: flex;
     gap: 10px;
 }
 
-.no-horarios {
-    padding: 2rem;
-    text-align: center;
-    color: var(--color-text-muted);
-}
-
-.nuevo-horario-form {
-    padding: 15px;
-    border-top: 1px solid #dee2e6;
-    background-color: #f8f9fa;
+.horario-row {
+    transition: all 0.2s ease;
 }
 
 .horario-row:hover {
-    background-color: rgba(0, 0, 0, 0.03);
+    background-color: rgba(13, 110, 253, 0.05);
 }
 
-/* Estilos para los iconos de botones */
-.btn-icon {
-    width: 38px;
-    height: 38px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 4px;
-    padding: 0;
+.horario-row button {
+    opacity: 0.6;
+    transition: all 0.2s ease;
+}
+
+.horario-row:hover button {
+    opacity: 1;
+}
+
+/* Los estilos para .badge ya están definidos en los estilos globales */
+
+/* Estilo para los botones de acción en la tabla de horarios */
+/* Se combinó con el otro selector que estaba duplicado más abajo */
+
+/* Efecto de elevación específico para botones dentro de los horarios */
+.table .btn-outline-danger:hover {
+    background-color: var(--color-danger);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo para los íconos dentro de los botones */
+.table .btn-sm .fa {
+    font-size: 0.8rem;
 }
 
 /* Estilos para grupos de día */
@@ -103,9 +115,59 @@
     font-size: 0.9rem;
 }
 
-.horarios-summary {
-    padding: 10px;
+.time-picker-container {
     background-color: #f8f9fa;
-    border-radius: 8px;
-    border-left: 4px solid var(--color-accent);
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #dee2e6;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+ngb-timepicker {
+    display: flex;
+    justify-content: center;
+}
+
+/* Estilos para los inputs del timepicker */
+ngb-timepicker .ngb-tp-input {
+    width: 60px !important;
+    padding: 5px;
+    text-align: center;
+    font-weight: 500;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    background-color: white;
+}
+
+/* Estilos para los botones de incremento/decremento */
+ngb-timepicker .btn-link {
+    padding: 0.25rem 0.5rem;
+    color: var(--color-primary);
+    transition: all 0.2s;
+}
+
+ngb-timepicker .btn-link:hover {
+    background-color: var(--color-primary);
+    color: white;
+    border-radius: 3px;
+}
+
+/* Ocultar los segundos cuando no se necesitan */
+ngb-timepicker .ngb-tp-second,
+ngb-timepicker .ngb-tp-meridian {
+    display: none;
+}
+
+/* Mostrar los minutos */
+ngb-timepicker .ngb-tp-spacer {
+    width: 8px;
+    text-align: center;
+}
+
+/* Estilo para el label de la hora */
+.time-picker-container small {
+    margin-top: 8px;
+    font-style: italic;
 }

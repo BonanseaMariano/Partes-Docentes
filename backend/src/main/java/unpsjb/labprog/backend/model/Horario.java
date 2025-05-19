@@ -1,5 +1,7 @@
 package unpsjb.labprog.backend.model;
 
+import java.time.LocalTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -19,7 +21,8 @@ import unpsjb.labprog.backend.model.enums.DiaSemana;
  * Clase que representa un Horario asignado a un Cargo
  */
 @Entity
-@Table(name = "horarios", uniqueConstraints = @UniqueConstraint(name = "uk_horario", columnNames = { "dia", "hora",
+@Table(name = "horarios", uniqueConstraints = @UniqueConstraint(name = "uk_horario", columnNames = { "dia",
+        "hora",
         "cargo" }))
 @Getter
 @Setter
@@ -44,7 +47,7 @@ public class Horario {
     /**
      * Hora del horario
      */
-    @Column(nullable = false)
-    private Integer hora;
+    @Column(name = "hora", nullable = false)
+    private LocalTime hora;
 
 }

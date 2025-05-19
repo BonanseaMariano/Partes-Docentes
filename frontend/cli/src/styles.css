@@ -234,6 +234,26 @@ h6 {
   background-color: rgba(248, 249, 250, 0.7);
 }
 
+/* Estilo global para mensajes de "no hay resultados" que puede usarse en cualquier contexto */
+.empty-state-message {
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+  color: var(--color-text-muted);
+  font-style: italic;
+  background-color: rgba(248, 249, 250, 0.7);
+  border-radius: 8px;
+  margin: 1rem 0;
+}
+
+/* Clase para células de tabla con mensaje de "no hay resultados" */
+.table .empty-state-cell {
+  padding: 3rem 1rem !important;
+  text-align: center;
+  color: var(--color-text-muted);
+  font-style: italic;
+  background-color: rgba(248, 249, 250, 0.7);
+}
+
 /* Estilo para los botones de acción en las tablas */
 .table .btn-sm {
   padding: 0.3rem 0.6rem;
@@ -367,6 +387,16 @@ figcaption {
 .form-text {
   font-size: var(--font-size-xs);
   color: var(--color-text-muted);
+}
+
+/* Estilo global para formularios de inserción con animación */
+.form-insert {
+  padding: 20px;
+  border-top: 1px solid #dee2e6;
+  background-color: #f8f9fa;
+  animation-duration: 0.5s;
+  margin-bottom: 1rem;
+  border-radius: 0.375rem;
 }
 
 /* Estilos para alerts */
