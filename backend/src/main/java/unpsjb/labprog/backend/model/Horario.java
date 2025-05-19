@@ -1,7 +1,5 @@
 package unpsjb.labprog.backend.model;
 
-import java.time.LocalTime;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -11,6 +9,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -45,9 +45,11 @@ public class Horario {
     private DiaSemana dia;
 
     /**
-     * Hora del horario
+     * Hora del horario (1 a 8)
      */
+    @Min(1)
+    @Max(8)
     @Column(name = "hora", nullable = false)
-    private LocalTime hora;
+    private int hora;
 
 }

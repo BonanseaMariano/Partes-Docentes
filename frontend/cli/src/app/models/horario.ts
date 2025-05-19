@@ -10,11 +10,10 @@ export interface Horario {
     dia: DiaSemana;
 
     /**
-     * Hora del horario (en formato LocalTime)
-     * Se representa como una cadena con formato HH:MM:SS
-     * Ejemplo: "08:30:00" para las 8:30
+     * Hora del horario (1 a 8)
+     * Representa un bloque horario numerado del 1 al 8
      */
-    hora: string;
+    hora: number;
 }
 
 export enum DiaSemana {

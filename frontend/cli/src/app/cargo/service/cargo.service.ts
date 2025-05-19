@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, map } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Cargo } from '../../models/cargo';
 import { DataPackage } from '../../models/data-package';
 import { DiaSemana, DiaSemanaLabels, Horario } from '../../models/horario';
@@ -14,13 +14,11 @@ export class CargoService {
     constructor(private http: HttpClient) { }
 
     all(): Observable<DataPackage> {
-        return this.http.get<DataPackage>(encodeURI(this.cargosUrl))
-            .pipe(map(response => this.ensureHorariosArray(response)));
+        return this.http.get<DataPackage>(encodeURI(this.cargosUrl));
     }
 
     get(id: number): Observable<DataPackage> {
-        return this.http.get<DataPackage>(encodeURI(`${this.cargosUrl}/${id}`))
-            .pipe(map(response => this.ensureHorariosArray(response)));
+        return this.http.get<DataPackage>(encodeURI(`${this.cargosUrl}/${id}`));
     }
 
     save(cargo: Cargo, isNew: boolean = false): Observable<DataPackage> {
@@ -41,50 +39,11 @@ export class CargoService {
     byPage(page: number, size: number): Observable<DataPackage> {
         return this.http.get<DataPackage>(
             encodeURI(`${this.cargosUrl}/page?page=${page - 1}&size=${size}`)
-        ).pipe(map(response => this.ensureHorariosArray(response)));
+        );
     }
 
     search(searchTerm: string): Observable<DataPackage> {
-        return this.http.get<DataPackage>(encodeURI(`${this.cargosUrl}/search/${searchTerm}`))
-            .pipe(map(response => this.ensureHorariosArray(response)));
-    }
-
-    /**
-     * Asegura que todos los cargos en la respuesta tienen un array de horarios inicializado
-     * @param response Respuesta del servidor
-     * @returns La misma respuesta con arrays de horarios inicializados
-     */
-    private ensureHorariosArray(response: DataPackage): DataPackage {
-        // Si la respuesta contiene un único cargo
-        if (response.data && typeof response.data === 'object' && 'id' in response.data) {
-            const cargo = response.data as Cargo;
-            if (!cargo.horarios) {
-                cargo.horarios = [];
-            }
-        }
-
-        // Si la respuesta contiene una lista de cargos (ej: paginación)
-        if (response.data && typeof response.data === 'object' && 'content' in response.data) {
-            const page = response.data as { content: Cargo[] };
-            if (page.content && Array.isArray(page.content)) {
-                page.content.forEach(cargo => {
-                    if (!cargo.horarios) {
-                        cargo.horarios = [];
-                    }
-                });
-            }
-        }
-
-        // Si la respuesta es un array de cargos
-        if (response.data && Array.isArray(response.data)) {
-            (response.data as Cargo[]).forEach(cargo => {
-                if (!cargo.horarios) {
-                    cargo.horarios = [];
-                }
-            });
-        }
-
-        return response;
+        return this.http.get<DataPackage>(encodeURI(`${this.cargosUrl}/search/${searchTerm}`));
     }
 
     /**
@@ -114,8 +73,8 @@ export class CargoService {
             const dayDiffB = daysOrder[b.dia];
             if (dayDiffA !== dayDiffB) return dayDiffA - dayDiffB;
 
-            // Si es el mismo día, ordenar por hora (comparando los strings hora)
-            return a.hora.localeCompare(b.hora);
+            // Si es el mismo día, ordenar por hora (comparando los valores numéricos)
+            return a.hora - b.hora;
         });
     }
 
@@ -161,7 +120,7 @@ export class CargoService {
 
         // Ordenar los horarios dentro de cada día
         for (const day in result) {
-            result[day].sort((a, b) => a.hora.localeCompare(b.hora));
+            result[day].sort((a, b) => a.hora - b.hora);
         }
 
         return result;

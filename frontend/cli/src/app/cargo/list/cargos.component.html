@@ -86,7 +86,7 @@
                 <div class="horarios-list">
                     <div *ngFor="let horario of getHorariosByDay(cargo)[dia]" class="horario-item">
                         <i class="fa fa-clock-o me-2"></i>
-                        {{ horario.hora | horaFormat }}
+                        {{ horario.hora }}° hora
                     </div>
                 </div>
             </div>
