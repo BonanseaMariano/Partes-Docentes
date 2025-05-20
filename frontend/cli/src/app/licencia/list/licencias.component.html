@@ -35,7 +35,11 @@
                             <span *ngIf="licencia.certificadoMedico" class="text-success fs-5">✅</span>
                             <span *ngIf="!licencia.certificadoMedico" class="text-danger fs-5">❌</span>
                         </td>
-                        <td>{{ licencia.articuloLicencia.articulo }}</td>
+                        <td>
+                            <span [title]="licencia.articuloLicencia.descripcion">
+                                {{ licencia.articuloLicencia.articulo }}
+                            </span>
+                        </td>
                         <td>
                             <button class="btn-designaciones"
                                 [ngClass]="{'btn-designaciones-empty': getDesignacionCount(licencia) === 0}"
