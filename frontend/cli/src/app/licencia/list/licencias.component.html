@@ -77,9 +77,10 @@
         <table class="table table-hover">
             <thead class="table-light">
                 <tr>
+                    <th scope="col">Persona</th>
                     <th scope="col">Cargo</th>
-                    <th scope="col">Situación</th>
                     <th scope="col">División</th>
+                    <th scope="col">Situación</th>
                     <th scope="col">Inicio</th>
                     <th scope="col">Fin</th>
                     <th scope="col">Estado</th>
@@ -87,13 +88,15 @@
             </thead>
             <tbody>
                 <tr *ngFor="let designacion of licencia.designaciones">
+                    <td>{{ designacion.persona.dni | dniFormat }} - {{ designacion.persona.apellido }}, {{
+                        designacion.persona.nombre }}</td>
                     <td>{{ designacion.cargo?.nombre || '' }}</td>
-                    <td>{{ designacion.situacionRevista || '' }}</td>
                     <td>{{ designacion.cargo?.division ?
                         designacion.cargo.division.anio + '° ' +
                         designacion.cargo.division.numDivision + '° ' +
                         designacion.cargo.division.orientacion : '' }}
                     </td>
+                    <td>{{ designacion.situacionRevista || '' }}</td>
                     <td>{{ formatFechaDesignacion(designacion.fechaInicio) }}</td>
                     <td>{{ formatFechaDesignacion(designacion.fechaFin) }}</td>
                     <td>

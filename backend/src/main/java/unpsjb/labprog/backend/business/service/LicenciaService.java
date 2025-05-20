@@ -12,6 +12,7 @@ import jakarta.transaction.Transactional;
 import unpsjb.labprog.backend.business.repository.LicenciaRepository;
 import unpsjb.labprog.backend.business.validator.LicenciaValidator;
 import unpsjb.labprog.backend.exception.BusinessLogicException;
+import unpsjb.labprog.backend.model.Designacion;
 import unpsjb.labprog.backend.model.Licencia;
 
 /**
@@ -25,6 +26,9 @@ public class LicenciaService {
 
     @Autowired
     private LicenciaValidator validator;
+
+    @Autowired
+    private DesignacionService designacionService;
 
     /**
      * Busca todas las licencias registradas
@@ -57,6 +61,16 @@ public class LicenciaService {
 
         // Validar reglas de negocio antes de guardar usando el validador específico
         validator.validar(licencia);
+
+        // Buscar las designaciones afectadas por esta licencia
+        // (aquellas activas durante el período de la licencia)
+        List<Designacion> designacionesAfectadas = designacionService.findDesignacionesActivasPorPersonaYPeriodo(
+                licencia.getPersona().getDni(),
+                licencia.getPedidoDesde(),
+                licencia.getPedidoHasta());
+
+        // Asignar las designaciones afectadas a la licencia
+        licencia.setDesignaciones(designacionesAfectadas);
 
         return repository.save(licencia);
     }

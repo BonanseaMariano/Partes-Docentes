@@ -1,3 +1,5 @@
+DELETE FROM licencia_designacion;
+
 DELETE FROM licencias;
 
 DELETE FROM articulos_licencia;

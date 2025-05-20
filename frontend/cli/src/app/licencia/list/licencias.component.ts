@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { HttpStatusCode } from '@angular/common/http';
 import { Component, TemplateRef, ViewChild } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { PaginationConfig } from '../../core/constants/pagination.constants';
@@ -52,7 +53,7 @@ export class LicenciasComponent {
             .then(function () {
                 that.licenciaService.remove(id).subscribe({
                     next: (dataPackage) => {
-                        if (dataPackage.status === 409) {
+                        if (dataPackage.status === HttpStatusCode.InternalServerError) {
                             that.modalService.error(
                                 "Error al eliminar",
                                 dataPackage.message,

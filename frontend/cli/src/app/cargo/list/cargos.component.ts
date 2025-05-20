@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
+import { HttpStatusCode } from '@angular/common/http';
 import { Component, TemplateRef, ViewChild } from '@angular/core';
-import { RouterModule, Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { PaginationConfig } from '../../core/constants/pagination.constants';
 import { ValidationService } from '../../core/services/validation.service';
 import { ModalService } from '../../modal/modal.service';
@@ -83,7 +84,7 @@ export class CargosComponent {
             .then(function () {
                 that.cargoService.remove(id).subscribe({
                     next: (dataPackage) => {
-                        if (dataPackage.status === 409) {
+                        if (dataPackage.status === HttpStatusCode.InternalServerError) {
                             that.modalService.error(
                                 "Error al eliminar",
                                 dataPackage.message,
