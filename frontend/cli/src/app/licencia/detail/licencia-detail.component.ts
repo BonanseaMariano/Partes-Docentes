@@ -5,7 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { NgbCalendar, NgbDatepickerModule, NgbDateStruct, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 import { Observable, of } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators';
-
+import { TypeaheadConfig } from '../../core/constants/typeahead.constants';
 import { ModalService } from '../../modal/modal.service';
 import { ArticuloLicencia } from '../../models/articulo-licencia';
 import { Licencia } from '../../models/licencia';
@@ -204,9 +204,9 @@ export class LicenciaDetailComponent implements OnInit, AfterViewChecked {
     // Métodos para la búsqueda de personas
     searchPersona = (text$: Observable<string>): Observable<Persona[]> =>
         text$.pipe(
-            debounceTime(300),
+            debounceTime(TypeaheadConfig.DEBOUNCE_TIME),
             distinctUntilChanged(),
-            filter(term => term.length >= 2),
+            filter(term => term.length >= TypeaheadConfig.MIN_FILTER_LENGTH),
             switchMap(term =>
                 this.personaService.search(term).pipe(
                     map(dataPackage => <Persona[]>dataPackage.data),
@@ -247,9 +247,9 @@ export class LicenciaDetailComponent implements OnInit, AfterViewChecked {
     // Métodos para la búsqueda de artículos de licencia
     searchArticuloLicencia = (text$: Observable<string>): Observable<ArticuloLicencia[]> =>
         text$.pipe(
-            debounceTime(300),
+            debounceTime(TypeaheadConfig.DEBOUNCE_TIME),
             distinctUntilChanged(),
-            filter(term => term.length >= 2),
+            filter(term => term.length >= TypeaheadConfig.MIN_FILTER_LENGTH),
             switchMap(term =>
                 this.articuloLicenciaService.search(term).pipe(
                     map(dataPackage => <ArticuloLicencia[]>dataPackage.data),

@@ -2,12 +2,11 @@ import { CommonModule, Location } from '@angular/common';
 import { AfterViewChecked, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-
 import { NgbCalendar, NgbDatepickerModule, NgbDateStruct, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { Observable, of } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators';
-
 import { CargoService } from '../../cargo/service/cargo.service';
+import { TypeaheadConfig } from '../../core/constants/typeahead.constants';
 import { ModalService } from '../../modal/modal.service';
 import { Cargo } from '../../models/cargo';
 import { Designacion } from '../../models/designacion';
@@ -210,9 +209,9 @@ export class DesignacionDetailComponent implements OnInit, AfterViewChecked {
     // Métodos para la búsqueda de personas
     searchPersona = (text$: Observable<string>): Observable<Persona[]> =>
         text$.pipe(
-            debounceTime(300),
+            debounceTime(TypeaheadConfig.DEBOUNCE_TIME),
             distinctUntilChanged(),
-            filter(term => term.length >= 2),
+            filter(term => term.length >= TypeaheadConfig.MIN_FILTER_LENGTH),
             switchMap(term =>
                 this.personaService.search(term).pipe(
                     map(dataPackage => <Persona[]>dataPackage.data),
@@ -254,9 +253,9 @@ export class DesignacionDetailComponent implements OnInit, AfterViewChecked {
     // Métodos para la búsqueda de cargos
     searchCargo = (text$: Observable<string>): Observable<Cargo[]> =>
         text$.pipe(
-            debounceTime(300),
+            debounceTime(TypeaheadConfig.DEBOUNCE_TIME),
             distinctUntilChanged(),
-            filter(term => term.length >= 2),
+            filter(term => term.length >= TypeaheadConfig.MIN_FILTER_LENGTH),
             switchMap(term =>
                 this.cargoService.search(term).pipe(
                     map(dataPackage => <Cargo[]>dataPackage.data),

@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { NgbCalendar, NgbDatepickerModule, NgbDateStruct, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 import { Observable, of } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators';
+import { TypeaheadConfig } from '../../core/constants/typeahead.constants';
 import { DivisionService } from '../../division/service/division.service';
 import { ModalService } from '../../modal/modal.service';
 import { Cargo } from '../../models/cargo';
@@ -55,7 +56,7 @@ export class CargoDetailComponent implements OnInit, AfterViewChecked {
         hora: 1
     };
     // Lista de horas disponibles (1-8)
-    horasDisponibles = Array.from({length: 8}, (_, i) => i + 1);
+    horasDisponibles = Array.from({ length: 8 }, (_, i) => i + 1);
     mostrarFormNuevoHorario: boolean = false;
     errorHorarioDuplicado: boolean = false;
 
@@ -266,9 +267,9 @@ export class CargoDetailComponent implements OnInit, AfterViewChecked {
 
     searchDivision = (text$: Observable<string>): Observable<Division[]> =>
         text$.pipe(
-            debounceTime(300),
+            debounceTime(TypeaheadConfig.DEBOUNCE_TIME),
             distinctUntilChanged(),
-            filter(term => term.length >= 2),
+            filter(term => term.length >= TypeaheadConfig.MIN_FILTER_LENGTH),
             switchMap(term =>
                 this.divisionService.search(term).pipe(
                     map(dataPackage => <Division[]>dataPackage.data),
