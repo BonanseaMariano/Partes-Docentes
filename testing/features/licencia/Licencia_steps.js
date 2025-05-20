@@ -44,8 +44,8 @@ Given('el docente con DNI {int}, nombre {string} y apellido {string}', function 
 });
 
 
-// Paso: Cuando solicita una licencia artículo <articulo> con descripción <descripcion> para el período <desde> <hasta>
-When('solicita una licencia artículo {string} con descripción {string} para el período {string} {string}', function (articulo, descripcion, desde, hasta) {
+// Paso: Cuando solicita una licencia artículo <articulo> con certificado médico <certificado> con descripción <descripcion> para el período <desde> <hasta>
+When('solicita una licencia artículo {string} con certificado médico {string} con descripción {string} para el período {string} {string}', function (articulo, certificado, descripcion, desde, hasta) {
     // Buscamos el artículo de licencia usando el endpoint específico
     // Asumimos que el artículo siempre existe en la base de datos
     this.currentLicencia.articuloLicencia = JSON.parse(request('GET', encodeURI(`http://pd-backend:8080/articulos-licencias/articulo/${articulo}`)).getBody('utf8')).data;
@@ -54,8 +54,8 @@ When('solicita una licencia artículo {string} con descripción {string} para el
     this.currentLicencia.pedidoDesde = desde ? desde + "T03:00:00" : null;
     this.currentLicencia.pedidoHasta = hasta ? hasta + "T03:00:00" : null;
 
-    // Por defecto, asumimos que tiene certificado médico
-    this.currentLicencia.certificadoMedico = true;
+    // Asignamos el valor del certificado médico en función de si es "SI" o "NO"
+    this.currentLicencia.certificadoMedico = certificado === "SI";
 
     // Enviamos la solicitud para crear la licencia
     const res = request('POST', encodeURI('http://pd-backend:8080/licencias'), {
@@ -86,7 +86,7 @@ Given('que existen las siguientes instancias de designación asignada', function
     };
 });
 
-// Paso: Y que la instancia de designación está asignada a la persona con licencia
+// Paso: Y que la instancia de designación está asignada a la persona con licencia {string} comprendida en el período desde {string} hasta {string}
 Given('que la instancia de designación está asignada a la persona con licencia {string} comprendida en el período desde {string} hasta {string}', function (articulo, desde, hasta, dataTable) {
     // Obtenemos los datos de la persona con licencia
     const personaConLicencia = dataTable.hashes()[0];
