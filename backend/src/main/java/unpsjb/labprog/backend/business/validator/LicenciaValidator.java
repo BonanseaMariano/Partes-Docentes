@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component;
 
 import unpsjb.labprog.backend.business.repository.LicenciaRepository;
 import unpsjb.labprog.backend.business.service.DesignacionService;
+import unpsjb.labprog.backend.business.validator.articulos.ArticuloLicenciaValidator;
+import unpsjb.labprog.backend.business.validator.articulos.ArticuloValidatorFactory;
 import unpsjb.labprog.backend.exception.BusinessLogicException;
 import unpsjb.labprog.backend.model.Designacion;
 import unpsjb.labprog.backend.model.Licencia;
@@ -20,6 +22,9 @@ public class LicenciaValidator {
     @Autowired
     private LicenciaRepository licenciaRepository;
 
+    @Autowired
+    private ArticuloValidatorFactory articuloValidatorFactory;
+
     /**
      * Valida todas las reglas de negocio específicas para las licencias
      * 
@@ -27,8 +32,12 @@ public class LicenciaValidator {
      * @throws BusinessLogicException si no se cumplen las reglas
      */
     public void validar(Licencia licencia) throws BusinessLogicException {
+        // Validar reglas generales
         validarExistenciaDesignacionesActivas(licencia);
         validarSolapamientoLicencias(licencia);
+
+        // Validar reglas específicas del artículo
+        validarArticulos(licencia);
     }
 
     /**
@@ -94,5 +103,21 @@ public class LicenciaValidator {
                     licencia.getPersona().getNombre() + " " + licencia.getPersona().getApellido() +
                     " debido a que ya posee una licencia en el mismo período");
         }
+    }
+
+    /**
+     * Valida las reglas específicas del artículo de la licencia.
+     * 
+     * @param licencia Licencia a validar
+     * @throws BusinessLogicException si no se cumplen las reglas específicas del
+     *                                artículo o no se encuentra un validador para
+     *                                el articulo
+     */
+    private void validarArticulos(Licencia licencia) throws BusinessLogicException {
+        ArticuloLicenciaValidator aValidator = articuloValidatorFactory
+                .getValidador(licencia.getArticuloLicencia().getArticulo())
+                .orElseThrow(() -> new BusinessLogicException("No se encontró un validador para el artículo " +
+                        licencia.getArticuloLicencia().getArticulo()));
+        aValidator.validar(licencia);
     }
 }

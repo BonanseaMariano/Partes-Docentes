@@ -62,7 +62,6 @@ When('solicita una licencia artículo {string} con descripción {string} para el
         json: this.currentLicencia
     });
     this.apiResponse = JSON.parse(res.getBody('utf8'));
-
 });
 
 
