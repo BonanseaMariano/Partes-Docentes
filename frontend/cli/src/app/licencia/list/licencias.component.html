@@ -32,8 +32,8 @@
                         <td>{{ licencia.pedidoHasta | date:'dd/MM/yyyy' }}</td>
                         <td>{{ licencia.domicilio || '' }}</td>
                         <td class="text-center">
-                            <span *ngIf="licencia.certificadoMedico" class="text-success fs-5">✅</span>
-                            <span *ngIf="!licencia.certificadoMedico" class="text-danger fs-5">❌</span>
+                            <span *ngIf="licencia.certificadoMedico" class="text-success fs-5" title="Si">✅</span>
+                            <span *ngIf="!licencia.certificadoMedico" class="text-danger fs-5" title="No">❌</span>
                         </td>
                         <td>
                             <span [title]="licencia.articuloLicencia.descripcion">

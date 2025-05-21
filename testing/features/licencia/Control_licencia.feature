@@ -36,7 +36,7 @@ Característica: otorgar o denegar licencia a una persona a un cargo docente
       | 70700700 | Jorge  | Dismal   |
     Y que existen las siguientes instancias de designación asignada
       | TipoDesignacion | NombreTipoDesignacion | CargaHoraria |
-      | cargo           | Preceptor/a           |           36 |
+      | CARGO           | Preceptor/a           |           36 |
     Y que la instancia de designación está asignada a la persona con licencia "5A" comprendida en el período desde "2020-05-12" hasta "2020-06-30"
       | DNI      | Nombre | Apellido | Desde      | Hasta      |
       | 20200200 | Susana | Álvarez  | 2020-03-01 | 2020-12-31 |
