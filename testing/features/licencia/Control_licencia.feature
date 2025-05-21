@@ -45,7 +45,7 @@ Característica: otorgar o denegar licencia a una persona a un cargo docente
       """
       {
          "status": 200,
-         "message": "Jorge Dismal ha sido designado/a al cargo prceptor/a exitosamente, en reemplado de Susana Álvarez"
+         "message": "Jorge Dismal ha sido designado/a al cargo Preceptor/a exitosamente, en reemplazo de Susana Álvarez"
       }
       """
 
@@ -55,16 +55,15 @@ Característica: otorgar o denegar licencia a una persona a un cargo docente
       | 80800800 | Analía | Rojas    |
     Y que existen las siguientes instancias de designación asignada
       | TipoDesignacion | NombreTipoDesignacion | CargaHoraria |
-      | cargo           | Auxiliar  ADM         |           30 |
-    Y que la instancia de designación está asignada a la persona
+      | CARGO           | Auxiliar ADM          |           30 |
+    Y que la instancia de designación está asignada a la persona con licencia "5A" comprendida en el período desde "2020-07-05" hasta "2020-09-15"
       | DNI      | Nombre  | Apellido  | Desde      | Hasta      |
       | 20000000 | Rosalía | Fernandez | 2020-03-01 | 2020-12-31 |
-    Y que la instancia de designación está asignada a la persona con licencia "5A" comprendida en el período desde "2020-07-05" hasta "2020-09-15"
     Cuando se solicita el servicio de designación de la persona al cargo en el período comprendido desde "2020-06-05" hasta "2020-09-15"
     Entonces se recupera el mensaje
       """
       {
          "status": 500,
-         "message": "Analía Rojas NO ha sido designado/a al cargo auxiliar ya cuenta con Rosalía Fernandez asignada al mismo en el período"
+         "message": "Analía Rojas NO ha sido designado/a al cargo Auxiliar ADM, ya cuenta con Rosalía Fernandez asignada al mismo en el período"
       }
       """
