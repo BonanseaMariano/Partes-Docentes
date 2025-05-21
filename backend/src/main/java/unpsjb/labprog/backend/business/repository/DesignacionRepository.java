@@ -18,6 +18,8 @@ public interface DesignacionRepository extends JpaRepository<Designacion, Intege
          * La consulta maneja casos donde la fecha de fin puede ser nula, lo que indica
          * un período indefinido. La función utiliza la lógica de negación de la no
          * superposición para determinar si dos períodos se solapan.
+         * Excluye designaciones que tienen licencias activas durante el período
+         * solicitado.
          *
          * @param cargoId       El ID del cargo a verificar
          * @param fechaInicio   Fecha de inicio del periodo a verificar
@@ -33,7 +35,11 @@ public interface DesignacionRepository extends JpaRepository<Designacion, Intege
                         "  (d.fechaInicio <= COALESCE(:fechaFin, d.fechaInicio) " +
                         "   AND COALESCE(d.fechaFin, :fechaFin) >= :fechaInicio)" +
                         "  OR (d.fechaFin IS NULL AND CAST(:fechaFin AS java.time.LocalDateTime) IS NULL)" +
-                        ")")
+                        ") " +
+                        "AND NOT EXISTS (SELECT l FROM Licencia l JOIN l.designaciones ld " +
+                        "               WHERE ld.id = d.id " +
+                        "               AND l.pedidoDesde <= :fechaFin " +
+                        "               AND l.pedidoHasta >= :fechaInicio)")
         List<Designacion> findDesignacionesSuperpuestas(
                         @Param("cargo") Integer cargoId,
                         @Param("fechaInicio") LocalDateTime fechaInicio,
