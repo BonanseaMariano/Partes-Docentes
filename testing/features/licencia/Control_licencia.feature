@@ -37,10 +37,10 @@ Característica: otorgar o denegar licencia a una persona a un cargo docente
     Y que existen las siguientes instancias de designación asignada
       | TipoDesignacion | NombreTipoDesignacion | CargaHoraria |
       | CARGO           | Preceptor/a           |           36 |
-    Y que la instancia de designación está asignada a la persona con licencia "5A" comprendida en el período desde "2020-05-12" hasta "2020-06-30"
+    Y que la instancia de designación está asignada a la persona con licencia "5A" comprendida en el período desde "2023-05-12" hasta "2023-06-30"
       | DNI      | Nombre | Apellido | Desde      | Hasta      |
-      | 20200200 | Susana | Álvarez  | 2020-03-01 | 2020-12-31 |
-    Cuando se solicita el servicio de designación de la persona al cargo en el período comprendido desde "2020-05-17" hasta "2020-06-29"
+      | 20200200 | Susana | Álvarez  | 2023-03-01 | 2023-12-31 |
+    Cuando se solicita el servicio de designación de la persona al cargo en el período comprendido desde "2023-05-17" hasta "2023-06-29"
     Entonces se recupera el mensaje
       """
       {
@@ -56,10 +56,10 @@ Característica: otorgar o denegar licencia a una persona a un cargo docente
     Y que existen las siguientes instancias de designación asignada
       | TipoDesignacion | NombreTipoDesignacion | CargaHoraria |
       | CARGO           | Auxiliar ADM          |           30 |
-    Y que la instancia de designación está asignada a la persona con licencia "5A" comprendida en el período desde "2020-07-05" hasta "2020-09-15"
+    Y que la instancia de designación está asignada a la persona con licencia "5A" comprendida en el período desde "2024-07-05" hasta "2024-08-03"
       | DNI      | Nombre  | Apellido  | Desde      | Hasta      |
-      | 20000000 | Rosalía | Fernandez | 2020-03-01 | 2020-12-31 |
-    Cuando se solicita el servicio de designación de la persona al cargo en el período comprendido desde "2020-06-05" hasta "2020-09-15"
+      | 20000000 | Rosalía | Fernandez | 2024-01-01 | 2024-12-31 |
+    Cuando se solicita el servicio de designación de la persona al cargo en el período comprendido desde "2024-06-05" hasta "2024-09-15"
     Entonces se recupera el mensaje
       """
       {
