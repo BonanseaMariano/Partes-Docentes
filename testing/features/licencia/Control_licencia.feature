@@ -26,8 +26,8 @@ Característica: otorgar o denegar licencia a una persona a un cargo docente
       | 99300000 | Homero      | Manzi      |      36A | NO          | ASUNTOS PARTICULARES          | 2023-11-04 | 2023-11-04 |    500 | NO se otorga Licencia artículo 36A a Homero Manzi debido a que supera el tope de 6 días de licencia por año                |
       | 99999999 | Raúl        | Guitierrez |      36A | NO          | ASUNTOS PARTICULARES          | 2023-03-04 | 2023-03-04 |    500 | NO se otorga Licencia artículo 36A a Raúl Guitierrez debido a que el agente no posee ningún cargo en la institución        |
       | 88888888 | Marisa      | Balaguer   |      36A | NO          | ASUNTOS PARTICULARES          | 2023-03-04 | 2023-03-04 |    500 | NO se otorga Licencia artículo 36A a Marisa Balaguer debido a que el agente no tiene designación ese día en la institución |
-      | 20200200 | Susana      | Álvarez    |       5A | NO          | ENFERMEDAD DE CORTA EVOLUCIÓN | 2023-05-12 | 2023-06-10 |    500 | NO se otorga Licencia artículo 5A a Susana Álvarez debido a que no presentó certificado médico                             |
-      | 20200200 | Susana      | Álvarez    |       5A | SI          | ENFERMEDAD DE CORTA EVOLUCIÓN | 2023-05-12 | 2023-06-10 |    200 | Se otorga Licencia artículo 5A a Susana Álvarez                                                                            |
+      | 20200200 | Susana      | Álvarez    |       5A | NO          | ENFERMEDAD DE CORTA EVOLUCIÓN | 2023-06-10 | 2023-06-30 |    500 | NO se otorga Licencia artículo 5A a Susana Álvarez debido a que no presentó certificado médico                             |
+      | 20200200 | Susana      | Álvarez    |       5A | SI          | ENFERMEDAD DE CORTA EVOLUCIÓN | 2023-06-10 | 2023-06-30 |    200 | Se otorga Licencia artículo 5A a Susana Álvarez                                                                            |
       | 20000000 | Rosalía     | Fernandez  |       5A | SI          | ENFERMEDAD DE CORTA EVOLUCIÓN | 2024-07-05 | 2024-08-03 |    200 | Se otorga Licencia artículo 5A a Rosalía Fernandez                                                                         |
 
   Escenario: 1 persona en instancias de designación de cargo que cubre una licencia de otra persona en la misma designación. Infomar que está correcto y que reemplaza al docente que solicitó licencia.
@@ -37,10 +37,10 @@ Característica: otorgar o denegar licencia a una persona a un cargo docente
     Y que existen las siguientes instancias de designación asignada
       | TipoDesignacion | NombreTipoDesignacion | CargaHoraria |
       | CARGO           | Preceptor/a           |           36 |
-    Y que la instancia de designación está asignada a la persona con licencia "5A" comprendida en el período desde "2023-05-12" hasta "2023-06-30"
+    Y que la instancia de designación está asignada a la persona con licencia "5A" comprendida en el período desde "2023-06-10" hasta "2023-06-30"
       | DNI      | Nombre | Apellido | Desde      | Hasta      |
       | 20200200 | Susana | Álvarez  | 2023-03-01 | 2023-12-31 |
-    Cuando se solicita el servicio de designación de la persona al cargo en el período comprendido desde "2023-05-17" hasta "2023-06-29"
+    Cuando se solicita el servicio de designación de la persona al cargo en el período comprendido desde "2023-06-12" hasta "2023-06-29"
     Entonces se recupera el mensaje
       """
       {

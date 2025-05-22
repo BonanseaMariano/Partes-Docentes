@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import unpsjb.labprog.backend.business.repository.DesignacionRepository;
-import unpsjb.labprog.backend.business.validator.DesignacionValidator;
+import unpsjb.labprog.backend.business.validator.designacion.DesignacionValidator;
 import unpsjb.labprog.backend.exception.BusinessLogicException;
 import unpsjb.labprog.backend.model.Designacion;
 

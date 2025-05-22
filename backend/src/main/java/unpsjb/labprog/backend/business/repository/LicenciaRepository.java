@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import unpsjb.labprog.backend.model.Licencia;
+import unpsjb.labprog.backend.model.Persona;
 
 public interface LicenciaRepository extends JpaRepository<Licencia, Integer> {
 
@@ -77,4 +78,17 @@ public interface LicenciaRepository extends JpaRepository<Licencia, Integer> {
                         @Param("anio") Integer anio,
                         @Param("mes") Integer mes,
                         @Param("licenciaId") Integer licenciaId);
+                        
+        /**
+         * Busca licencias para una persona en un periodo específico
+         * 
+         * @param persona      La persona asociada a las licencias
+         * @param pedidoDesde  Fecha desde la cual buscar licencias
+         * @param pedidoHasta  Fecha hasta la cual buscar licencias
+         * @return Lista de licencias que corresponden a la persona y período especificado
+         */
+        List<Licencia> findByPersonaAndPedidoDesdeGreaterThanEqualAndPedidoHastaLessThanEqual(
+                Persona persona, 
+                LocalDateTime pedidoDesde, 
+                LocalDateTime pedidoHasta);
 }

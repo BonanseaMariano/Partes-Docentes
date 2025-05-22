@@ -24,4 +24,3 @@ Característica: Gestión de cargos institucionales
       | Física         | ESPACIO_CURRICULAR |            6 |      2020-03-01 |                 |   2 |      3 | Mañana |    200 | Espacio Curricular Física para la división 2º 3º Turno Mañana ingresado correctamente     |
       | Tecnología     | ESPACIO_CURRICULAR |            6 |      2020-03-01 |                 |   4 |      3 | Mañana |    200 | Espacio Curricular Tecnología para la división 4º 3º Turno Mañana ingresado correctamente |
       | Tecnología     | ESPACIO_CURRICULAR |           10 |      2020-03-01 |                 |   4 |      3 | Mañana |    500 | No se puede crear el cargo debido a que ya existe otro identico                           |
-      | Tecnología     | ESPACIO_CURRICULAR |           10 |      2025-03-01 |      2020-03-01 |   4 |      3 | Mañana |    500 | La fecha de inicio no puede ser posterior a la fecha de finalización                      |

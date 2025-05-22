@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 import unpsjb.labprog.backend.business.repository.LicenciaRepository;
-import unpsjb.labprog.backend.business.validator.LicenciaValidator;
+import unpsjb.labprog.backend.business.validator.licencia.LicenciaValidator;
 import unpsjb.labprog.backend.exception.BusinessLogicException;
 import unpsjb.labprog.backend.model.Designacion;
 import unpsjb.labprog.backend.model.Licencia;

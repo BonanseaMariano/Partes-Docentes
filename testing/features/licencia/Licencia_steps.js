@@ -98,24 +98,7 @@ Given('que la instancia de designación está asignada a la persona con licencia
         designacionHasta: personaConLicencia.Hasta + "T03:00:00"
     };
 
-    // Buscamos el artículo de licencia
-    // Asumimos que el artículo siempre existe en la base de datos
-    const articuloRes = request('GET', encodeURI(`http://pd-backend:8080/articulos-licencias/articulo/${articulo}`));
-    const articuloData = JSON.parse(articuloRes.getBody('utf8'));
-    const articuloLicenciaObj = articuloData.data;
 
-    // Creamos la licencia para esta persona
-    this.licenciaExistente = {
-        persona: {
-            dni: this.personaConLicencia.dni,
-            nombre: this.personaConLicencia.nombre,
-            apellido: this.personaConLicencia.apellido
-        },
-        articuloLicencia: articuloLicenciaObj,
-        pedidoDesde: desde + "T03:00:00",
-        pedidoHasta: hasta + "T03:00:00",
-        certificadoMedico: true
-    };
 });
 
 // Paso: Cuando se solicita el servicio de designación de la persona al cargo en el período
@@ -134,7 +117,7 @@ When('se solicita el servicio de designación de la persona al cargo en el perí
     });
 
     this.apiResponse = JSON.parse(res.getBody('utf8'));
-
+    console.log("Respuesta: " + this.apiResponse.message);
 });
 
 // El paso "Entonces se espera el siguiente <status> con la <respuesta>"

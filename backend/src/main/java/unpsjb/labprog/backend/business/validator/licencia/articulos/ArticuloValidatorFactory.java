@@ -1,4 +1,4 @@
-package unpsjb.labprog.backend.business.validator.articulos;
+package unpsjb.labprog.backend.business.validator.licencia.articulos;
 
 import java.util.HashMap;
 import java.util.List;

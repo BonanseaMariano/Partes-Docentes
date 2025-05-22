@@ -1,4 +1,4 @@
-package unpsjb.labprog.backend.business.validator.articulos;
+package unpsjb.labprog.backend.business.validator.licencia.articulos;
 
 import unpsjb.labprog.backend.exception.BusinessLogicException;
 import unpsjb.labprog.backend.model.Licencia;
