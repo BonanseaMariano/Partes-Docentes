@@ -33,14 +33,15 @@ public class DesignacionesActivasRule implements LicenciaValidationRule {
                     " debido a que el agente no posee ningún cargo en la institución");
         }
 
-        // Si tiene cargos, verificamos si tiene uno activo durante el período de la
-        // licencia
+        // Ahora verificamos si existe alguna designación que contenga completamente el
+        // período de licencia
         List<Designacion> designacionesActivas = designacionRepository.findDesignacionesActivasPorPersonaYPeriodo(
                 licencia.getPersona().getDni(),
                 licencia.getPedidoDesde(),
                 licencia.getPedidoHasta());
 
-        // Verificar que exista al menos una designación activa para el periodo
+        // Verificar que exista al menos una designación que cubra completamente el
+        // período de la licencia
         if (designacionesActivas == null || designacionesActivas.isEmpty()) {
             throw new BusinessLogicException("NO se otorga Licencia artículo " +
                     licencia.getArticuloLicencia().getArticulo() + " a " +
