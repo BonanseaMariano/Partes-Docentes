@@ -18,6 +18,7 @@ import unpsjb.labprog.backend.business.repository.DesignacionRepository;
 import unpsjb.labprog.backend.business.service.DesignacionService;
 import unpsjb.labprog.backend.exception.BusinessLogicException;
 import unpsjb.labprog.backend.model.Designacion;
+import unpsjb.labprog.backend.model.Persona;
 import unpsjb.labprog.backend.model.enums.TipoDesignacion;
 import unpsjb.labprog.backend.utils.constants.AppConstants;
 
@@ -100,6 +101,14 @@ public class DesignacionPresenter {
                         createdDesignacion.getPersona().getNombre(),
                         createdDesignacion.getPersona().getApellido(),
                         createdDesignacion.getCargo().getNombre());
+            }
+
+            // Si la designacion es reemplazo, agregar el mensaje correspondiente
+            Persona personaReemplazada = service.obtenerPersonaReemplazada(createdDesignacion);
+            if (personaReemplazada != null) {
+                mensaje += String.format(", en reemplazo de %s %s",
+                        personaReemplazada.getNombre(),
+                        personaReemplazada.getApellido());
             }
 
             return Response.ok(null, mensaje);

@@ -117,7 +117,6 @@ When('se solicita el servicio de designación de la persona al cargo en el perí
     });
 
     this.apiResponse = JSON.parse(res.getBody('utf8'));
-    console.log("Respuesta: " + this.apiResponse.message);
 });
 
 // El paso "Entonces se espera el siguiente <status> con la <respuesta>"

@@ -45,7 +45,7 @@ Característica: otorgar o denegar licencia a una persona a un cargo docente
       """
       {
          "status": 200,
-         "message": "Jorge Dismal ha sido designado/a al cargo Preceptor/a exitosamente, en reemplazo de Susana Álvarez"
+         "message": "Jorge Dismal ha sido designado/a como Preceptor/a exitosamente, en reemplazo de Susana Álvarez"
       }
       """
 
@@ -64,6 +64,6 @@ Característica: otorgar o denegar licencia a una persona a un cargo docente
       """
       {
          "status": 500,
-         "message": "Analía Rojas NO ha sido designado/a al cargo Auxiliar ADM, ya cuenta con Rosalía Fernandez asignada al mismo en el período"
+         "message": "Analía Rojas NO ha sido designado/a como Auxiliar ADM, ya cuenta con Rosalía Fernandez asignada al mismo en el período"
       }
       """

@@ -183,7 +183,7 @@ export class CargoDetailComponent implements OnInit, AfterViewChecked {
                 } else {
                     this.modalService.success(
                         "Éxito",
-                        "Cargo guardado correctamente",
+                        dataPackage.message,
                         ""
                     ).then(() => this.goBack());
                 }

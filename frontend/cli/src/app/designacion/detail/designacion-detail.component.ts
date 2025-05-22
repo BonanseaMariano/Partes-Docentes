@@ -143,7 +143,7 @@ export class DesignacionDetailComponent implements OnInit, AfterViewChecked {
                 } else {
                     this.modalService.success(
                         "Éxito",
-                        "Designación guardada correctamente",
+                        dataPackage.message,
                         ""
                     ).then(() => this.goBack());
                 }

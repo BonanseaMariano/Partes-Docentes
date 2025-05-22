@@ -85,7 +85,7 @@ public class SolapamientoDesignacionRule implements DesignacionValidationRule {
         // Es una superposición con licencia parcial, no permitir
         throw new BusinessLogicException(
                 String.format(
-                        "%s %s NO ha sido designado/a al cargo %s, ya cuenta con %s %s asignada al mismo en el período",
+                        "%s %s NO ha sido designado/a como %s, ya cuenta con %s %s asignada al mismo en el período",
                         nuevaDesignacion.getPersona().getNombre(),
                         nuevaDesignacion.getPersona().getApellido(),
                         cargoExistente.getNombre(),

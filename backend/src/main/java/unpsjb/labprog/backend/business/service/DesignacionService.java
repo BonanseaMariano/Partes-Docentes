@@ -14,6 +14,7 @@ import unpsjb.labprog.backend.business.repository.DesignacionRepository;
 import unpsjb.labprog.backend.business.validator.designacion.DesignacionValidator;
 import unpsjb.labprog.backend.exception.BusinessLogicException;
 import unpsjb.labprog.backend.model.Designacion;
+import unpsjb.labprog.backend.model.Persona;
 
 /**
  * Servicio que implementa la lógica de negocio para la entidad Designacion
@@ -99,16 +100,32 @@ public class DesignacionService {
     }
 
     /**
-     * Verifica si una persona tiene al menos una designación (cargo) en la
-     * institución,
-     * independientemente del período.
-     *
-     * @param personaDni El DNI de la persona a verificar
-     * @return true si la persona tiene al menos una designación, false en caso
-     *         contrario
+     * Obtiene la persona que está siendo reemplazada por esta designación, si
+     * existe.
+     * Una designación es un reemplazo cuando está contenida completamente dentro
+     * del
+     * período de otra designación para el mismo cargo.
+     * 
+     * @param designacion La designación a verificar
+     * @return La persona reemplazada, o null si no es un reemplazo
      */
-    public boolean existsDesignacionesPorPersona(Long personaDni) {
-        return repository.existsDesignacionesPorPersona(personaDni);
+    public Persona obtenerPersonaReemplazada(Designacion designacion) {
+        Integer designacionId = designacion.getId() > 0 ? designacion.getId() : null;
+
+        // Buscamos designaciones que contengan completamente el período de esta
+        // designación
+        List<Designacion> designacionesContenedoras = repository.findDesignacionesContenedoras(
+                designacion.getCargo().getId(),
+                designacion.getFechaInicio(),
+                designacion.getFechaFin(),
+                designacionId);
+
+        if (designacionesContenedoras.isEmpty()) {
+            return null; // No es un reemplazo
+        }
+
+        // Devolver la persona de la primera designación contenedora encontrada
+        return designacionesContenedoras.get((designacionesContenedoras.size() - 1)).getPersona();
     }
 
 }

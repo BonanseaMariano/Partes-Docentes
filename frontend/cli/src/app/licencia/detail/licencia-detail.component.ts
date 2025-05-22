@@ -133,7 +133,7 @@ export class LicenciaDetailComponent implements OnInit, AfterViewChecked {
                 } else {
                     this.modalService.success(
                         "Éxito",
-                        "Licencia guardada correctamente",
+                        dataPackage.message,
                         ""
                     ).then(() => this.goBack());
                 }

@@ -75,4 +75,17 @@ public interface DesignacionRepository extends JpaRepository<Designacion, Intege
          */
         @Query(value = "SELECT COUNT(d) > 0 FROM Designacion d WHERE d.persona.dni = :personaDni")
         boolean existsDesignacionesPorPersona(@Param("personaDni") Long personaDni);
+
+        /**
+         * Encuentra designaciones que contengan completamente el período especificado.
+         */
+        @Query(value = "SELECT d FROM Designacion d WHERE d.cargo.id = :cargo " +
+                        "AND (:designacionId IS NULL OR d.id != :designacionId) " +
+                        "AND d.fechaInicio <= :fechaInicio " +
+                        "AND (d.fechaFin IS NULL OR (CAST(:fechaFin AS java.time.LocalDateTime) IS NOT NULL AND d.fechaFin >= :fechaFin))")
+        List<Designacion> findDesignacionesContenedoras(
+                        @Param("cargo") Integer cargoId,
+                        @Param("fechaInicio") LocalDateTime fechaInicio,
+                        @Param("fechaFin") LocalDateTime fechaFin,
+                        @Param("designacionId") Integer designacionId);
 }
