@@ -1,24 +1,24 @@
-import { Component, OnInit, AfterViewChecked, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
+import { AfterViewChecked, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { NgbDatepickerModule, NgbCalendar, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
-import { NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbCalendar, NgbDatepickerModule, NgbDateStruct, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 import { Observable, of } from 'rxjs';
-import { debounceTime, distinctUntilChanged, switchMap, map, catchError, filter } from 'rxjs/operators';
-
-import { Licencia } from '../../models/licencia';
-import { ArticuloLicencia } from '../../models/articulo-licencia';
-import { Persona } from '../../models/persona';
-import { LicenciaService } from '../service/licencia.service';
-import { PersonaService } from '../../persona/service/persona.service';
-import { ArticuloLicenciaService } from '../service/articulo-licencia.service';
+import { catchError, debounceTime, distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators';
+import { TypeaheadConfig } from '../../core/constants/typeahead.constants';
 import { ModalService } from '../../modal/modal.service';
+import { ArticuloLicencia } from '../../models/articulo-licencia';
+import { Licencia } from '../../models/licencia';
+import { Persona } from '../../models/persona';
+import { PersonaService } from '../../persona/service/persona.service';
+import { DniFormatPipe } from '../../pipes/dni-format.pipe';
+import { ArticuloLicenciaService } from '../service/articulo-licencia.service';
+import { LicenciaService } from '../service/licencia.service';
 
 @Component({
     selector: 'app-licencia-detail',
     standalone: true,
-    imports: [CommonModule, FormsModule, NgbDatepickerModule, NgbTypeaheadModule],
+    imports: [CommonModule, FormsModule, NgbDatepickerModule, NgbTypeaheadModule, DniFormatPipe],
     templateUrl: './licencia-detail.component.html',
     styles: `
     .input-group-text {
@@ -133,7 +133,7 @@ export class LicenciaDetailComponent implements OnInit, AfterViewChecked {
                 } else {
                     this.modalService.success(
                         "Éxito",
-                        "Licencia guardada correctamente",
+                        dataPackage.message,
                         ""
                     ).then(() => this.goBack());
                 }
@@ -204,9 +204,9 @@ export class LicenciaDetailComponent implements OnInit, AfterViewChecked {
     // Métodos para la búsqueda de personas
     searchPersona = (text$: Observable<string>): Observable<Persona[]> =>
         text$.pipe(
-            debounceTime(300),
+            debounceTime(TypeaheadConfig.DEBOUNCE_TIME),
             distinctUntilChanged(),
-            filter(term => term.length >= 2),
+            filter(term => term.length >= TypeaheadConfig.MIN_FILTER_LENGTH),
             switchMap(term =>
                 this.personaService.search(term).pipe(
                     map(dataPackage => <Persona[]>dataPackage.data),
@@ -247,9 +247,9 @@ export class LicenciaDetailComponent implements OnInit, AfterViewChecked {
     // Métodos para la búsqueda de artículos de licencia
     searchArticuloLicencia = (text$: Observable<string>): Observable<ArticuloLicencia[]> =>
         text$.pipe(
-            debounceTime(300),
+            debounceTime(TypeaheadConfig.DEBOUNCE_TIME),
             distinctUntilChanged(),
-            filter(term => term.length >= 2),
+            filter(term => term.length >= TypeaheadConfig.MIN_FILTER_LENGTH),
             switchMap(term =>
                 this.articuloLicenciaService.search(term).pipe(
                     map(dataPackage => <ArticuloLicencia[]>dataPackage.data),

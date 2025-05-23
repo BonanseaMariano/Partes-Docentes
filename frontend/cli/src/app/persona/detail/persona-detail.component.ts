@@ -51,7 +51,7 @@ export class PersonaDetailComponent implements OnInit {
         } else {
           this.modalService.success(
             "Éxito",
-            "Persona guardada correctamente",
+            dataPackage.message,
             ""
           ).then(() => this.goBack());
         }

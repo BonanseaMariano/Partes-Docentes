@@ -18,22 +18,35 @@
                         <th scope="col">Domicilio</th>
                         <th scope="col">Cert. Médico</th>
                         <th scope="col">Artículo</th>
+                        <th scope="col">Designaciones</th>
                         <th scope="col" class="text-end">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr *ngFor="let licencia of resultsPage.content; index as i">
                         <td>{{ (resultsPage.number * resultsPage.size) + i + 1 }}</td>
-                        <td>{{ licencia.persona.dni }} - {{ licencia.persona.apellido }}, {{ licencia.persona.nombre }}
+                        <td>{{ licencia.persona.dni | dniFormat }} - {{ licencia.persona.apellido }}, {{
+                            licencia.persona.nombre }}
                         </td>
                         <td>{{ licencia.pedidoDesde | date:'dd/MM/yyyy' }}</td>
                         <td>{{ licencia.pedidoHasta | date:'dd/MM/yyyy' }}</td>
                         <td>{{ licencia.domicilio || '' }}</td>
                         <td class="text-center">
-                            <span *ngIf="licencia.certificadoMedico" class="text-success fs-5">✅</span>
-                            <span *ngIf="!licencia.certificadoMedico" class="text-danger fs-5">❌</span>
+                            <span *ngIf="licencia.certificadoMedico" class="text-success fs-5" title="Si">✅</span>
+                            <span *ngIf="!licencia.certificadoMedico" class="text-danger fs-5" title="No">❌</span>
                         </td>
-                        <td>{{ licencia.articuloLicencia.articulo }}</td>
+                        <td>
+                            <span [title]="licencia.articuloLicencia.descripcion">
+                                {{ licencia.articuloLicencia.articulo }}
+                            </span>
+                        </td>
+                        <td>
+                            <button class="btn-designaciones"
+                                [ngClass]="{'btn-designaciones-empty': getDesignacionCount(licencia) === 0}"
+                                (click)="openDesignacionesPopup(licencia)" title="Mostrar designaciones">
+                                <i class="fa fa-list"></i> {{ getDesignacionCount(licencia) }}
+                            </button>
+                        </td>
                         <td class="text-end">
                             <a routerLink="/licencias/{{ licencia.id }}" class="btn btn-sm btn-outline-primary me-1"
                                 title="Editar">
@@ -46,7 +59,7 @@
                         </td>
                     </tr>
                     <tr *ngIf="!resultsPage.content || resultsPage.content.length === 0">
-                        <td colspan="8" class="text-center py-4 text-muted">
+                        <td colspan="9" class="empty-state-cell">
                             <i class="fa fa-info-circle me-2"></i>No hay licencias registradas
                         </td>
                     </tr>
@@ -61,3 +74,48 @@
         </app-pagination>
     </div>
 </div>
+
+<!-- Template para el popup de designaciones -->
+<ng-template #designacionesTemplate let-licencia>
+    <div *ngIf="licencia.designaciones && licencia.designaciones.length > 0" class="table-responsive">
+        <table class="table table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th scope="col">Persona</th>
+                    <th scope="col">Cargo</th>
+                    <th scope="col">División</th>
+                    <th scope="col">Situación</th>
+                    <th scope="col">Inicio</th>
+                    <th scope="col">Fin</th>
+                    <th scope="col">Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let designacion of licencia.designaciones">
+                    <td>{{ designacion.persona.dni | dniFormat }} - {{ designacion.persona.apellido }}, {{
+                        designacion.persona.nombre }}</td>
+                    <td>{{ designacion.cargo?.nombre || '' }}</td>
+                    <td>{{ designacion.cargo?.division ?
+                        designacion.cargo.division.anio + '° ' +
+                        designacion.cargo.division.numDivision + '° ' +
+                        designacion.cargo.division.orientacion : '' }}
+                    </td>
+                    <td>{{ designacion.situacionRevista || '' }}</td>
+                    <td>{{ formatFechaDesignacion(designacion.fechaInicio) }}</td>
+                    <td>{{ formatFechaDesignacion(designacion.fechaFin) }}</td>
+                    <td>
+                        <i class="fa fa-2x" [ngClass]="{
+                            'fa-check-circle text-success': isDesignacionActive(designacion),
+                            'fa-clock-o text-muted': !isDesignacionActive(designacion)
+                        }"
+                            title="{{ isDesignacionActive(designacion) ? 'Designación Activa' : 'Designación Finalizada' }}"></i>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div *ngIf="!licencia.designaciones || licencia.designaciones.length === 0" class="empty-state-message">
+        <i class="fa fa-info-circle me-2"></i>
+        Esta licencia no tiene designaciones registradas
+    </div>
+</ng-template>

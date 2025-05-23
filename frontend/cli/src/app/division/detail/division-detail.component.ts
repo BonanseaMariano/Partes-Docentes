@@ -55,7 +55,7 @@ export class DivisionDetailComponent implements OnInit {
                 } else {
                     this.modalService.success(
                         "Éxito",
-                        "División guardada correctamente",
+                        dataPackage.message,
                         ""
                     ).then(() => this.goBack());
                 }

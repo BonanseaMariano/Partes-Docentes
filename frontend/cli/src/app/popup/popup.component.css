@@ -1,0 +1,80 @@
+.popup-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup-content {
+  width: 80%;
+  max-width: 800px;
+  max-height: 80vh;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+
+/* Estilo específico para el encabezado del popup */
+.popup-header {
+  padding: 16px;
+  background: var(--gradient-primary);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Estilo específico para el título dentro del popup */
+.popup-header h3 {
+  margin: 0;
+  font-family: var(--font-secondary);
+  font-weight: var(--font-weight-semibold);
+  font-size: 1.3rem;
+  color: white;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-shadow: none;
+}
+
+/* Estilo específico para el icono dentro del título del popup */
+.popup-header h3 .fa,
+.popup-header .popup-icon {
+  font-size: 1.2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-shadow: none;
+}
+
+.popup-close {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.popup-body {
+  padding: 16px;
+  overflow-y: auto;
+  max-height: calc(80vh - 120px);
+}
+
+/* Mensaje cuando no hay elementos - usando la clase global .empty-state-message */
+.no-results {
+  /* Sin estilos específicos ya que utilizará la clase global */
+}
+
+/* Se usa la animación global .popup-animated definida en styles.css */

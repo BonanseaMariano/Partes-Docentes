@@ -1,12 +1,13 @@
 import { CommonModule } from '@angular/common';
+import { HttpStatusCode } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { PaginationConfig } from '../../core/constants/pagination.constants';
 import { ModalService } from '../../modal/modal.service';
 import { ResultsPage } from '../../models/results-page';
+import { Turno } from '../../models/turno';
 import { PaginationComponent } from '../../pagination/pagination.component';
 import { DivisionService } from '../service/division.service';
-import { PaginationConfig } from '../../core/constants/pagination.constants';
-import { Turno } from '../../models/turno';
 
 
 @Component({
@@ -43,7 +44,7 @@ export class DivisionesComponent {
             .then(function () {
                 that.divisionService.remove(id).subscribe({
                     next: (dataPackage) => {
-                        if (dataPackage.status === 409) {
+                        if (dataPackage.status === HttpStatusCode.InternalServerError) {
                             that.modalService.error(
                                 "Error al eliminar",
                                 dataPackage.message,

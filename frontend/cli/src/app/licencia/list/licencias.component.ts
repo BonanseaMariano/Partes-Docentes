@@ -1,27 +1,39 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { HttpStatusCode } from '@angular/common/http';
+import { Component, TemplateRef, ViewChild } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { PaginationConfig } from '../../core/constants/pagination.constants';
+import { DesignacionService } from '../../designacion/service/designacion.service';
 import { ModalService } from '../../modal/modal.service';
+import { Designacion } from '../../models/designacion';
+import { Licencia } from '../../models/licencia';
 import { ResultsPage } from '../../models/results-page';
 import { PaginationComponent } from '../../pagination/pagination.component';
+import { DniFormatPipe } from '../../pipes/dni-format.pipe';
+import { PopupService } from '../../popup/popup.service';
 import { LicenciaService } from '../service/licencia.service';
 
 
 @Component({
     selector: 'app-licencias',
-    imports: [CommonModule, RouterModule, PaginationComponent],
+    standalone: true,
+    imports: [CommonModule, RouterModule, PaginationComponent, DniFormatPipe],
     templateUrl: './licencias.component.html',
-    styles: ``
 })
 export class LicenciasComponent {
     resultsPage: ResultsPage = <ResultsPage>{};
     currentPage: number = PaginationConfig.INITIAL_PAGE;
     pageSize: number = PaginationConfig.PAGE_SIZE;
 
+    selectedLicencia: Licencia | null = null;
+
+    @ViewChild('designacionesTemplate', { static: true }) designacionesTemplate!: TemplateRef<any>;
+
     constructor(
         private licenciaService: LicenciaService,
-        private modalService: ModalService
+        private modalService: ModalService,
+        private popupService: PopupService,
+        private designacionService: DesignacionService
     ) { }
 
     getLicencias(): void {
@@ -41,7 +53,7 @@ export class LicenciasComponent {
             .then(function () {
                 that.licenciaService.remove(id).subscribe({
                     next: (dataPackage) => {
-                        if (dataPackage.status === 409) {
+                        if (dataPackage.status === HttpStatusCode.InternalServerError) {
                             that.modalService.error(
                                 "Error al eliminar",
                                 dataPackage.message,
@@ -52,6 +64,30 @@ export class LicenciasComponent {
                     }
                 });
             });
+    }
+
+    openDesignacionesPopup(licencia: Licencia): void {
+        this.selectedLicencia = licencia;
+        this.popupService.show(this.designacionesTemplate, {
+            title: `Designaciones de la licencia`,
+            icon: 'fa-user-tie',
+            data: licencia
+        });
+    }
+
+    getDesignacionCount(licencia: Licencia): number {
+        return licencia.designaciones ? licencia.designaciones.length : 0;
+    }
+
+    formatFechaDesignacion(fecha: Date | string | null | undefined): string {
+        if (!fecha) return '';
+
+        const dateObj = fecha instanceof Date ? fecha : new Date(fecha);
+        return dateObj.toLocaleDateString('es-AR');
+    }
+
+    isDesignacionActive(designacion: Designacion): boolean {
+        return this.designacionService.isActive(designacion);
     }
 
     ngOnInit(): void {

@@ -1,5 +1,6 @@
 package unpsjb.labprog.backend.business.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +11,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import unpsjb.labprog.backend.business.repository.DesignacionRepository;
-import unpsjb.labprog.backend.business.validator.DesignacionValidator;
+import unpsjb.labprog.backend.business.validator.designacion.DesignacionValidator;
 import unpsjb.labprog.backend.exception.BusinessLogicException;
 import unpsjb.labprog.backend.model.Designacion;
+import unpsjb.labprog.backend.model.Persona;
 
 /**
  * Servicio que implementa la lógica de negocio para la entidad Designacion
@@ -81,4 +83,49 @@ public class DesignacionService {
     public Page<Designacion> findByPage(int page, int size) {
         return repository.findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id")));
     }
+
+    /**
+     * Busca designaciones activas para una persona específica durante un período
+     * determinado.
+     * 
+     * @param personaDni  El DNI de la persona a buscar
+     * @param fechaInicio Fecha de inicio del período a verificar
+     * @param fechaFin    Fecha de fin del período a verificar
+     * @return Lista de designaciones activas para la persona durante el período
+     *         especificado
+     */
+    public List<Designacion> findDesignacionesActivasPorPersonaYPeriodo(
+            Long personaDni, LocalDateTime fechaInicio, LocalDateTime fechaFin) {
+        return repository.findDesignacionesActivasPorPersonaYPeriodo(personaDni, fechaInicio, fechaFin);
+    }
+
+    /**
+     * Obtiene la persona que está siendo reemplazada por esta designación, si
+     * existe.
+     * Una designación es un reemplazo cuando está contenida completamente dentro
+     * del
+     * período de otra designación para el mismo cargo.
+     * 
+     * @param designacion La designación a verificar
+     * @return La persona reemplazada, o null si no es un reemplazo
+     */
+    public Persona obtenerPersonaReemplazada(Designacion designacion) {
+        Integer designacionId = designacion.getId() > 0 ? designacion.getId() : null;
+
+        // Buscamos designaciones que contengan completamente el período de esta
+        // designación
+        List<Designacion> designacionesContenedoras = repository.findDesignacionesContenedoras(
+                designacion.getCargo().getId(),
+                designacion.getFechaInicio(),
+                designacion.getFechaFin(),
+                designacionId);
+
+        if (designacionesContenedoras.isEmpty()) {
+            return null; // No es un reemplazo
+        }
+
+        // Devolver la persona de la primera designación contenedora encontrada
+        return designacionesContenedoras.get((designacionesContenedoras.size() - 1)).getPersona();
+    }
+
 }

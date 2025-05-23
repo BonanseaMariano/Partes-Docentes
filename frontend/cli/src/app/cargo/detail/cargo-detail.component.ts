@@ -1,32 +1,28 @@
 import { CommonModule, Location } from '@angular/common';
-import { Component, OnInit, ViewChild, AfterViewChecked, ChangeDetectorRef } from '@angular/core';
+import { AfterViewChecked, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { TipoDesignacionPipe } from '../../pipes/tipo-designacion.pipe';
 import { NgbCalendar, NgbDatepickerModule, NgbDateStruct, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 import { Observable, of } from 'rxjs';
-import { catchError, debounceTime, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, debounceTime, distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators';
+import { TypeaheadConfig } from '../../core/constants/typeahead.constants';
 import { DivisionService } from '../../division/service/division.service';
 import { ModalService } from '../../modal/modal.service';
 import { Cargo } from '../../models/cargo';
 import { Division } from '../../models/division';
+import { DiaSemana, DiaSemanaLabels, Horario } from '../../models/horario';
 import { TipoDesignacion } from '../../models/tipo-designacion';
 import { Turno } from '../../models/turno';
+import { TipoDesignacionPipe } from '../../pipes/tipo-designacion.pipe';
 import { CargoService } from '../service/cargo.service';
+
 
 @Component({
     selector: 'app-cargo-detail',
     standalone: true,
     imports: [CommonModule, FormsModule, NgbDatepickerModule, NgbTypeaheadModule, TipoDesignacionPipe],
     templateUrl: './cargo-detail.component.html',
-    styles: `
-    .input-group-text {
-      width: 100px;
-    }
-    .calendar {
-      cursor: pointer;
-    }
-  `
+    styleUrl: './cargo-detail.component.css'
 })
 export class CargoDetailComponent implements OnInit, AfterViewChecked {
     @ViewChild('form') form!: NgForm;
@@ -43,11 +39,26 @@ export class CargoDetailComponent implements OnInit, AfterViewChecked {
     mostrarErrorDivision: boolean = false;
     formularioValido: boolean = false;
 
+    // Nueva propiedad para controlar la restricción del tipo de cargo
+    tipoRestringido: boolean = false;
+
     // Propiedades para los datepickers
     fechaInicioDate: NgbDateStruct | null = null;
     fechaFinDate: NgbDateStruct | null = null;
 
     tituloFormulario: string = 'Nuevo Cargo Institucional';
+
+    // Propiedades para la gestión de horarios
+    diasSemana = Object.values(DiaSemana);
+    diasSemanaLabels = DiaSemanaLabels;
+    nuevoHorario: Horario = {
+        dia: DiaSemana.LUNES,
+        hora: 1
+    };
+    // Lista de horas disponibles (1-8)
+    horasDisponibles = Array.from({ length: 8 }, (_, i) => i + 1);
+    mostrarFormNuevoHorario: boolean = false;
+    errorHorarioDuplicado: boolean = false;
 
     constructor(
         private route: ActivatedRoute,
@@ -98,8 +109,6 @@ export class CargoDetailComponent implements OnInit, AfterViewChecked {
         this.verificarFormularioValido();
         this.cdr.detectChanges();
     }
-
-    // Ya no necesitamos este método, usaremos el pipe TipoDesignacionPipe en su lugar
 
     // Método para manejar cambios en el tipo de designación
     onTipoDesignacionChange(): void {
@@ -174,7 +183,7 @@ export class CargoDetailComponent implements OnInit, AfterViewChecked {
                 } else {
                     this.modalService.success(
                         "Éxito",
-                        "Cargo guardado correctamente",
+                        dataPackage.message,
                         ""
                     ).then(() => this.goBack());
                 }
@@ -184,9 +193,26 @@ export class CargoDetailComponent implements OnInit, AfterViewChecked {
 
     get(): void {
         const id = this.route.snapshot.paramMap.get("id")!;
+
+        // Verificar si hay un parámetro de restricción de tipo en la URL
+        this.tipoRestringido = this.route.snapshot.queryParams['restringirTipo'] === 'true';
+
+        if (this.tipoRestringido) {
+            // Filtrar los tipos disponibles para mostrar solo "Cargo"
+            this.tiposDesignacion = [TipoDesignacion.CARGO];
+        }
+
         if (id === "new") {
-            // Inicializar el cargo con valores vacíos
-            this.cargo = <Cargo>{};
+            // Inicializar el cargo con valores por defecto para todas las propiedades requeridas
+            this.cargo = {
+                id: 0,
+                nombre: '',
+                cargaHoraria: 0,
+                fechaInicio: new Date(),
+                tipoDesignacion: this.tipoRestringido ? TipoDesignacion.CARGO : TipoDesignacion.ESPACIO_CURRICULAR,
+                horarios: []
+            } as Cargo;
+
             this.tituloFormulario = 'Nuevo Cargo Institucional';
             this.isNewCargo = true;  // Es un nuevo cargo
             // Establecer la fecha de inicio al día de hoy
@@ -198,6 +224,12 @@ export class CargoDetailComponent implements OnInit, AfterViewChecked {
             this.cargoService.get(parseInt(id!)).subscribe({
                 next: (dataPackage) => {
                     this.cargo = <Cargo>dataPackage.data;
+
+                    // Asegurar que el cargo tenga un array de horarios
+                    if (!this.cargo.horarios) {
+                        this.cargo.horarios = [];
+                    }
+
                     this.tituloFormulario = 'Editar Cargo';
                     this.isNewCargo = false;  // Es un cargo existente
 
@@ -235,9 +267,9 @@ export class CargoDetailComponent implements OnInit, AfterViewChecked {
 
     searchDivision = (text$: Observable<string>): Observable<Division[]> =>
         text$.pipe(
-            debounceTime(300),
+            debounceTime(TypeaheadConfig.DEBOUNCE_TIME),
             distinctUntilChanged(),
-            filter(term => term.length >= 2),
+            filter(term => term.length >= TypeaheadConfig.MIN_FILTER_LENGTH),
             switchMap(term =>
                 this.divisionService.search(term).pipe(
                     map(dataPackage => <Division[]>dataPackage.data),
@@ -267,6 +299,74 @@ export class CargoDetailComponent implements OnInit, AfterViewChecked {
             this.mostrarErrorDivision = false;
             this.verificarFormularioValido();
         }
+    }
+
+    // Métodos para la gestión de horarios
+    mostrarFormularioHorario(): void {
+        this.mostrarFormNuevoHorario = true;
+        this.nuevoHorario = {
+            dia: DiaSemana.LUNES,
+            hora: 1
+        };
+        this.errorHorarioDuplicado = false;
+    }
+
+    cancelarNuevoHorario(): void {
+        this.mostrarFormNuevoHorario = false;
+        this.errorHorarioDuplicado = false;
+    }
+
+    agregarHorario(): void {
+        // Verificar si ya existe un horario con el mismo día y hora
+        const horarioDuplicado = this.cargo.horarios.some(
+            h => h.dia === this.nuevoHorario.dia &&
+                h.hora === this.nuevoHorario.hora
+        );
+
+        if (horarioDuplicado) {
+            this.errorHorarioDuplicado = true;
+            return;
+        }
+
+        // Agregar el nuevo horario a la lista
+        this.cargo.horarios.push({ ...this.nuevoHorario });
+
+        // Ordenar los horarios
+        this.cargo.horarios = this.cargoService.orderHorarios(this.cargo.horarios);
+
+        // Cerrar el formulario y resetear
+        this.mostrarFormNuevoHorario = false;
+        this.nuevoHorario = { dia: DiaSemana.LUNES, hora: 1 };
+        this.errorHorarioDuplicado = false;
+
+        // Actualizar validación del formulario
+        this.verificarFormularioValido();
+    }
+
+    eliminarHorario(index: number): void {
+        this.modalService.confirm(
+            "Eliminar horario",
+            "¿Estás seguro de que deseas eliminar este horario?",
+            "Esta acción no se puede deshacer"
+        ).then(() => {
+            this.cargo.horarios.splice(index, 1);
+            this.verificarFormularioValido();
+        }).catch(() => {
+            // Usuario canceló la eliminación, no hacemos nada
+        });
+    }
+
+    // Método para obtener el nombre traducido de un día
+    getDiaSemanaLabel(dia: DiaSemana): string {
+        return this.diasSemanaLabels[dia] || dia;
+    }
+
+    // Método para verificar si un día y hora exacta ya están asignados
+    existeHorario(dia: DiaSemana, hora: number): boolean {
+        return this.cargo.horarios.some(h =>
+            h.dia === dia &&
+            h.hora === hora
+        );
     }
 
     ngOnInit(): void {

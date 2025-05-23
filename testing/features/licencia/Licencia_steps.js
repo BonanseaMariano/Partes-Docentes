@@ -44,8 +44,8 @@ Given('el docente con DNI {int}, nombre {string} y apellido {string}', function 
 });
 
 
-// Paso: Cuando solicita una licencia artículo <articulo> con descripción <descripcion> para el período <desde> <hasta>
-When('solicita una licencia artículo {string} con descripción {string} para el período {string} {string}', function (articulo, descripcion, desde, hasta) {
+// Paso: Cuando solicita una licencia artículo <articulo> con certificado médico <certificado> con descripción <descripcion> para el período <desde> <hasta>
+When('solicita una licencia artículo {string} con certificado médico {string} con descripción {string} para el período {string} {string}', function (articulo, certificado, descripcion, desde, hasta) {
     // Buscamos el artículo de licencia usando el endpoint específico
     // Asumimos que el artículo siempre existe en la base de datos
     this.currentLicencia.articuloLicencia = JSON.parse(request('GET', encodeURI(`http://pd-backend:8080/articulos-licencias/articulo/${articulo}`)).getBody('utf8')).data;
@@ -54,8 +54,8 @@ When('solicita una licencia artículo {string} con descripción {string} para el
     this.currentLicencia.pedidoDesde = desde ? desde + "T03:00:00" : null;
     this.currentLicencia.pedidoHasta = hasta ? hasta + "T03:00:00" : null;
 
-    // Por defecto, asumimos que tiene certificado médico
-    this.currentLicencia.certificadoMedico = true;
+    // Asignamos el valor del certificado médico en función de si es "SI" o "NO"
+    this.currentLicencia.certificadoMedico = certificado === "SI";
 
     // Enviamos la solicitud para crear la licencia
     const res = request('POST', encodeURI('http://pd-backend:8080/licencias'), {
@@ -64,6 +64,7 @@ When('solicita una licencia artículo {string} con descripción {string} para el
     this.apiResponse = JSON.parse(res.getBody('utf8'));
 });
 
+// ----- PARA REEMPLAZANTES -----
 
 // Paso: Dado que existe la persona (para escenario de reemplazo)
 Given('que existe la persona', function (dataTable) {
@@ -78,15 +79,12 @@ Given('que existen las siguientes instancias de designación asignada', function
     // Obtenemos los datos de la tabla
     const designacionData = dataTable.hashes()[0];
 
-    // Guardamos la información de la designación
-    this.cargoDesignacion = {
-        tipoDesignacion: designacionData.TipoDesignacion,
-        nombre: designacionData.NombreTipoDesignacion,
-        cargaHoraria: parseInt(designacionData.CargaHoraria)
-    };
+    // Buscamos el cargo de la designación usando el endpoint '/find'
+    const cargoUrl = encodeURI(`http://pd-backend:8080/cargos/find?nombre=${designacionData.NombreTipoDesignacion}&tipoDesignacion=${designacionData.TipoDesignacion}`);
+    this.cargoDesignacion = JSON.parse(request('GET', cargoUrl).getBody('utf8')).data;
 });
 
-// Paso: Y que la instancia de designación está asignada a la persona con licencia
+// Paso: Y que la instancia de designación está asignada a la persona con licencia {string} comprendida en el período desde {string} hasta {string}
 Given('que la instancia de designación está asignada a la persona con licencia {string} comprendida en el período desde {string} hasta {string}', function (articulo, desde, hasta, dataTable) {
     // Obtenemos los datos de la persona con licencia
     const personaConLicencia = dataTable.hashes()[0];
@@ -100,55 +98,7 @@ Given('que la instancia de designación está asignada a la persona con licencia
         designacionHasta: personaConLicencia.Hasta + "T03:00:00"
     };
 
-    // Buscamos el artículo de licencia
-    // Asumimos que el artículo siempre existe en la base de datos
-    const articuloRes = request('GET', encodeURI(`http://pd-backend:8080/articulos-licencias/articulo/${articulo}`));
-    const articuloData = JSON.parse(articuloRes.getBody('utf8'));
-    const articuloLicenciaObj = articuloData.data;
 
-    // Creamos la licencia para esta persona
-    this.licenciaExistente = {
-        persona: {
-            dni: this.personaConLicencia.dni,
-            nombre: this.personaConLicencia.nombre,
-            apellido: this.personaConLicencia.apellido
-        },
-        articuloLicencia: articuloLicenciaObj,
-        pedidoDesde: desde + "T03:00:00",
-        pedidoHasta: hasta + "T03:00:00",
-        certificadoMedico: true
-    };
-
-    // Simulamos que se crea una licencia para esta persona
-    try {
-        // Primero, verificamos si la persona ya tiene licencia en ese período
-        const licenciasRes = request('GET', encodeURI(`http://pd-backend:8080/licencias/persona/${this.personaConLicencia.dni}`));
-        const licencias = JSON.parse(licenciasRes.getBody('utf8')).data;
-
-        // Si no tiene licencia, creamos una
-        if (!licencias || licencias.length === 0) {
-            request('POST', 'http://pd-backend:8080/licencias', {
-                json: this.licenciaExistente
-            });
-        }
-    } catch (error) {
-        console.log(`Error al crear licencia para la persona con DNI ${this.personaConLicencia.dni}: ${error.message}`);
-    }
-});
-
-// Paso: Y que la instancia de designación está asignada a la persona
-Given('que la instancia de designación está asignada a la persona', function (dataTable) {
-    // Obtenemos los datos de la persona designada
-    const personaDesignada = dataTable.hashes()[0];
-
-    // Guardamos los datos de la persona designada
-    this.personaDesignada = {
-        dni: personaDesignada.DNI,
-        nombre: personaDesignada.Nombre,
-        apellido: personaDesignada.Apellido,
-        designacionDesde: personaDesignada.Desde + "T03:00:00",
-        designacionHasta: personaDesignada.Hasta + "T03:00:00"
-    };
 });
 
 // Paso: Cuando se solicita el servicio de designación de la persona al cargo en el período
@@ -156,32 +106,17 @@ When('se solicita el servicio de designación de la persona al cargo en el perí
     // Creamos una designación para el reemplazante
     const designacion = {
         persona: this.reemplazante,
-        cargo: {
-            tipoDesignacion: this.cargoDesignacion.tipoDesignacion,
-            nombre: this.cargoDesignacion.nombre,
-            cargaHoraria: this.cargoDesignacion.cargaHoraria
-        },
+        cargo: this.cargoDesignacion,
         fechaInicio: desde + "T03:00:00",
         fechaFin: hasta + "T03:00:00",
-        reemplazo: true,
-        reemplazaA: this.personaConLicencia || this.personaDesignada
     };
 
     // Enviamos la solicitud para crear la designación de reemplazo
-    try {
-        const res = request('POST', 'http://pd-backend:8080/designaciones', {
-            json: designacion
-        });
+    const res = request('POST', 'http://pd-backend:8080/designaciones', {
+        json: designacion
+    });
 
-        const responseBody = res.getBody('utf8');
-        this.apiResponse = JSON.parse(responseBody);
-    } catch (error) {
-        console.error('Error al procesar la designación de reemplazo:', error);
-        this.apiResponse = {
-            StatusCode: 500,
-            StatusText: error.message || "Error al procesar la designación de reemplazo"
-        };
-    }
+    this.apiResponse = JSON.parse(res.getBody('utf8'));
 });
 
 // El paso "Entonces se espera el siguiente <status> con la <respuesta>"

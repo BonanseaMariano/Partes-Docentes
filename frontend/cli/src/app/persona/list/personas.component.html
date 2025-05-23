@@ -17,6 +17,10 @@
                         <th scope="col">Apellido</th>
                         <th scope="col">CUIL</th>
                         <th scope="col">Título</th>
+                        <th scope="col">Sexo</th>
+                        <th scope="col">Domicilio</th>
+                        <th scope="col">Teléfono</th>
+                        <th scope="col">Designaciones</th>
                         <th scope="col" class="text-end">Acciones</th>
                     </tr>
                 </thead>
@@ -28,6 +32,23 @@
                         <td>{{ persona.apellido }}</td>
                         <td>{{ persona.cuil | cuilFormat }}</td>
                         <td>{{ persona.titulo }}</td>
+                        <td>
+                            <i class="fa fa-lg" [ngClass]="{
+                                'fa-female text-danger': persona.sexo === 'F',
+                                'fa-male text-primary': persona.sexo === 'M',
+                                'fa-genderless text-secondary': !persona.sexo || persona.sexo === 'O'
+                            }"
+                                title="{{ persona.sexo === 'F' ? 'Femenino' : (persona.sexo === 'M' ? 'Masculino' : 'Otro/No especificado') }}"></i>
+                        </td>
+                        <td>{{ persona.domicilio || '-' }}</td>
+                        <td>{{ persona.telefono || '-' }}</td>
+                        <td>
+                            <button class="btn-popup"
+                                [ngClass]="{'btn-popup-empty': getDesignacionCount(persona) === 0}"
+                                (click)="openDesignacionesPopup(persona)" title="Mostrar designaciones">
+                                <i class="fa fa-list"></i> {{ getDesignacionCount(persona) }}
+                            </button>
+                        </td>
                         <td class="text-end">
                             <a routerLink="/personas/{{ persona.id }}" class="btn btn-sm btn-outline-primary me-1"
                                 title="Editar">
@@ -40,7 +61,7 @@
                         </td>
                     </tr>
                     <tr *ngIf="!resultsPage.content || resultsPage.content.length === 0">
-                        <td colspan="7" class="text-center py-4 text-muted">
+                        <td colspan="11" class="empty-state-cell">
                             <i class="fa fa-info-circle me-2"></i>No hay personas registradas
                         </td>
                     </tr>
@@ -55,3 +76,45 @@
         </app-pagination>
     </div>
 </div>
+
+<!-- Template para el popup de designaciones -->
+<ng-template #designacionesTemplate let-persona>
+    <div *ngIf="persona.designaciones && persona.designaciones.length > 0" class="table-responsive">
+        <table class="table table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th scope="col">Cargo</th>
+                    <th scope="col">Situación</th>
+                    <th scope="col">División</th>
+                    <th scope="col">Inicio</th>
+                    <th scope="col">Fin</th>
+                    <th scope="col">Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let designacion of persona.designaciones">
+                    <td>{{ designacion.cargo?.nombre || '' }}</td>
+                    <td>{{ designacion.situacionRevista || '' }}</td>
+                    <td>{{ designacion.cargo?.division ?
+                        designacion.cargo.division.anio + '° ' +
+                        designacion.cargo.division.numDivision + '° ' +
+                        designacion.cargo.division.orientacion : '' }}
+                    </td>
+                    <td>{{ formatFechaDesignacion(designacion.fechaInicio) }}</td>
+                    <td>{{ formatFechaDesignacion(designacion.fechaFin) }}</td>
+                    <td>
+                        <i class="fa fa-2x" [ngClass]="{
+                            'fa-check-circle text-success': isDesignacionActive(designacion),
+                            'fa-clock-o text-muted': !isDesignacionActive(designacion)
+                        }"
+                            title="{{ isDesignacionActive(designacion) ? 'Designación Activa' : 'Designación Finalizada' }}"></i>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div *ngIf="!persona.designaciones || persona.designaciones.length === 0" class="empty-state-message">
+        <i class="fa fa-info-circle me-2"></i>
+        Esta persona no tiene designaciones registradas
+    </div>
+</ng-template>

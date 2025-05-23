@@ -37,8 +37,8 @@
                         <span class="input-group-text bg-secondary text-white">
                             <i class="fa fa-id-card"></i>
                         </span>
-                        <input type="text" class="form-control" placeholder="DNI" [value]="licencia.persona.dni"
-                            readonly>
+                        <input type="text" class="form-control" placeholder="DNI"
+                            [value]="licencia.persona.dni | dniFormat" readonly>
                     </div>
                     <small class="text-secondary">DNI</small>
                 </div>

@@ -1,18 +1,21 @@
 import { CommonModule } from '@angular/common';
+import { HttpStatusCode } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { PaginationConfig } from '../../core/constants/pagination.constants';
+import { ValidationService } from '../../core/services/validation.service';
 import { ModalService } from '../../modal/modal.service';
 import { ResultsPage } from '../../models/results-page';
 import { TipoDesignacion } from '../../models/tipo-designacion';
 import { PaginationComponent } from '../../pagination/pagination.component';
+import { DniFormatPipe } from '../../pipes/dni-format.pipe';
 import { TipoDesignacionPipe } from '../../pipes/tipo-designacion.pipe';
 import { DesignacionService } from '../service/designacion.service';
 
 
 @Component({
     selector: 'app-divisiones',
-    imports: [CommonModule, RouterModule, PaginationComponent, TipoDesignacionPipe],
+    imports: [CommonModule, RouterModule, PaginationComponent, TipoDesignacionPipe, DniFormatPipe],
     templateUrl: './designaciones.component.html',
     styles: ``
 })
@@ -24,12 +27,28 @@ export class DesignacionesComponent {
 
     constructor(
         private designacionService: DesignacionService,
-        private modalService: ModalService
+        private modalService: ModalService,
+        private validationService: ValidationService,
+        private router: Router
     ) { }
 
     getDesignaciones(): void {
         this.designacionService.byPage(this.currentPage, this.pageSize).subscribe((dataPackage) => {
             this.resultsPage = <ResultsPage>dataPackage.data;
+        });
+    }
+
+    /**
+     * Método para navegar a la creación de una nueva designación
+     * con validación previa de requisitos
+     */
+    crearNueva(): void {
+        this.validationService.validateWithFeedback(
+            () => this.validationService.canCreateDesignacion()
+        ).subscribe(canCreate => {
+            if (canCreate) {
+                this.router.navigateByUrl('/designaciones/new');
+            }
         });
     }
 
@@ -44,7 +63,7 @@ export class DesignacionesComponent {
             .then(function () {
                 that.designacionService.remove(id).subscribe({
                     next: (dataPackage) => {
-                        if (dataPackage.status === 409) {
+                        if (dataPackage.status === HttpStatusCode.InternalServerError) {
                             that.modalService.error(
                                 "Error al eliminar",
                                 dataPackage.message,

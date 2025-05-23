@@ -119,7 +119,7 @@ public class Cargo {
      * del cargo.
      */
     @NotNull
-    @OneToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @OneToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE }, orphanRemoval = true)
     @JoinColumn(name = "cargo_id", nullable = false)
     private List<Horario> horarios = new ArrayList<>();
 }

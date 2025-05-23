@@ -1,0 +1,23 @@
+<div class="popup-backdrop" *ngIf="visible" (click)="onBackdropClick($event)" role="dialog" aria-modal="true"
+  tabindex="-1">
+  <div class="popup-content animate__animated animate__bounceInDown popup-animated" [style.width]="width"
+    [style.max-width]="maxWidth" [style.max-height]="maxHeight">
+    <div class="popup-header">
+      <h3>
+        <i *ngIf="icon" class="fa {{ icon }} popup-icon" aria-hidden="true"></i>
+        {{ title }}
+      </h3>
+      <button *ngIf="showCloseButton" class="popup-close" (click)="hide()">
+        <i class="fa fa-times"></i>
+      </button>
+    </div>
+    <div class="popup-body">
+      <ng-container *ngIf="contentTemplate; else defaultContent">
+        <ng-container *ngTemplateOutlet="contentTemplate; context: { $implicit: data }"></ng-container>
+      </ng-container>
+      <ng-template #defaultContent>
+        <ng-content></ng-content>
+      </ng-template>
+    </div>
+  </div>
+</div>
