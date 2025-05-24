@@ -73,6 +73,7 @@ public class SolapamientoDesignacionRule implements DesignacionValidationRule {
     private void manejarCasoConLicencias(Designacion nuevaDesignacion, Cargo cargoExistente,
             Persona personaExistente, List<Licencia> licenciasActivas) throws BusinessLogicException {
 
+        // TODO
         boolean periodoValido = licenciasActivas.stream()
                 .anyMatch(licencia -> licencia.getPedidoDesde().compareTo(nuevaDesignacion.getFechaInicio()) <= 0 &&
                         licencia.getPedidoHasta().compareTo(nuevaDesignacion.getFechaFin()) >= 0);
