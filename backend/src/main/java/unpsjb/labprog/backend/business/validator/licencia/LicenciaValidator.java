@@ -63,7 +63,7 @@ public class LicenciaValidator {
 
         // Resto de reglas, si es necesario
         for (LicenciaValidationRule rule : validationRules) {
-            if (!(rule instanceof SolapamientoLicenciasRule)
+            if (rule != null && !(rule instanceof SolapamientoLicenciasRule)
                     && !(rule instanceof DesignacionesActivasRule)
                     && !(rule instanceof ArticuloEspecificoRule)) {
                 rule.validate(licencia);

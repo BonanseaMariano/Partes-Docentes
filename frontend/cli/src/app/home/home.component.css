@@ -15,9 +15,8 @@
   top: 0;
   left: 0;
   right: 0;
-  bottom: 0;
-  background: var(--gradient-radial);
-  opacity: 0.2;
+  height: 2px;
+  background: var(--gradient-light-top);
 }
 
 .hero-section::after {
@@ -27,7 +26,9 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.1) 100%);
+  background: var(--gradient-radial);
+  pointer-events: none;
+  z-index: 1;
 }
 
 .hero-content {
@@ -195,6 +196,30 @@
   text-align: center;
   color: white;
   margin: 4rem 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.cta-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--gradient-light-top);
+}
+
+.cta-section::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--gradient-radial);
+  pointer-events: none;
+  z-index: 1;
 }
 
 .cta-title {
@@ -205,6 +230,8 @@
   text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
   margin-bottom: 1rem;
+  position: relative;
+  z-index: 2;
 }
 
 .cta-description {
@@ -213,6 +240,8 @@
   max-width: 800px;
   margin-left: auto;
   margin-right: auto;
+  position: relative;
+  z-index: 2;
 }
 
 /* ===== RESPONSIVE DESIGN ===== */
@@ -221,20 +250,20 @@
     padding: 3rem 1.5rem;
     text-align: center;
   }
-  
+
   .hero-logo {
     max-width: 320px;
     margin-top: 2rem;
   }
-  
+
   .feature-card {
     margin-bottom: 2rem;
   }
-  
+
   .stats-section {
     padding: 2rem 1rem;
   }
-  
+
   .stat-item {
     margin-bottom: 2rem;
   }
