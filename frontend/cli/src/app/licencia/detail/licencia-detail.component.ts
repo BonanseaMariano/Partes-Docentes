@@ -48,6 +48,9 @@ export class LicenciaDetailComponent implements OnInit, AfterViewChecked {
     // Propiedad para determinar si el formulario es válido
     formularioValido: boolean = false;
 
+    // Instancia del pipe para formatear DNI
+    private dniFormatPipe = new DniFormatPipe();
+
     constructor(
         private route: ActivatedRoute,
         private licenciaService: LicenciaService,
@@ -217,7 +220,7 @@ export class LicenciaDetailComponent implements OnInit, AfterViewChecked {
 
     // Formateador de resultados en el dropdown para personas
     resultPersonaFormat = (persona: Persona): string =>
-        `${persona.dni} - ${persona.nombre}, ${persona.apellido}`;
+        `${this.dniFormatPipe.transform(persona.dni)} - ${persona.nombre}, ${persona.apellido}`;
 
     // Formateador para el input cuando se selecciona una persona
     inputPersonaFormat = (persona: Persona | string): string => {
