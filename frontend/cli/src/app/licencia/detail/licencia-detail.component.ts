@@ -3,7 +3,6 @@ import { AfterViewChecked, ChangeDetectorRef, Component, OnInit, ViewChild } fro
 import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { NgbCalendar, NgbDatepickerModule, NgbDateStruct, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
-import * as AOS from 'aos';
 import { Observable, of } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators';
 import { TypeaheadConfig } from '../../core/constants/typeahead.constants';
@@ -81,21 +80,14 @@ export class LicenciaDetailComponent implements OnInit, AfterViewChecked {
         }
 
         // Verificar que la persona y el artículo tengan un ID (lo que indica que son objetos reales)
-        // y que ambas fechas sean válidas
+        // y que la fecha de inicio sea válida
         this.formularioValido = !!this.licencia.persona?.id &&
             !!this.licencia.articuloLicencia?.id &&
-            !!this.fechaDesdeDate &&
-            !!this.fechaHastaDate;
+            !!this.fechaDesdeDate;
 
-        // Verificar si las fechas son válidas a través del formulario
+        // Verificar si la fecha de inicio es válida a través del formulario
         if (this.form && this.form.controls['fechaDesde']) {
             if (this.form.controls['fechaDesde'].invalid) {
-                this.formularioValido = false;
-            }
-        }
-
-        if (this.form && this.form.controls['fechaHasta']) {
-            if (this.form.controls['fechaHasta'].invalid) {
                 this.formularioValido = false;
             }
         }
@@ -125,6 +117,9 @@ export class LicenciaDetailComponent implements OnInit, AfterViewChecked {
                 this.fechaHastaDate.day
             );
             this.licencia.pedidoHasta = fechaHasta;
+        } else {
+            // Si no se especifica fecha de finalización, se usa la misma que la de inicio
+            this.licencia.pedidoHasta = this.licencia.pedidoDesde;
         }
 
         this.licenciaService.save(this.licencia, this.isNewLicencia).subscribe({
@@ -303,14 +298,6 @@ export class LicenciaDetailComponent implements OnInit, AfterViewChecked {
     }
 
     ngOnInit(): void {
-        // Inicializar AOS
-        AOS.init({
-            duration: 800,
-            easing: 'ease-in-out',
-            once: true,
-            offset: 100
-        });
-
         this.get();
     }
 }

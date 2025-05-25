@@ -3,7 +3,6 @@ import { AfterViewChecked, ChangeDetectorRef, Component, OnInit, ViewChild } fro
 import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { NgbCalendar, NgbDatepickerModule, NgbDateStruct, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
-import * as AOS from 'aos';
 import { Observable, of } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators';
 import { TypeaheadConfig } from '../../core/constants/typeahead.constants';
@@ -371,14 +370,6 @@ export class CargoDetailComponent implements OnInit, AfterViewChecked {
     }
 
     ngOnInit(): void {
-        // Inicializar AOS
-        AOS.init({
-            duration: 800, // Duración de las animaciones
-            easing: 'ease-in-out', // Tipo de easing
-            once: true, // Las animaciones solo se ejecutan una vez
-            offset: 50, // Offset desde el viewport
-        });
-
         this.get();
     }
 }

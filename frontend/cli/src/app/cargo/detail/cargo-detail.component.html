@@ -1,12 +1,12 @@
-<div *ngIf="cargo" class="card shadow-sm mb-4" data-aos="fade-up" data-aos-duration="800">
-    <div class="card-header bg-light" data-aos="fade-down" data-aos-delay="200">
+<div *ngIf="cargo" class="card shadow-sm mb-4">
+    <div class="card-header bg-light">
         <h2 class="mb-0"><i class="fa fa-briefcase me-2"></i>{{ tituloFormulario }}</h2>
     </div>
 
-    <div class="card-body" data-aos="fade-up" data-aos-delay="300">
+    <div class="card-body">
         <form #form="ngForm" class="row g-3">
             <!-- Primera fila: Nombre -->
-            <div class="col-md-12 mb-3" data-aos="fade-right" data-aos-delay="400">
+            <div class="col-md-12 mb-3">
                 <label for="nombre" class="form-label text-primary fw-bold">Nombre</label>
                 <div class="input-group">
                     <span class="input-group-text bg-primary text-white">
@@ -21,7 +21,7 @@
             </div>
 
             <!-- Segunda fila: Carga Horaria -->
-            <div class="col-md-12 mb-3" data-aos="fade-left" data-aos-delay="500">
+            <div class="col-md-12 mb-3">
                 <label for="cargaHoraria" class="form-label text-primary fw-bold">Carga Horaria</label>
                 <div class="input-group">
                     <span class="input-group-text bg-primary text-white">
@@ -38,7 +38,7 @@
             </div>
 
             <!-- Tercera fila: Tipo -->
-            <div class="col-md-12 mb-3" data-aos="fade-right" data-aos-delay="600">
+            <div class="col-md-12 mb-3">
                 <label for="tipoDesignacion" class="form-label text-primary fw-bold">Tipo</label>
                 <div class="input-group">
                     <span class="input-group-text bg-primary text-white">
@@ -59,8 +59,7 @@
             </div>
 
             <!-- Cuarta fila: División (solo si el tipo es Espacio Curricular) -->
-            <div class="col-12 mb-3" *ngIf="cargo.tipoDesignacion === tipoDesignacionEnum.ESPACIO_CURRICULAR"
-                data-aos="zoom-in" data-aos-delay="700">
+            <div class="col-12 mb-3" *ngIf="cargo.tipoDesignacion === tipoDesignacionEnum.ESPACIO_CURRICULAR">
                 <label for="division" class="form-label text-primary fw-bold">División</label>
                 <div class="row g-2">
                     <!-- Campo de Orientación con typeahead -->
@@ -86,7 +85,7 @@
                     </div>
 
                     <!-- Campo de Año (solo lectura) -->
-                    <div class="col-md-2" *ngIf="cargo.division?.anio" data-aos="flip-left" data-aos-delay="750">
+                    <div class="col-md-2" *ngIf="cargo.division?.anio">
                         <div class="input-group">
                             <span class="input-group-text bg-secondary text-white">
                                 <i class="fa fa-calendar-alt"></i>
@@ -98,7 +97,7 @@
                     </div>
 
                     <!-- Campo de Número (solo lectura) -->
-                    <div class="col-md-2" *ngIf="cargo.division?.numDivision" data-aos="flip-left" data-aos-delay="800">
+                    <div class="col-md-2" *ngIf="cargo.division?.numDivision">
                         <div class="input-group">
                             <span class="input-group-text bg-secondary text-white">
                                 <i class="fa fa-hashtag"></i>
@@ -110,7 +109,7 @@
                     </div>
 
                     <!-- Campo de Turno (solo lectura) -->
-                    <div class="col-md-2" *ngIf="cargo.division?.turno" data-aos="flip-left" data-aos-delay="850">
+                    <div class="col-md-2" *ngIf="cargo.division?.turno">
                         <div class="input-group">
                             <span class="input-group-text bg-secondary text-white">
                                 <i class="fa fa-clock"></i>
@@ -130,7 +129,7 @@
             </div>
 
             <!-- Quinta fila: Vigencia Desde -->
-            <div class="col-md-6 mb-3" data-aos="fade-up" data-aos-delay="800">
+            <div class="col-md-6 mb-3">
                 <label for="fechaInicio" class="form-label text-primary fw-bold">Vigencia Desde</label>
                 <div class="input-group">
                     <span class="input-group-text bg-primary text-white">
@@ -152,7 +151,7 @@
             </div>
 
             <!-- Sexta fila: Vigencia Hasta -->
-            <div class="col-md-6 mb-3" data-aos="fade-up" data-aos-delay="900">
+            <div class="col-md-6 mb-3">
                 <label for="fechaFin" class="form-label text-primary fw-bold">Vigencia Hasta</label>
                 <div class="input-group">
                     <span class="input-group-text bg-primary text-white">
@@ -169,9 +168,9 @@
             </div>
 
             <!-- Sección de Horarios -->
-            <div class="col-12 mb-4" data-aos="fade-up" data-aos-delay="900">
+            <div class="col-12 mb-4">
                 <div class="horarios-container">
-                    <div class="horarios-header" data-aos="slide-down" data-aos-delay="1100">
+                    <div class="horarios-header">
                         <h4>
                             <i class="fa fa-clock me-2"></i>Horarios
                         </h4>
@@ -181,17 +180,16 @@
                     </div>
 
                     <!-- Formulario para añadir nuevo horario -->
-                    <div *ngIf="mostrarFormNuevoHorario" class="form-insert animate__animated animate__fadeInDown"
-                        data-aos="zoom-in" data-aos-duration="600">
+                    <div *ngIf="mostrarFormNuevoHorario" class="form-insert animate__animated animate__fadeInDown">
                         <div class="card shadow-sm mb-0">
-                            <div class="card-header bg-light" data-aos="slide-down" data-aos-delay="200">
+                            <div class="card-header bg-light">
                                 <h5 class="mb-0 text-secondary">
                                     <i class="fa fa-plus-circle me-2"></i>Nuevo horario
                                 </h5>
                             </div>
-                            <div class="card-body" data-aos="fade-up" data-aos-delay="300">
+                            <div class="card-body">
                                 <div class="row g-3 align-items-center">
-                                    <div class="col-md-6" data-aos="slide-right" data-aos-delay="400">
+                                    <div class="col-md-6">
                                         <label for="diaSemana" class="form-label text-primary fw-bold">Día</label>
                                         <div class="input-group">
                                             <span class="input-group-text bg-primary text-white">
@@ -205,7 +203,7 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-md-6" data-aos="slide-left" data-aos-delay="500">
+                                    <div class="col-md-6">
                                         <label for="hora" class="form-label text-primary fw-bold">Hora</label>
                                         <div class="input-group">
                                             <span class="input-group-text bg-primary text-white">
@@ -221,15 +219,13 @@
                                     </div>
                                 </div>
 
-                                <div *ngIf="errorHorarioDuplicado" class="alert alert-danger mt-3" data-aos="shake"
-                                    data-aos-duration="500">
+                                <div *ngIf="errorHorarioDuplicado" class="alert alert-danger mt-3">
                                     <i class="fa fa-exclamation-circle me-2"></i>
                                     Ya existe un horario asignado para este día y hora. Por favor, elija otra
                                     combinación.
                                 </div>
 
-                                <div class="d-flex justify-content-center mt-4 gap-3" data-aos="fade-up"
-                                    data-aos-delay="600">
+                                <div class="d-flex justify-content-center mt-4 gap-3">
                                     <button type="button"
                                         class="btn btn-sm btn-outline-secondary animate__animated animate__fadeIn"
                                         title="Cancelar" (click)="cancelarNuevoHorario()">
@@ -246,11 +242,10 @@
                     </div>
 
                     <!-- Lista de horarios con mejor organización visual siguiendo los estilos globales -->
-                    <div *ngIf="cargo.horarios && cargo.horarios.length > 0" class="p-3" data-aos="fade-up"
-                        data-aos-delay="1200">
+                    <div *ngIf="cargo.horarios && cargo.horarios.length > 0" class="p-3">
                         <div class="table-responsive">
                             <table class="table table-hover">
-                                <thead data-aos="slide-down" data-aos-delay="1300">
+                                <thead>
                                     <tr>
                                         <th scope="col" style="width: 40%">Día</th>
                                         <th scope="col" style="width: 40%">Hora</th>
@@ -259,8 +254,7 @@
                                 </thead>
                                 <tbody>
                                     <tr *ngFor="let horario of cargo.horarios; let i = index"
-                                        class="horario-row animate__animated animate__fadeIn" data-aos="zoom-in"
-                                        [attr.data-aos-delay]="1400 + (i * 100)">
+                                        class="horario-row animate__animated animate__fadeIn">
                                         <td>
                                             <span class="badge rounded-pill" [ngClass]="{
                                                 'bg-primary': horario.dia === 'LUNES',
@@ -288,8 +282,7 @@
 
                     <!-- Mensaje cuando no hay horarios -->
                     <div *ngIf="!cargo.horarios || cargo.horarios.length === 0"
-                        class="empty-state-message animate__animated animate__fadeIn" data-aos="fade-in"
-                        data-aos-delay="1200">
+                        class="empty-state-message animate__animated animate__fadeIn">
                         <i class="fa fa-info-circle me-2"></i>No hay horarios registrados
                     </div>
                 </div>
@@ -297,12 +290,11 @@
         </form>
     </div>
 
-    <div class="card-footer bg-light text-end" data-aos="fade-up" data-aos-delay="1300">
-        <button (click)="goBack()" class="btn btn-outline-secondary me-2" data-aos="slide-right" data-aos-delay="1400">
+    <div class="card-footer bg-light text-end">
+        <button (click)="goBack()" class="btn btn-outline-secondary me-2">
             <i class="fa fa-arrow-left me-1"></i>Cancelar
         </button>
-        <button (click)="save()" class="btn btn-success" [disabled]="!formularioValido" data-aos="slide-left"
-            data-aos-delay="1500">
+        <button (click)="save()" class="btn btn-success" [disabled]="!formularioValido">
             <i class="fa fa-save me-1"></i>Guardar
         </button>
     </div>
