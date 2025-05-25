@@ -1,11 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { PersonaService } from '../service/persona.service';
-import { ModalService } from '../../modal/modal.service';
 import { CommonModule, Location } from '@angular/common';
-import { Persona } from '../../models/persona';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import * as AOS from 'aos';
+import { ModalService } from '../../modal/modal.service';
+import { Persona } from '../../models/persona';
+import { PersonaService } from '../service/persona.service';
 
 @Component({
   selector: 'app-persona-detail',
@@ -80,6 +81,14 @@ export class PersonaDetailComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // Inicializar AOS
+    AOS.init({
+      duration: 800,
+      easing: 'ease-in-out',
+      once: true,
+      offset: 100
+    });
+
     this.get();
   }
 }

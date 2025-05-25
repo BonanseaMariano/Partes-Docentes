@@ -3,10 +3,11 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import * as AOS from 'aos';
 import { ModalService } from '../../modal/modal.service';
 import { Division } from '../../models/division';
-import { DivisionService } from '../service/division.service';
 import { Turno } from '../../models/turno';
+import { DivisionService } from '../service/division.service';
 
 @Component({
     selector: 'app-division-detail',
@@ -82,6 +83,14 @@ export class DivisionDetailComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        // Inicializar AOS
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true,
+            offset: 100
+        });
+
         this.get();
     }
 }

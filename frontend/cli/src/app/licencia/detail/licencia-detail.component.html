@@ -1,12 +1,12 @@
-<div *ngIf="licencia" class="card shadow-sm mb-4">
-    <div class="card-header bg-light">
+<div *ngIf="licencia" class="card shadow-sm mb-4" data-aos="fade-up" data-aos-delay="200">
+    <div class="card-header bg-light" data-aos="fade-down" data-aos-delay="400">
         <h2 class="mb-0"><i class="fa fa-calendar-check me-2 me-2"></i>{{ tituloFormulario }}</h2>
     </div>
 
     <div class="card-body">
         <form #form="ngForm" class="row g-3">
             <!-- Primera fila: Persona -->
-            <div class="col-12 mb-3">
+            <div class="col-12 mb-3" data-aos="fade-right" data-aos-delay="600">
                 <label for="persona" class="form-label text-primary fw-bold">Persona</label>
                 <div class="row g-2">
                     <!-- Campo de búsqueda de personas -->
@@ -31,8 +31,9 @@
             </div>
 
             <!-- Campos de información de la persona seleccionada -->
-            <div *ngIf="licencia.persona && licencia.persona.dni" class="row mb-3">
-                <div class="col-md-4">
+            <div *ngIf="licencia.persona && licencia.persona.dni" class="row mb-3" data-aos="zoom-in"
+                data-aos-delay="200">
+                <div class="col-md-4" data-aos="flip-left" data-aos-delay="300">
                     <div class="input-group">
                         <span class="input-group-text bg-secondary text-white">
                             <i class="fa fa-id-card"></i>
@@ -43,7 +44,7 @@
                     <small class="text-secondary">DNI</small>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-4" data-aos="flip-left" data-aos-delay="400">
                     <div class="input-group">
                         <span class="input-group-text bg-secondary text-white">
                             <i class="fa fa-user"></i>
@@ -54,7 +55,7 @@
                     <small class="text-secondary">Nombre</small>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-4" data-aos="flip-left" data-aos-delay="500">
                     <div class="input-group">
                         <span class="input-group-text bg-secondary text-white">
                             <i class="fa fa-user"></i>
@@ -67,7 +68,7 @@
             </div>
 
             <!-- Segunda fila: Artículo de Licencia -->
-            <div class="col-12 mb-3">
+            <div class="col-12 mb-3" data-aos="fade-left" data-aos-delay="700">
                 <label for="articulo" class="form-label text-primary fw-bold">Artículo</label>
                 <div class="row g-2">
                     <!-- Campo de búsqueda de artículos -->
@@ -92,8 +93,9 @@
             </div>
 
             <!-- Información del artículo seleccionado -->
-            <div *ngIf="licencia.articuloLicencia && licencia.articuloLicencia.articulo" class="row mb-3">
-                <div class="col-md-4">
+            <div *ngIf="licencia.articuloLicencia && licencia.articuloLicencia.articulo" class="row mb-3"
+                data-aos="slide-up" data-aos-delay="400">
+                <div class="col-md-4" data-aos="flip-left" data-aos-delay="500">
                     <div class="input-group">
                         <span class="input-group-text bg-secondary text-white">
                             <i class="fa fa-file-alt"></i>
@@ -104,7 +106,8 @@
                     <small class="text-secondary">Artículo</small>
                 </div>
 
-                <div class="col-md-8" *ngIf="licencia.articuloLicencia?.descripcion">
+                <div class="col-md-8" *ngIf="licencia.articuloLicencia?.descripcion" data-aos="flip-left"
+                    data-aos-delay="600">
                     <div class="input-group">
                         <span class="input-group-text bg-secondary text-white">
                             <i class="fa fa-info-circle"></i>
@@ -117,7 +120,7 @@
             </div>
 
             <!-- Tercera fila: Fechas -->
-            <div class="col-md-6 mb-3">
+            <div class="col-md-6 mb-3" data-aos="fade-up" data-aos-delay="700">
                 <label for="fechaDesde" class="form-label text-primary fw-bold">Vigencia Desde</label>
                 <div class="input-group">
                     <span class="input-group-text bg-primary text-white">
@@ -137,24 +140,28 @@
                 </div>
             </div>
 
-            <div class="col-md-6 mb-3">
+            <div class="col-md-6 mb-3" data-aos="fade-up" data-aos-delay="700">
                 <label for="fechaHasta" class="form-label text-primary fw-bold">Vigencia Hasta</label>
                 <div class="input-group">
                     <span class="input-group-text bg-primary text-white">
                         <i class="fa fa-calendar-alt"></i>
                     </span>
-                    <input id="fechaHasta" name="fechaHasta" class="form-control" placeholder="yyyy-mm-dd"
-                        [(ngModel)]="fechaHastaDate" ngbDatepicker #fechaHastaPicker="ngbDatepicker"
-                        (ngModelChange)="onDateChange()" />
+                    <input #fechaHasta="ngModel" id="fechaHasta" name="fechaHasta" class="form-control"
+                        placeholder="yyyy-mm-dd" [(ngModel)]="fechaHastaDate" ngbDatepicker
+                        #fechaHastaPicker="ngbDatepicker" required (ngModelChange)="onDateChange()" />
                     <button class="btn btn-outline-secondary calendar" (click)="fechaHastaPicker.toggle()"
                         type="button">
                         <i class="fa fa-calendar-alt"></i>
                     </button>
                 </div>
+                <div *ngIf="fechaHasta.invalid && (fechaHasta.dirty || fechaHasta.touched)"
+                    class="text-danger small mt-1">
+                    <i class="fa fa-exclamation-circle me-1"></i>La fecha de finalización es requerida
+                </div>
             </div>
 
             <!-- Cuarta fila: Certificado Médico -->
-            <div class="col-md-12 mb-3">
+            <div class="col-md-12 mb-3" data-aos="zoom-in" data-aos-delay="800">
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" id="certificadoMedico" name="certificadoMedico"
                         [(ngModel)]="licencia.certificadoMedico" (change)="onCertificadoMedicoChange()">
@@ -166,11 +173,12 @@
         </form>
     </div>
 
-    <div class="card-footer bg-light text-end">
-        <button (click)="goBack()" class="btn btn-outline-secondary me-2">
+    <div class="card-footer bg-light text-end" data-aos="fade-up" data-aos-delay="1000">
+        <button (click)="goBack()" class="btn btn-outline-secondary me-2" data-aos="slide-right" data-aos-delay="1200">
             <i class="fa fa-arrow-left me-1"></i>Cancelar
         </button>
-        <button (click)="save()" class="btn btn-success" [disabled]="!formularioValido">
+        <button (click)="save()" class="btn btn-success" [disabled]="!formularioValido" data-aos="slide-left"
+            data-aos-delay="1200">
             <i class="fa fa-save me-1"></i>Guardar
         </button>
     </div>

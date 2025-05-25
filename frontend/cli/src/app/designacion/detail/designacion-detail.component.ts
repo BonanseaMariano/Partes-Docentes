@@ -3,6 +3,7 @@ import { AfterViewChecked, ChangeDetectorRef, Component, OnInit, ViewChild } fro
 import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { NgbCalendar, NgbDatepickerModule, NgbDateStruct, NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import * as AOS from 'aos';
 import { Observable, of } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators';
 import { CargoService } from '../../cargo/service/cargo.service';
@@ -311,6 +312,14 @@ export class DesignacionDetailComponent implements OnInit, AfterViewChecked {
     }
 
     ngOnInit(): void {
+        // Inicializar AOS
+        AOS.init({
+            duration: 800, // Duración de las animaciones
+            easing: 'ease-in-out', // Tipo de easing
+            once: true, // Las animaciones solo se ejecutan una vez
+            offset: 100, // Offset desde el viewport
+        });
+
         this.get();
     }
 }

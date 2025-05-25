@@ -1,12 +1,12 @@
-<div *ngIf="designacion" class="card shadow-sm mb-4">
-    <div class="card-header bg-light">
+<div *ngIf="designacion" class="card shadow-sm mb-4" data-aos="fade-up" data-aos-duration="800">
+    <div class="card-header bg-light" data-aos="fade-down" data-aos-delay="200">
         <h2 class="mb-0"><i class="fa fa-user-tie me-2"></i>{{ tituloFormulario }}</h2>
     </div>
 
-    <div class="card-body">
+    <div class="card-body" data-aos="fade-up" data-aos-delay="300">
         <form #form="ngForm" class="row g-3">
             <!-- Primera fila: Persona -->
-            <div class="col-12 mb-3">
+            <div class="col-12 mb-3" data-aos="fade-right" data-aos-delay="400">
                 <label for="persona" class="form-label text-primary fw-bold">Persona</label>
                 <div class="row g-2">
                     <!-- Campo de búsqueda de personas -->
@@ -32,8 +32,9 @@
             </div>
 
             <!-- Campos de información de la persona seleccionada -->
-            <div *ngIf="designacion.persona && designacion.persona.dni" class="row mb-3">
-                <div class="col-md-4">
+            <div *ngIf="designacion.persona && designacion.persona.dni" class="row mb-3" data-aos="zoom-in"
+                data-aos-delay="200">
+                <div class="col-md-4" data-aos="flip-left" data-aos-delay="200">
                     <div class="input-group">
                         <span class="input-group-text bg-secondary text-white">
                             <i class="fa fa-id-card"></i>
@@ -44,7 +45,7 @@
                     <small class="text-secondary">DNI</small>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-4" data-aos="flip-left" data-aos-delay="300">
                     <div class="input-group">
                         <span class="input-group-text bg-secondary text-white">
                             <i class="fa fa-user"></i>
@@ -55,7 +56,7 @@
                     <small class="text-secondary">Nombre</small>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-4" data-aos="flip-left" data-aos-delay="400">
                     <div class="input-group">
                         <span class="input-group-text bg-secondary text-white">
                             <i class="fa fa-user"></i>
@@ -68,7 +69,7 @@
             </div>
 
             <!-- Segunda fila: Cargo -->
-            <div class="col-12 mb-3">
+            <div class="col-12 mb-3" data-aos="fade-left" data-aos-delay="900">
                 <label for="cargo" class="form-label text-primary fw-bold">Cargo</label>
                 <div class="row g-2">
                     <!-- Campo de búsqueda de cargos -->
@@ -95,8 +96,9 @@
             </div>
 
             <!-- Información del cargo seleccionado -->
-            <div *ngIf="designacion.cargo && designacion.cargo.tipoDesignacion" class="row mb-3">
-                <div class="col-md-4">
+            <div *ngIf="designacion.cargo && designacion.cargo.tipoDesignacion" class="row mb-3" data-aos="zoom-in"
+                data-aos-delay="200">
+                <div class="col-md-4" data-aos="slide-up" data-aos-delay="300">
                     <div class="input-group">
                         <span class="input-group-text bg-secondary text-white">
                             <i class="fa fa-list"></i>
@@ -111,7 +113,7 @@
                     <small class="text-secondary">Tipo</small>
                 </div>
 
-                <div class="col-md-4" *ngIf="designacion.cargo?.cargaHoraria">
+                <div class="col-md-4" *ngIf="designacion.cargo?.cargaHoraria" data-aos="slide-up" data-aos-delay="400">
                     <div class="input-group">
                         <span class="input-group-text bg-secondary text-white">
                             <i class="fa fa-clock"></i>
@@ -123,7 +125,7 @@
                 </div>
 
                 <!-- Información de la división (si el cargo tiene una asignada) -->
-                <div class="col-md-4" *ngIf="designacion.cargo?.division">
+                <div class="col-md-4" *ngIf="designacion.cargo?.division" data-aos="slide-up" data-aos-delay="500">
                     <div class="input-group">
                         <span class="input-group-text bg-secondary text-white">
                             <i class="fa fa-layer-group"></i>
@@ -136,7 +138,7 @@
             </div>
 
             <!-- Tercera fila: Situación de revista -->
-            <div class="col-md-12 mb-3">
+            <div class="col-md-12 mb-3" data-aos="fade-right" data-aos-delay="1400">
                 <label for="situacionRevista" class="form-label text-primary fw-bold">Situación de revista</label>
                 <div class="input-group">
                     <span class="input-group-text bg-primary text-white">
@@ -149,7 +151,7 @@
             </div>
 
             <!-- Cuarta fila: Fechas -->
-            <div class="col-md-6 mb-3">
+            <div class="col-md-6 mb-3" data-aos="fade-up" data-aos-delay="1500">
                 <label for="fechaInicio" class="form-label text-primary fw-bold">Vigencia Desde</label>
                 <div class="input-group">
                     <span class="input-group-text bg-primary text-white">
@@ -170,7 +172,7 @@
                 </div>
             </div>
 
-            <div class="col-md-6 mb-3">
+            <div class="col-md-6 mb-3" data-aos="fade-up" data-aos-delay="1600">
                 <label for="fechaFin" class="form-label text-primary fw-bold">Vigencia Hasta</label>
                 <div class="input-group">
                     <span class="input-group-text bg-primary text-white">
@@ -188,11 +190,12 @@
         </form>
     </div>
 
-    <div class="card-footer bg-light text-end">
-        <button (click)="goBack()" class="btn btn-outline-secondary me-2">
+    <div class="card-footer bg-light text-end" data-aos="fade-up" data-aos-delay="1700">
+        <button (click)="goBack()" class="btn btn-outline-secondary me-2" data-aos="slide-right" data-aos-delay="1800">
             <i class="fa fa-arrow-left me-1"></i>Cancelar
         </button>
-        <button (click)="save()" class="btn btn-success" [disabled]="!formularioValido">
+        <button (click)="save()" class="btn btn-success" [disabled]="!formularioValido" data-aos="slide-left"
+            data-aos-delay="1900">
             <i class="fa fa-save me-1"></i>Guardar
         </button>
     </div>

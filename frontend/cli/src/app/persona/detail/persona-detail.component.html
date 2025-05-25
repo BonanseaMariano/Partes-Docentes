@@ -1,12 +1,12 @@
-<div *ngIf="persona" class="card shadow-sm mb-4">
-    <div class="card-header bg-light">
+<div *ngIf="persona" class="card shadow-sm mb-4" data-aos="fade-up" data-aos-delay="200">
+    <div class="card-header bg-light" data-aos="fade-down" data-aos-delay="400">
         <h2 class="mb-0"><i class="fa fa-user me-2"></i>{{ tituloFormulario }}</h2>
     </div>
 
     <div class="card-body">
         <form #form="ngForm" class="row g-3">
             <!-- Primera fila: Nombre y Apellido -->
-            <div class="col-md-6 mb-3">
+            <div class="col-md-6 mb-3" data-aos="fade-right" data-aos-delay="600">
                 <label for="nombre" class="form-label text-primary fw-bold">Nombre</label>
                 <div class="input-group">
                     <span class="input-group-text bg-primary text-white">
@@ -20,7 +20,7 @@
                 </div>
             </div>
 
-            <div class="col-md-6 mb-3">
+            <div class="col-md-6 mb-3" data-aos="fade-left" data-aos-delay="800">
                 <label for="apellido" class="form-label text-primary fw-bold">Apellido</label>
                 <div class="input-group">
                     <span class="input-group-text bg-primary text-white">
@@ -35,7 +35,7 @@
             </div>
 
             <!-- Segunda fila: DNI y CUIL -->
-            <div class="col-md-6 mb-3">
+            <div class="col-md-6 mb-3" data-aos="fade-right" data-aos-delay="1000">
                 <label for="dni" class="form-label text-primary fw-bold">DNI</label>
                 <div class="input-group">
                     <span class="input-group-text bg-primary text-white">
@@ -53,7 +53,7 @@
                 </div>
             </div>
 
-            <div class="col-md-6 mb-3">
+            <div class="col-md-6 mb-3" data-aos="fade-left" data-aos-delay="1200">
                 <label for="cuil" class="form-label text-primary fw-bold">CUIL</label>
                 <div class="input-group">
                     <span class="input-group-text bg-primary text-white">
@@ -72,7 +72,7 @@
             </div>
 
             <!-- Tercera fila: Sexo y Título -->
-            <div class="col-md-6 mb-3">
+            <div class="col-md-6 mb-3" data-aos="zoom-in" data-aos-delay="1400">
                 <label for="sexo" class="form-label text-primary fw-bold">Sexo</label>
                 <div class="input-group">
                     <span class="input-group-text bg-primary text-white">
@@ -91,7 +91,7 @@
                 </div>
             </div>
 
-            <div class="col-md-6 mb-3">
+            <div class="col-md-6 mb-3" data-aos="zoom-in" data-aos-delay="1600">
                 <label for="titulo" class="form-label text-primary fw-bold">Título</label>
                 <div class="input-group">
                     <span class="input-group-text bg-primary text-white">
@@ -103,7 +103,7 @@
             </div>
 
             <!-- Cuarta fila: Domicilio y Teléfono -->
-            <div class="col-md-6 mb-3">
+            <div class="col-md-6 mb-3" data-aos="flip-left" data-aos-delay="1800">
                 <label for="domicilio" class="form-label text-primary fw-bold">Domicilio</label>
                 <div class="input-group">
                     <span class="input-group-text bg-primary text-white">
@@ -114,7 +114,7 @@
                 </div>
             </div>
 
-            <div class="col-md-6 mb-3">
+            <div class="col-md-6 mb-3" data-aos="flip-left" data-aos-delay="2000">
                 <label for="telefono" class="form-label text-primary fw-bold">Teléfono</label>
                 <div class="input-group">
                     <span class="input-group-text bg-primary text-white">
@@ -127,11 +127,12 @@
         </form>
     </div>
 
-    <div class="card-footer bg-light text-end">
-        <button (click)="goBack()" class="btn btn-outline-secondary me-2">
+    <div class="card-footer bg-light text-end" data-aos="fade-up" data-aos-delay="2200">
+        <button (click)="goBack()" class="btn btn-outline-secondary me-2" data-aos="slide-right" data-aos-delay="2400">
             <i class="fa fa-arrow-left me-1"></i>Volver
         </button>
-        <button (click)="save()" class="btn btn-success" [disabled]="form.invalid">
+        <button (click)="save()" class="btn btn-success" [disabled]="form.invalid" data-aos="slide-left"
+            data-aos-delay="2600">
             <i class="fa fa-save me-1"></i>Guardar
         </button>
     </div>
