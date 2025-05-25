@@ -28,70 +28,52 @@ public class SolapamientoDesignacionRule implements DesignacionValidationRule {
     private LicenciaRepository licenciaRepository;
 
     @Override
-    public void validate(Designacion designacion) throws BusinessLogicException {
-        // Obtenemos el ID de la designación (será null si es nueva)
-        Integer designacionId = designacion.getId() > 0 ? designacion.getId() : null;
+    public void validate(Designacion nuevaDesignacion) throws BusinessLogicException {
 
-        // Buscamos designaciones que se solapen con la misma
+        Integer designacionIdOriginal = (nuevaDesignacion.getId() > 0) ? nuevaDesignacion.getId() : null;
+
+        // Buscar TODAS las designaciones existentes para el MISMO CARGO que se SOLAPEN en el tiempo con la nuevaDesignacion
         List<Designacion> designacionesSuperpuestas = designacionRepository.findDesignacionesSuperpuestas(
-                designacion.getCargo().getId(),
-                designacion.getFechaInicio(),
-                designacion.getFechaFin(),
-                designacionId);
-
-        if (!designacionesSuperpuestas.isEmpty()) {
-            validarSuperposicion(designacion, designacionesSuperpuestas.get(0));
-        }
-    }
-
-    /**
-     * Valida si la superposición es permitida debido a licencias u otro motivo
-     * válido
-     */
-    private void validarSuperposicion(Designacion nuevaDesignacion, Designacion designacionExistente)
-            throws BusinessLogicException {
-        Persona personaExistente = designacionExistente.getPersona();
-        Cargo cargoExistente = designacionExistente.getCargo();
-
-        // Verificamos si la persona con designación existente tiene una licencia
-        List<Licencia> licenciasActivas = licenciaRepository.findLicenciasSuperPuestas(
-                personaExistente.getDni(),
+                nuevaDesignacion.getCargo().getId(),
                 nuevaDesignacion.getFechaInicio(),
                 nuevaDesignacion.getFechaFin(),
-                null);
+                designacionIdOriginal); // Se excluye a sí misma en caso de actualización
 
-        if (!licenciasActivas.isEmpty()) {
-            manejarCasoConLicencias(nuevaDesignacion, cargoExistente, personaExistente, licenciasActivas);
-        } else {
-            manejarCasoSinLicencias(nuevaDesignacion, cargoExistente, personaExistente);
-        }
-    }
-
-    /**
-     * Maneja la validación cuando hay licencias activas
-     */
-    private void manejarCasoConLicencias(Designacion nuevaDesignacion, Cargo cargoExistente,
-            Persona personaExistente, List<Licencia> licenciasActivas) throws BusinessLogicException {
-
-        // TODO
-        boolean periodoValido = licenciasActivas.stream()
-                .anyMatch(licencia -> licencia.getPedidoDesde().compareTo(nuevaDesignacion.getFechaInicio()) <= 0 &&
-                        licencia.getPedidoHasta().compareTo(nuevaDesignacion.getFechaFin()) >= 0);
-
-        if (periodoValido) {
-            // Es un reemplazo válido por licencia, permitir la designación
+        if (designacionesSuperpuestas.isEmpty()) {
+            // No hay ninguna designación superpuesta para el mismo cargo. La nueva designación es válida.
             return;
         }
 
-        // Es una superposición con licencia parcial, no permitir
-        throw new BusinessLogicException(
-                String.format(
-                        "%s %s NO ha sido designado/a como %s, ya cuenta con %s %s asignada al mismo en el período",
-                        nuevaDesignacion.getPersona().getNombre(),
-                        nuevaDesignacion.getPersona().getApellido(),
-                        cargoExistente.getNombre(),
-                        personaExistente.getNombre(),
-                        personaExistente.getApellido()));
+        for (Designacion designacionExistente : designacionesSuperpuestas) {
+            Persona personaExistente = designacionExistente.getPersona();
+            Cargo cargoExistente = designacionExistente.getCargo();
+
+            List<Licencia> licenciasDePersonaExistente = licenciaRepository.findLicenciasSuperPuestas(
+                    personaExistente.getDni(),
+                    nuevaDesignacion.getFechaInicio(), // Período de la NUEVA designación
+                    nuevaDesignacion.getFechaFin(), // Período de la NUEVA designación
+                    null); // No se excluye ninguna licencia específica para esta comprobación
+
+            if (licenciasDePersonaExistente.isEmpty()) {
+                manejarCasoSinLicencias(nuevaDesignacion, cargoExistente, personaExistente);
+                return;
+            } else {
+                boolean esReemplazoValidoParaEstaExistente = licenciasDePersonaExistente.stream()
+                        .anyMatch(lic -> lic.getPedidoDesde().compareTo(nuevaDesignacion.getFechaInicio()) <= 0
+                        && lic.getPedidoHasta().compareTo(nuevaDesignacion.getFechaFin()) >= 0);
+
+                if (!esReemplazoValidoParaEstaExistente) {
+                    throw new BusinessLogicException(
+                            String.format(
+                                    "%s %s NO ha sido designado/a como %s, ya cuenta con %s %s asignada al mismo en el período",
+                                    nuevaDesignacion.getPersona().getNombre(),
+                                    nuevaDesignacion.getPersona().getApellido(),
+                                    cargoExistente.getNombre(),
+                                    personaExistente.getNombre(),
+                                    personaExistente.getApellido()));
+                }
+            }
+        }
     }
 
     /**
