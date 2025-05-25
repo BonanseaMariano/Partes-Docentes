@@ -1,5 +1,8 @@
 package unpsjb.labprog.backend.presenter;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
@@ -21,16 +24,21 @@ import unpsjb.labprog.backend.utils.constants.AppConstants;
 
 /**
  * Controlador REST para la gestión de licencias en el sistema educativo.
- * Proporciona endpoints para crear, consultar, actualizar y eliminar
- * licencias.
+ * Proporciona endpoints para crear, consultar, actualizar y eliminar licencias.
  * Las licencias representan permisos o ausencias de personal dentro de la
  * institución educativa.
- * 
+ *
  * @see Licencia
  */
 @RestController
 @RequestMapping("licencias")
 public class LicenciaPresenter {
+
+    /**
+     * Logger de la clase para registrar eventos y mensajes.
+     */
+    private Logger logger = Logger.getLogger(getClass().getSimpleName());
+
     /**
      * Servicio que implementa la lógica de negocio para las operaciones con
      * licencias.
@@ -40,9 +48,9 @@ public class LicenciaPresenter {
 
     /**
      * Obtiene todas las licencias registradas en el sistema.
-     * 
+     *
      * @return ResponseEntity con la lista completa de licencias si la operación
-     *         es exitosa
+     * es exitosa
      */
     @GetMapping
     public ResponseEntity<Object> findAll() {
@@ -51,10 +59,10 @@ public class LicenciaPresenter {
 
     /**
      * Busca una licencia específica por su identificador único.
-     * 
+     *
      * @param id Identificador único de la licencia a buscar
-     * @return ResponseEntity con la licencia encontrada o un mensaje de error si
-     *         no existe
+     * @return ResponseEntity con la licencia encontrada o un mensaje de error
+     * si no existe
      */
     @GetMapping("/{id}")
     public ResponseEntity<Object> findById(@PathVariable int id) {
@@ -65,10 +73,10 @@ public class LicenciaPresenter {
 
     /**
      * Crea una nueva licencia en el sistema.
-     * 
+     *
      * @param aLicencia Objeto Licencia con los datos a registrar
-     * @return ResponseEntity con un mensaje de éxito si la operación es correcta o
-     *         error en caso contrario
+     * @return ResponseEntity con un mensaje de éxito si la operación es
+     * correcta o error en caso contrario
      */
     @PostMapping
     public ResponseEntity<Object> create(@RequestBody Licencia aLicencia) {
@@ -82,10 +90,12 @@ public class LicenciaPresenter {
                     createdLicencia.getPersona().getNombre(),
                     createdLicencia.getPersona().getApellido());
 
+            logger.log(Level.INFO, mensaje);
             return Response.ok(null, mensaje);
         } catch (BusinessLogicException e) {
             // Capturar excepciones de validación de negocio y devolver error 422 (Entidad
             // no procesable)
+            logger.log(Level.INFO, e.getMessage());
             return Response.internalServerError(e.getMessage());
         } catch (DataIntegrityViolationException e) {
             return Response.dbError("No se puede crear la licencia debido a que ya existe otra idéntica");
@@ -94,10 +104,10 @@ public class LicenciaPresenter {
 
     /**
      * Actualiza una licencia existente en el sistema.
-     * 
+     *
      * @param aLicencia Objeto Licencia con los datos actualizados
-     * @return ResponseEntity con un mensaje de éxito si la operación es correcta o
-     *         error en caso contrario
+     * @return ResponseEntity con un mensaje de éxito si la operación es
+     * correcta o error en caso contrario
      */
     @PutMapping
     public ResponseEntity<Object> update(@RequestBody Licencia aLicencia) {
@@ -118,10 +128,12 @@ public class LicenciaPresenter {
                     updatedLicencia.getPersona().getNombre(),
                     updatedLicencia.getPersona().getApellido());
 
+            logger.log(Level.INFO, mensaje);
             return Response.ok(null, mensaje);
         } catch (BusinessLogicException e) {
             // Capturar excepciones de validación de negocio y devolver error 422 (Entidad
             // no procesable)
+            logger.log(Level.INFO, e.getMessage());
             return Response.internalServerError(e.getMessage());
         } catch (DataIntegrityViolationException e) {
             return Response.dbError("No se puede actualizar la licencia debido a que ya existe otra idéntica");
@@ -130,10 +142,10 @@ public class LicenciaPresenter {
 
     /**
      * Elimina una licencia existente según su ID.
-     * 
+     *
      * @param id Identificador único de la licencia a eliminar
-     * @return ResponseEntity con un mensaje de éxito si la operación es correcta o
-     *         error en caso contrario
+     * @return ResponseEntity con un mensaje de éxito si la operación es
+     * correcta o error en caso contrario
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> delete(@PathVariable int id) {
@@ -149,6 +161,8 @@ public class LicenciaPresenter {
                     deletedLicencia.getArticuloLicencia().getArticulo(),
                     deletedLicencia.getPersona().getNombre(),
                     deletedLicencia.getPersona().getApellido());
+
+            logger.log(Level.INFO, mensaje);
             return Response.ok(null, mensaje);
         } catch (Exception e) {
             return Response.dbError("No se puede eliminar la licencia debido a dependencias existentes");
@@ -158,7 +172,7 @@ public class LicenciaPresenter {
     /**
      * Obtiene una página de licencias para implementar paginación en el
      * cliente.
-     * 
+     *
      * @param page Número de página solicitada (comienza en 0)
      * @param size Cantidad de elementos por página
      * @return ResponseEntity con la página de licencias solicitada

@@ -1,5 +1,8 @@
 package unpsjb.labprog.backend.presenter;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
@@ -23,15 +26,19 @@ import unpsjb.labprog.backend.utils.constants.AppConstants;
 
 /**
  * Controlador REST para la gestión de cargos en el sistema educativo.
- * Proporciona endpoints para crear, consultar, actualizar y eliminar
- * cargos.
+ * Proporciona endpoints para crear, consultar, actualizar y eliminar cargos.
  * Los cargos representan posiciones o roles dentro de la institución educativa.
- * 
+ *
  * @see Cargo
  */
 @RestController
 @RequestMapping("cargos")
 public class CargoPresenter {
+
+    /**
+     * Logger de la clase para registrar eventos y mensajes.
+     */
+    private Logger logger = Logger.getLogger(getClass().getSimpleName());
 
     /**
      * Servicio que implementa la lógica de negocio para las operaciones con
@@ -42,9 +49,9 @@ public class CargoPresenter {
 
     /**
      * Obtiene todos los cargos en el sistema
-     * 
+     *
      * @return ResponseEntity con la lista completa de cargos si la operación es
-     *         exitosa
+     * exitosa
      */
     @GetMapping
     public ResponseEntity<Object> findAll() {
@@ -53,7 +60,7 @@ public class CargoPresenter {
 
     /**
      * Busca un cargo por su ID
-     * 
+     *
      * @param id ID del cargo
      * @return ResponseEntity con el cargo encontrado o mensaje de error
      */
@@ -66,10 +73,10 @@ public class CargoPresenter {
 
     /**
      * Crea un nuevo cargo en el sistema.
-     * 
+     *
      * @param aCargo Objeto Cargo con los datos a registrar
-     * @return ResponseEntity con un mensaje de éxito si la operación es correcta o
-     *         error en caso contrario
+     * @return ResponseEntity con un mensaje de éxito si la operación es
+     * correcta o error en caso contrario
      */
     @PostMapping
     public ResponseEntity<Object> create(@RequestBody Cargo aCargo) {
@@ -93,10 +100,12 @@ public class CargoPresenter {
                         createdCargo.getNombre());
             }
 
+            logger.log(Level.INFO, mensaje);
             return Response.ok(null, mensaje);
         } catch (BusinessLogicException e) {
             // Capturar excepciones de validación de negocio y devolver error 422 (Entidad
             // no procesable)
+            logger.log(Level.INFO, e.getMessage());
             return Response.internalServerError(e.getMessage());
         } catch (DataIntegrityViolationException e) {
             return Response.dbError("No se puede crear el cargo debido a que ya existe otro identico");
@@ -105,10 +114,10 @@ public class CargoPresenter {
 
     /**
      * Actualiza un cargo existente en el sistema.
-     * 
+     *
      * @param aCargo Objeto Cargo con los datos actualizados
-     * @return ResponseEntity con un mensaje de éxito si la operación es correcta o
-     *         error en caso contrario
+     * @return ResponseEntity con un mensaje de éxito si la operación es
+     * correcta o error en caso contrario
      */
     @PutMapping
     public ResponseEntity<Object> update(@RequestBody Cargo aCargo) {
@@ -137,9 +146,11 @@ public class CargoPresenter {
                 mensaje = String.format("Cargo de %s actualizado correctamente", updatedCargo.getNombre());
             }
 
+            logger.log(Level.INFO, mensaje);
             return Response.ok(null, mensaje);
         } catch (BusinessLogicException e) {
             // Capturar excepciones de validación de negocio y devolver error 501
+            logger.log(Level.INFO, e.getMessage());
             return Response.internalServerError(e.getMessage());
         } catch (DataIntegrityViolationException e) {
             return Response.dbError("No se puede actualizar el cargo debido a que ya existe otro identico");
@@ -148,10 +159,10 @@ public class CargoPresenter {
 
     /**
      * Elimina un cargo existente según su ID.
-     * 
+     *
      * @param id Identificador único del cargo a eliminar
-     * @return ResponseEntity con un mensaje de éxito si la operación es correcta o
-     *         error en caso contrario
+     * @return ResponseEntity con un mensaje de éxito si la operación es
+     * correcta o error en caso contrario
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> delete(@PathVariable Integer id) {
@@ -162,6 +173,8 @@ public class CargoPresenter {
             String mensaje = String.format("Cargo %s %s eliminado correctamente",
                     deletedCargo.getTipoDesignacion().getValor(),
                     deletedCargo.getNombre());
+
+            logger.log(Level.INFO, mensaje);
             return Response.ok(null, mensaje);
         } catch (Exception e) {
             return Response.dbError("No se puede eliminar el cargo debido a dependencias existentes");
@@ -170,7 +183,7 @@ public class CargoPresenter {
 
     /**
      * Obtiene una página de cargos para implementar paginación en el cliente.
-     * 
+     *
      * @param page Número de página solicitada (comienza en 0)
      * @param size Cantidad de elementos por página
      * @return ResponseEntity con la página de divisiones solicitada
@@ -183,7 +196,7 @@ public class CargoPresenter {
 
     /**
      * Busca personas por un término de búsqueda.
-     * 
+     *
      * @param term el término de búsqueda
      * @return una lista de personas que coinciden con el término de búsqueda
      */
@@ -195,15 +208,15 @@ public class CargoPresenter {
     /**
      * Busca un cargo por su nombre, tipo de designación y opcionalmente por los
      * atributos de la división
-     * 
-     * @param nombre          Nombre del cargo a buscar
+     *
+     * @param nombre Nombre del cargo a buscar
      * @param tipoDesignacion Tipo de designación del cargo a buscar (CARGO o
-     *                        ESPACIO_CURRICULAR)
-     * @param anio            Año de la división (opcional)
-     * @param numDivision     Número de la división (opcional)
-     * @param turno           Turno de la división (opcional)
+     * ESPACIO_CURRICULAR)
+     * @param anio Año de la división (opcional)
+     * @param numDivision Número de la división (opcional)
+     * @param turno Turno de la división (opcional)
      * @return ResponseEntity con el cargo encontrado o mensaje de error si no
-     *         existe
+     * existe
      */
     @GetMapping("/find")
     public ResponseEntity<Object> findByNombreAndTipoDesignacionAndDivision(

@@ -1,5 +1,8 @@
 package unpsjb.labprog.backend.presenter;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
@@ -19,15 +22,19 @@ import unpsjb.labprog.backend.model.Persona;
 import unpsjb.labprog.backend.utils.constants.AppConstants;
 
 /**
- * Controlador REST para la gestión de personas en el sistema.
- * Proporciona endpoints para crear, consultar, actualizar y eliminar registros
- * de personas.
+ * Controlador REST para la gestión de personas en el sistema. Proporciona
+ * endpoints para crear, consultar, actualizar y eliminar registros de personas.
  * Permite buscar personas por su DNI o CUIL y manejar la paginación de
  * resultados.
  */
 @RestController
 @RequestMapping("personas")
 public class PersonaPresenter {
+
+    /**
+     * Logger de la clase para registrar eventos y mensajes.
+     */
+    private Logger logger = Logger.getLogger(getClass().getSimpleName());
 
     /**
      * Servicio que implementa la lógica de negocio para las operaciones con
@@ -38,9 +45,9 @@ public class PersonaPresenter {
 
     /**
      * Obtiene todas las personas registradas en el sistema.
-     * 
-     * @return ResponseEntity con la lista completa de personas si la operación es
-     *         exitosa
+     *
+     * @return ResponseEntity con la lista completa de personas si la operación
+     * es exitosa
      */
     @GetMapping
     public ResponseEntity<Object> findAll() {
@@ -49,10 +56,10 @@ public class PersonaPresenter {
 
     /**
      * Busca una persona específica por su id.
-     * 
+     *
      * @param id id de la persona a buscar
-     * @return ResponseEntity con la persona encontrada o un mensaje de error si no
-     *         existe
+     * @return ResponseEntity con la persona encontrada o un mensaje de error si
+     * no existe
      */
     @GetMapping("/{id}")
     public ResponseEntity<Object> findById(@PathVariable int id) {
@@ -63,10 +70,10 @@ public class PersonaPresenter {
 
     /**
      * Busca una persona específica por su número de DNI.
-     * 
+     *
      * @param dni Número de DNI de la persona a buscar
-     * @return ResponseEntity con la persona encontrada o un mensaje de error si no
-     *         existe
+     * @return ResponseEntity con la persona encontrada o un mensaje de error si
+     * no existe
      */
     @GetMapping("/dni/{dni}")
     public ResponseEntity<Object> findByDni(@PathVariable int dni) {
@@ -77,10 +84,10 @@ public class PersonaPresenter {
 
     /**
      * Busca una persona específica por su número de CUIL.
-     * 
+     *
      * @param cuil Número de CUIL de la persona a buscar
-     * @return ResponseEntity con la persona encontrada o un mensaje de error si no
-     *         existe
+     * @return ResponseEntity con la persona encontrada o un mensaje de error si
+     * no existe
      */
     @GetMapping("/cuil/{cuil}")
     public ResponseEntity<Object> findByCuil(@PathVariable String cuil) {
@@ -91,10 +98,10 @@ public class PersonaPresenter {
 
     /**
      * Crea una nueva persona en el sistema.
-     * 
+     *
      * @param aPersona Objeto Persona con los datos a registrar
-     * @return ResponseEntity con un mensaje de éxito si la operación es correcta o
-     *         error en caso contrario
+     * @return ResponseEntity con un mensaje de éxito si la operación es
+     * correcta o error en caso contrario
      */
     @PostMapping
     public ResponseEntity<Object> create(@RequestBody Persona aPersona) {
@@ -106,6 +113,7 @@ public class PersonaPresenter {
                     createdPersona.getApellido(),
                     createdPersona.getDni());
 
+            logger.log(Level.INFO, mensaje);
             return Response.ok(null, mensaje);
         } catch (DataIntegrityViolationException e) {
             return Response.dbError("Ya existe una persona con el mismo DNI o CUIL");
@@ -114,10 +122,10 @@ public class PersonaPresenter {
 
     /**
      * Actualiza los datos de una persona existente en el sistema.
-     * 
+     *
      * @param aPersona Objeto Persona con los datos actualizados
-     * @return ResponseEntity con un mensaje de éxito si la operación es correcta o
-     *         error en caso contrario
+     * @return ResponseEntity con un mensaje de éxito si la operación es
+     * correcta o error en caso contrario
      */
     @PutMapping
     public ResponseEntity<Object> update(@RequestBody Persona aPersona) {
@@ -133,6 +141,8 @@ public class PersonaPresenter {
                     updatedPersona.getNombre(),
                     updatedPersona.getApellido(),
                     updatedPersona.getDni());
+
+            logger.log(Level.INFO, mensaje);
             return Response.ok(null, mensaje);
         } catch (DataIntegrityViolationException e) {
             return Response.dbError("Ya existe una persona con el mismo DNI o CUIL");
@@ -141,7 +151,7 @@ public class PersonaPresenter {
 
     /**
      * Obtiene una página de personas para implementar paginación en el cliente.
-     * 
+     *
      * @param page Número de página solicitada (comienza en 0)
      * @param size Cantidad de elementos por página
      * @return ResponseEntity con la página de personas solicitada
@@ -153,12 +163,12 @@ public class PersonaPresenter {
     }
 
     /**
-     * Elimina una persona existente según su id.
-     * Verifica primero si la persona tiene asociaciones con otras entidades.
-     * 
+     * Elimina una persona existente según su id. Verifica primero si la persona
+     * tiene asociaciones con otras entidades.
+     *
      * @param id Número de id de la persona a eliminar
-     * @return ResponseEntity con un mensaje de éxito si la operación es correcta o
-     *         error en caso contrario
+     * @return ResponseEntity con un mensaje de éxito si la operación es
+     * correcta o error en caso contrario
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> delete(@PathVariable int id) {
@@ -170,6 +180,8 @@ public class PersonaPresenter {
                     deletedPersona.getNombre(),
                     deletedPersona.getApellido(),
                     deletedPersona.getDni());
+
+            logger.log(Level.INFO, mensaje);
             return Response.ok(null, mensaje);
         } catch (DataIntegrityViolationException e) {
             return Response
@@ -184,7 +196,7 @@ public class PersonaPresenter {
 
     /**
      * Busca personas por un término de búsqueda.
-     * 
+     *
      * @param term el término de búsqueda
      * @return una lista de personas que coinciden con el término de búsqueda
      */

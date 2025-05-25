@@ -1,5 +1,8 @@
 package unpsjb.labprog.backend.presenter;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
@@ -25,10 +28,9 @@ import unpsjb.labprog.backend.utils.constants.AppConstants;
 /**
  * Controlador REST para la gestión de designaciones en el sistema educativo.
  * Proporciona endpoints para crear, consultar, actualizar y eliminar
- * designaciones.
- * Las designaciones representan asignaciones de cargos a personas
- * dentro de la institución educativa.
- * 
+ * designaciones. Las designaciones representan asignaciones de cargos a
+ * personas dentro de la institución educativa.
+ *
  * @see Designacion
  * @see DesignacionService
  * @see DesignacionRepository
@@ -36,6 +38,12 @@ import unpsjb.labprog.backend.utils.constants.AppConstants;
 @RestController
 @RequestMapping("designaciones")
 public class DesignacionPresenter {
+
+    /**
+     * Logger de la clase para registrar eventos y mensajes.
+     */
+    private Logger logger = Logger.getLogger(getClass().getSimpleName());
+
     /**
      * Servicio que implementa la lógica de negocio para las operaciones con
      * designaciones.
@@ -45,9 +53,9 @@ public class DesignacionPresenter {
 
     /**
      * Obtiene todas las designaciones registradas en el sistema.
-     * 
-     * @return ResponseEntity con la lista completa de designaciones si la operación
-     *         es exitosa
+     *
+     * @return ResponseEntity con la lista completa de designaciones si la
+     * operación es exitosa
      */
     @GetMapping
     public ResponseEntity<Object> findAll() {
@@ -56,10 +64,10 @@ public class DesignacionPresenter {
 
     /**
      * Busca una designación específica por su identificador único.
-     * 
+     *
      * @param id Identificador único de la designación a buscar
-     * @return ResponseEntity con la designación encontrada o un mensaje de error si
-     *         no existe
+     * @return ResponseEntity con la designación encontrada o un mensaje de
+     * error si no existe
      */
     @GetMapping("/{id}")
     public ResponseEntity<Object> findById(@PathVariable int id) {
@@ -70,10 +78,10 @@ public class DesignacionPresenter {
 
     /**
      * Crea una nueva designación en el sistema.
-     * 
+     *
      * @param aDesignacion Objeto Designación con los datos a registrar
-     * @return ResponseEntity con un mensaje de éxito si la operación es correcta o
-     *         error en caso contrario
+     * @return ResponseEntity con un mensaje de éxito si la operación es
+     * correcta o error en caso contrario
      */
     @PostMapping
     public ResponseEntity<Object> create(@RequestBody Designacion aDesignacion) {
@@ -111,10 +119,12 @@ public class DesignacionPresenter {
                         personaReemplazada.getApellido());
             }
 
+            logger.log(Level.INFO, mensaje);
             return Response.ok(null, mensaje);
         } catch (BusinessLogicException e) {
             // Capturar excepciones de validación de negocio y devolver error 422 (Entidad
             // no procesable)
+            logger.log(Level.INFO, e.getMessage());
             return Response.internalServerError(e.getMessage());
         } catch (DataIntegrityViolationException e) {
             return Response.dbError("No se puede crear la designación debido a que ya existe otra idéntica");
@@ -123,10 +133,10 @@ public class DesignacionPresenter {
 
     /**
      * Actualiza una designación existente en el sistema.
-     * 
+     *
      * @param aDesignacion Objeto Designación con los datos actualizados
-     * @return ResponseEntity con un mensaje de éxito si la operación es correcta o
-     *         error en caso contrario
+     * @return ResponseEntity con un mensaje de éxito si la operación es
+     * correcta o error en caso contrario
      */
     @PutMapping
     public ResponseEntity<Object> update(@RequestBody Designacion aDesignacion) {
@@ -162,10 +172,12 @@ public class DesignacionPresenter {
                         updatedDesignacion.getCargo().getNombre());
             }
 
+            logger.log(Level.INFO, mensaje);
             return Response.ok(null, mensaje);
         } catch (BusinessLogicException e) {
             // Capturar excepciones de validación de negocio y devolver error 422 (Entidad
             // no procesable)
+            logger.log(Level.INFO, e.getMessage());
             return Response.internalServerError(e.getMessage());
         } catch (DataIntegrityViolationException e) {
             return Response.dbError("No se puede actualizar la designación debido a que ya existe otra idéntica");
@@ -174,10 +186,10 @@ public class DesignacionPresenter {
 
     /**
      * Elimina una designación existente según su ID.
-     * 
+     *
      * @param id Identificador único de la designación a eliminar
-     * @return ResponseEntity con un mensaje de éxito si la operación es correcta o
-     *         error en caso contrario
+     * @return ResponseEntity con un mensaje de éxito si la operación es
+     * correcta o error en caso contrario
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> delete(@PathVariable int id) {
@@ -201,7 +213,7 @@ public class DesignacionPresenter {
     /**
      * Obtiene una página de designaciones para implementar paginación en el
      * cliente.
-     * 
+     *
      * @param page Número de página solicitada (comienza en 0)
      * @param size Cantidad de elementos por página
      * @return ResponseEntity con la página de designaciones solicitada
