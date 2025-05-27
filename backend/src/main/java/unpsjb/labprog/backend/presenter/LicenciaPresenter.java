@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import unpsjb.labprog.backend.Response;
 import unpsjb.labprog.backend.business.service.LicenciaService;
+import unpsjb.labprog.backend.exception.NotModifiableException;
 import unpsjb.labprog.backend.model.Licencia;
 import unpsjb.labprog.backend.model.Log;
 import unpsjb.labprog.backend.model.enums.Estado;
@@ -139,14 +140,15 @@ public class LicenciaPresenter {
                         updatedLicencia.getPersona().getApellido());
             } else {
                 // Extraer el mensaje de error del último log
-                String errorDetail = obtenerMensajeUltimoLog(updatedLicencia);
-                mensaje = "La licencia se actualizó con estado INVÁLIDO: " + errorDetail;
+                mensaje = obtenerMensajeUltimoLog(updatedLicencia);
             }
 
             logger.log(Level.INFO, mensaje);
             return Response.ok(updatedLicencia, mensaje);
         } catch (DataIntegrityViolationException e) {
             return Response.dbError("No se puede actualizar la licencia debido a que ya existe otra idéntica");
+        } catch (NotModifiableException e) {
+            return Response.internalServerError(e.getMessage());
         } catch (Exception e) {
             return Response.internalServerError("Error al actualizar la licencia: " + e.getMessage());
         }

@@ -13,6 +13,7 @@ import jakarta.transaction.Transactional;
 import unpsjb.labprog.backend.business.repository.LicenciaRepository;
 import unpsjb.labprog.backend.business.validator.licencia.LicenciaValidator;
 import unpsjb.labprog.backend.exception.BusinessLogicException;
+import unpsjb.labprog.backend.exception.NotModifiableException;
 import unpsjb.labprog.backend.model.Designacion;
 import unpsjb.labprog.backend.model.Licencia;
 import unpsjb.labprog.backend.model.Log;
@@ -56,7 +57,11 @@ public class LicenciaService {
      * Guarda una licencia aplicando la validación de reglas de negocio El
      * estado de la licencia se establece según el resultado de la validación
      */
-    public Licencia save(Licencia licencia) {
+    public Licencia save(Licencia licencia) throws NotModifiableException {
+        if (licencia.getEstado() != null && licencia.getEstado() == Estado.VALIDO) {
+            throw new NotModifiableException("No se puede modificar una licencia ya validada");
+        }
+
         try {
             // Validar reglas de negocio
             validator.validar(licencia);
