@@ -83,6 +83,14 @@ export class LicenciasComponent {
 
     openLogsPopup(licencia: Licencia): void {
         this.selectedLicencia = licencia;
+        // Si la licencia tiene logs, los ordenamos por fecha y hora, más recientes primero
+        if (licencia.logs && licencia.logs.length > 0) {
+            licencia.logs.sort((a, b) => {
+                const fechaA = new Date(a.fechaHora).getTime();
+                const fechaB = new Date(b.fechaHora).getTime();
+                return fechaB - fechaA; // Orden descendente (más reciente primero)
+            });
+        }
         this.popupService.show(this.logsTemplate, {
             title: `Historial de logs de la licencia`,
             icon: 'fa-history',
