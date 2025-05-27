@@ -278,6 +278,11 @@ h6 {
   box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
 }
 
+/* Estilo para los iconos dentro de las tablas */
+.table .fa {
+  font-size: 1.3rem;
+}
+
 /* Estilo para los íconos dentro de los botones */
 .table .btn-sm .fa {
   font-size: 0.8rem;
@@ -469,7 +474,6 @@ figcaption {
   background-color: var(--color-primary-dark);
 }
 
-/* Estilo para botón de popup cuando está vacío */
 .btn-popup-empty {
   background-color: #6c757d;
   /* gris */
@@ -479,34 +483,5 @@ figcaption {
 .btn-popup-empty:hover {
   background-color: #5a6268;
   /* gris oscuro al pasar el mouse */
-}
-
-/* Mantenemos las clases antiguas por compatibilidad */
-.btn-designaciones {
-  background-color: var(--color-primary);
   color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 4px 12px;
-  font-size: var(--font-size-sm);
-  cursor: pointer;
-  transition: background-color 0.2s;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.btn-designaciones:hover {
-  background-color: var(--color-primary-dark);
-}
-
-.btn-designaciones-empty {
-  background-color: #6c757d;
-  /* gris */
-  color: white;
-}
-
-.btn-designaciones-empty:hover {
-  background-color: #5a6268;
-  /* gris oscuro al pasar el mouse */
 }

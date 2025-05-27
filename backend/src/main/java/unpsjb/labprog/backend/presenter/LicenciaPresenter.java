@@ -18,8 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import unpsjb.labprog.backend.Response;
 import unpsjb.labprog.backend.business.service.LicenciaService;
-import unpsjb.labprog.backend.exception.BusinessLogicException;
 import unpsjb.labprog.backend.model.Licencia;
+import unpsjb.labprog.backend.model.Log;
+import unpsjb.labprog.backend.model.enums.Estado;
 import unpsjb.labprog.backend.utils.constants.AppConstants;
 
 /**
@@ -83,22 +84,26 @@ public class LicenciaPresenter {
         try {
             Licencia createdLicencia = service.save(aLicencia);
 
-            // Formatear el mensaje
-            String mensaje = String.format(
-                    "Se otorga Licencia artículo %s a %s %s",
-                    createdLicencia.getArticuloLicencia().getArticulo(),
-                    createdLicencia.getPersona().getNombre(),
-                    createdLicencia.getPersona().getApellido());
+            String mensaje;
+            // Verificar si la licencia es válida según su estado
+            if (createdLicencia.getEstado() == Estado.VALIDO) {
+                mensaje = String.format(
+                        "Se otorga Licencia artículo %s a %s %s",
+                        createdLicencia.getArticuloLicencia().getArticulo(),
+                        createdLicencia.getPersona().getNombre(),
+                        createdLicencia.getPersona().getApellido());
+            } else {
+                // Extraer el mensaje de error del último log
+                String errorDetail = obtenerMensajeUltimoLog(createdLicencia);
+                return Response.internalServerError(errorDetail);
+            }
 
             logger.log(Level.INFO, mensaje);
-            return Response.ok(null, mensaje);
-        } catch (BusinessLogicException e) {
-            // Capturar excepciones de validación de negocio y devolver error 422 (Entidad
-            // no procesable)
-            logger.log(Level.INFO, e.getMessage());
-            return Response.internalServerError(e.getMessage());
+            return Response.ok(createdLicencia, mensaje);
         } catch (DataIntegrityViolationException e) {
             return Response.dbError("No se puede crear la licencia debido a que ya existe otra idéntica");
+        } catch (Exception e) {
+            return Response.internalServerError("Error al procesar la licencia: " + e.getMessage());
         }
     }
 
@@ -111,32 +116,39 @@ public class LicenciaPresenter {
      */
     @PutMapping
     public ResponseEntity<Object> update(@RequestBody Licencia aLicencia) {
-        // Verificar si la designación existe
+        // Verificar si la licencia existe
         Licencia existingLicencia = service.findById(aLicencia.getId());
         if (existingLicencia == null) {
             return Response.notFound("Licencia con ID " + aLicencia.getId() + " no encontrada para actualizar");
         }
 
         try {
+            // Conservar logs existentes
+            aLicencia.setLogs(existingLicencia.getLogs());
+
+            // Guardar y validar la licencia
             Licencia updatedLicencia = service.save(aLicencia);
 
-            // Formatear el mensaje según el tipo de designación (CARGO o ESPACIO
-            // CURRICULAR)
-            String mensaje = String.format(
-                    "Licencia artículo %s de %s %s actualizada correctamente",
-                    updatedLicencia.getArticuloLicencia().getArticulo(),
-                    updatedLicencia.getPersona().getNombre(),
-                    updatedLicencia.getPersona().getApellido());
+            String mensaje;
+            // Verificar si la licencia es válida según su estado
+            if (updatedLicencia.getEstado() == Estado.VALIDO) {
+                mensaje = String.format(
+                        "Licencia artículo %s de %s %s actualizada correctamente",
+                        updatedLicencia.getArticuloLicencia().getArticulo(),
+                        updatedLicencia.getPersona().getNombre(),
+                        updatedLicencia.getPersona().getApellido());
+            } else {
+                // Extraer el mensaje de error del último log
+                String errorDetail = obtenerMensajeUltimoLog(updatedLicencia);
+                mensaje = "La licencia se actualizó con estado INVÁLIDO: " + errorDetail;
+            }
 
             logger.log(Level.INFO, mensaje);
-            return Response.ok(null, mensaje);
-        } catch (BusinessLogicException e) {
-            // Capturar excepciones de validación de negocio y devolver error 422 (Entidad
-            // no procesable)
-            logger.log(Level.INFO, e.getMessage());
-            return Response.internalServerError(e.getMessage());
+            return Response.ok(updatedLicencia, mensaje);
         } catch (DataIntegrityViolationException e) {
             return Response.dbError("No se puede actualizar la licencia debido a que ya existe otra idéntica");
+        } catch (Exception e) {
+            return Response.internalServerError("Error al actualizar la licencia: " + e.getMessage());
         }
     }
 
@@ -181,5 +193,20 @@ public class LicenciaPresenter {
     public ResponseEntity<Object> findByPage(@RequestParam(defaultValue = AppConstants.DEFAULT_PAGE) int page,
             @RequestParam(defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size) {
         return Response.ok(service.findByPage(page, size));
+    }
+
+    /**
+     * Método auxiliar para obtener el mensaje del último log de una licencia
+     *
+     * @param licencia Licencia de la que se quiere obtener el último mensaje de
+     * log
+     * @return Texto del último mensaje de log
+     */
+    private String obtenerMensajeUltimoLog(Licencia licencia) {
+        if (licencia.getLogs() == null || licencia.getLogs().isEmpty()) {
+            return "No hay detalles disponibles";
+        }
+        Log ultimoLog = licencia.getLogs().get(licencia.getLogs().size() - 1);
+        return ultimoLog.getDescripcion();
     }
 }

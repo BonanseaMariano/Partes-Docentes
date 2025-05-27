@@ -1,5 +1,7 @@
 import { ArticuloLicencia } from './articulo-licencia';
 import { Designacion } from './designacion';
+import { Estado } from './estado';
+import { Log } from './log';
 import { Persona } from './persona';
 
 export interface Licencia {
@@ -29,6 +31,11 @@ export interface Licencia {
     certificadoMedico: boolean;
 
     /**
+     * Estado de la licencia
+     */
+    estado: Estado;
+
+    /**
      * Persona que solicita la licencia
      */
     persona: Persona;
@@ -42,4 +49,9 @@ export interface Licencia {
      * Artículo de licencia asociado a la licencia
      */
     articuloLicencia: ArticuloLicencia;
+
+    /**
+     * Logs de la licencia, que contienen el historial de eventos
+     */
+    logs: Log[];
 }
