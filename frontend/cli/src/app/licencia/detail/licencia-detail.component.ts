@@ -1,5 +1,5 @@
 import { CommonModule, Location } from '@angular/common';
-import { AfterViewChecked, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewChecked, ChangeDetectorRef, Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { NgbCalendar, NgbDatepickerModule, NgbDateStruct, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
@@ -14,11 +14,13 @@ import { PersonaService } from '../../persona/service/persona.service';
 import { DniFormatPipe } from '../../pipes/dni-format.pipe';
 import { ArticuloLicenciaService } from '../service/articulo-licencia.service';
 import { LicenciaService } from '../service/licencia.service';
+import { Estado } from '../../models/estado';
+import { PopupComponent } from '../../popup/popup.component';
 
 @Component({
     selector: 'app-licencia-detail',
     standalone: true,
-    imports: [CommonModule, FormsModule, NgbDatepickerModule, NgbTypeaheadModule, DniFormatPipe],
+    imports: [CommonModule, FormsModule, NgbDatepickerModule, NgbTypeaheadModule, DniFormatPipe, PopupComponent],
     templateUrl: './licencia-detail.component.html',
     styles: `
     .input-group-text {
@@ -27,10 +29,20 @@ import { LicenciaService } from '../service/licencia.service';
     .calendar {
       cursor: pointer;
     }
+    .state-button {
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .state-button:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+    }
   `
 })
 export class LicenciaDetailComponent implements OnInit, AfterViewChecked {
     @ViewChild('form') form!: NgForm;
+    @ViewChild('logsPopup') logsPopup!: PopupComponent;
+    @ViewChild('logsTemplate') logsTemplate!: TemplateRef<any>;
 
     licencia!: Licencia;
     isNewLicencia: boolean = true;
@@ -47,6 +59,9 @@ export class LicenciaDetailComponent implements OnInit, AfterViewChecked {
 
     // Propiedad para determinar si el formulario es válido
     formularioValido: boolean = false;
+
+    // Exponemos el enum para usarlo en el template
+    Estado = Estado;
 
     // Instancia del pipe para formatear DNI
     private dniFormatPipe = new DniFormatPipe();
@@ -68,6 +83,7 @@ export class LicenciaDetailComponent implements OnInit, AfterViewChecked {
         this.licencia.articuloLicencia = <ArticuloLicencia>{};
         this.licencia.certificadoMedico = false;
         this.licencia.designaciones = [];
+        this.licencia.logs = [];
     }
 
     goBack(): void {
@@ -298,6 +314,34 @@ export class LicenciaDetailComponent implements OnInit, AfterViewChecked {
     // Método para gestionar el cambio del checkbox de certificado médico
     onCertificadoMedicoChange(): void {
         this.verificarFormularioValido();
+    }
+
+    // Método para obtener los logs ordenados por fecha y hora, más recientes primero
+    getOrderedLogs() {
+        if (!this.licencia.logs || this.licencia.logs.length === 0) {
+            return [];
+        }
+        return this.licencia.logs.sort((a, b) => {
+            const fechaA = new Date(a.fechaHora).getTime();
+            const fechaB = new Date(b.fechaHora).getTime();
+            return fechaB - fechaA; // Orden descendente (más reciente primero)
+        });
+    }
+
+    // Método para obtener el conteo de logs
+    getLogCount(): number {
+        return this.licencia.logs ? this.licencia.logs.length : 0;
+    }
+
+    // Método para mostrar el popup de logs
+    showLogsPopup(): void {
+        if (this.logsPopup && this.getLogCount() > 0) {
+            this.logsPopup.title = 'Historial de Logs';
+            this.logsPopup.icon = 'fa-history';
+            this.logsPopup.contentTemplate = this.logsTemplate;
+            this.logsPopup.data = this.licencia;
+            this.logsPopup.show();
+        }
     }
 
     ngOnInit(): void {
