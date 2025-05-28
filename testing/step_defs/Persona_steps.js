@@ -3,7 +3,7 @@ const { Given, When } = require('@cucumber/cucumber');
 const request = require('sync-request');
 
 // Importamos los pasos compartidos
-require('../common/common_steps');
+require('./common_steps');
 
 // Variables compartidas que se usarán en el contexto
 function PersonaWorld() {

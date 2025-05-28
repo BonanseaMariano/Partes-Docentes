@@ -2,19 +2,17 @@ module.exports = {
   default: {
     // Especifica las rutas de los features en el orden deseado
     paths: [
-      'features/persona/Persona.feature',
-      'features/division/Division.feature',
-      'features/cargo/Cargo.feature',
-      'features/designar_docente/Designar.feature',
-      'features/designar_docente/Control_designacion.feature',
-      'features/licencia/Control_licencia.feature',
-      'features/parte_diario/Parte_diario.feature',
-
+      'features/Persona.feature',
+      'features/Division.feature',
+      'features/Cargo.feature',
+      'features/Designar.feature',
+      'features/Control_designacion.feature',
+      'features/Control_licencia.feature',
+      'features/Parte_diario.feature',
     ],
     // Configuración para encontrar los step definitions
     require: [
-      'features/**/*.js',
-      'features/step_definitions/**/*.js'
+      'step_defs/**/*.js'
     ],
     // Opciones de formato
     formatOptions: {
