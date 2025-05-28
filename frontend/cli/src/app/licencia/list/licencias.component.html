@@ -39,7 +39,7 @@
                                 title="Sin certificado médico"></i>
                         </td>
                         <td title="{{ licencia.articuloLicencia?.descripcion || '' }}">
-                            {{ licencia.articuloLicencia?.codigo || '' }}
+                            {{ licencia.articuloLicencia?.articulo || '' }}
                         </td>
                         <td class="text-center">
                             <button (click)="openDesignacionesPopup(licencia)" class="btn-popup"
