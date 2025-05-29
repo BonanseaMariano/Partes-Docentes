@@ -62,14 +62,9 @@
                             </button>
                         </td>
                         <td class="text-end">
-                            <a *ngIf="licencia.estado !== Estado.VALIDO" routerLink="/licencias/{{ licencia.id }}"
-                                class="btn btn-sm btn-outline-primary me-1" title="Editar">
+                            <a routerLink="/licencias/{{ licencia.id }}" class="btn btn-sm btn-outline-primary me-1"
+                                title="Editar">
                                 <i class="fa fa-pencil"></i>
-                            </a>
-                            <a *ngIf="licencia.estado === Estado.VALIDO" href="javascript:void(0)"
-                                class="btn btn-sm btn-outline-secondary me-1 text-muted"
-                                title="No se puede editar una licencia válida" style="cursor: not-allowed;">
-                                <i class="fa fa-lock"></i>
                             </a>
                             <a (click)="remove(licencia.id)" [routerLink]="" class="btn btn-sm btn-outline-danger"
                                 title="Eliminar">
