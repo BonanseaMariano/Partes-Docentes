@@ -141,6 +141,8 @@ public class LicenciaPresenter {
             } else {
                 // Extraer el mensaje de error del último log
                 mensaje = obtenerMensajeUltimoLog(updatedLicencia);
+                // Extraer el mensaje de error del último log
+                return Response.internalServerError(mensaje);
             }
 
             logger.log(Level.INFO, mensaje);
