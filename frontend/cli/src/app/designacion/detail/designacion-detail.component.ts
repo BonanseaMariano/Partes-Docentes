@@ -60,6 +60,12 @@ export class DesignacionDetailComponent implements OnInit, AfterViewChecked {
     // Propiedad para determinar si el formulario es válido
     formularioValido: boolean = false;
 
+    // Instancia del pipe para formatear DNI
+    private dniFormatPipe = new DniFormatPipe();
+
+    // Instancia del pipe para formatear tipo de designación
+    private tipoDesignacionPipe = new TipoDesignacionPipe();
+
     constructor(
         private route: ActivatedRoute,
         private designacionService: DesignacionService,
@@ -222,7 +228,7 @@ export class DesignacionDetailComponent implements OnInit, AfterViewChecked {
 
     // Formateador de resultados en el dropdown para personas
     resultPersonaFormat = (persona: Persona): string =>
-        `${persona.dni} - ${persona.nombre}, ${persona.apellido}`;
+        `${this.dniFormatPipe.transform(persona.dni)} - ${persona.nombre}, ${persona.apellido}`;
 
     // Formateador para el input cuando se selecciona una persona
     inputPersonaFormat = (persona: Persona | string): string => {
@@ -266,7 +272,7 @@ export class DesignacionDetailComponent implements OnInit, AfterViewChecked {
 
     // Formateador de resultados en el dropdown para cargos
     resultCargoFormat = (cargo: Cargo): string => {
-        let result = `${cargo.nombre} - ${cargo.tipoDesignacion}`;
+        let result = `${cargo.nombre} - ${this.tipoDesignacionPipe.transform(cargo.tipoDesignacion)}`;
         if (cargo.division) {
             result += ` (${cargo.division.anio}° ${cargo.division.numDivision} ${cargo.division.turno})`;
         }

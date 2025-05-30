@@ -46,7 +46,8 @@
                             <button class="btn-popup"
                                 [ngClass]="{'btn-popup-empty': getDesignacionCount(persona) === 0}"
                                 (click)="openDesignacionesPopup(persona)" title="Mostrar designaciones">
-                                <i class="fa fa-list"></i> {{ getDesignacionCount(persona) }}
+                                <i class="fa fa-user-tie"></i>
+                                <span class="ms-1">{{ getDesignacionCount(persona) }}</span>
                             </button>
                         </td>
                         <td class="text-end">

@@ -3,6 +3,8 @@
 -- ################################################################
 -- IMPORTANTE: ELIMINAMOS PRIMERO LAS ENTIDADES CON DEPENDENCIAS
 -- ################################################################
+DELETE FROM logs;
+
 DELETE FROM licencia_designacion;
 
 DELETE FROM licencias;

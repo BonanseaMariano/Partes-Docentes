@@ -6,6 +6,7 @@ import { PaginationConfig } from '../../core/constants/pagination.constants';
 import { DesignacionService } from '../../designacion/service/designacion.service';
 import { ModalService } from '../../modal/modal.service';
 import { Designacion } from '../../models/designacion';
+import { Estado } from '../../models/estado';
 import { Licencia } from '../../models/licencia';
 import { ResultsPage } from '../../models/results-page';
 import { PaginationComponent } from '../../pagination/pagination.component';
@@ -19,15 +20,20 @@ import { LicenciaService } from '../service/licencia.service';
     standalone: true,
     imports: [CommonModule, RouterModule, PaginationComponent, DniFormatPipe],
     templateUrl: './licencias.component.html',
+    styleUrls: ['./licencias.component.css']
 })
 export class LicenciasComponent {
     resultsPage: ResultsPage = <ResultsPage>{};
     currentPage: number = PaginationConfig.INITIAL_PAGE;
     pageSize: number = PaginationConfig.PAGE_SIZE;
 
+    // Exponemos el enum para usarlo en el template
+    Estado = Estado;
+
     selectedLicencia: Licencia | null = null;
 
     @ViewChild('designacionesTemplate', { static: true }) designacionesTemplate!: TemplateRef<any>;
+    @ViewChild('logsTemplate', { static: true }) logsTemplate!: TemplateRef<any>;
 
     constructor(
         private licenciaService: LicenciaService,
@@ -75,8 +81,29 @@ export class LicenciasComponent {
         });
     }
 
+    openLogsPopup(licencia: Licencia): void {
+        this.selectedLicencia = licencia;
+        // Si la licencia tiene logs, los ordenamos por fecha y hora, más recientes primero
+        if (licencia.logs && licencia.logs.length > 0) {
+            licencia.logs.sort((a, b) => {
+                const fechaA = new Date(a.fechaHora).getTime();
+                const fechaB = new Date(b.fechaHora).getTime();
+                return fechaB - fechaA; // Orden descendente (más reciente primero)
+            });
+        }
+        this.popupService.show(this.logsTemplate, {
+            title: `Historial de logs de la licencia`,
+            icon: 'fa-history',
+            data: licencia
+        });
+    }
+
     getDesignacionCount(licencia: Licencia): number {
         return licencia.designaciones ? licencia.designaciones.length : 0;
+    }
+
+    getLogCount(licencia: Licencia): number {
+        return licencia.logs ? licencia.logs.length : 0;
     }
 
     formatFechaDesignacion(fecha: Date | string | null | undefined): string {

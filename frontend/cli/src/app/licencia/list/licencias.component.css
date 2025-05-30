@@ -1,0 +1,38 @@
+/* Estilos específicos para el componente licencias */
+
+/* Estilo específico para botón de logs */
+.btn-logs {
+    background-color: var(--color-info);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 4px 12px;
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    transition: background-color 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-logs:hover {
+    background-color: #0aa8cc;
+}
+
+.btn-logs-empty {
+    background-color: #6c757d;
+    color: white;
+}
+
+.btn-logs-empty:hover {
+    background-color: #5a6268;
+}
+
+/* Estilos para los popups específicos de licencias */
+.licencias-popup-table {
+    margin-bottom: 0;
+}
+
+.licencias-popup-table .table {
+    margin-bottom: 0;
+}

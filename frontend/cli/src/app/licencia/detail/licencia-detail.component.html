@@ -20,7 +20,8 @@
                                 [inputFormatter]="inputPersonaFormat" [resultFormatter]="resultPersonaFormat"
                                 (selectItem)="seleccionarPersona($event.item)"
                                 (input)="onPersonaInputChange($any($event).target.value)" required
-                                placeholder="Buscar por DNI, nombre o apellido...">
+                                placeholder="Buscar por DNI, nombre o apellido..."
+                                [disabled]="!isNewLicencia && licencia.estado === Estado.VALIDO">
                         </div>
                         <div *ngIf="persona.invalid && persona.touched && licencia.persona && !licencia.persona.id"
                             class="text-danger small mt-1">
@@ -81,7 +82,8 @@
                                 [inputFormatter]="inputArticuloFormat" [resultFormatter]="resultArticuloFormat"
                                 (selectItem)="seleccionarArticulo($event.item)"
                                 (input)="onArticuloInputChange($any($event).target.value)" required
-                                placeholder="Buscar por artículo o descripción...">
+                                placeholder="Buscar por artículo o descripción..."
+                                [disabled]="!isNewLicencia && licencia.estado === Estado.VALIDO">
                         </div>
                         <div *ngIf="articulo.invalid && articulo.touched && licencia.articuloLicencia && !licencia.articuloLicencia.id"
                             class="text-danger small mt-1">
@@ -125,9 +127,10 @@
                     </span>
                     <input #fechaDesde="ngModel" id="fechaDesde" name="fechaDesde" class="form-control"
                         placeholder="yyyy-mm-dd" [(ngModel)]="fechaDesdeDate" ngbDatepicker
-                        #fechaDesdePicker="ngbDatepicker" required (ngModelChange)="onDateChange()" />
-                    <button class="btn btn-outline-secondary calendar" (click)="fechaDesdePicker.toggle()"
-                        type="button">
+                        #fechaDesdePicker="ngbDatepicker" required (ngModelChange)="onDateChange()"
+                        [disabled]="!isNewLicencia && licencia.estado === Estado.VALIDO" />
+                    <button class="btn btn-outline-secondary calendar" (click)="fechaDesdePicker.toggle()" type="button"
+                        [disabled]="!isNewLicencia && licencia.estado === Estado.VALIDO">
                         <i class="fa fa-calendar-alt"></i>
                     </button>
                 </div>
@@ -145,9 +148,10 @@
                     </span>
                     <input id="fechaHasta" name="fechaHasta" class="form-control" placeholder="yyyy-mm-dd"
                         [(ngModel)]="fechaHastaDate" ngbDatepicker #fechaHastaPicker="ngbDatepicker"
-                        (ngModelChange)="onDateChange()" />
-                    <button class="btn btn-outline-secondary calendar" (click)="fechaHastaPicker.toggle()"
-                        type="button">
+                        (ngModelChange)="onDateChange()"
+                        [disabled]="!isNewLicencia && licencia.estado === Estado.VALIDO" />
+                    <button class="btn btn-outline-secondary calendar" (click)="fechaHastaPicker.toggle()" type="button"
+                        [disabled]="!isNewLicencia && licencia.estado === Estado.VALIDO">
                         <i class="fa fa-calendar-alt"></i>
                     </button>
                 </div>
@@ -157,12 +161,50 @@
             <div class="col-md-12 mb-3">
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" id="certificadoMedico" name="certificadoMedico"
-                        [(ngModel)]="licencia.certificadoMedico" (change)="onCertificadoMedicoChange()">
+                        [(ngModel)]="licencia.certificadoMedico" (change)="onCertificadoMedicoChange()"
+                        [disabled]="!isNewLicencia && licencia.estado === Estado.VALIDO">
                     <label class="form-check-label text-primary fw-bold" for="certificadoMedico">
                         Presenta Certificado Médico
                     </label>
                 </div>
             </div>
+
+            <!-- Quinta fila: Estado de la Licencia (solo visualización) -->
+            <div *ngIf="!isNewLicencia && licencia.estado" class="col-12 mb-3">
+                <div class="card border-0" [ngClass]="{
+                    'bg-success': licencia.estado === Estado.VALIDO,
+                    'bg-danger': licencia.estado === Estado.INVALIDO
+                }" style="background-color: rgba(var(--bs-success-rgb), 0.1) !important;">
+                    <div class="card-body py-3">
+                        <div class="text-center">
+                            <div class="d-flex justify-content-center align-items-center">
+                                <i *ngIf="licencia.estado === Estado.VALIDO"
+                                    class="fa fa-check-circle text-success me-3" style="font-size: 2rem;"></i>
+                                <i *ngIf="licencia.estado === Estado.INVALIDO"
+                                    class="fa fa-times-circle text-danger me-3" style="font-size: 2rem;"></i>
+                                <button *ngIf="licencia.estado === Estado.VALIDO" (click)="showLogsPopup()"
+                                    class="state-button d-flex align-items-center border-0 bg-transparent">
+                                    <h4 class="mb-0 fw-bold text-success">
+                                        Licencia Válida
+                                    </h4>
+                                    <span *ngIf="getLogCount() > 0" class="badge bg-success ms-2">{{ getLogCount()
+                                        }}</span>
+                                </button>
+                                <button *ngIf="licencia.estado === Estado.INVALIDO" (click)="showLogsPopup()"
+                                    class="state-button d-flex align-items-center border-0 bg-transparent">
+                                    <h4 class="mb-0 fw-bold text-danger">
+                                        Licencia Inválida
+                                    </h4>
+                                    <span *ngIf="getLogCount() > 0" class="badge bg-danger ms-2">{{ getLogCount()
+                                        }}</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- La sección de logs ahora se muestra en un popup -->
         </form>
     </div>
 
@@ -170,8 +212,36 @@
         <button (click)="goBack()" class="btn btn-outline-secondary me-2">
             <i class="fa fa-arrow-left me-1"></i>Cancelar
         </button>
-        <button (click)="save()" class="btn btn-success" [disabled]="!formularioValido">
+        <button (click)="save()" class="btn btn-success"
+            [disabled]="!formularioValido || (!isNewLicencia && licencia.estado === Estado.VALIDO)">
             <i class="fa fa-save me-1"></i>Guardar
         </button>
     </div>
 </div>
+
+<!-- Componente popup para mostrar los logs -->
+<app-popup #logsPopup [showCloseButton]="true" [width]="'90%'" [maxWidth]="'800px'"></app-popup>
+
+<!-- Template para el popup de logs -->
+<ng-template #logsTemplate let-licencia>
+    <div *ngIf="licencia.logs && licencia.logs.length > 0" class="table-responsive">
+        <table class="table table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th scope="col">Fecha y Hora</th>
+                    <th scope="col">Descripción</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let log of getOrderedLogs()">
+                    <td>{{ log.fechaHora | date:'dd/MM/yyyy HH:mm:ss' }}</td>
+                    <td>{{ log.descripcion }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div *ngIf="!licencia.logs || licencia.logs.length === 0" class="empty-state-message">
+        <i class="fa fa-info-circle me-2"></i>
+        Esta licencia no tiene logs registrados
+    </div>
+</ng-template>

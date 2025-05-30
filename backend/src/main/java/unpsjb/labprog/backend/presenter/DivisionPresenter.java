@@ -1,5 +1,8 @@
 package unpsjb.labprog.backend.presenter;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
@@ -20,15 +23,19 @@ import unpsjb.labprog.backend.model.enums.Turno;
 import unpsjb.labprog.backend.utils.constants.AppConstants;
 
 /**
- * Controlador REST para la gestión de divisiones escolares.
- * Proporciona endpoints para crear, consultar, actualizar y eliminar
- * divisiones.
- * Las divisiones representan cursos o grupos de estudiantes dentro de una
+ * Controlador REST para la gestión de divisiones escolares. Proporciona
+ * endpoints para crear, consultar, actualizar y eliminar divisiones. Las
+ * divisiones representan cursos o grupos de estudiantes dentro de una
  * institución educativa.
  */
 @RestController
 @RequestMapping("divisiones")
 public class DivisionPresenter {
+
+    /**
+     * Logger de la clase para registrar eventos y mensajes.
+     */
+    private Logger logger = Logger.getLogger(getClass().getSimpleName());
 
     /**
      * Servicio que implementa la lógica de negocio para las operaciones con
@@ -39,9 +46,9 @@ public class DivisionPresenter {
 
     /**
      * Obtiene todas las divisiones registradas en el sistema.
-     * 
-     * @return ResponseEntity con la lista completa de divisiones si la operación es
-     *         exitosa
+     *
+     * @return ResponseEntity con la lista completa de divisiones si la
+     * operación es exitosa
      */
     @GetMapping
     public ResponseEntity<Object> findAll() {
@@ -50,10 +57,10 @@ public class DivisionPresenter {
 
     /**
      * Busca una división específica por su identificador único.
-     * 
+     *
      * @param id Identificador único de la división a buscar
-     * @return ResponseEntity con la división encontrada o un mensaje de error si no
-     *         existe
+     * @return ResponseEntity con la división encontrada o un mensaje de error
+     * si no existe
      */
     @GetMapping("/{id}")
     public ResponseEntity<Object> findById(@PathVariable int id) {
@@ -64,10 +71,10 @@ public class DivisionPresenter {
 
     /**
      * Crea una nueva división en el sistema.
-     * 
+     *
      * @param aDivision Objeto División con los datos a registrar
-     * @return ResponseEntity con un mensaje de éxito si la operación es correcta o
-     *         error en caso contrario
+     * @return ResponseEntity con un mensaje de éxito si la operación es
+     * correcta o error en caso contrario
      */
     @PostMapping
     public ResponseEntity<Object> create(@RequestBody Division aDivision) {
@@ -79,6 +86,7 @@ public class DivisionPresenter {
                     createdDivision.getNumDivision(),
                     createdDivision.getTurno());
 
+            logger.log(Level.INFO, mensaje);
             return Response.ok(null, mensaje);
         } catch (DataIntegrityViolationException e) {
             return Response.dbError("No se puede crear la división debido a que ya existe otra idéntica");
@@ -87,10 +95,10 @@ public class DivisionPresenter {
 
     /**
      * Actualiza una división existente en el sistema.
-     * 
+     *
      * @param aDivision Objeto División con los datos actualizados
-     * @return ResponseEntity con un mensaje de éxito si la operación es correcta o
-     *         error en caso contrario
+     * @return ResponseEntity con un mensaje de éxito si la operación es
+     * correcta o error en caso contrario
      */
     @PutMapping
     public ResponseEntity<Object> update(@RequestBody Division aDivision) {
@@ -108,6 +116,7 @@ public class DivisionPresenter {
                     updatedDivision.getNumDivision(),
                     updatedDivision.getTurno());
 
+            logger.log(Level.INFO, mensaje);
             return Response.ok(null, mensaje);
         } catch (DataIntegrityViolationException e) {
             return Response.dbError("No se puede actualizar la división debido a que ya existe otra idéntica");
@@ -116,10 +125,10 @@ public class DivisionPresenter {
 
     /**
      * Elimina una división existente según su ID.
-     * 
+     *
      * @param id Identificador único de la división a eliminar
-     * @return ResponseEntity con un mensaje de éxito si la operación es correcta o
-     *         error en caso contrario
+     * @return ResponseEntity con un mensaje de éxito si la operación es
+     * correcta o error en caso contrario
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> delete(@PathVariable int id) {
@@ -130,6 +139,8 @@ public class DivisionPresenter {
                     deletedDivision.getAnio(),
                     deletedDivision.getNumDivision(),
                     deletedDivision.getTurno());
+
+            logger.log(Level.INFO, mensaje);
             return Response.ok(null, mensaje);
         } catch (Exception e) {
             return Response.dbError("No se puede eliminar la división debido a dependencias existentes");
@@ -137,8 +148,9 @@ public class DivisionPresenter {
     }
 
     /**
-     * Obtiene una página de divisiones para implementar paginación en el cliente.
-     * 
+     * Obtiene una página de divisiones para implementar paginación en el
+     * cliente.
+     *
      * @param page Número de página solicitada (comienza en 0)
      * @param size Cantidad de elementos por página
      * @return ResponseEntity con la página de divisiones solicitada
@@ -151,7 +163,7 @@ public class DivisionPresenter {
 
     /**
      * Busca divisiones por un término de búsqueda.
-     * 
+     *
      * @param term el término de búsqueda
      * @return una lista de divisiones que coinciden con el término de búsqueda
      */
@@ -162,12 +174,12 @@ public class DivisionPresenter {
 
     /**
      * Busca una división por sus campos anio, numDivision, orientacion y turno.
-     * 
-     * @param anio        Año académico
+     *
+     * @param anio Año académico
      * @param numDivision Número de división
-     * @param turno       Turno de la división
-     * @return ResponseEntity con la división encontrada o un mensaje de error si no
-     *         existe
+     * @param turno Turno de la división
+     * @return ResponseEntity con la división encontrada o un mensaje de error
+     * si no existe
      */
     @GetMapping("/find")
     public ResponseEntity<Object> findByAnioNumTruno(

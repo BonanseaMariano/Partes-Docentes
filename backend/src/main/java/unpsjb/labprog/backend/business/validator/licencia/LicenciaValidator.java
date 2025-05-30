@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import unpsjb.labprog.backend.business.validator.FechaValidationRule;
 import unpsjb.labprog.backend.exception.BusinessLogicException;
 import unpsjb.labprog.backend.model.Licencia;
 
@@ -25,9 +26,12 @@ public class LicenciaValidator {
     @Autowired
     private ArticuloEspecificoRule articuloRule;
 
+    @Autowired
+    private FechaValidationRule fechaValidationRule;
+
     /**
      * Constructor que recibe una lista de reglas de validación
-     * 
+     *
      * @param validationRules Lista de reglas de validación
      */
     public LicenciaValidator(List<LicenciaValidationRule> validationRules) {
@@ -36,25 +40,32 @@ public class LicenciaValidator {
 
     /**
      * Valida todas las reglas de negocio específicas para las licencias
-     * 
+     *
      * @param licencia Licencia a validar
      * @throws BusinessLogicException si no se cumplen las reglas
      */
     public void validar(Licencia licencia) throws BusinessLogicException {
-        // Primero validamos la designación activa
+        // PRIMERA REGLA: Validar fechas
+        fechaValidationRule.validarRangoFechas(
+                licencia.getPedidoDesde(),
+                licencia.getPedidoHasta()
+        );
+
+        // Resto de reglas específicas...
+        // Segunda: validamos la designación activa
         designacionesRule.validate(licencia);
 
-        // Luego validamos solapamiento con otras licencias
+        // Tercera: validamos solapamiento con otras licencias
         solapamientoRule.validate(licencia);
 
-        // Finalmente validamos las reglas específicas del artículo
+        // Cuarta: validamos las reglas específicas del artículo
         articuloRule.validate(licencia);
 
-        // Aplicamos el resto de reglas, si es necesario
+        // Resto de reglas, si es necesario
         for (LicenciaValidationRule rule : validationRules) {
-            if (!(rule instanceof SolapamientoLicenciasRule) &&
-                    !(rule instanceof DesignacionesActivasRule) &&
-                    !(rule instanceof ArticuloEspecificoRule)) {
+            if (rule != null && !(rule instanceof SolapamientoLicenciasRule)
+                    && !(rule instanceof DesignacionesActivasRule)
+                    && !(rule instanceof ArticuloEspecificoRule)) {
                 rule.validate(licencia);
             }
         }

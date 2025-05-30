@@ -1,3 +1,5 @@
+DELETE FROM logs;
+
 DELETE FROM licencia_designacion;
 
 DELETE FROM licencias;

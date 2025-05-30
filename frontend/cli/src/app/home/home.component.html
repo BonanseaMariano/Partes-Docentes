@@ -1,149 +1,179 @@
 <!-- Componente principal de Home - Partes Docentes -->
 <div class="container">
-    <!-- Banner principal con título y descripción -->
-    <div class="row mt-4 mb-5">
-        <div class="col-md-6">
-            <h1 class="display-4 fw-bold text-primary">Partes Docentes</h1>
-            <h2 class="fw-light text-muted">Escuela 775 - Puerto Madryn</h2>
-            <div class="mt-4">
-                <p class="lead">
-                    Sistema de gestión de novedades de licencias solicitadas por los docentes y generación del "parte
-                    diario de novedades del personal".
-                </p>
-                <p>
-                    Esta aplicación permite administrar el registro de personal docente, sus designaciones, licencias y
-                    generar informes para el adecuado seguimiento de las novedades en la institución educativa.
-                </p>
-            </div>
-        </div>
-        <div class="col-md-6 d-flex align-items-center justify-content-center">
-            <img src="Logo.png" alt="Logo Partes Docentes"
-                style="max-width: 350px; height: auto; object-fit: contain; filter: drop-shadow(6px 6px 12px rgba(5, 83, 199, 0.8));"
-                class="img-fluid">
-        </div>
-    </div>
-
-    <!-- Características principales del sistema -->
-    <div class="row mb-5">
-        <div class="col-12 text-center mb-4">
-            <h2 class="text-primary"><i class="fa fa-th-large me-2"></i>Características del Sistema</h2>
-        </div>
-
-        <!-- Administración de Personal -->
-        <div class="col-md-4 mb-4 text-center">
-            <div class="p-3">
-                <div class="mb-3">
-                    <i class="fa fa-users text-primary fa-3x"></i>
+    <!-- Hero Section -->
+    <section class="hero-section" data-aos="fade-up" data-aos-offset="50" data-aos-duration="1000">
+        <div class="hero-content">
+            <div class="row align-items-center">
+                <div class="col-lg-8" data-aos="fade-right" data-aos-delay="300" data-aos-offset="100">
+                    <h1 class="hero-title">Partes Docentes</h1>
+                    <h2 class="hero-subtitle">Sistema de Gestión Administrativa Educativa</h2>
+                    <p class="hero-description">
+                        Solución integral para la administración del personal docente, gestión de licencias
+                        y generación de partes diarios. Optimiza los procesos administrativos y asegura el
+                        cumplimiento de las normativas del Ministerio de Educación de la Provincia del Chubut.
+                    </p>
                 </div>
-                <h4>Administración del Personal</h4>
-                <p class="text-muted">
-                    Registro completo del plantel docente, con historial de designaciones a cargos y espacios
-                    curriculares.
-                </p>
-            </div>
-        </div>
-
-        <!-- Gestión de Licencias -->
-        <div class="col-md-4 mb-4 text-center">
-            <div class="p-3">
-                <div class="mb-3">
-                    <i class="fa-solid fa-calendar-xmark text-primary fa-3x"></i>
-                </div>
-                <h4>Gestión de Licencias</h4>
-                <p class="text-muted">
-                    Control de licencias solicitadas y validación automática según los artículos del reglamento docente.
-                </p>
-            </div>
-        </div>
-
-        <!-- Informes y Reportes -->
-        <div class="col-md-4 mb-4 text-center">
-            <div class="p-3">
-                <div class="mb-3">
-                    <i class="fa-solid fa-file-lines text-primary fa-3x"></i>
-                </div>
-                <h4>Informes y Reportes</h4>
-                <p class="text-muted">
-                    Generación de partes diarios, informes anuales y mapas de horarios y designaciones.
-                </p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Panel de características adicionales -->
-    <div class="row mb-5">
-        <div class="col-md-6 order-md-2">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body">
-                    <h3 class="mb-3 text-primary">Seguimiento Completo</h3>
-                    <p>El sistema permite un seguimiento detallado de:</p>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item border-0">
-                            <i class="fa fa-check-circle text-success me-2"></i>Designaciones de docentes
-                        </li>
-                        <li class="list-group-item border-0">
-                            <i class="fa fa-check-circle text-success me-2"></i>Manejo de divisiones y cargos
-                        </li>
-                        <li class="list-group-item border-0">
-                            <i class="fa fa-check-circle text-success me-2"></i>Control de suplencias
-                        </li>
-                        <li class="list-group-item border-0">
-                            <i class="fa fa-check-circle text-success me-2"></i>Verificación automática de licencias
-                        </li>
-                        <li class="list-group-item border-0">
-                            <i class="fa fa-check-circle text-success me-2"></i>Generación de informes normativos
-                        </li>
-                    </ul>
+                <div class="col-lg-4 text-center" data-aos="fade-left" data-aos-delay="600" data-aos-offset="100">
+                    <img src="Logo.png" alt="Logo Partes Docentes" class="hero-logo img-fluid">
                 </div>
             </div>
         </div>
-        <div class="col-md-6 order-md-1 d-flex align-items-center justify-content-center">
-            <div class="text-center">
-                <div class="d-inline-block bg-light p-4 rounded-circle shadow-sm mb-3">
-                    <i class="fa-solid fa-chart-line text-primary" style="font-size: 80px;"></i>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section">
+        <h2 class="section-title" data-aos="fade-up" data-aos-offset="200">Funcionalidades Principales</h2>
+        <div class="row g-4">
+            <!-- Gestión de Licencias -->
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200" data-aos-offset="150">
+                <div class="feature-card text-center">
+                    <img src="GestionLicencias.png" alt="Gestión de Licencias" class="feature-image">
+                    <h3 class="feature-title">Gestión de Licencias</h3>
+                    <p class="feature-description">
+                        Control automático de licencias solicitadas por el personal docente.
+                        Verificación del cumplimiento de requisitos según los artículos del
+                        reglamento del Ministerio de Educación.
+                    </p>
                 </div>
-                <h4 class="text-primary mt-3">Monitoreo en tiempo real</h4>
-                <p class="text-muted">Seguimiento actualizado de novedades docentes</p>
+            </div>
+
+            <!-- Administración de Personal -->
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="400" data-aos-offset="150">
+                <div class="feature-card text-center">
+                    <img src="AdministracionPersonal.png" alt="Administración del Personal" class="feature-image">
+                    <h3 class="feature-title">Administración del Personal</h3>
+                    <p class="feature-description">
+                        Gestión completa del plantel docente con registro detallado de personas,
+                        historial de designaciones a cargos y espacios curriculares. Control de
+                        vigencias según los diferentes planes curriculares.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Informes y Reportes -->
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="600" data-aos-offset="150">
+                <div class="feature-card text-center">
+                    <img src="InformesReportes.png" alt="Informes y Reportes" class="feature-image">
+                    <h3 class="feature-title">Informes y Reportes</h3>
+                    <p class="feature-description">
+                        Generación automatizada de partes diarios de novedades, informes anuales
+                        para conceptos del personal y trazabilidad completa de actividades de
+                        licencias y designaciones.
+                    </p>
+                </div>
             </div>
         </div>
-    </div>
+    </section>
 
-    <!-- Panel de estadísticas -->
-    <div class="row mb-5 bg-light py-4 rounded shadow-sm">
+    <!-- Stats Section -->
+    <section class="stats-section" data-aos="fade-up" data-aos-offset="200" data-aos-delay="100">
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6" data-aos="zoom-in" data-aos-delay="300" data-aos-offset="150">
+                <div class="stat-item">
+                    <div class="stat-icon">
+                        <i class="fa fa-users"></i>
+                    </div>
+                    <h4 class="stat-title">Personal Docente</h4>
+                    <p class="stat-description">Gestión integral del plantel</p>
+                </div>
+            </div>
 
-        <div class="col-md-3 text-center mb-3">
-            <i class="fa-solid fa-user-tie text-primary fa-2x mb-2"></i>
-            <h4 class="h5">Profesores</h4>
-            <p class="lead">Gestión completa</p>
-        </div>
+            <div class="col-lg-3 col-md-6" data-aos="zoom-in" data-aos-delay="450" data-aos-offset="150">
+                <div class="stat-item">
+                    <div class="stat-icon">
+                        <i class="fa fa-briefcase"></i>
+                    </div>
+                    <h4 class="stat-title">Designaciones</h4>
+                    <p class="stat-description">Control automatizado de cargos</p>
+                </div>
+            </div>
 
-        <div class="col-md-3 text-center mb-3">
-            <i class="fa-solid fa-chalkboard-teacher text-primary fa-2x mb-2"></i>
-            <h4 class="h5">Designaciones</h4>
-            <p class="lead">Control automatizado</p>
-        </div>
+            <div class="col-lg-3 col-md-6" data-aos="zoom-in" data-aos-delay="600" data-aos-offset="150">
+                <div class="stat-item">
+                    <div class="stat-icon">
+                        <i class="fa fa-calendar-alt"></i>
+                    </div>
+                    <h4 class="stat-title">Licencias</h4>
+                    <p class="stat-description">Seguimiento normativo</p>
+                </div>
+            </div>
 
-        <div class="col-md-3 text-center mb-3">
-            <i class="fa-solid fa-calendar-check text-primary fa-2x mb-2"></i>
-            <h4 class="h5">Licencias</h4>
-            <p class="lead">Seguimiento efectivo</p>
-        </div>
-
-        <div class="col-md-3 text-center mb-3">
-            <i class="fa-solid fa-file-export text-primary fa-2x mb-2"></i>
-            <h4 class="h5">Reportes</h4>
-            <p class="lead">Exportación PDF</p>
-        </div>
-    </div>
-
-    <!-- Mensaje final -->
-    <div class="row mb-5">
-        <div class="col-12 text-center">
-            <div class="py-4">
-                <h3 class="text-primary">Escuela 775 - Puerto Madryn</h3>
-                <p class="text-muted">Sistema de Gestión de Novedades Docentes</p>
-                <p>Desarrollado por Mariano Bonansea - 2025</p>
+            <div class="col-lg-3 col-md-6" data-aos="zoom-in" data-aos-delay="750" data-aos-offset="150">
+                <div class="stat-item">
+                    <div class="stat-icon">
+                        <i class="fa fa-file-alt"></i>
+                    </div>
+                    <h4 class="stat-title">Reportes</h4>
+                    <p class="stat-description">Documentación oficial</p>
+                </div>
             </div>
         </div>
-    </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section class="benefits-section">
+        <h2 class="section-title" data-aos="fade-up" data-aos-offset="200">Beneficios del Sistema</h2>
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6" data-aos="flip-left" data-aos-delay="200" data-aos-offset="150">
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fa fa-check-circle"></i>
+                    </div>
+                    <h4 class="benefit-title">Cumplimiento Normativo</h4>
+                    <p class="benefit-description">
+                        Validación automática según las normativas del Ministerio de Educación
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6" data-aos="flip-left" data-aos-delay="350" data-aos-offset="150">
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fa fa-clock"></i>
+                    </div>
+                    <h4 class="benefit-title">Ahorro de Tiempo</h4>
+                    <p class="benefit-description">
+                        Automatización de procesos administrativos y generación de documentos
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6" data-aos="flip-left" data-aos-delay="500" data-aos-offset="150">
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fa fa-shield-alt"></i>
+                    </div>
+                    <h4 class="benefit-title">Trazabilidad Completa</h4>
+                    <p class="benefit-description">
+                        Historial detallado de todas las actividades y cambios realizados
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6" data-aos="flip-left" data-aos-delay="650" data-aos-offset="150">
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fa fa-chart-line"></i>
+                    </div>
+                    <h4 class="benefit-title">Control en Tiempo Real</h4>
+                    <p class="benefit-description">
+                        Monitoreo actualizado del estado de designaciones y licencias
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section" data-aos="fade-up" data-aos-offset="200" data-aos-delay="100">
+        <h2 class="cta-title" data-aos="fade-down" data-aos-delay="300" data-aos-offset="150">Escuela 775 - Puerto Madryn</h2>
+        <p class="cta-description" data-aos="fade-up" data-aos-delay="500" data-aos-offset="150">
+            Sistema desarrollado para optimizar la gestión administrativa del personal docente,
+            garantizando el cumplimiento de las normativas educativas vigentes y facilitando
+            la toma de decisiones basada en información precisa y actualizada.
+        </p>
+        <div class="mt-4" data-aos="fade-up" data-aos-delay="700" data-aos-offset="150">
+            <small class="text-white-50">Desarrollado por Mariano Bonansea - 2025</small>
+        </div>
+    </section>
 </div>
