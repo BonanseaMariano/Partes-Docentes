@@ -136,9 +136,6 @@ export class LicenciaDetailComponent implements OnInit, AfterViewChecked {
                 this.fechaHastaDate.day
             );
             this.licencia.pedidoHasta = fechaHasta;
-        } else {
-            // Si no se especifica fecha de finalización, se usa la misma que la de inicio
-            this.licencia.pedidoHasta = this.licencia.pedidoDesde;
         }
 
         this.licenciaService.save(this.licencia, this.isNewLicencia).subscribe({
@@ -148,7 +145,19 @@ export class LicenciaDetailComponent implements OnInit, AfterViewChecked {
                         "Error al guardar",
                         dataPackage.message,
                         ""
-                    );
+                    ).then(() => {
+                        // Solo redirigir hacia atrás si es una nueva licencia
+                        if (this.isNewLicencia) {
+                            this.goBack();
+                        } else if (this.licencia.id) {
+                            // Si es una licencia existente, recargar los datos para actualizar los logs
+                            this.licenciaService.get(this.licencia.id).subscribe({
+                                next: (response) => {
+                                    this.licencia = <Licencia>response.data;
+                                }
+                            });
+                        }
+                    });
                 } else {
                     this.modalService.success(
                         "Éxito",
