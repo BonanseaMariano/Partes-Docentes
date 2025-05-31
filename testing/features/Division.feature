@@ -15,3 +15,11 @@ Módulo responsable de administrar a las divisiones (espacios físicos) de una e
       |   1 |      1 | Economía    | Tarde  |    200 | División 1º 1º turno Tarde ingresada correctamente  |
       |   2 |      3 | Ciencias    | Mañana |    200 | División 2º 3º turno Mañana ingresada correctamente |
       |   4 |      3 | Informatica | Mañana |    200 | División 4º 3º turno Mañana ingresada correctamente |
+      |   1 |      2 | General     | Mañana |    200 | División 1º 2º turno Mañana ingresada correctamente |
+      |   2 |      1 | Ciencias    | Tarde  |    200 | División 2º 1º turno Tarde ingresada correctamente  |
+      |   3 |      2 | Sociales    | Mañana |    200 | División 3º 2º turno Mañana ingresada correctamente |
+      |   4 |      1 | Informatica | Tarde  |    200 | División 4º 1º turno Tarde ingresada correctamente  |
+      |   2 |      2 | General     | Tarde  |    200 | División 2º 2º turno Tarde ingresada correctamente  |
+      |   1 |      3 | Economía    | Mañana |    200 | División 1º 3º turno Mañana ingresada correctamente |
+      |   5 |      1 | Sociales    | Tarde  |    200 | División 5º 1º turno Tarde ingresada correctamente  |
+      |   3 |      3 | General     | Tarde  |    200 | División 3º 3º turno Tarde ingresada correctamente  |
