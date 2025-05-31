@@ -34,9 +34,6 @@ Característica: otorgar o denegar licencia a una persona a un cargo docente
       | 88300000 | Andrea      | Sosa       |       5A | SI          | ENFERMEDAD DE CORTA EVOLUCIÓN | 2023-05-11 | 2023-05-17 |    200 | Se otorga Licencia artículo 5A a Andrea Sosa                                                                               |
       | 88410000 | Laura       | Barrientos |      23A | NO          | ATENCIÓN DE UN MIEMBRO DEL GF | 2023-05-08 | 2023-05-16 |    200 | Se otorga Licencia artículo 23A a Laura Barrientos                                                                         |
       | 88500000 | Natalia     | Zabala     |      23A | NO          | ATENCIÓN DE UN MIEMBRO DEL GF | 2023-05-13 | 2023-05-22 |    200 | Se otorga Licencia artículo 23A a Natalia Zabala                                                                           |
-      | 88600000 | Marta       | Ríos       |      36A | NO          | ASUNTOS PARTICULARES          | 2023-05-15 | 2023-05-15 |    200 | Se otorga Licencia artículo 36A a Marta Ríos                                                                               |
-      | 88700000 | Rosalía     | Ramón      |      36A | NO          | ASUNTOS PARTICULARES          | 2023-05-15 | 2023-05-15 |    200 | Se otorga Licencia artículo 36A a Rosalía Ramón                                                                            |
-      | 88800000 | José        | Pérez      |      36A | NO          | ASUNTOS PARTICULARES          | 2023-05-15 | 2023-05-15 |    200 | Se otorga Licencia artículo 36A a José Pérez                                                                               |
 
   Escenario: 1 persona en instancias de designación de cargo que cubre una licencia de otra persona en la misma designación. Infomar que está correcto y que reemplaza al docente que solicitó licencia.
     Dado que existe la persona

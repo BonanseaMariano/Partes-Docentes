@@ -1,5 +1,9 @@
 package unpsjb.labprog.backend.presenter;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import unpsjb.labprog.backend.Response;
 import unpsjb.labprog.backend.business.service.LicenciaService;
+import unpsjb.labprog.backend.dto.ParteDiarioDTO;
 import unpsjb.labprog.backend.exception.NotModifiableException;
 import unpsjb.labprog.backend.model.Licencia;
 import unpsjb.labprog.backend.model.Log;
@@ -197,6 +202,33 @@ public class LicenciaPresenter {
     public ResponseEntity<Object> findByPage(@RequestParam(defaultValue = AppConstants.DEFAULT_PAGE) int page,
             @RequestParam(defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size) {
         return Response.ok(service.findByPage(page, size));
+    }
+
+    /**
+     * Obtiene el parte diario de licencias para una fecha específica
+     *
+     * @param fecha Fecha para la cual generar el parte diario (formato:
+     * yyyy-MM-dd)
+     * @return ResponseEntity con el parte diario estructurado
+     */
+    @GetMapping("/parte-diario/{fecha}")
+    public ResponseEntity<Object> getParteDiario(@PathVariable String fecha) {
+        try {
+            LocalDate fechaConsulta = LocalDate.parse(fecha);
+            ParteDiarioDTO parteDiario = service.generarParteDiario(fechaConsulta);
+
+            // Crear respuesta con el formato específico requerido
+            Map<String, Object> response = new HashMap<>();
+            response.put("ParteDiario", parteDiario);
+
+            logger.log(Level.INFO, "Parte diario generado para fecha: " + fecha);
+            return Response.ok(response);
+        } catch (DateTimeParseException e) {
+            return Response.internalServerError("Formato de fecha inválido. Use yyyy-MM-dd");
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Error al generar parte diario: " + e.getMessage());
+            return Response.internalServerError("Error al generar parte diario: " + e.getMessage());
+        }
     }
 
     /**
