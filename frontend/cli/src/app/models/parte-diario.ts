@@ -52,4 +52,9 @@ export interface DocenteLicencia {
      * Fecha de finalización de la licencia
      */
     hasta: Date;
+
+    /**
+     * Lista de designaciones que actúan como reemplazos
+     */
+    reemplazos?: any[];
 }

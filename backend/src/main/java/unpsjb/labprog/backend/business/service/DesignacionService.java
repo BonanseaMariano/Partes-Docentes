@@ -1,6 +1,7 @@
 package unpsjb.labprog.backend.business.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import unpsjb.labprog.backend.business.repository.DesignacionRepository;
 import unpsjb.labprog.backend.business.validator.designacion.DesignacionValidator;
 import unpsjb.labprog.backend.exception.BusinessLogicException;
 import unpsjb.labprog.backend.model.Designacion;
+import unpsjb.labprog.backend.model.Licencia;
 import unpsjb.labprog.backend.model.Persona;
 
 /**
@@ -126,6 +128,68 @@ public class DesignacionService {
 
         // Devolver la persona de la primera designación contenedora encontrada
         return designacionesContenedoras.get((designacionesContenedoras.size() - 1)).getPersona();
+    }
+
+    /**
+     * Encuentra las designaciones que actúan como reemplazos para una licencia específica.
+     * Una designación es un reemplazo si:
+     * - Es para el mismo cargo que una designación afectada por la licencia
+     * - Su período está contenido dentro del período de la licencia
+     * - Es de una persona diferente a la que tiene la licencia
+     * 
+     * @param licencia La licencia para la cual buscar reemplazos
+     * @return Lista de designaciones que actúan como reemplazos
+     */
+    public List<Designacion> findDesignacionesReemplazoPorLicencia(Licencia licencia) {
+        List<Designacion> reemplazos = new ArrayList<>();
+        
+        // Obtener las designaciones afectadas por la licencia
+        List<Designacion> designacionesAfectadas = licencia.getDesignaciones();
+        
+        if (designacionesAfectadas == null || designacionesAfectadas.isEmpty()) {
+            return reemplazos;
+        }
+        
+        // Para cada designación afectada, buscar designaciones que la reemplacen
+        for (Designacion designacionAfectada : designacionesAfectadas) {
+            // Buscar designaciones superpuestas para el mismo cargo
+            List<Designacion> designacionesSuperpuestas = repository.findDesignacionesSuperpuestas(
+                    designacionAfectada.getCargo().getId(),
+                    licencia.getPedidoDesde(),
+                    licencia.getPedidoHasta(),
+                    designacionAfectada.getId());
+            
+            // Filtrar solo las que son reemplazos (diferentes personas y contenidas en el período)
+            for (Designacion designacion : designacionesSuperpuestas) {
+                if (!designacion.getPersona().getDni().equals(licencia.getPersona().getDni()) &&
+                    esDesignacionContenidaEnPeriodo(designacion, licencia.getPedidoDesde(), licencia.getPedidoHasta())) {
+                    reemplazos.add(designacion);
+                }
+            }
+        }
+        
+        return reemplazos;
+    }
+
+    /**
+     * Verifica si una designación está contenida completamente dentro de un período específico.
+     * 
+     * @param designacion La designación a verificar
+     * @param fechaInicioPeriodo Fecha de inicio del período
+     * @param fechaFinPeriodo Fecha de fin del período
+     * @return true si la designación está contenida en el período
+     */
+    private boolean esDesignacionContenidaEnPeriodo(Designacion designacion, 
+            LocalDateTime fechaInicioPeriodo, LocalDateTime fechaFinPeriodo) {
+        
+        // La designación debe empezar después o en el inicio del período
+        boolean iniciaEnPeriodo = designacion.getFechaInicio().compareTo(fechaInicioPeriodo) >= 0;
+        
+        // La designación debe terminar antes o en el fin del período
+        boolean terminaEnPeriodo = designacion.getFechaFin() == null || 
+                                   designacion.getFechaFin().compareTo(fechaFinPeriodo) <= 0;
+        
+        return iniciaEnPeriodo && terminaEnPeriodo;
     }
 
 }

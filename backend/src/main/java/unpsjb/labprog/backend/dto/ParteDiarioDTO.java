@@ -6,6 +6,8 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import unpsjb.labprog.backend.model.Designacion;
+
 public class ParteDiarioDTO {
 
     @JsonProperty("Fecha")
@@ -67,6 +69,9 @@ public class ParteDiarioDTO {
         @JsonFormat(pattern = "yyyy-MM-dd")
         private LocalDate hasta;
 
+        @JsonProperty("Reemplazos")
+        private List<Designacion> reemplazos;
+
         // Constructor vacío
         public DocenteLicencia() {
         }
@@ -74,7 +79,7 @@ public class ParteDiarioDTO {
         // Constructor completo
         public DocenteLicencia(Long dni, String nombre, String apellido,
                 String articulo, String descripcion,
-                LocalDate desde, LocalDate hasta) {
+                LocalDate desde, LocalDate hasta, List<Designacion> reemplazos) {
             this.dni = dni;
             this.nombre = nombre;
             this.apellido = apellido;
@@ -82,6 +87,7 @@ public class ParteDiarioDTO {
             this.descripcion = descripcion;
             this.desde = desde;
             this.hasta = hasta;
+            this.reemplazos = reemplazos;
         }
 
         // Getters y Setters
@@ -139,6 +145,14 @@ public class ParteDiarioDTO {
 
         public void setHasta(LocalDate hasta) {
             this.hasta = hasta;
+        }
+
+        public List<Designacion> getReemplazos() {
+            return reemplazos;
+        }
+
+        public void setReemplazos(List<Designacion> reemplazos) {
+            this.reemplazos = reemplazos;
         }
     }
 }

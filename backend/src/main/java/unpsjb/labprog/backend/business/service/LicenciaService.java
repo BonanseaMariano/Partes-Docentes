@@ -159,6 +159,9 @@ public class LicenciaService {
      * @return DocenteLicencia DTO con los datos mapeados
      */
     private DocenteLicencia mapearLicenciaADocente(Licencia licencia) {
+        // Obtener las designaciones de reemplazo para esta licencia
+        List<Designacion> reemplazos = designacionService.findDesignacionesReemplazoPorLicencia(licencia);
+        
         DocenteLicencia docente = new DocenteLicencia();
         docente.setDni(licencia.getPersona().getDni());
         docente.setNombre(licencia.getPersona().getNombre());
@@ -167,6 +170,8 @@ public class LicenciaService {
         docente.setDescripcion(licencia.getArticuloLicencia().getDescripcion());
         docente.setDesde(licencia.getPedidoDesde().toLocalDate());
         docente.setHasta(licencia.getPedidoHasta().toLocalDate());
+        docente.setReemplazos(reemplazos);
+        
         return docente;
     }
 }

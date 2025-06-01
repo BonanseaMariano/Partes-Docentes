@@ -7,7 +7,7 @@
                 <div class="date-selector-group">
                     <div class="input-group input-group-sm">
                         <input type="text" class="form-control date-input border-primary-light" placeholder="dd/mm/yyyy"
-                            name="fechaParte" [(ngModel)]="fechaSeleccionada" (dateSelect)="onFechaChange()" 
+                            name="fechaParte" [(ngModel)]="fechaSeleccionada" (dateSelect)="onFechaChange()"
                             ngbDatepicker #d="ngbDatepicker" readonly>
                         <button class="btn btn-sm btn-outline-primary calendar-btn" (click)="d.toggle()" type="button"
                             title="Abrir calendario">
@@ -42,11 +42,12 @@
                             <th scope="col">Descripción</th>
                             <th scope="col">Desde</th>
                             <th scope="col">Hasta</th>
+                            <th scope="col">Suplentes</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr *ngIf="!parteDiario.docentes || parteDiario.docentes.length === 0">
-                            <td colspan="8" class="empty-state-cell">
+                            <td colspan="9" class="empty-state-cell">
                                 <i class="fa fa-info-circle me-2"></i>
                                 No hay licencias registradas para {{ convertirADate(fechaSeleccionada) | fechaFormat }}
                             </td>
@@ -60,6 +61,14 @@
                             <td>{{ docente.descripcion }}</td>
                             <td>{{ docente.desde | fechaFormat }}</td>
                             <td>{{ docente.hasta | fechaFormat }}</td>
+                            <td class="text-center">
+                                <button class="btn-popup"
+                                    [ngClass]="{'btn-popup-empty': getReemplazoCount(docente) === 0}"
+                                    (click)="openReemplazosPopup(docente)" title="Mostrar suplentes">
+                                    <i class="fa fa-user-tie"></i>
+                                    <span class="ms-1">{{ getReemplazoCount(docente) }}</span>
+                                </button>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -67,3 +76,47 @@
         </div>
     </div>
 </div>
+
+<!-- Template para el popup de suplentes -->
+<ng-template #reemplazosTemplate let-docente>
+    <div *ngIf="docente.reemplazos && docente.reemplazos.length > 0" class="table-responsive">
+        <table class="table table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th scope="col">DNI</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Apellido</th>
+                    <th scope="col">Cargo</th>
+                    <th scope="col">Inicio</th>
+                    <th scope="col">Fin</th>
+                    <th scope="col">Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let reemplazo of docente.reemplazos">
+                    <td>{{ reemplazo.persona?.dni | dniFormat }}</td>
+                    <td>{{ reemplazo.persona?.nombre }}</td>
+                    <td>{{ reemplazo.persona?.apellido }}</td>
+                    <td>{{ reemplazo.cargo?.nombre }}{{ reemplazo.cargo?.division ?
+                        ' - ' + reemplazo.cargo.division.anio + '° ' +
+                        reemplazo.cargo.division.numDivision + '° ' +
+                        reemplazo.cargo.division.orientacion : '' }}
+                    </td>
+                    <td>{{ reemplazo.fechaInicio | fechaFormat }}</td>
+                    <td>{{ reemplazo.fechaFin | fechaFormat }}</td>
+                    <td>
+                        <i class="fa fa-2x" [ngClass]="{
+                            'fa-check-circle text-success': isDesignacionActive(reemplazo),
+                            'fa-clock-o text-muted': !isDesignacionActive(reemplazo)
+                        }"
+                            title="{{ isDesignacionActive(reemplazo) ? 'Designación Activa' : 'Designación Finalizada' }}"></i>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div *ngIf="!docente.reemplazos || docente.reemplazos.length === 0" class="empty-state-message">
+        <i class="fa fa-info-circle me-2"></i>
+        No existen suplentes para esta licencia
+    </div>
+</ng-template>

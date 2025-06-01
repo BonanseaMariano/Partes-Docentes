@@ -1,13 +1,16 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbDatepickerModule, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
+import { DesignacionService } from '../designacion/service/designacion.service';
 import { LicenciaService } from '../licencia/service/licencia.service';
-import { ParteDiario, DocenteLicencia } from '../models/parte-diario';
 import { DataPackage } from '../models/data-package';
+import { Designacion } from '../models/designacion';
+import { DocenteLicencia, ParteDiario } from '../models/parte-diario';
 import { DniFormatPipe } from '../pipes/dni-format.pipe';
 import { FechaFormatPipe } from '../pipes/fecha-format.pipe';
+import { PopupService } from '../popup/popup.service';
 
 @Component({
     selector: 'app-parte-diario',
@@ -26,12 +29,17 @@ export class ParteDiarioComponent implements OnInit {
         docentes: []
     };
 
-    // El modelo de parte diario es suficiente para gestionar el estado
+    // Para el popup de reemplazos
+    selectedDocente: DocenteLicencia | null = null;
+
+    @ViewChild('reemplazosTemplate', { static: true }) reemplazosTemplate!: TemplateRef<any>;
 
     constructor(
         private licenciaService: LicenciaService,
         private route: ActivatedRoute,
-        private router: Router
+        private router: Router,
+        private popupService: PopupService,
+        private designacionService: DesignacionService
     ) { }
 
     ngOnInit(): void {
@@ -91,7 +99,8 @@ export class ParteDiarioComponent implements OnInit {
                                     articulo: docente.Artículo,
                                     descripcion: docente.Descripción,
                                     desde: new Date(docente.Desde),
-                                    hasta: new Date(docente.Hasta)
+                                    hasta: new Date(docente.Hasta),
+                                    reemplazos: docente.Reemplazos || []
                                 }))
                             };
                         }
@@ -133,5 +142,31 @@ export class ParteDiarioComponent implements OnInit {
     onFechaChange(): void {
         this.cargarParteDiario();
         this.actualizarURL();
+    }
+
+    /**
+     * Abre el popup para mostrar los suplentes de un docente
+     */
+    openReemplazosPopup(docente: DocenteLicencia): void {
+        this.selectedDocente = docente;
+        this.popupService.show(this.reemplazosTemplate, {
+            title: `Suplentes de ${docente.nombre} ${docente.apellido}`,
+            icon: 'fa-user-tie',
+            data: docente
+        });
+    }
+
+    /**
+     * Obtiene la cantidad de suplentes para un docente
+     */
+    getReemplazoCount(docente: DocenteLicencia): number {
+        return docente.reemplazos ? docente.reemplazos.length : 0;
+    }
+
+    /**
+     * Verifica si una designación está activa
+     */
+    isDesignacionActive(designacion: Designacion): boolean {
+        return this.designacionService.isActive(designacion);
     }
 }

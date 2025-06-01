@@ -167,13 +167,15 @@
 
     .date-selector-group .input-group {
         width: 100%;
-    }    .action-buttons-group {
+    }
+
+    .action-buttons-group {
         width: 100%;
         justify-content: flex-start;
         margin-left: 0 !important;
         margin-top: 8px;
     }
-    
+
     .action-buttons-group .btn {
         width: auto;
         height: auto;
