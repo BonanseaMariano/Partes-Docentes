@@ -9,13 +9,14 @@ import { ResultsPage } from '../../models/results-page';
 import { TipoDesignacion } from '../../models/tipo-designacion';
 import { PaginationComponent } from '../../pagination/pagination.component';
 import { DniFormatPipe } from '../../pipes/dni-format.pipe';
+import { FechaFormatPipe } from '../../pipes/fecha-format.pipe';
 import { TipoDesignacionPipe } from '../../pipes/tipo-designacion.pipe';
 import { DesignacionService } from '../service/designacion.service';
 
 
 @Component({
     selector: 'app-divisiones',
-    imports: [CommonModule, RouterModule, PaginationComponent, TipoDesignacionPipe, DniFormatPipe],
+    imports: [CommonModule, RouterModule, PaginationComponent, TipoDesignacionPipe, DniFormatPipe, FechaFormatPipe],
     templateUrl: './designaciones.component.html',
     styles: ``
 })

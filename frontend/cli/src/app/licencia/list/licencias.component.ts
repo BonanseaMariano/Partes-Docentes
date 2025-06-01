@@ -11,6 +11,7 @@ import { Licencia } from '../../models/licencia';
 import { ResultsPage } from '../../models/results-page';
 import { PaginationComponent } from '../../pagination/pagination.component';
 import { DniFormatPipe } from '../../pipes/dni-format.pipe';
+import { FechaFormatPipe } from '../../pipes/fecha-format.pipe';
 import { PopupService } from '../../popup/popup.service';
 import { LicenciaService } from '../service/licencia.service';
 
@@ -18,7 +19,7 @@ import { LicenciaService } from '../service/licencia.service';
 @Component({
     selector: 'app-licencias',
     standalone: true,
-    imports: [CommonModule, RouterModule, PaginationComponent, DniFormatPipe],
+    imports: [CommonModule, RouterModule, PaginationComponent, DniFormatPipe, FechaFormatPipe],
     templateUrl: './licencias.component.html',
     styleUrls: ['./licencias.component.css']
 })
@@ -104,13 +105,6 @@ export class LicenciasComponent {
 
     getLogCount(licencia: Licencia): number {
         return licencia.logs ? licencia.logs.length : 0;
-    }
-
-    formatFechaDesignacion(fecha: Date | string | null | undefined): string {
-        if (!fecha) return '';
-
-        const dateObj = fecha instanceof Date ? fecha : new Date(fecha);
-        return dateObj.toLocaleDateString('es-AR');
     }
 
     isDesignacionActive(designacion: Designacion): boolean {

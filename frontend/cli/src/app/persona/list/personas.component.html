@@ -101,8 +101,8 @@
                         designacion.cargo.division.numDivision + '° ' +
                         designacion.cargo.division.orientacion : '' }}
                     </td>
-                    <td>{{ formatFechaDesignacion(designacion.fechaInicio) }}</td>
-                    <td>{{ formatFechaDesignacion(designacion.fechaFin) }}</td>
+                    <td>{{ designacion.fechaInicio | fechaFormat }}</td>
+                    <td>{{ designacion.fechaFin | fechaFormat }}</td>
                     <td>
                         <i class="fa fa-2x" [ngClass]="{
                             'fa-check-circle text-success': isDesignacionActive(designacion),

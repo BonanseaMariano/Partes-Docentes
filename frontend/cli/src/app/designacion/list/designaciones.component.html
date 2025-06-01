@@ -42,8 +42,8 @@
                             designacion.cargo.division.orientacion : '' }}
                         </td>
                         <td>{{ designacion.situacionRevista }}</td>
-                        <td>{{ designacion.fechaInicio | date:'dd/MM/yyyy' }}</td>
-                        <td>{{ designacion.fechaFin ? (designacion.fechaFin | date:'dd/MM/yyyy') : '' }}</td>
+                        <td>{{ designacion.fechaInicio | fechaFormat }}</td>
+                        <td>{{ designacion.fechaFin ? (designacion.fechaFin | fechaFormat) : '' }}</td>
                         <td class="text-end">
                             <a routerLink="/designaciones/{{ designacion.id }}"
                                 class="btn btn-sm btn-outline-primary me-1" title="Editar">

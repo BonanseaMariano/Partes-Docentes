@@ -10,6 +10,7 @@ import { Dia } from '../../models/horario';
 import { ResultsPage } from '../../models/results-page';
 import { TipoDesignacion } from '../../models/tipo-designacion';
 import { PaginationComponent } from '../../pagination/pagination.component';
+import { FechaFormatPipe } from '../../pipes/fecha-format.pipe';
 import { TipoDesignacionPipe } from '../../pipes/tipo-designacion.pipe';
 import { PopupService } from '../../popup/popup.service';
 import { CargoService } from '../service/cargo.service';
@@ -17,7 +18,7 @@ import { CargoService } from '../service/cargo.service';
 
 @Component({
     selector: 'app-divisiones',
-    imports: [CommonModule, RouterModule, PaginationComponent, TipoDesignacionPipe],
+    imports: [CommonModule, RouterModule, PaginationComponent, TipoDesignacionPipe, FechaFormatPipe],
     templateUrl: './cargos.component.html',
     styles: ``
 })

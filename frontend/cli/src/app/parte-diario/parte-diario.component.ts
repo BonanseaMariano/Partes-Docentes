@@ -7,26 +7,14 @@ import { LicenciaService } from '../licencia/service/licencia.service';
 import { ParteDiario, DocenteLicencia } from '../models/parte-diario';
 import { DataPackage } from '../models/data-package';
 import { DniFormatPipe } from '../pipes/dni-format.pipe';
+import { FechaFormatPipe } from '../pipes/fecha-format.pipe';
 
 @Component({
     selector: 'app-parte-diario',
     standalone: true,
-    imports: [CommonModule, FormsModule, NgbDatepickerModule, DniFormatPipe],
+    imports: [CommonModule, FormsModule, NgbDatepickerModule, DniFormatPipe, FechaFormatPipe],
     templateUrl: './parte-diario.component.html',
-    styles: `
-    .input-group-text {
-      width: 100px;
-    }
-    .calendar {
-      cursor: pointer;
-    }
-    .parte-diario-table {
-      font-size: 0.9rem;
-    }
-    .parte-diario-table th {
-      background-color: #f8f9fa;
-    }
-  `
+    styleUrl: './parte-diario.component.css'
 })
 export class ParteDiarioComponent implements OnInit {
     // Fecha seleccionada para el parte diario
@@ -73,7 +61,7 @@ export class ParteDiarioComponent implements OnInit {
     }
 
     /**
-     * Formatea la fecha en formato yyyy-MM-dd
+     * Formatea la fecha en formato yyyy-MM-dd (para APIs y URLs)
      */
     formatearFecha(fecha: NgbDateStruct): string {
         return `${fecha.year}-${String(fecha.month).padStart(2, '0')}-${String(fecha.day).padStart(2, '0')}`;
@@ -107,17 +95,7 @@ export class ParteDiarioComponent implements OnInit {
                                 }))
                             };
                         }
-
-                        console.log('Parte diario cargado:', this.parteDiario);
                     }
-                },
-                error: (err) => {
-                    console.error('Error al cargar parte diario:', err);
-                    // Inicializar el parte diario vacío en caso de error
-                    this.parteDiario = {
-                        fecha: new Date(),
-                        docentes: []
-                    };
                 }
             });
     }
@@ -131,28 +109,29 @@ export class ParteDiarioComponent implements OnInit {
     }
 
     /**
-     * Formatea una fecha para mostrar en la tabla
+     * Convierte NgbDateStruct a un objeto Date de JavaScript
      */
-    formatoFechaTabla(fecha: Date): string {
-        return fecha.toISOString().split('T')[0];
+    convertirADate(fecha: NgbDateStruct): Date {
+        return new Date(fecha.year, fecha.month - 1, fecha.day);
     }
 
     /**
-     * Maneja el botón de búsqueda
+     * Reinicia la búsqueda con la fecha actual y recarga los datos
      */
-    buscar(): void {
+    reset(): void {
+        this.fechaSeleccionada = this.getFechaActual();
+        // Después de reiniciar la fecha, cargar el parte diario para la fecha actual
         this.cargarParteDiario();
+        // Actualizar la URL para reflejar la fecha actual
         this.actualizarURL();
     }
 
     /**
-     * Reinicia la búsqueda con la fecha actual
+     * Método que se ejecuta cuando cambia la fecha en el datepicker
+     * Combina la funcionalidad de buscar y actualizarURL
      */
-    reset(): void {
-        this.fechaSeleccionada = this.getFechaActual();
-        this.parteDiario = {
-            fecha: new Date(),
-            docentes: []
-        };
+    onFechaChange(): void {
+        this.cargarParteDiario();
+        this.actualizarURL();
     }
 }

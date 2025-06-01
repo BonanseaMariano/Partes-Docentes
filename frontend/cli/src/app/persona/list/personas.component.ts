@@ -11,12 +11,13 @@ import { ResultsPage } from '../../models/results-page';
 import { PaginationComponent } from '../../pagination/pagination.component';
 import { CuilFormatPipe } from '../../pipes/cuil-format.pipe';
 import { DniFormatPipe } from '../../pipes/dni-format.pipe';
+import { FechaFormatPipe } from '../../pipes/fecha-format.pipe';
 import { PopupService } from '../../popup/popup.service';
 import { PersonaService } from '../service/persona.service';
 
 @Component({
   selector: 'app-persona',
-  imports: [CommonModule, RouterModule, PaginationComponent, CuilFormatPipe, DniFormatPipe],
+  imports: [CommonModule, RouterModule, PaginationComponent, CuilFormatPipe, DniFormatPipe, FechaFormatPipe],
   templateUrl: './personas.component.html',
 })
 export class PersonasComponent {
@@ -76,13 +77,6 @@ export class PersonasComponent {
 
   getDesignacionCount(persona: Persona): number {
     return persona.designaciones ? persona.designaciones.length : 0;
-  }
-
-  formatFechaDesignacion(fecha: Date | string | null | undefined): string {
-    if (!fecha) return '';
-
-    const dateObj = fecha instanceof Date ? fecha : new Date(fecha);
-    return dateObj.toLocaleDateString('es-AR');
   }
 
   isDesignacionActive(designacion: Designacion): boolean {
