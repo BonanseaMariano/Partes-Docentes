@@ -79,7 +79,7 @@
                     <ul ngbDropdownMenu aria-labelledby="licenciasDropdown">
                         <li><a ngbDropdownItem href="licencias"><i class="fa fa-list me-1"></i> Listar</a></li>
                         <li><a ngbDropdownItem href="licencias/new"><i class="fa fa-plus me-1"></i> Nueva</a></li>
-                        <li><a ngbDropdownItem href="#"><i class="fa-solid fa-clipboard-list me-1"></i> ParteDiario</a>
+                        <li><a ngbDropdownItem [routerLink]="['/licencias/parte-diario', getFechaHoy()]"><i class="fa-solid fa-clipboard-list me-1"></i> Parte Diario</a>
                         </li>
                     </ul>
                 </li>

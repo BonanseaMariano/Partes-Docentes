@@ -1,0 +1,67 @@
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-light">
+        <h2 class="mb-0"><i class="fa fa-calendar me-2"></i>Parte Diario de Licencias</h2>
+    </div>
+
+    <div class="card-body">
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <label for="fechaParte" class="form-label text-primary fw-bold">Ingrese fecha de parte diario</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="yyyy-mm-dd" name="fechaParte"
+                        [(ngModel)]="fechaSeleccionada" ngbDatepicker #d="ngbDatepicker">
+                    <button class="btn btn-outline-primary calendar" (click)="d.toggle()" type="button">
+                        <i class="fa fa-calendar"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="col-md-6 d-flex align-items-end">
+                <button class="btn btn-success me-2" (click)="buscar()">
+                    <i class="fa fa-search me-1"></i>Buscar
+                </button>
+                <button class="btn btn-danger" (click)="reset()">
+                    <i class="fa fa-times me-1"></i>Reset
+                </button>
+            </div>
+        </div>
+
+        <div>
+            <h3 class="mb-3">Parte Diario - {{ formatearFecha(fechaSeleccionada) }}</h3>
+
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col"></th>
+                            <th scope="col">DNI</th>
+                            <th scope="col">Nombre</th>
+                            <th scope="col">Apellido</th>
+                            <th scope="col">Artículo</th>
+                            <th scope="col">Descripción</th>
+                            <th scope="col">Desde</th>
+                            <th scope="col">Hasta</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngIf="!parteDiario.docentes || parteDiario.docentes.length === 0">
+                            <td colspan="8" class="empty-state-cell">
+                                <i class="fa fa-info-circle me-2"></i>
+                                No hay licencias registradas para la fecha seleccionada
+                            </td>
+                        </tr>
+                        <tr *ngFor="let docente of parteDiario.docentes; let i = index">
+                            <td>{{ i + 1 }}</td>
+                            <td>{{ docente.dni | dniFormat }}</td>
+                            <td>{{ docente.nombre }}</td>
+                            <td>{{ docente.apellido }}</td>
+                            <td>{{ docente.articulo }}</td>
+                            <td>{{ docente.descripcion }}</td>
+                            <td>{{ formatoFechaTabla(docente.desde) }}</td>
+                            <td>{{ formatoFechaTabla(docente.hasta) }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
