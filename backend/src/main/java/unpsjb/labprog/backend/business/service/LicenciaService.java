@@ -21,6 +21,7 @@ import unpsjb.labprog.backend.exception.NotModifiableException;
 import unpsjb.labprog.backend.model.Designacion;
 import unpsjb.labprog.backend.model.Licencia;
 import unpsjb.labprog.backend.model.Log;
+import unpsjb.labprog.backend.model.Persona;
 import unpsjb.labprog.backend.model.enums.Estado;
 
 /**
@@ -173,5 +174,17 @@ public class LicenciaService {
         docente.setReemplazos(reemplazos);
         
         return docente;
+    }
+
+    /**
+     * Busca licencias válidas para una persona en un año específico
+     * para el reporte de concepto
+     *
+     * @param persona La persona asociada a las licencias
+     * @param anio El año a consultar
+     * @return Lista de licencias válidas de la persona en el año especificado
+     */
+    public List<Licencia> findLicenciasPorPersonaYAño(Persona persona, Integer anio) {
+        return repository.findLicenciasPorPersonaYAño(persona, anio);
     }
 }

@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import unpsjb.labprog.backend.Response;
 import unpsjb.labprog.backend.business.service.PersonaService;
+import unpsjb.labprog.backend.business.service.ReporteConceptoService;
+import unpsjb.labprog.backend.dto.ReporteConceptoDTO;
 import unpsjb.labprog.backend.model.Persona;
 import unpsjb.labprog.backend.utils.constants.AppConstants;
 
@@ -42,6 +44,13 @@ public class PersonaPresenter {
      */
     @Autowired
     private PersonaService service;
+
+    /**
+     * Servicio especializado en la generación de reportes de concepto para
+     * docentes.
+     */
+    @Autowired
+    private ReporteConceptoService reporteConceptoService;
 
     /**
      * Obtiene todas las personas registradas en el sistema.
@@ -191,6 +200,42 @@ public class PersonaPresenter {
                                     deletedPersona.getNombre(),
                                     deletedPersona.getApellido(),
                                     deletedPersona.getDni()));
+        }
+    }
+
+    /**
+     * Genera un reporte de concepto para un docente específico en un año
+     * determinado. El reporte incluye análisis estadístico de licencias,
+     * designaciones y calificación automática del desempeño del docente.
+     *
+     * @param dni DNI del docente para quien generar el reporte
+     * @param año Año para el cual generar el reporte
+     * @return ResponseEntity con ReporteConceptoDTO si la operación es exitosa,
+     * o un mensaje de error si no se encuentra el docente
+     */
+    @GetMapping("/{dni}/reporte/{año}")
+    public ResponseEntity<Object> generarReporteConcepto(
+            @PathVariable Long dni,
+            @PathVariable Integer año) {
+        try {
+            ReporteConceptoDTO reporte = reporteConceptoService.generarReporteConcepto(dni, año);
+            String mensaje = String.format(
+                    "Reporte de concepto generado exitosamente para DNI %d en el año %d",
+                    dni, año);
+            logger.log(Level.INFO, mensaje);
+            return Response.ok(reporte, mensaje);
+        } catch (IllegalArgumentException e) {
+            String mensajeError = String.format(
+                    "No se pudo generar el reporte: %s",
+                    e.getMessage());
+            logger.log(Level.WARNING, mensajeError);
+            return Response.notFound(mensajeError);
+        } catch (Exception e) {
+            String mensajeError = String.format(
+                    "Error interno al generar el reporte para DNI %d en el año %d: %s",
+                    dni, año, e.getMessage());
+            logger.log(Level.SEVERE, mensajeError, e);
+            return Response.internalServerError(mensajeError);
         }
     }
 
