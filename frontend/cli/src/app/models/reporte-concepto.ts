@@ -14,9 +14,9 @@ export interface DocenteInfo {
 
 export interface DesignacionConDias {
     Designacion: DesignacionInfo;
-    FechaInicioEnAño: string;
-    FechaFinEnAño: string;
-    DiasDesignacionEnAño: number;
+    FechaInicioEnAnio: string;
+    FechaFinEnAnio: string;
+    DiasDesignacionEnAnio: number;
 }
 
 export interface DesignacionInfo {

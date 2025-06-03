@@ -339,15 +339,15 @@ public class ReporteConceptoDTO {
         @JsonProperty("Designacion")
         private DesignacionInfo designacion;
 
-        @JsonProperty("FechaInicioEnAño")
+        @JsonProperty("FechaInicioEnAnio")
         @JsonFormat(pattern = "yyyy-MM-dd")
         private LocalDate fechaInicioEnAño;
 
-        @JsonProperty("FechaFinEnAño")
+        @JsonProperty("FechaFinEnAnio")
         @JsonFormat(pattern = "yyyy-MM-dd")
         private LocalDate fechaFinEnAño;
 
-        @JsonProperty("DiasDesignacionEnAño")
+        @JsonProperty("DiasDesignacionEnAnio")
         private Integer diasDesignacionEnAño;
 
         public DesignacionConDias() {

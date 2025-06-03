@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { HttpStatusCode } from '@angular/common/http';
 import { Component, TemplateRef, ViewChild } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { PaginationConfig } from '../../core/constants/pagination.constants';
 import { DesignacionService } from '../../designacion/service/designacion.service';
 import { ModalService } from '../../modal/modal.service';
@@ -24,6 +24,7 @@ export class PersonasComponent {
   resultsPage: ResultsPage = <ResultsPage>{};
   currentPage: number = PaginationConfig.INITIAL_PAGE;
   pageSize: number = PaginationConfig.PAGE_SIZE;
+  currentYear: number = new Date().getFullYear();
 
   selectedPersona: Persona | null = null;
 
@@ -33,7 +34,8 @@ export class PersonasComponent {
     private personaService: PersonaService,
     private modalService: ModalService,
     private popupService: PopupService,
-    private designacionService: DesignacionService
+    private designacionService: DesignacionService,
+    private router: Router
   ) { }
 
   getPersonas(): void {
