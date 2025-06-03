@@ -12,7 +12,7 @@ import unpsjb.labprog.backend.model.enums.TipoDesignacion;
 
 public class ReporteConceptoDTO {
 
-    @JsonProperty("Año")
+    @JsonProperty("Anio")
     private Integer año;
 
     @JsonProperty("Docente")
