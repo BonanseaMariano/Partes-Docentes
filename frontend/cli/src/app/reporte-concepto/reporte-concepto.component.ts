@@ -17,7 +17,6 @@ import { PersonaService } from '../persona/service/persona.service';
 })
 export class ReporteConceptoComponent implements OnInit {
     reporte: ReporteConcepto | null = null;
-    loading: boolean = false;
     dni: number = 0;
     anioSeleccionado: number = new Date().getFullYear();
 
@@ -37,7 +36,8 @@ export class ReporteConceptoComponent implements OnInit {
     }
 
     cargarReporte(): void {
-        this.loading = true;
+        this.reporte = null; // Limpiamos el reporte antes de cargar nuevos datos
+
         this.personaService.obtenerReporteConcepto(this.dni, this.anioSeleccionado).subscribe({
             next: (response: any) => {
                 if (response.status === HttpStatusCode.Ok) {
@@ -49,7 +49,6 @@ export class ReporteConceptoComponent implements OnInit {
                         ""
                     );
                 }
-                this.loading = false;
             },
             error: (error: any) => {
                 this.modalService.error(
@@ -57,12 +56,12 @@ export class ReporteConceptoComponent implements OnInit {
                     "No se pudo cargar el reporte de concepto. Verifique que el DNI y año sean correctos.",
                     ""
                 );
-                this.loading = false;
             }
         });
     }
 
     onAnioChange(): void {
+        this.reporte = null; // Limpiamos el reporte antes de navegar
         this.router.navigate(['/personas', 'dni', this.dni, 'reporte', this.anioSeleccionado]);
     }
 
@@ -109,5 +108,10 @@ export class ReporteConceptoComponent implements OnInit {
             default:
                 return 'badge bg-secondary';
         }
+    }
+
+    // Método para obtener el año de forma segura (lo mantenemos porque es útil)
+    getAnioReporte(): number {
+        return this.reporte?.Anio || this.anioSeleccionado;
     }
 }

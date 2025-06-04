@@ -38,16 +38,8 @@
         </div>
     </div>
 
-    <!-- Loading -->
-    <div *ngIf="loading" class="text-center py-5">
-        <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Cargando...</span>
-        </div>
-        <p class="mt-2 text-muted">Generando reporte...</p>
-    </div>
-
     <!-- Reporte -->
-    <div *ngIf="!loading && reporte" class="row">
+    <div *ngIf="reporte" class="row">
         <!-- Información del Docente -->
         <div class="col-12 mb-4">
             <div class="card shadow-sm">
@@ -73,7 +65,7 @@
                         </div>
                         <div class="col-md-3">
                             <strong>Año del Reporte:</strong>
-                            <p class="mb-2">{{ reporte.Anio }}</p>
+                            <p class="mb-2">{{ getAnioReporte() }}</p>
                         </div>
                     </div>
                     <div class="row">
@@ -92,7 +84,7 @@
                 <div class="card-header bg-info text-white">
                     <h5 class="mb-0">
                         <i class="fa fa-briefcase me-2"></i>
-                        Designaciones en {{ reporte.Anio }}
+                        Designaciones en {{ getAnioReporte() }}
                     </h5>
                 </div>
                 <div class="card-body">
@@ -109,10 +101,15 @@
                                 </h6>
                                 <p class="mb-1">
                                     <strong>División:</strong>
-                                    {{ designacionConDias.Designacion.Cargo.Division.Anio }}°
-                                    {{ designacionConDias.Designacion.Cargo.Division.NumDivision }}°
-                                    {{ designacionConDias.Designacion.Cargo.Division.Orientacion }}
-                                    ({{ designacionConDias.Designacion.Cargo.Division.Turno }})
+                                    <span *ngIf="designacionConDias.Designacion.Cargo.Division">
+                                        {{ designacionConDias.Designacion.Cargo.Division.Anio }}°
+                                        {{ designacionConDias.Designacion.Cargo.Division.NumDivision }}°
+                                        {{ designacionConDias.Designacion.Cargo.Division.Orientacion }}
+                                        ({{ designacionConDias.Designacion.Cargo.Division.Turno }})
+                                    </span>
+                                    <span *ngIf="!designacionConDias.Designacion.Cargo.Division">
+                                        No asignada
+                                    </span>
                                 </p>
                                 <p class="mb-1">
                                     <strong>Carga Horaria:</strong>
@@ -129,7 +126,7 @@
                                     {{ designacionConDias.Designacion.SituacionRevista || 'No especificada' }}
                                 </p>
                                 <p class="mb-1">
-                                    <strong>Período en {{ reporte.Anio }}:</strong>
+                                    <strong>Período en {{ getAnioReporte() }}:</strong>
                                     {{ designacionConDias.FechaInicioEnAnio | fechaFormat }} -
                                     {{ designacionConDias.FechaFinEnAnio | fechaFormat }}
                                 </p>
@@ -228,13 +225,9 @@
     </div>
 
     <!-- Estado vacío -->
-    <div *ngIf="!loading && !reporte" class="text-center py-5">
+    <div *ngIf="!reporte" class="text-center py-5">
         <i class="fa fa-exclamation-triangle text-warning fa-3x mb-3"></i>
-        <h4>No se pudo cargar el reporte</h4>
-        <p class="text-muted">Verifique que el DNI y año sean correctos.</p>
-        <button type="button" class="btn btn-primary" (click)="cargarReporte()">
-            <i class="fa fa-refresh me-1"></i>
-            Reintentar
-        </button>
+        <h4>No se ha cargado el reporte</h4>
+        <p class="text-muted">Espere mientras se cargan los datos o verifique que el DNI y año sean correctos.</p>
     </div>
 </div>
