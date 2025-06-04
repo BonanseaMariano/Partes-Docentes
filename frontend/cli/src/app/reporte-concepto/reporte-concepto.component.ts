@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpStatusCode } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { DesignacionConDias, LicenciasPorArticulo, ReporteConcepto } from '../models/reporte-concepto';
@@ -8,10 +8,42 @@ import { FechaFormatPipe } from '../pipes/fecha-format.pipe';
 import { ModalService } from '../modal/modal.service';
 import { PersonaService } from '../persona/service/persona.service';
 
+// ApexCharts
+import { NgApexchartsModule } from "ng-apexcharts";
+import {
+    ApexAxisChartSeries,
+    ApexChart,
+    ApexXAxis,
+    ApexPlotOptions,
+    ApexDataLabels,
+    ApexStroke,
+    ApexYAxis,
+    ApexLegend,
+    ApexFill,
+    ApexTooltip,
+    ApexTitleSubtitle,
+    ChartComponent
+} from "ng-apexcharts";
+
+export type ChartOptions = {
+    series: ApexAxisChartSeries;
+    chart: ApexChart;
+    xaxis: ApexXAxis;
+    yaxis: ApexYAxis;
+    stroke: ApexStroke;
+    dataLabels: ApexDataLabels;
+    plotOptions: ApexPlotOptions;
+    fill: ApexFill;
+    tooltip: ApexTooltip;
+    legend: ApexLegend;
+    colors: string[];
+    title: ApexTitleSubtitle;
+};
+
 @Component({
     selector: 'app-reporte-concepto',
     standalone: true,
-    imports: [CommonModule, RouterModule, FormsModule, FechaFormatPipe],
+    imports: [CommonModule, RouterModule, FormsModule, FechaFormatPipe, NgApexchartsModule],
     templateUrl: './reporte-concepto.component.html',
     styleUrl: './reporte-concepto.component.css'
 })
@@ -19,6 +51,10 @@ export class ReporteConceptoComponent implements OnInit {
     reporte: ReporteConcepto | null = null;
     dni: number = 0;
     anioSeleccionado: number = new Date().getFullYear();
+
+    // Gráfico de distribución mensual
+    @ViewChild("chart") chart!: ChartComponent;
+    public chartOptions: Partial<ChartOptions> = {};
 
     constructor(
         private route: ActivatedRoute,
@@ -42,6 +78,10 @@ export class ReporteConceptoComponent implements OnInit {
             next: (response: any) => {
                 if (response.status === HttpStatusCode.Ok) {
                     this.reporte = response.data;
+                    // Inicializar el gráfico cuando los datos estén disponibles
+                    setTimeout(() => {
+                        this.inicializarGraficoMeses();
+                    }, 100);
                 } else {
                     this.modalService.error(
                         "Error al cargar reporte",
@@ -60,8 +100,122 @@ export class ReporteConceptoComponent implements OnInit {
         });
     }
 
+    inicializarGraficoMeses(): void {
+        if (!this.reporte) return;
+
+        // Obtener datos de licencias por mes
+        const mesesLicencia = this.getMesesLicencia();
+        if (mesesLicencia.length === 0) return;
+
+        // Preparar series para el gráfico
+        const serieData = mesesLicencia.map(item => item.dias);
+        const categorias = mesesLicencia.map(item => item.mes);
+
+        // Configurar opciones del gráfico
+        this.chartOptions = {
+            series: [{
+                name: "Días de licencia",
+                data: serieData
+            }],
+            chart: {
+                type: "bar",
+                height: 350,
+                toolbar: {
+                    show: false
+                },
+                animations: {
+                    enabled: true,
+                    speed: 500,
+                    dynamicAnimation: {
+                        enabled: true,
+                        speed: 350
+                    }
+                },
+                background: "#f8f9fa",
+                fontFamily: 'inherit',
+                dropShadow: {
+                    enabled: true,
+                    opacity: 0.1,
+                    blur: 3
+                }
+            },
+            plotOptions: {
+                bar: {
+                    horizontal: false,
+                    columnWidth: "55%",
+                    borderRadius: 6,
+                    distributed: false,
+                    dataLabels: {
+                        position: 'top'
+                    }
+                }
+            },
+            dataLabels: {
+                enabled: true,
+                formatter: function (val) {
+                    return val ? Number(val) > 0 ? val.toString() : '' : '';
+                },
+                style: {
+                    fontSize: '12px',
+                    fontWeight: 'bold',
+                    colors: ['#333']
+                },
+                offsetY: -20
+            },
+            stroke: {
+                show: true,
+                width: 2,
+                colors: ["transparent"]
+            },
+            xaxis: {
+                categories: categorias,
+                title: {
+                    text: "Meses"
+                }
+            },
+            yaxis: {
+                title: {
+                    text: "Días"
+                }
+            },
+            fill: {
+                opacity: 1
+            },
+            tooltip: {
+                y: {
+                    formatter: function (val) {
+                        return val + " días";
+                    }
+                },
+                theme: 'light',
+                marker: {
+                    show: true,
+                },
+                x: {
+                    show: true,
+                    formatter: function (val, opts) {
+                        return "Mes: " + val;
+                    }
+                }
+            },
+            title: {
+                text: "Licencias en " + this.anioSeleccionado,
+                align: 'center',
+                style: {
+                    fontSize: '16px',
+                    fontWeight: 500
+                }
+            },
+            colors: ["#ffc107"]
+        };
+    }
+
     onAnioChange(): void {
-        this.reporte = null; // Limpiamos el reporte antes de navegar
+        // Limpiar datos antes de navegar
+        this.reporte = null;
+        this.chartOptions = {};
+
+        // Navegar a la nueva URL con el año seleccionado
         this.router.navigate(['/personas', 'dni', this.dni, 'reporte', this.anioSeleccionado]);
     }
 

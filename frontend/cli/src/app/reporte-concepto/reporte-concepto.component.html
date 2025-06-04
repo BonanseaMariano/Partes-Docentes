@@ -207,15 +207,30 @@
                                 <i class="fa fa-calendar me-1"></i>
                                 Distribución Mensual
                             </h6>
-                            <div class="row">
-                                <div *ngFor="let item of getMesesLicencia()" class="col-6 col-lg-4 mb-2">
-                                    <div class="text-center p-2 border rounded">
-                                        <div class="fw-bold">{{ item.mes }}</div>
-                                        <span [class]="item.dias > 0 ? 'badge bg-warning' : 'text-muted'">
-                                            {{ item.dias }} días
-                                        </span>
-                                    </div>
+                            
+                            <!-- Gráfico de barras para la distribución mensual -->
+                            <div *ngIf="getMesesLicencia().length > 0" class="chart-container p-3 border rounded">
+                                <div id="chart" class="mixed-chart">
+                                    <apx-chart
+                                        #chart
+                                        [series]="chartOptions.series!"
+                                        [chart]="chartOptions.chart!"
+                                        [xaxis]="chartOptions.xaxis!"
+                                        [yaxis]="chartOptions.yaxis!"
+                                        [dataLabels]="chartOptions.dataLabels!"
+                                        [plotOptions]="chartOptions.plotOptions!"
+                                        [stroke]="chartOptions.stroke!"
+                                        [fill]="chartOptions.fill!"
+                                        [tooltip]="chartOptions.tooltip!"
+                                        [colors]="chartOptions.colors!"
+                                    ></apx-chart>
                                 </div>
+                            </div>
+                            
+                            <!-- Mensaje cuando no hay licencias -->
+                            <div *ngIf="getMesesLicencia().length === 0" class="text-center py-4 border rounded bg-light">
+                                <i class="fa fa-info-circle text-muted me-2"></i>
+                                No hay registros de licencias para este período
                             </div>
                         </div>
                     </div>
