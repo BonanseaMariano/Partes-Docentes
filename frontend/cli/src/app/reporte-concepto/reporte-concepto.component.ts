@@ -22,11 +22,12 @@ import {
     ApexFill,
     ApexTooltip,
     ApexTitleSubtitle,
+    ApexResponsive,
     ChartComponent
 } from "ng-apexcharts";
 
 export type ChartOptions = {
-    series: ApexAxisChartSeries;
+    series: ApexAxisChartSeries | number[]; // Permite tanto series de barras como de torta
     chart: ApexChart;
     xaxis: ApexXAxis;
     yaxis: ApexYAxis;
@@ -38,6 +39,8 @@ export type ChartOptions = {
     legend: ApexLegend;
     colors: string[];
     title: ApexTitleSubtitle;
+    labels?: string[];
+    responsive?: ApexResponsive[];
 };
 
 @Component({
@@ -50,11 +53,15 @@ export type ChartOptions = {
 export class ReporteConceptoComponent implements OnInit {
     reporte: ReporteConcepto | null = null;
     dni: number = 0;
-    anioSeleccionado: number = new Date().getFullYear();
-
-    // Gráfico de distribución mensual
+    anioSeleccionado: number = new Date().getFullYear();    // Gráfico de distribución mensual
     @ViewChild("chart") chart!: ChartComponent;
     public chartOptions: Partial<ChartOptions> = {};
+    public showMonthlyChart: boolean = false;
+
+    // Gráfico de distribución por artículo
+    @ViewChild("chartArticulos") chartArticulos!: ChartComponent;
+    public chartOptionsArticulos: Partial<ChartOptions> = {};
+    public showArticleChart: boolean = false;
 
     constructor(
         private route: ActivatedRoute,
@@ -81,6 +88,7 @@ export class ReporteConceptoComponent implements OnInit {
                     // Inicializar el gráfico cuando los datos estén disponibles
                     setTimeout(() => {
                         this.inicializarGraficoMeses();
+                        this.inicializarGraficoArticulos();
                     }, 100);
                 } else {
                     this.modalService.error(
@@ -105,7 +113,10 @@ export class ReporteConceptoComponent implements OnInit {
 
         // Obtener datos de licencias por mes
         const mesesLicencia = this.getMesesLicencia();
-        if (mesesLicencia.length === 0) return;
+        if (mesesLicencia.length === 0) {
+            this.showMonthlyChart = false;
+            return;
+        }
 
         // Preparar series para el gráfico
         const serieData = mesesLicencia.map(item => item.dias);
@@ -208,12 +219,97 @@ export class ReporteConceptoComponent implements OnInit {
             },
             colors: ["#ffc107"]
         };
+
+        this.showMonthlyChart = true;
+    }
+
+    inicializarGraficoArticulos(): void {
+        if (!this.reporte) return;
+
+        // Obtener datos de licencias por artículo
+        const articulosLicencia = this.getArticulosLicencia();
+        if (articulosLicencia.length === 0) {
+            this.showArticleChart = false;
+            return;
+        }
+
+        // Preparar series para el gráfico de torta (debe ser un array de números)
+        const serieData = articulosLicencia.map(item => item.data.Dias);
+        const categorias = articulosLicencia.map(item => item.articulo);
+
+        // Configurar opciones del gráfico
+        this.chartOptionsArticulos = {
+            series: serieData, // Para gráficos de torta, series debe ser un array de números
+            chart: {
+                type: "pie",
+                height: 350,
+                toolbar: {
+                    show: false
+                },
+                animations: {
+                    enabled: true,
+                    speed: 500,
+                    dynamicAnimation: {
+                        enabled: true,
+                        speed: 350
+                    }
+                },
+                background: "#f8f9fa",
+                fontFamily: 'inherit',
+            },
+            labels: categorias,
+            responsive: [{
+                breakpoint: 480,
+                options: {
+                    chart: {
+                        width: 200
+                    },
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }],
+            legend: {
+                position: 'right',
+                offsetY: 40,
+                floating: true,
+                labels: {
+                    colors: ['#333'],
+                    useSeriesColors: false
+                }
+            },
+            tooltip: {
+                y: {
+                    formatter: function (val) {
+                        return val + " días";
+                    }
+                },
+                theme: 'light',
+                marker: {
+                    show: true,
+                }
+            },
+            title: {
+                text: "Distribución de licencias por artículo en " + this.anioSeleccionado,
+                align: 'center',
+                style: {
+                    fontSize: '16px',
+                    fontWeight: 500
+                }
+            },
+            colors: ["#007bff", "#28a745", "#dc3545", "#ffc107", "#17a2b8", "#6c757d", "#fd7e14"]
+        };
+
+        this.showArticleChart = true;
     }
 
     onAnioChange(): void {
         // Limpiar datos antes de navegar
         this.reporte = null;
         this.chartOptions = {};
+        this.chartOptionsArticulos = {};
+        this.showMonthlyChart = false;
+        this.showArticleChart = false;
 
         // Navegar a la nueva URL con el año seleccionado
         this.router.navigate(['/personas', 'dni', this.dni, 'reporte', this.anioSeleccionado]);

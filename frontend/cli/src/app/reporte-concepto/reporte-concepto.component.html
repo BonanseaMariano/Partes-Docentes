@@ -174,11 +174,9 @@
                                 <small class="text-muted">Promedio mensual</small>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Licencias por Artículo -->
+                    </div>                    <!-- Licencias por Artículo -->
                     <div class="row">
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-7 mb-3">
                             <h6 class="text-secondary mb-3">
                                 <i class="fa fa-list-alt me-1"></i>
                                 Licencias por Artículo
@@ -186,49 +184,43 @@
                             <div *ngIf="getArticulosLicencia().length === 0" class="text-muted">
                                 No hay licencias registradas
                             </div>
-                            <div *ngFor="let item of getArticulosLicencia()" class="border rounded p-2 mb-2">
-                                <div class="d-flex justify-content-between align-items-start">
-                                    <div class="flex-grow-1">
-                                        <strong>Art. {{ item.articulo }}</strong>
-                                        <p class="mb-1 small text-muted">{{ item.data.Descripcion }}</p>
-                                    </div>
-                                    <div class="text-end">
-                                        <span class="badge bg-primary">{{ item.data.Dias }} días</span>
-                                        <br>
-                                        <small class="text-muted">{{ item.data.Cantidad }} licencias</small>
-                                    </div>
+
+                            <!-- Gráfico de torta para la distribución por artículos -->
+                            <div *ngIf="showArticleChart" class="chart-container p-3 border rounded mb-3">
+                                <div id="chartArticulos" class="mixed-chart">
+                                    <apx-chart #chartArticulos [series]="chartOptionsArticulos.series!"
+                                        [chart]="chartOptionsArticulos.chart!" [labels]="chartOptionsArticulos.labels!"
+                                        [tooltip]="chartOptionsArticulos.tooltip!"
+                                        [colors]="chartOptionsArticulos.colors!"
+                                        [legend]="chartOptionsArticulos.legend!"
+                                        [responsive]="chartOptionsArticulos.responsive!"
+                                        [title]="chartOptionsArticulos.title!"></apx-chart>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Licencias por Mes -->
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-5 mb-3">
                             <h6 class="text-secondary mb-3">
                                 <i class="fa fa-calendar me-1"></i>
                                 Distribución Mensual
                             </h6>
-                            
+
                             <!-- Gráfico de barras para la distribución mensual -->
-                            <div *ngIf="getMesesLicencia().length > 0" class="chart-container p-3 border rounded">
+                            <div *ngIf="showMonthlyChart" class="chart-container p-3 border rounded">
                                 <div id="chart" class="mixed-chart">
-                                    <apx-chart
-                                        #chart
-                                        [series]="chartOptions.series!"
-                                        [chart]="chartOptions.chart!"
-                                        [xaxis]="chartOptions.xaxis!"
-                                        [yaxis]="chartOptions.yaxis!"
+                                    <apx-chart #chart [series]="chartOptions.series!" [chart]="chartOptions.chart!"
+                                        [xaxis]="chartOptions.xaxis!" [yaxis]="chartOptions.yaxis!"
                                         [dataLabels]="chartOptions.dataLabels!"
-                                        [plotOptions]="chartOptions.plotOptions!"
-                                        [stroke]="chartOptions.stroke!"
-                                        [fill]="chartOptions.fill!"
-                                        [tooltip]="chartOptions.tooltip!"
-                                        [colors]="chartOptions.colors!"
-                                    ></apx-chart>
+                                        [plotOptions]="chartOptions.plotOptions!" [stroke]="chartOptions.stroke!"
+                                        [fill]="chartOptions.fill!" [tooltip]="chartOptions.tooltip!"
+                                        [title]="chartOptions.title!" [colors]="chartOptions.colors!"></apx-chart>
                                 </div>
                             </div>
-                            
+
                             <!-- Mensaje cuando no hay licencias -->
-                            <div *ngIf="getMesesLicencia().length === 0" class="text-center py-4 border rounded bg-light">
+                            <div *ngIf="getMesesLicencia().length === 0"
+                                class="text-center py-4 border rounded bg-light">
                                 <i class="fa fa-info-circle text-muted me-2"></i>
                                 No hay registros de licencias para este período
                             </div>
