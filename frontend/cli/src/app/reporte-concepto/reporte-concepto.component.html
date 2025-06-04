@@ -4,18 +4,11 @@
         <div>
             <h2 class="mb-0">
                 <i class="fa fa-file-text-o me-2"></i>
-                Reporte de Concepto
+                Reporte de Concepto - {{ getAnioReporte() }}
             </h2>
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item">
-                        <a routerLink="/personas" class="text-decoration-none">Personas</a>
-                    </li>
-                    <li class="breadcrumb-item active" aria-current="page">
-                        Reporte de Concepto
-                    </li>
-                </ol>
-            </nav>
+            <div *ngIf="reporte" class="text-muted">
+                {{ reporte.Docente.DNI | number }} - {{ reporte.Docente.Nombre }}, {{ reporte.Docente.Apellido }}
+            </div>
         </div>
         <div class="d-flex gap-2">
             <!-- Selector de año -->
@@ -40,50 +33,12 @@
 
     <!-- Reporte -->
     <div *ngIf="reporte" class="row">
-        <!-- Información del Docente -->
-        <div class="col-12 mb-4">
-            <div class="card shadow-sm">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">
-                        <i class="fa fa-user me-2"></i>
-                        Información del Docente
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <strong>DNI:</strong>
-                            <p class="mb-2">{{ reporte.Docente.DNI | number }}</p>
-                        </div>
-                        <div class="col-md-3">
-                            <strong>Nombre:</strong>
-                            <p class="mb-2">{{ reporte.Docente.Nombre }}</p>
-                        </div>
-                        <div class="col-md-3">
-                            <strong>Apellido:</strong>
-                            <p class="mb-2">{{ reporte.Docente.Apellido }}</p>
-                        </div>
-                        <div class="col-md-3">
-                            <strong>Año del Reporte:</strong>
-                            <p class="mb-2">{{ getAnioReporte() }}</p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <strong>Calificación:</strong>
-                            <span [class]="getCalificacionClass()" class="ms-2">{{ reporte.Calificacion }}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- Designaciones -->
         <div class="col-12 mb-4">
             <div class="card shadow-sm">
-                <div class="card-header bg-info text-white">
-                    <h5 class="mb-0">
-                        <i class="fa fa-briefcase me-2"></i>
+                <div class="card-header text-white" style="background-color: var(--color-primary);">
+                    <h5 class="mb-0" style="color: white;">
+                        <i class="fa fa-user-tie me-2"></i>
                         Designaciones en {{ getAnioReporte() }}
                     </h5>
                 </div>
@@ -117,7 +72,7 @@
                                 </p>
                                 <p class="mb-1">
                                     <strong>Tipo:</strong>
-                                    {{ designacionConDias.Designacion.Cargo.TipoDesignacion }}
+                                    {{ designacionConDias.Designacion.Cargo.TipoDesignacion | tipoDesignacionFormat }}
                                 </p>
                             </div>
                             <div class="col-md-6">
@@ -131,7 +86,7 @@
                                     {{ designacionConDias.FechaFinEnAnio | fechaFormat }}
                                 </p>
                                 <p class="mb-1">
-                                    <strong>Días trabajados:</strong>
+                                    <strong>Total días designación:</strong>
                                     <span class="badge bg-success">{{ designacionConDias.DiasDesignacionEnAnio }}
                                         días</span>
                                 </p>
@@ -145,36 +100,44 @@
         <!-- Estadísticas de Licencias -->
         <div class="col-12 mb-4">
             <div class="card shadow-sm">
-                <div class="card-header bg-warning text-dark">
-                    <h5 class="mb-0">
-                        <i class="fa fa-calendar-times-o me-2"></i>
+                <div class="card-header text-white d-flex justify-content-between align-items-center"
+                    style="background-color: var(--color-primary);">
+                    <h5 class="mb-0" style="color: white;">
+                        <i class="fa fa-calendar-check me-2"></i>
                         Estadísticas de Licencias
                     </h5>
+                    <i class="fa fa-question-circle" style="color: white; cursor: pointer; font-size: 1.2rem;"
+                        title="El porcentaje anual se calcula como: (Total días de licencia / Total días laborables del año) × 100. Los días laborables consideran días hábiles menos feriados nacionales."></i>
                 </div>
                 <div class="card-body">
                     <!-- Resumen General -->
-                    <div class="row mb-4">
-                        <div class="col-md-3">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
                             <div class="text-center p-3 bg-light rounded">
                                 <h4 class="text-primary mb-1">{{ reporte.EstadisticasLicencias.TotalDiasLicencia }}</h4>
                                 <small class="text-muted">Total días de licencia</small>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-6">
                             <div class="text-center p-3 bg-light rounded">
                                 <h4 class="text-warning mb-1">{{ reporte.EstadisticasLicencias.PorcentajeLicenciaAnual |
                                     number:'1.2-2' }}%</h4>
                                 <small class="text-muted">Porcentaje anual</small>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col-md-6 offset-md-3">
                             <div class="text-center p-3 bg-light rounded">
-                                <h4 class="text-info mb-1">{{ reporte.EstadisticasLicencias.PromedioLicenciasMensual |
-                                    number:'1.2-2' }}</h4>
-                                <small class="text-muted">Promedio mensual</small>
+                                <h4 [class]="getCalificacionClass() + ' mb-1'" style="cursor: help;"
+                                    title="Excelente (≤ 2.0%), Muy Bueno (≤ 5.0%), Bueno (≤ 8.0%), Regular (≤ 12.0%), Deficiente (> 12.0%)">
+                                    {{ reporte.Calificacion }}</h4>
+                                <br>
+                                <small class="text-muted">Calificación</small>
                             </div>
                         </div>
-                    </div>                    <!-- Licencias por Artículo -->
+                    </div>
+                    <!-- Licencias por Artículo -->
                     <div class="row">
                         <div class="col-md-7 mb-3">
                             <h6 class="text-secondary mb-3">

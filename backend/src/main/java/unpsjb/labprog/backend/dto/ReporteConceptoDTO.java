@@ -409,9 +409,6 @@ public class ReporteConceptoDTO {
         @JsonProperty("LicenciasPorArticulo")
         private Map<String, LicenciasPorArticulo> licenciasPorArticulo;
 
-        @JsonProperty("PromedioLicenciasMensual")
-        private Double promedioLicenciasMensual;
-
         public EstadisticasLicencias() {
         }
 
@@ -446,14 +443,6 @@ public class ReporteConceptoDTO {
 
         public void setLicenciasPorArticulo(Map<String, LicenciasPorArticulo> licenciasPorArticulo) {
             this.licenciasPorArticulo = licenciasPorArticulo;
-        }
-
-        public Double getPromedioLicenciasMensual() {
-            return promedioLicenciasMensual;
-        }
-
-        public void setPromedioLicenciasMensual(Double promedioLicenciasMensual) {
-            this.promedioLicenciasMensual = promedioLicenciasMensual;
         }
     }
 

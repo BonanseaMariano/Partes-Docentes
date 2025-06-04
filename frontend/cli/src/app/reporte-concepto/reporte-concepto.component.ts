@@ -3,27 +3,16 @@ import { HttpStatusCode } from '@angular/common/http';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { DesignacionConDias, LicenciasPorArticulo, ReporteConcepto } from '../models/reporte-concepto';
-import { FechaFormatPipe } from '../pipes/fecha-format.pipe';
 import { ModalService } from '../modal/modal.service';
+import { DesignacionConDias, LicenciasPorArticulo, ReporteConcepto } from '../models/reporte-concepto';
 import { PersonaService } from '../persona/service/persona.service';
+import { FechaFormatPipe } from '../pipes/fecha-format.pipe';
+import { TipoDesignacionPipe } from '../pipes/tipo-designacion.pipe';
 
 // ApexCharts
-import { NgApexchartsModule } from "ng-apexcharts";
 import {
     ApexAxisChartSeries,
-    ApexChart,
-    ApexXAxis,
-    ApexPlotOptions,
-    ApexDataLabels,
-    ApexStroke,
-    ApexYAxis,
-    ApexLegend,
-    ApexFill,
-    ApexTooltip,
-    ApexTitleSubtitle,
-    ApexResponsive,
-    ChartComponent
+    ApexChart, ApexDataLabels, ApexFill, ApexLegend, ApexPlotOptions, ApexResponsive, ApexStroke, ApexTitleSubtitle, ApexTooltip, ApexXAxis, ApexYAxis, ChartComponent, NgApexchartsModule
 } from "ng-apexcharts";
 
 export type ChartOptions = {
@@ -46,7 +35,7 @@ export type ChartOptions = {
 @Component({
     selector: 'app-reporte-concepto',
     standalone: true,
-    imports: [CommonModule, RouterModule, FormsModule, FechaFormatPipe, NgApexchartsModule],
+    imports: [CommonModule, RouterModule, FormsModule, FechaFormatPipe, TipoDesignacionPipe, NgApexchartsModule],
     templateUrl: './reporte-concepto.component.html',
     styleUrl: './reporte-concepto.component.css'
 })

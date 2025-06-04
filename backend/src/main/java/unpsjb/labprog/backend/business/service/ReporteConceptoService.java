@@ -26,6 +26,44 @@ import unpsjb.labprog.backend.model.enums.Estado;
 @Service
 public class ReporteConceptoService {
 
+    // ===============================================
+    // CONSTANTES DE CONFIGURACIÓN
+    // ===============================================
+    /**
+     * Número aproximado de días laborables por año (365 días - 104 fines de
+     * semana - 1 día extra ≈ 260 días)
+     */
+    private static final int DIAS_LABORABLES_POR_ANO = 260;
+
+    // Umbrales de porcentajes para calificaciones de docentes
+    /**
+     * Porcentaje máximo de licencias para calificación "Excelente"
+     */
+    private static final double UMBRAL_EXCELENTE = 2.0;
+
+    /**
+     * Porcentaje máximo de licencias para calificación "Muy Bueno"
+     */
+    private static final double UMBRAL_MUY_BUENO = 5.0;
+
+    /**
+     * Porcentaje máximo de licencias para calificación "Bueno"
+     */
+    private static final double UMBRAL_BUENO = 8.0;
+
+    /**
+     * Porcentaje máximo de licencias para calificación "Regular"
+     */
+    private static final double UMBRAL_REGULAR = 12.0;
+
+    /**
+     * Array con los nombres de los meses del año
+     */
+    private static final String[] NOMBRES_MESES = {
+        "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+        "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+    };
+
     @Autowired
     private PersonaService personaService;
 
@@ -185,9 +223,8 @@ public class ReporteConceptoService {
 
         estadisticas.setTotalDiasLicencia(totalDiasLicencia);
 
-        // Calcular porcentaje anual (asumiendo 260 días laborables)
-        int diasLaborablesAño = calcularDiasLaborables(año);
-        double porcentaje = totalDiasLicencia > 0 ? (totalDiasLicencia * 100.0) / diasLaborablesAño : 0.0;
+        // Calcular porcentaje anual usando constante
+        double porcentaje = totalDiasLicencia > 0 ? (totalDiasLicencia * 100.0) / DIAS_LABORABLES_POR_ANO : 0.0;
         estadisticas.setPorcentajeLicenciaAnual(Math.round(porcentaje * 100.0) / 100.0);
 
         // Calcular licencias por mes (solo válidas)
@@ -199,10 +236,6 @@ public class ReporteConceptoService {
                 = calcularLicenciasPorArticulo(licenciasValidasDelAño);
         estadisticas.setLicenciasPorArticulo(licenciasPorArticulo);
 
-        // Calcular promedio mensual
-        double promedioMensual = totalDiasLicencia / 12.0;
-        estadisticas.setPromedioLicenciasMensual(Math.round(promedioMensual * 100.0) / 100.0);
-
         return estadisticas;
     }
 
@@ -213,11 +246,8 @@ public class ReporteConceptoService {
     private Map<String, Integer> calcularLicenciasPorMes(List<Licencia> licenciasValidas, Integer año) {
         Map<String, Integer> licenciasPorMes = new LinkedHashMap<>();
 
-        // Inicializar todos los meses en 0
-        String[] meses = {"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-            "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"};
-
-        for (String mes : meses) {
+        // Inicializar todos los meses en 0 usando la constante
+        for (String mes : NOMBRES_MESES) {
             licenciasPorMes.put(mes, 0);
         }
 
@@ -234,7 +264,7 @@ public class ReporteConceptoService {
             LocalDate fecha = desde;
             while (!fecha.isAfter(hasta)) {
                 if (fecha.getYear() == año) {
-                    String mes = meses[fecha.getMonthValue() - 1];
+                    String mes = NOMBRES_MESES[fecha.getMonthValue() - 1];
                     licenciasPorMes.put(mes, licenciasPorMes.get(mes) + 1);
                 }
                 fecha = fecha.plusDays(1);
@@ -274,18 +304,18 @@ public class ReporteConceptoService {
 
     /**
      * Determina la calificación del docente basada en el porcentaje de
-     * licencias
+     * licencias usando constantes definidas
      */
     private String determinarCalificacion(ReporteConceptoDTO.EstadisticasLicencias estadisticas) {
         double porcentaje = estadisticas.getPorcentajeLicenciaAnual();
 
-        if (porcentaje <= 2.0) {
+        if (porcentaje <= UMBRAL_EXCELENTE) {
             return "Excelente";
-        } else if (porcentaje <= 5.0) {
+        } else if (porcentaje <= UMBRAL_MUY_BUENO) {
             return "Muy Bueno";
-        } else if (porcentaje <= 8.0) {
+        } else if (porcentaje <= UMBRAL_BUENO) {
             return "Bueno";
-        } else if (porcentaje <= 12.0) {
+        } else if (porcentaje <= UMBRAL_REGULAR) {
             return "Regular";
         } else {
             return "Deficiente";
@@ -299,14 +329,5 @@ public class ReporteConceptoService {
         return (int) ChronoUnit.DAYS.between(
                 licencia.getPedidoDesde().toLocalDate(),
                 licencia.getPedidoHasta().toLocalDate()) + 1;
-    }
-
-    /**
-     * Calcula los días laborables en un año (simplificado)
-     */
-    private int calcularDiasLaborables(Integer año) {
-        // Simplificado: aproximadamente 260 días laborables por año
-        // Se podría mejorar considerando feriados específicos
-        return 260;
     }
 }

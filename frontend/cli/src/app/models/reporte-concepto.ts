@@ -47,7 +47,6 @@ export interface EstadisticasLicencias {
     PorcentajeLicenciaAnual: number;
     LicenciasPorMes: { [mes: string]: number };
     LicenciasPorArticulo: { [articulo: string]: LicenciasPorArticulo };
-    PromedioLicenciasMensual: number;
 }
 
 export interface LicenciasPorArticulo {
