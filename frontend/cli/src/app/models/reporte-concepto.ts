@@ -1,6 +1,7 @@
 export interface EstadisticasGenerales {
     TotalDesignaciones: number;
     TotalLicencias: number;
+    LicenciasSinSuplente: number;
     TotalDiasLicencias: number;
     LicenciasPorArticulo: { [articulo: string]: number };
     DiasLicenciasPorArticulo: { [articulo: string]: number };

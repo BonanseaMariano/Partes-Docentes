@@ -73,6 +73,9 @@ public class ReporteConceptoDTO {
         @JsonProperty("TotalLicencias")
         private Integer totalLicencias;
 
+        @JsonProperty("LicenciasSinSuplente")
+        private Integer licenciasSinSuplente;
+
         @JsonProperty("TotalDiasLicencias")
         private Integer totalDiasLicencias;
 
@@ -93,11 +96,12 @@ public class ReporteConceptoDTO {
         }
 
         public EstadisticasGenerales(Integer totalDesignaciones,
-                Integer totalLicencias, Integer totalDiasLicencias, Map<String, Integer> licenciasPorArticulo,
+                Integer totalLicencias, Integer licenciasSinSuplente, Integer totalDiasLicencias, Map<String, Integer> licenciasPorArticulo,
                 Map<String, Integer> diasLicenciasPorArticulo,
                 Double promedioLicenciasPorDesignacion, Double porcentajeDiasLicenciaAnual) {
             this.totalDesignaciones = totalDesignaciones;
             this.totalLicencias = totalLicencias;
+            this.licenciasSinSuplente = licenciasSinSuplente;
             this.totalDiasLicencias = totalDiasLicencias;
             this.licenciasPorArticulo = licenciasPorArticulo;
             this.diasLicenciasPorArticulo = diasLicenciasPorArticulo;
@@ -120,6 +124,14 @@ public class ReporteConceptoDTO {
 
         public void setTotalLicencias(Integer totalLicencias) {
             this.totalLicencias = totalLicencias;
+        }
+
+        public Integer getLicenciasSinSuplente() {
+            return licenciasSinSuplente;
+        }
+
+        public void setLicenciasSinSuplente(Integer licenciasSinSuplente) {
+            this.licenciasSinSuplente = licenciasSinSuplente;
         }
 
         public Integer getTotalDiasLicencias() {

@@ -69,6 +69,9 @@ public class ReporteConceptoService {
     private LicenciaService licenciaService;
 
     @Autowired
+    private DesignacionService designacionService;
+
+    @Autowired
     private ReporteService reporteService;
 
     /**
@@ -99,15 +102,16 @@ public class ReporteConceptoService {
 
     /**
      * Calcula las estadísticas generales para todos los docentes. Incluye:
-     * total de designaciones, número de licencias, días totales de licencias,
-     * distribución por tipo, y porcentajes. El promedio de licencias se calcula
-     * sobre las designaciones activas.
+     * total de designaciones, número de licencias, licencias sin suplente, días
+     * totales de licencias, distribución por tipo, y porcentajes. El promedio
+     * de licencias se calcula sobre las designaciones activas.
      */
     private ReporteConceptoDTO.EstadisticasGenerales calcularEstadisticasGenerales(
             List<Persona> personas, Integer año) {
 
         int totalDesignaciones = 0;
         int totalLicencias = 0;
+        int licenciasSinSuplente = 0;
         int totalDiasLicencias = 0;
         Map<String, Integer> licenciasPorArticulo = new HashMap<>();
         Map<String, Integer> diasLicenciasPorArticulo = new HashMap<>();
@@ -136,6 +140,12 @@ public class ReporteConceptoService {
                                 licencia.getPedidoHasta().toLocalDate()) + 1;
                         totalDiasLicencias += diasLicencia;
 
+                        // Verificar si la licencia tiene suplentes
+                        List<Designacion> reemplazos = designacionService.findDesignacionesReemplazoPorLicencia(licencia);
+                        if (reemplazos.isEmpty()) {
+                            licenciasSinSuplente++;
+                        }
+
                         // Contar licencias y días por artículo
                         String articulo = licencia.getArticuloLicencia().getArticulo();
                         licenciasPorArticulo.put(articulo,
@@ -157,6 +167,7 @@ public class ReporteConceptoService {
         return new ReporteConceptoDTO.EstadisticasGenerales(
                 totalDesignaciones,
                 totalLicencias,
+                licenciasSinSuplente,
                 totalDiasLicencias,
                 licenciasPorArticulo,
                 diasLicenciasPorArticulo,

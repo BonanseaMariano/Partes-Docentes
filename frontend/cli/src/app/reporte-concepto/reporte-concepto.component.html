@@ -43,7 +43,7 @@
                 <div class="card-body">
                     <div class="row mb-4">
                         <!-- Totales -->
-                        <div class="col-lg-4 col-md-6 mb-3">
+                        <div class="col-lg-3 col-md-6 mb-3">
                             <div class="card border-info h-100">
                                 <div class="card-body text-center">
                                     <h6 class="card-title text-info">Total Designaciones</h6>
@@ -51,7 +51,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-4 col-md-6 mb-3">
+                        <div class="col-lg-3 col-md-6 mb-3">
                             <div class="card border-warning h-100">
                                 <div class="card-body text-center">
                                     <h6 class="card-title text-warning">Total Licencias</h6>
@@ -59,7 +59,16 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-4 col-md-6 mb-3">
+                        <div class="col-lg-3 col-md-6 mb-3">
+                            <div class="card border-secondary h-100">
+                                <div class="card-body text-center">
+                                    <h6 class="card-title text-secondary">Licencias Sin Suplente</h6>
+                                    <h3 class="mb-0">{{ reporteConcepto.EstadisticasGenerales.LicenciasSinSuplente }}
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 mb-3">
                             <div class="card border-danger h-100">
                                 <div class="card-body text-center">
                                     <h6 class="card-title text-danger">Total Días Licencia</h6>
@@ -101,7 +110,7 @@
                                               getCalificacionClass().includes('info') ? 'border-info' : 
                                               getCalificacionClass().includes('primary') ? 'border-primary' : 
                                               getCalificacionClass().includes('warning') ? 'border-warning' : 'border-danger'"
-                                title="Excelente (≤5%), Muy Bueno (≤10%), Bueno (≤30%), Regular (≤50%), Deficiente (>50%).">
+                                title="Porcentaje Días Licencia Anual: Excelente (≤5%), Muy Bueno (≤10%), Bueno (≤30%), Regular (≤50%), Deficiente (>50%).">
                                 <div class="card-body text-center">
                                     <h6 class="card-title">
                                         Calificación General
