@@ -128,7 +128,7 @@ public class ReporteService {
     /**
      * Verifica si una designación aplica al año especificado
      */
-    private boolean designacionAplicaAlAño(Designacion designacion, Integer año) {
+    public boolean designacionAplicaAlAño(Designacion designacion, Integer año) {
         LocalDate inicioAño = LocalDate.of(año, 1, 1);
         LocalDate finAño = LocalDate.of(año, 12, 31);
 
@@ -242,7 +242,7 @@ public class ReporteService {
      * Calcula la distribución de días de licencia por mes Solo considera
      * licencias válidas
      */
-    private Map<String, Integer> calcularLicenciasPorMes(List<Licencia> licenciasValidas, Integer año) {
+    public Map<String, Integer> calcularLicenciasPorMes(List<Licencia> licenciasValidas, Integer año) {
         Map<String, Integer> licenciasPorMes = new LinkedHashMap<>();
 
         // Inicializar todos los meses en 0 usando la constante
