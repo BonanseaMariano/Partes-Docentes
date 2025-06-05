@@ -29,12 +29,6 @@ public class ReporteService {
     // ===============================================
     // CONSTANTES DE CONFIGURACIÓN
     // ===============================================
-    /**
-     * Número aproximado de días laborables por año (365 días - 104 fines de
-     * semana - 1 día extra ≈ 260 días)
-     */
-    private static final int DIAS_LABORABLES_POR_ANO = 260;
-
     // Umbrales de porcentajes para calificaciones de docentes
     /**
      * Porcentaje máximo de licencias para calificación "Excelente"
@@ -222,8 +216,14 @@ public class ReporteService {
 
         estadisticas.setTotalDiasLicencia(totalDiasLicencia);
 
-        // Calcular porcentaje anual usando constante
-        double porcentaje = totalDiasLicencia > 0 ? (totalDiasLicencia * 100.0) / DIAS_LABORABLES_POR_ANO : 0.0;
+        // Calcular total de días de designación del docente en el año
+        List<ReporteDTO.DesignacionConDias> designacionesDelAño = obtenerDesignacionesDelAño(persona, año);
+        int totalDiasDesignacion = designacionesDelAño.stream()
+                .mapToInt(ReporteDTO.DesignacionConDias::getDiasDesignacionEnAño)
+                .sum();
+
+        // Calcular porcentaje anual usando días de designación reales
+        double porcentaje = totalDiasDesignacion > 0 ? (totalDiasLicencia * 100.0) / totalDiasDesignacion : 0.0;
         estadisticas.setPorcentajeLicenciaAnual(Math.round(porcentaje * 100.0) / 100.0);
 
         // Calcular licencias por mes (solo válidas)

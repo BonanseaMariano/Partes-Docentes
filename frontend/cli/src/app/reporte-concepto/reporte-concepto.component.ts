@@ -51,6 +51,11 @@ export class ReporteConceptoComponent implements OnInit {
     reporteConcepto: ReporteConcepto | null = null;
     anioSeleccionado: number = new Date().getFullYear();
 
+    // Propiedades para el selector de años dinámico
+    aniosDisponibles: number[] = [];
+    anioMinimo: number = 2020;
+    anioMaximo: number = new Date().getFullYear();
+
     // Gráfico de distribución mensual
     @ViewChild("chartMensual") chartMensual!: ChartComponent;
     public chartOptionsMensual: Partial<ChartOptions> = {};
@@ -71,7 +76,10 @@ export class ReporteConceptoComponent implements OnInit {
         private router: Router,
         private personaService: PersonaService,
         private modalService: ModalService
-    ) { }
+    ) {
+        // Generar lista de años disponibles
+        this.generarAniosDisponibles();
+    }
 
     ngOnInit(): void {
         this.route.params.subscribe(params => {
@@ -285,5 +293,28 @@ export class ReporteConceptoComponent implements OnInit {
 
     getAnioReporte(): number {
         return this.reporteConcepto?.Anio || this.anioSeleccionado;
+    }
+
+    /**
+     * Genera la lista de años disponibles para el selector
+     */
+    private generarAniosDisponibles(): void {
+        this.aniosDisponibles = [];
+
+        // Generar años desde el mínimo hasta el máximo en orden descendente
+        for (let anio = this.anioMaximo; anio >= this.anioMinimo; anio--) {
+            this.aniosDisponibles.push(anio);
+        }
+    }
+
+    /**
+     * Actualiza el rango de años disponibles
+     * @param minimo Año mínimo disponible
+     * @param maximo Año máximo disponible
+     */
+    actualizarRangoAnios(minimo: number, maximo: number): void {
+        this.anioMinimo = minimo;
+        this.anioMaximo = maximo;
+        this.generarAniosDisponibles();
     }
 }

@@ -42,7 +42,14 @@ export type ChartOptions = {
 export class ReporteComponent implements OnInit {
     reporte: Reporte | null = null;
     dni: number = 0;
-    anioSeleccionado: number = new Date().getFullYear();    // Gráfico de distribución mensual
+    anioSeleccionado: number = new Date().getFullYear();
+
+    // Propiedades para el selector de años dinámico
+    aniosDisponibles: number[] = [];
+    anioMinimo: number = 2020;
+    anioMaximo: number = new Date().getFullYear();
+
+    // Gráfico de distribución mensual
     @ViewChild("chart") chart!: ChartComponent;
     public chartOptions: Partial<ChartOptions> = {};
     public showMonthlyChart: boolean = false;
@@ -57,7 +64,10 @@ export class ReporteComponent implements OnInit {
         private router: Router,
         private personaService: PersonaService,
         private modalService: ModalService
-    ) { }
+    ) {
+        // Generar lista de años disponibles
+        this.generarAniosDisponibles();
+    }
 
     ngOnInit(): void {
         this.route.params.subscribe(params => {
@@ -199,7 +209,7 @@ export class ReporteComponent implements OnInit {
                 }
             },
             title: {
-                text: "Licencias en " + this.anioSeleccionado,
+                text: `Licencias en ${this.anioSeleccionado} - ${this.reporte?.Docente.Nombre}, ${this.reporte?.Docente.Apellido}`,
                 align: 'center',
                 style: {
                     fontSize: '16px',
@@ -279,7 +289,7 @@ export class ReporteComponent implements OnInit {
                 }
             },
             title: {
-                text: "Distribución de licencias por artículo en " + this.anioSeleccionado,
+                text: `Distribución de licencias por artículo en ${this.anioSeleccionado} - ${this.reporte?.Docente.Nombre}, ${this.reporte?.Docente.Apellido}`,
                 align: 'center',
                 style: {
                     fontSize: '16px',
@@ -352,5 +362,28 @@ export class ReporteComponent implements OnInit {
     // Método para obtener el año de forma segura (lo mantenemos porque es útil)
     getAnioReporte(): number {
         return this.reporte?.Anio || this.anioSeleccionado;
+    }
+
+    /**
+     * Genera la lista de años disponibles para el selector
+     */
+    private generarAniosDisponibles(): void {
+        this.aniosDisponibles = [];
+
+        // Generar años desde el máximo hasta el mínimo en orden descendente
+        for (let anio = this.anioMaximo; anio >= this.anioMinimo; anio--) {
+            this.aniosDisponibles.push(anio);
+        }
+    }
+
+    /**
+     * Actualiza el rango de años disponibles
+     * @param minimo Año mínimo disponible
+     * @param maximo Año máximo disponible
+     */
+    actualizarRangoAnios(minimo: number, maximo: number): void {
+        this.anioMinimo = minimo;
+        this.anioMaximo = maximo;
+        this.generarAniosDisponibles();
     }
 }

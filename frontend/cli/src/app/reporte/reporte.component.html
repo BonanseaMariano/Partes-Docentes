@@ -12,16 +12,15 @@
         </div>
         <div class="d-flex gap-2">
             <!-- Selector de año -->
-            <div class="input-group" style="width: 200px;">
+            <div class="input-group" style="width: 220px;">
                 <span class="input-group-text">
                     <i class="fa fa-calendar"></i>
                 </span>
-                <select class="form-select" [(ngModel)]="anioSeleccionado" (change)="onAnioChange()">
-                    <option [value]="2021">2021</option>
-                    <option [value]="2022">2022</option>
-                    <option [value]="2023">2023</option>
-                    <option [value]="2024">2024</option>
-                    <option [value]="2025">2025</option>
+                <select class="form-select" [(ngModel)]="anioSeleccionado" (change)="onAnioChange()"
+                    title="Seleccione el año para el reporte">
+                    <option *ngFor="let anio of aniosDisponibles" [value]="anio">
+                        {{ anio }}
+                    </option>
                 </select>
             </div>
             <button type="button" class="btn btn-outline-secondary" (click)="volver()">
@@ -107,7 +106,7 @@
                         Estadísticas de Licencias
                     </h5>
                     <i class="fa fa-question-circle" style="color: white; cursor: pointer; font-size: 1.2rem;"
-                        title="El porcentaje anual se calcula como: (Total días de licencia / Total días laborables del año) × 100. Los días laborables consideran días hábiles menos feriados nacionales."></i>
+                        title="El porcentaje anual se calcula como: (Total días de licencia / Total días de designación del docente en el año) × 100. Este cálculo considera únicamente los días efectivos de designación del docente."></i>
                 </div>
                 <div class="card-body">
                     <!-- Resumen General -->
