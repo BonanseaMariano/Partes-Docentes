@@ -124,7 +124,7 @@ public interface LicenciaRepository extends JpaRepository<Licencia, Integer> {
 
     /**
      * Busca licencias VÁLIDAS para una persona en un año específico para
-     * reporte de concepto
+     * reporte
      *
      * @param persona La persona asociada a las licencias
      * @param anio El año a consultar

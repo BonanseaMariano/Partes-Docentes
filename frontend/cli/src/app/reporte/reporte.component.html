@@ -4,7 +4,7 @@
         <div>
             <h2 class="mb-0">
                 <i class="fa fa-file-text-o me-2"></i>
-                Reporte de Concepto - {{ getAnioReporte() }}
+                Reporte - {{ getAnioReporte() }}
             </h2>
             <div *ngIf="reporte" class="text-muted">
                 {{ reporte.Docente.DNI | number }} - {{ reporte.Docente.Nombre }}, {{ reporte.Docente.Apellido }}

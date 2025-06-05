@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import unpsjb.labprog.backend.Response;
 import unpsjb.labprog.backend.business.service.PersonaService;
-import unpsjb.labprog.backend.business.service.ReporteConceptoService;
-import unpsjb.labprog.backend.dto.ReporteConceptoDTO;
+import unpsjb.labprog.backend.business.service.ReporteService;
+import unpsjb.labprog.backend.dto.ReporteDTO;
 import unpsjb.labprog.backend.model.Persona;
 import unpsjb.labprog.backend.utils.constants.AppConstants;
 
@@ -46,11 +46,10 @@ public class PersonaPresenter {
     private PersonaService service;
 
     /**
-     * Servicio especializado en la generación de reportes de concepto para
-     * docentes.
+     * Servicio especializado en la generación de reportes para docentes.
      */
     @Autowired
-    private ReporteConceptoService reporteConceptoService;
+    private ReporteService reporteService;
 
     /**
      * Obtiene todas las personas registradas en el sistema.
@@ -204,23 +203,23 @@ public class PersonaPresenter {
     }
 
     /**
-     * Genera un reporte de concepto para un docente específico en un año
-     * determinado. El reporte incluye análisis estadístico de licencias,
-     * designaciones y calificación automática del desempeño del docente.
+     * Genera un reporte para un docente específico en un año determinado. El
+     * reporte incluye análisis estadístico de licencias, designaciones y
+     * calificación automática del desempeño del docente.
      *
      * @param dni DNI del docente para quien generar el reporte
      * @param año Año para el cual generar el reporte
-     * @return ResponseEntity con ReporteConceptoDTO si la operación es exitosa,
-     * o un mensaje de error si no se encuentra el docente
+     * @return ResponseEntity con ReporteDTO si la operación es exitosa, o un
+     * mensaje de error si no se encuentra el docente
      */
-    @GetMapping("/{dni}/reporte/{año}")
-    public ResponseEntity<Object> generarReporteConcepto(
+    @GetMapping("/dni/{dni}/reporte/{año}")
+    public ResponseEntity<Object> generarReporte(
             @PathVariable Long dni,
             @PathVariable Integer año) {
         try {
-            ReporteConceptoDTO reporte = reporteConceptoService.generarReporteConcepto(dni, año);
+            ReporteDTO reporte = reporteService.generarReporte(dni, año);
             String mensaje = String.format(
-                    "Reporte de concepto generado exitosamente para DNI %d en el año %d",
+                    "Reporte generado exitosamente para DNI %d en el año %d",
                     dni, año);
             logger.log(Level.INFO, mensaje);
             return Response.ok(reporte, mensaje);

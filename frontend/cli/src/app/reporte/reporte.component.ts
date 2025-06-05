@@ -4,7 +4,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ModalService } from '../modal/modal.service';
-import { DesignacionConDias, LicenciasPorArticulo, ReporteConcepto } from '../models/reporte-concepto';
+import { DesignacionConDias, LicenciasPorArticulo, Reporte } from '../models/reporte';
 import { PersonaService } from '../persona/service/persona.service';
 import { FechaFormatPipe } from '../pipes/fecha-format.pipe';
 import { TipoDesignacionPipe } from '../pipes/tipo-designacion.pipe';
@@ -33,14 +33,14 @@ export type ChartOptions = {
 };
 
 @Component({
-    selector: 'app-reporte-concepto',
+    selector: 'app-reporte',
     standalone: true,
     imports: [CommonModule, RouterModule, FormsModule, FechaFormatPipe, TipoDesignacionPipe, NgApexchartsModule],
-    templateUrl: './reporte-concepto.component.html',
-    styleUrl: './reporte-concepto.component.css'
+    templateUrl: './reporte.component.html',
+    styleUrl: './reporte.component.css'
 })
-export class ReporteConceptoComponent implements OnInit {
-    reporte: ReporteConcepto | null = null;
+export class ReporteComponent implements OnInit {
+    reporte: Reporte | null = null;
     dni: number = 0;
     anioSeleccionado: number = new Date().getFullYear();    // Gráfico de distribución mensual
     @ViewChild("chart") chart!: ChartComponent;
@@ -70,7 +70,7 @@ export class ReporteConceptoComponent implements OnInit {
     cargarReporte(): void {
         this.reporte = null; // Limpiamos el reporte antes de cargar nuevos datos
 
-        this.personaService.obtenerReporteConcepto(this.dni, this.anioSeleccionado).subscribe({
+        this.personaService.obtenerReporte(this.dni, this.anioSeleccionado).subscribe({
             next: (response: any) => {
                 if (response.status === HttpStatusCode.Ok) {
                     this.reporte = response.data;
@@ -82,7 +82,7 @@ export class ReporteConceptoComponent implements OnInit {
                 } else {
                     this.modalService.error(
                         "Error al cargar reporte",
-                        response.message || "No se pudo cargar el reporte de concepto",
+                        response.message || "No se pudo cargar el reporte",
                         ""
                     );
                 }
@@ -90,7 +90,7 @@ export class ReporteConceptoComponent implements OnInit {
             error: (error: any) => {
                 this.modalService.error(
                     "Error al cargar reporte",
-                    "No se pudo cargar el reporte de concepto. Verifique que el DNI y año sean correctos.",
+                    "No se pudo cargar el reporte. Verifique que el DNI y año sean correctos.",
                     ""
                 );
             }

@@ -162,7 +162,7 @@ public class LicenciaService {
     private DocenteLicencia mapearLicenciaADocente(Licencia licencia) {
         // Obtener las designaciones de reemplazo para esta licencia
         List<Designacion> reemplazos = designacionService.findDesignacionesReemplazoPorLicencia(licencia);
-        
+
         DocenteLicencia docente = new DocenteLicencia();
         docente.setDni(licencia.getPersona().getDni());
         docente.setNombre(licencia.getPersona().getNombre());
@@ -172,13 +172,13 @@ public class LicenciaService {
         docente.setDesde(licencia.getPedidoDesde().toLocalDate());
         docente.setHasta(licencia.getPedidoHasta().toLocalDate());
         docente.setReemplazos(reemplazos);
-        
+
         return docente;
     }
 
     /**
-     * Busca licencias válidas para una persona en un año específico
-     * para el reporte de concepto
+     * Busca licencias válidas para una persona en un año específico para el
+     * reporte
      *
      * @param persona La persona asociada a las licencias
      * @param anio El año a consultar

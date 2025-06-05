@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { DataPackage } from '../../models/data-package';
 import { Persona } from '../../models/persona';
-import { ReporteConceptoResponse } from '../../models/reporte-concepto';
+import { ReporteResponse } from '../../models/reporte';
 
 @Injectable({
   providedIn: 'root'
@@ -42,12 +42,12 @@ export class PersonaService {
   }
 
   /**
-   * Obtiene el reporte de concepto para un docente en un año específico
+   * Obtiene el reporte para un docente en un año específico
    * @param dni DNI del docente
    * @param anio Año del reporte
    * @returns Observable con la respuesta del reporte
    */
-  obtenerReporteConcepto(dni: number, anio: number): Observable<ReporteConceptoResponse> {
-    return this.http.get<ReporteConceptoResponse>(encodeURI(`${this.personasUrl}/${dni}/reporte/${anio}`));
+  obtenerReporte(dni: number, anio: number): Observable<ReporteResponse> {
+    return this.http.get<ReporteResponse>(encodeURI(`${this.personasUrl}/dni/${dni}/reporte/${anio}`));
   }
 }

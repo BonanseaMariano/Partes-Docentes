@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import unpsjb.labprog.backend.dto.ReporteConceptoDTO;
+import unpsjb.labprog.backend.dto.ReporteDTO;
 import unpsjb.labprog.backend.model.Cargo;
 import unpsjb.labprog.backend.model.Designacion;
 import unpsjb.labprog.backend.model.Licencia;
@@ -19,12 +19,12 @@ import unpsjb.labprog.backend.model.Persona;
 import unpsjb.labprog.backend.model.enums.Estado;
 
 /**
- * Servicio especializado en la generación de reportes de concepto para
- * docentes. Se encarga de analizar las licencias y designaciones para generar
- * estadísticas y evaluaciones de desempeño.
+ * Servicio especializado en la generación de reportes para docentes. Se encarga
+ * de analizar las licencias y designaciones para generar estadísticas y
+ * evaluaciones de desempeño.
  */
 @Service
-public class ReporteConceptoService {
+public class ReporteService {
 
     // ===============================================
     // CONSTANTES DE CONFIGURACIÓN
@@ -71,44 +71,43 @@ public class ReporteConceptoService {
     private LicenciaService licenciaService;
 
     /**
-     * Genera el reporte de concepto para una persona específica en un año
-     * determinado. Incluye análisis estadístico de licencias y calificación del
-     * desempeño.
+     * Genera el reporte para una persona específica en un año determinado.
+     * Incluye análisis estadístico de licencias y calificación del desempeño.
      *
      * @param dni DNI de la persona
      * @param año Año para el cual generar el reporte
-     * @return ReporteConceptoDTO con estadísticas y análisis de licencias
+     * @return ReporteDTO con estadísticas y análisis de licencias
      * @throws IllegalArgumentException si no se encuentra la persona con el DNI
      * especificado
      */
-    public ReporteConceptoDTO generarReporteConcepto(Long dni, Integer año) {
+    public ReporteDTO generarReporte(Long dni, Integer año) {
         Persona persona = personaService.findByDni(dni);
         if (persona == null) {
             throw new IllegalArgumentException("No se encontró persona con DNI: " + dni);
         }
 
         // Crear información del docente
-        ReporteConceptoDTO.DocenteInfo docenteInfo = crearInfoDocente(persona, dni);
+        ReporteDTO.DocenteInfo docenteInfo = crearInfoDocente(persona, dni);
 
         // Obtener designaciones del año
-        List<ReporteConceptoDTO.DesignacionConDias> designacionesInfo
+        List<ReporteDTO.DesignacionConDias> designacionesInfo
                 = obtenerDesignacionesDelAño(persona, año);
 
         // Calcular estadísticas de licencias
-        ReporteConceptoDTO.EstadisticasLicencias estadisticas
+        ReporteDTO.EstadisticasLicencias estadisticas
                 = calcularEstadisticasLicencias(persona, año);
 
         // Determinar calificación basada en estadísticas
         String calificacion = determinarCalificacion(estadisticas);
 
-        return new ReporteConceptoDTO(año, docenteInfo, designacionesInfo, estadisticas, calificacion);
+        return new ReporteDTO(año, docenteInfo, designacionesInfo, estadisticas, calificacion);
     }
 
     /**
      * Crea la información básica del docente para el reporte
      */
-    private ReporteConceptoDTO.DocenteInfo crearInfoDocente(Persona persona, Long dni) {
-        return new ReporteConceptoDTO.DocenteInfo(
+    private ReporteDTO.DocenteInfo crearInfoDocente(Persona persona, Long dni) {
+        return new ReporteDTO.DocenteInfo(
                 dni,
                 persona.getNombre(),
                 persona.getApellido()
@@ -118,7 +117,7 @@ public class ReporteConceptoService {
     /**
      * Obtiene las designaciones del docente para el año especificado
      */
-    private List<ReporteConceptoDTO.DesignacionConDias> obtenerDesignacionesDelAño(Persona persona, Integer año) {
+    private List<ReporteDTO.DesignacionConDias> obtenerDesignacionesDelAño(Persona persona, Integer año) {
         return persona.getDesignaciones()
                 .stream()
                 .filter(d -> designacionAplicaAlAño(d, año))
@@ -143,7 +142,7 @@ public class ReporteConceptoService {
     /**
      * Convierte una Designacion a DesignacionConDias ajustada al año
      */
-    private ReporteConceptoDTO.DesignacionConDias convertToDesignacionConDias(Designacion designacion, Integer año) {
+    private ReporteDTO.DesignacionConDias convertToDesignacionConDias(Designacion designacion, Integer año) {
         LocalDate inicioAño = LocalDate.of(año, 1, 1);
         LocalDate finAño = LocalDate.of(año, 12, 31);
 
@@ -159,9 +158,9 @@ public class ReporteConceptoService {
         int diasDesignacion = (int) ChronoUnit.DAYS.between(inicioEnAño, finEnAño) + 1;
 
         // Crear DesignacionInfo sin información de persona
-        ReporteConceptoDTO.DesignacionInfo designacionInfo = createDesignacionInfo(designacion);
+        ReporteDTO.DesignacionInfo designacionInfo = createDesignacionInfo(designacion);
 
-        return new ReporteConceptoDTO.DesignacionConDias(
+        return new ReporteDTO.DesignacionConDias(
                 designacionInfo,
                 inicioEnAño,
                 finEnAño,
@@ -173,13 +172,13 @@ public class ReporteConceptoService {
      * Crea un objeto DesignacionInfo a partir de una Designacion, excluyendo
      * información de persona
      */
-    private ReporteConceptoDTO.DesignacionInfo createDesignacionInfo(Designacion designacion) {
+    private ReporteDTO.DesignacionInfo createDesignacionInfo(Designacion designacion) {
         Cargo cargo = designacion.getCargo();
 
         // Crear DivisionInfo
-        ReporteConceptoDTO.DesignacionInfo.CargoInfo.DivisionInfo divisionInfo = null;
+        ReporteDTO.DesignacionInfo.CargoInfo.DivisionInfo divisionInfo = null;
         if (cargo.getDivision() != null) {
-            divisionInfo = new ReporteConceptoDTO.DesignacionInfo.CargoInfo.DivisionInfo(
+            divisionInfo = new ReporteDTO.DesignacionInfo.CargoInfo.DivisionInfo(
                     cargo.getDivision().getAnio(),
                     cargo.getDivision().getNumDivision(),
                     cargo.getDivision().getOrientacion(),
@@ -188,7 +187,7 @@ public class ReporteConceptoService {
         }
 
         // Crear CargoInfo
-        ReporteConceptoDTO.DesignacionInfo.CargoInfo cargoInfo = new ReporteConceptoDTO.DesignacionInfo.CargoInfo(
+        ReporteDTO.DesignacionInfo.CargoInfo cargoInfo = new ReporteDTO.DesignacionInfo.CargoInfo(
                 cargo.getNombre(),
                 cargo.getCargaHoraria(),
                 cargo.getFechaInicio(),
@@ -198,7 +197,7 @@ public class ReporteConceptoService {
         );
 
         // Crear DesignacionInfo
-        return new ReporteConceptoDTO.DesignacionInfo(
+        return new ReporteDTO.DesignacionInfo(
                 designacion.getSituacionRevista(),
                 designacion.getFechaInicio(),
                 designacion.getFechaFin(),
@@ -210,11 +209,11 @@ public class ReporteConceptoService {
      * Calcula las estadísticas de licencias para el año especificado Solo
      * considera licencias con estado VÁLIDO
      */
-    private ReporteConceptoDTO.EstadisticasLicencias calcularEstadisticasLicencias(Persona persona, Integer año) {
+    private ReporteDTO.EstadisticasLicencias calcularEstadisticasLicencias(Persona persona, Integer año) {
         // Obtener SOLO licencias VÁLIDAS del año
         List<Licencia> licenciasValidasDelAño = licenciaService.findLicenciasPorPersonaYAño(persona, año);
 
-        ReporteConceptoDTO.EstadisticasLicencias estadisticas = new ReporteConceptoDTO.EstadisticasLicencias();
+        ReporteDTO.EstadisticasLicencias estadisticas = new ReporteDTO.EstadisticasLicencias();
 
         // Calcular total de días de licencia (solo licencias válidas)
         int totalDiasLicencia = licenciasValidasDelAño.stream()
@@ -232,7 +231,7 @@ public class ReporteConceptoService {
         estadisticas.setLicenciasPorMes(licenciasPorMes);
 
         // Calcular licencias por artículo (solo válidas)
-        Map<String, ReporteConceptoDTO.LicenciasPorArticulo> licenciasPorArticulo
+        Map<String, ReporteDTO.LicenciasPorArticulo> licenciasPorArticulo
                 = calcularLicenciasPorArticulo(licenciasValidasDelAño);
         estadisticas.setLicenciasPorArticulo(licenciasPorArticulo);
 
@@ -278,8 +277,8 @@ public class ReporteConceptoService {
      * Calcula las estadísticas de licencias agrupadas por artículo Solo
      * considera licencias válidas
      */
-    private Map<String, ReporteConceptoDTO.LicenciasPorArticulo> calcularLicenciasPorArticulo(List<Licencia> licenciasValidas) {
-        Map<String, ReporteConceptoDTO.LicenciasPorArticulo> resultado = new HashMap<>();
+    private Map<String, ReporteDTO.LicenciasPorArticulo> calcularLicenciasPorArticulo(List<Licencia> licenciasValidas) {
+        Map<String, ReporteDTO.LicenciasPorArticulo> resultado = new HashMap<>();
 
         for (Licencia licencia : licenciasValidas) {
             // Verificar nuevamente que sea válida por seguridad
@@ -290,11 +289,11 @@ public class ReporteConceptoService {
             String articulo = licencia.getArticuloLicencia().getArticulo();
 
             if (!resultado.containsKey(articulo)) {
-                resultado.put(articulo, new ReporteConceptoDTO.LicenciasPorArticulo(
+                resultado.put(articulo, new ReporteDTO.LicenciasPorArticulo(
                         licencia.getArticuloLicencia().getDescripcion(), 0, 0));
             }
 
-            ReporteConceptoDTO.LicenciasPorArticulo stats = resultado.get(articulo);
+            ReporteDTO.LicenciasPorArticulo stats = resultado.get(articulo);
             stats.setDias(stats.getDias() + calcularDiasLicencia(licencia));
             stats.setCantidad(stats.getCantidad() + 1);
         }
@@ -306,7 +305,7 @@ public class ReporteConceptoService {
      * Determina la calificación del docente basada en el porcentaje de
      * licencias usando constantes definidas
      */
-    private String determinarCalificacion(ReporteConceptoDTO.EstadisticasLicencias estadisticas) {
+    private String determinarCalificacion(ReporteDTO.EstadisticasLicencias estadisticas) {
         double porcentaje = estadisticas.getPorcentajeLicenciaAnual();
 
         if (porcentaje <= UMBRAL_EXCELENTE) {

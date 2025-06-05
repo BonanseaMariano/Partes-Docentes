@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import unpsjb.labprog.backend.model.enums.TipoDesignacion;
 
-public class ReporteConceptoDTO {
+public class ReporteDTO {
 
     @JsonProperty("Anio")
     private Integer año;
@@ -28,10 +28,10 @@ public class ReporteConceptoDTO {
     private String calificacion;
 
     // Constructores
-    public ReporteConceptoDTO() {
+    public ReporteDTO() {
     }
 
-    public ReporteConceptoDTO(Integer año, DocenteInfo docente,
+    public ReporteDTO(Integer año, DocenteInfo docente,
             List<DesignacionConDias> designaciones,
             EstadisticasLicencias estadisticasLicencias,
             String calificacion) {

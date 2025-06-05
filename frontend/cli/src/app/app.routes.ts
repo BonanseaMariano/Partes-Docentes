@@ -11,7 +11,7 @@ import { DesignacionDetailComponent } from './designacion/detail/designacion-det
 import { LicenciasComponent } from './licencia/list/licencias.component';
 import { LicenciaDetailComponent } from './licencia/detail/licencia-detail.component';
 import { ParteDiarioComponent } from './parte-diario/parte-diario.component';
-import { ReporteConceptoComponent } from './reporte-concepto/reporte-concepto.component';
+import { ReporteComponent } from './reporte/reporte.component';
 
 export const routes: Routes = [
     { path: "", component: HomeComponent },
@@ -26,5 +26,5 @@ export const routes: Routes = [
     { path: "licencias", component: LicenciasComponent },
     { path: "licencias/parte-diario/:fecha", component: ParteDiarioComponent },
     { path: "licencias/:id", component: LicenciaDetailComponent },
-    { path: "personas/dni/:dni/reporte/:anio", component: ReporteConceptoComponent },
+    { path: "personas/dni/:dni/reporte/:anio", component: ReporteComponent },
 ];

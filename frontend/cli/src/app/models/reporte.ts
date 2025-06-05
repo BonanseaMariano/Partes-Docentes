@@ -1,4 +1,4 @@
-export interface ReporteConcepto {
+export interface Reporte {
     Anio: number;
     Docente: DocenteInfo;
     Designaciones: DesignacionConDias[];
@@ -56,8 +56,8 @@ export interface LicenciasPorArticulo {
 }
 
 // Interface para la respuesta completa del API
-export interface ReporteConceptoResponse {
-    data: ReporteConcepto;
+export interface ReporteResponse {
+    data: Reporte;
     message: string;
     status: number;
 }
