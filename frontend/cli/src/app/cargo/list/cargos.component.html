@@ -39,8 +39,8 @@
                             {{ cargo.division ? cargo.division.anio + '° ' + cargo.division.numDivision + '° ' +
                             cargo.division.orientacion : '' }}
                         </td>
-                        <td>{{ cargo.fechaInicio | date:'dd/MM/yyyy' }}</td>
-                        <td>{{ cargo.fechaFin ? (cargo.fechaFin | date:'dd/MM/yyyy') : '' }}</td>
+                        <td>{{ cargo.fechaInicio | fechaFormat }}</td>
+                        <td>{{ cargo.fechaFin ? (cargo.fechaFin | fechaFormat) : '' }}</td>
                         <td>
                             <button class="btn-popup" [ngClass]="{'btn-popup-empty': getHorarioCount(cargo) === 0}"
                                 (click)="openHorariosPopup(cargo)" title="Mostrar horarios">

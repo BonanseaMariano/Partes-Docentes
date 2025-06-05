@@ -39,4 +39,13 @@ export class LicenciaService {
     search(searchTerm: string): Observable<DataPackage> {
         return this.http.get<DataPackage>(encodeURI(`${this.licenciasUrl}/search/${searchTerm}`));
     }
+
+    /**
+     * Obtiene el parte diario de licencias para una fecha específica
+     * @param fecha Fecha para la cual se requiere el parte diario (formato: YYYY-MM-DD)
+     * @returns Observable con el parte diario de licencias
+     */
+    getParteDiario(fecha: string): Observable<DataPackage> {
+        return this.http.get<DataPackage>(encodeURI(`${this.licenciasUrl}/parte-diario/${fecha}`));
+    }
 }

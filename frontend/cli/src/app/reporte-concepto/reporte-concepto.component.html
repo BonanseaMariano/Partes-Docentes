@@ -1,0 +1,179 @@
+<div class="container-fluid mt-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-0">
+                <i class="fa fa-file-text-o me-2"></i>
+                Reporte Concepto {{ getAnioReporte() }}
+            </h2>
+        </div>
+        <div class="d-flex gap-2">
+            <!-- Selector de año -->
+            <div class="input-group" style="width: 220px;">
+                <span class="input-group-text">
+                    <i class="fa fa-calendar"></i>
+                </span>
+                <select class="form-select" [(ngModel)]="anioSeleccionado" (change)="onAnioChange()"
+                    title="Seleccione el año para el reporte">
+                    <option *ngFor="let anio of aniosDisponibles" [value]="anio">
+                        {{ anio }}
+                    </option>
+                </select>
+            </div>
+            <button type="button" class="btn btn-outline-secondary" (click)="volver()">
+                <i class="fa fa-arrow-left me-1"></i>
+                Volver
+            </button>
+        </div>
+    </div>
+
+    <!-- Reporte -->
+    <div *ngIf="reporteConcepto" class="row">
+
+        <!-- Estadísticas Generales -->
+        <div class="col-12 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header text-white" style="background-color: var(--color-primary);">
+                    <h5 class="mb-0" style="color: white;">
+                        <i class="fa fa-chart-bar me-2"></i>
+                        Estadísticas Generales
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <!-- Totales -->
+                        <div class="col-lg-3 col-md-6 mb-3">
+                            <div class="text-center p-3 bg-light rounded stats-card">
+                                <h4 class="text-info mb-1">{{ reporteConcepto.EstadisticasGenerales.TotalDesignaciones
+                                    }}</h4>
+                                <small class="text-muted">Total Designaciones</small>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 mb-3">
+                            <div class="text-center p-3 bg-light rounded stats-card">
+                                <h4 class="text-warning mb-1">{{ reporteConcepto.EstadisticasGenerales.TotalLicencias }}
+                                </h4>
+                                <small class="text-muted">Total Licencias</small>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 mb-3">
+                            <div class="text-center p-3 bg-light rounded stats-card">
+                                <h4 class="text-secondary mb-1">{{
+                                    reporteConcepto.EstadisticasGenerales.LicenciasSinSuplente }}</h4>
+                                <small class="text-muted">Licencias Sin Suplente</small>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 mb-3">
+                            <div class="text-center p-3 bg-light rounded stats-card">
+                                <h4 class="text-danger mb-1">{{ reporteConcepto.EstadisticasGenerales.TotalDiasLicencias
+                                    }}</h4>
+                                <small class="text-muted">Total Días Licencia</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Métricas calculadas -->
+                    <div class="row">
+                        <div class="col-lg-4 col-md-6 mb-3">
+                            <div class="text-center p-3 bg-light rounded stats-card"
+                                title="Total Licencias / Total Designaciones.">
+                                <h4 class="text-primary mb-1">{{
+                                    reporteConcepto.EstadisticasGenerales.PromedioLicenciasPorDesignacion |
+                                    number:'1.2-2' }}</h4>
+                                <small class="text-muted">Promedio Licencias por Designación</small>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 mb-3">
+                            <div class="text-center p-3 bg-light rounded stats-card"
+                                title="(Total Días Licencia × 100) / días laborables.">
+                                <h4 class="text-warning mb-1">{{
+                                    reporteConcepto.EstadisticasGenerales.PorcentajeDiasLicenciaAnual |
+                                    number:'1.2-2' }}%</h4>
+                                <small class="text-muted">Porcentaje Días Licencia Anual</small>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-12 mb-3">
+                            <div class="text-center p-3 bg-light rounded stats-card calificacion-card"
+                                title="Porcentaje Días Licencia Anual: Excelente (≤5%), Muy Bueno (≤10%), Bueno (≤30%), Regular (≤50%), Deficiente (>50%)."
+                                [ngClass]="getCalificacionClass().includes('success') ? 'border-success-subtle' : 
+                                          getCalificacionClass().includes('info') ? 'border-info-subtle' : 
+                                          getCalificacionClass().includes('primary') ? 'border-primary-subtle' : 
+                                          getCalificacionClass().includes('warning') ? 'border-warning-subtle' : 'border-danger-subtle'">
+                                <h4 class="mb-1">
+                                    <span [ngClass]="getCalificacionClass()">{{ reporteConcepto.CalificacionGeneral
+                                        }}</span>
+                                </h4>
+                                <small class="text-muted">Calificación General</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gráficos -->
+        <div class="col-12 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header text-white" style="background-color: var(--color-primary);">
+                    <h5 class="mb-0" style="color: white;">
+                        <i class="fa fa-chart-pie me-2"></i>
+                        Análisis Gráfico
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+
+                        <!-- Gráfico mensual -->
+                        <div class="col-12 mb-4" *ngIf="showMonthlyChart">
+                            <div class="chart-container">
+                                <apx-chart [series]="chartOptionsMensual.series!" [chart]="chartOptionsMensual.chart!"
+                                    [xaxis]="chartOptionsMensual.xaxis!" [yaxis]="chartOptionsMensual.yaxis!"
+                                    [plotOptions]="chartOptionsMensual.plotOptions!"
+                                    [dataLabels]="chartOptionsMensual.dataLabels!"
+                                    [colors]="chartOptionsMensual.colors!" [title]="chartOptionsMensual.title!"
+                                    [tooltip]="chartOptionsMensual.tooltip!" class="mixed-chart">
+                                </apx-chart>
+                            </div>
+                        </div>
+
+                        <!-- Gráficos de distribución por artículo -->
+                        <div class="col-lg-6 mb-3" *ngIf="showArticleLicenciasChart">
+                            <div class="chart-container">
+                                <apx-chart [series]="chartOptionsArticulosLicencias.series!"
+                                    [chart]="chartOptionsArticulosLicencias.chart!"
+                                    [labels]="chartOptionsArticulosLicencias.labels!"
+                                    [colors]="chartOptionsArticulosLicencias.colors!"
+                                    [title]="chartOptionsArticulosLicencias.title!"
+                                    [tooltip]="chartOptionsArticulosLicencias.tooltip!"
+                                    [legend]="chartOptionsArticulosLicencias.legend!" class="mixed-chart">
+                                </apx-chart>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6 mb-3" *ngIf="showArticleDiasChart">
+                            <div class="chart-container">
+                                <apx-chart [series]="chartOptionsArticulosDias.series!"
+                                    [chart]="chartOptionsArticulosDias.chart!"
+                                    [labels]="chartOptionsArticulosDias.labels!"
+                                    [colors]="chartOptionsArticulosDias.colors!"
+                                    [title]="chartOptionsArticulosDias.title!"
+                                    [tooltip]="chartOptionsArticulosDias.tooltip!"
+                                    [legend]="chartOptionsArticulosDias.legend!" class="mixed-chart">
+                                </apx-chart>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Estado vacío -->
+    <div *ngIf="!reporteConcepto" class="text-center py-5">
+        <i class="fa fa-exclamation-triangle text-warning fa-3x mb-3"></i>
+        <h4>No se ha cargado el reporte</h4>
+        <p class="text-muted">Espere mientras se cargan los datos o verifique que el año sea correcto.</p>
+    </div>
+</div>

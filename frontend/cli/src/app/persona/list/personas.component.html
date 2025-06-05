@@ -51,6 +51,10 @@
                             </button>
                         </td>
                         <td class="text-end">
+                            <a [routerLink]="['/personas', 'dni', persona.dni, 'reporte', currentYear]"
+                                class="btn btn-sm btn-outline-info me-1" title="Reporte">
+                                <i class="fa fa-file-text-o"></i>
+                            </a>
                             <a routerLink="/personas/{{ persona.id }}" class="btn btn-sm btn-outline-primary me-1"
                                 title="Editar">
                                 <i class="fa fa-pencil"></i>
@@ -101,8 +105,8 @@
                         designacion.cargo.division.numDivision + '° ' +
                         designacion.cargo.division.orientacion : '' }}
                     </td>
-                    <td>{{ formatFechaDesignacion(designacion.fechaInicio) }}</td>
-                    <td>{{ formatFechaDesignacion(designacion.fechaFin) }}</td>
+                    <td>{{ designacion.fechaInicio | fechaFormat }}</td>
+                    <td>{{ designacion.fechaFin | fechaFormat }}</td>
                     <td>
                         <i class="fa fa-2x" [ngClass]="{
                             'fa-check-circle text-success': isDesignacionActive(designacion),

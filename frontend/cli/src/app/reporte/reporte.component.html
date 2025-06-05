@@ -1,0 +1,206 @@
+<div class="container-fluid mt-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-0">
+                <i class="fa fa-file-text-o me-2"></i>
+                Reporte - {{ getAnioReporte() }}
+            </h2>
+            <div *ngIf="reporte" class="text-muted">
+                {{ reporte.Docente.DNI | number }} - {{ reporte.Docente.Nombre }}, {{ reporte.Docente.Apellido }}
+            </div>
+        </div>
+        <div class="d-flex gap-2">
+            <!-- Selector de año -->
+            <div class="input-group" style="width: 220px;">
+                <span class="input-group-text">
+                    <i class="fa fa-calendar"></i>
+                </span>
+                <select class="form-select" [(ngModel)]="anioSeleccionado" (change)="onAnioChange()"
+                    title="Seleccione el año para el reporte">
+                    <option *ngFor="let anio of aniosDisponibles" [value]="anio">
+                        {{ anio }}
+                    </option>
+                </select>
+            </div>
+            <button type="button" class="btn btn-outline-secondary" (click)="volver()">
+                <i class="fa fa-arrow-left me-1"></i>
+                Volver
+            </button>
+        </div>
+    </div>
+
+    <!-- Reporte -->
+    <div *ngIf="reporte" class="row">
+        <!-- Designaciones -->
+        <div class="col-12 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header text-white" style="background-color: var(--color-primary);">
+                    <h5 class="mb-0" style="color: white;">
+                        <i class="fa fa-user-tie me-2"></i>
+                        Designaciones en {{ getAnioReporte() }}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div *ngIf="getDesignacionesActivas().length === 0" class="text-center py-3">
+                        <i class="fa fa-info-circle text-muted me-2"></i>
+                        No hay designaciones registradas para este año
+                    </div>
+                    <div *ngFor="let designacionConDias of getDesignacionesActivas()" class="border rounded p-3 mb-3">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6 class="text-primary mb-2">
+                                    <i class="fa fa-graduation-cap me-1"></i>
+                                    {{ designacionConDias.Designacion.Cargo.Nombre }}
+                                </h6>
+                                <p class="mb-1">
+                                    <strong>División:</strong>
+                                    <span *ngIf="designacionConDias.Designacion.Cargo.Division">
+                                        {{ designacionConDias.Designacion.Cargo.Division.Anio }}°
+                                        {{ designacionConDias.Designacion.Cargo.Division.NumDivision }}°
+                                        {{ designacionConDias.Designacion.Cargo.Division.Orientacion }}
+                                        ({{ designacionConDias.Designacion.Cargo.Division.Turno }})
+                                    </span>
+                                    <span *ngIf="!designacionConDias.Designacion.Cargo.Division">
+                                        No asignada
+                                    </span>
+                                </p>
+                                <p class="mb-1">
+                                    <strong>Carga Horaria:</strong>
+                                    {{ designacionConDias.Designacion.Cargo.CargaHoraria }} horas
+                                </p>
+                                <p class="mb-1">
+                                    <strong>Tipo:</strong>
+                                    {{ designacionConDias.Designacion.Cargo.TipoDesignacion | tipoDesignacionFormat }}
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="mb-1">
+                                    <strong>Situación de Revista:</strong>
+                                    {{ designacionConDias.Designacion.SituacionRevista || 'No especificada' }}
+                                </p>
+                                <p class="mb-1">
+                                    <strong>Período en {{ getAnioReporte() }}:</strong>
+                                    {{ designacionConDias.FechaInicioEnAnio | fechaFormat }} -
+                                    {{ designacionConDias.FechaFinEnAnio | fechaFormat }}
+                                </p>
+                                <p class="mb-1">
+                                    <strong>Total días designación:</strong>
+                                    <span class="badge bg-success">{{ designacionConDias.DiasDesignacionEnAnio }}
+                                        días</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Estadísticas de Licencias -->
+        <div class="col-12 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header text-white d-flex justify-content-between align-items-center"
+                    style="background-color: var(--color-primary);">
+                    <h5 class="mb-0" style="color: white;">
+                        <i class="fa fa-calendar-check me-2"></i>
+                        Estadísticas de Licencias
+                    </h5>
+                    <i class="fa fa-question-circle" style="color: white; cursor: pointer; font-size: 1.2rem;"
+                        title="El porcentaje anual se calcula como: (Total días de licencia / Total días de designación del docente en el año) × 100. Este cálculo considera únicamente los días efectivos de designación del docente."></i>
+                </div>
+                <div class="card-body">
+                    <!-- Resumen General -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="text-center p-3 bg-light rounded stats-card">
+                                <h4 class="text-primary mb-1">{{ reporte.EstadisticasLicencias.TotalDiasLicencia }}</h4>
+                                <small class="text-muted">Total días de licencia</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="text-center p-3 bg-light rounded stats-card">
+                                <h4 class="text-warning mb-1">{{ reporte.EstadisticasLicencias.PorcentajeLicenciaAnual |
+                                    number:'1.2-2' }}%</h4>
+                                <small class="text-muted">Porcentaje anual</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col-md-6 offset-md-3">
+                            <div class="text-center p-3 bg-light rounded stats-card calificacion-card"
+                                [ngClass]="getCalificacionClass().includes('success') ? 'border-success-subtle' : 
+                                          getCalificacionClass().includes('info') ? 'border-info-subtle' : 
+                                          getCalificacionClass().includes('primary') ? 'border-primary-subtle' : 
+                                          getCalificacionClass().includes('warning') ? 'border-warning-subtle' : 'border-danger-subtle'"
+                                title="Excelente (≤ 2.0%), Muy Bueno (≤ 5.0%), Bueno (≤ 8.0%), Regular (≤ 12.0%), Deficiente (> 12.0%)">
+                                <h4 class="mb-1">
+                                    <span [ngClass]="getCalificacionClass()">{{ reporte.Calificacion }}</span>
+                                </h4>
+                                <small class="text-muted">Calificación</small>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Licencias por Artículo -->
+                    <div class="row">
+                        <div class="col-md-7 mb-3">
+                            <h6 class="text-secondary mb-3">
+                                <i class="fa fa-list-alt me-1"></i>
+                                Licencias por Artículo
+                            </h6>
+                            <div *ngIf="getArticulosLicencia().length === 0" class="text-muted">
+                                No hay licencias registradas
+                            </div>
+
+                            <!-- Gráfico de torta para la distribución por artículos -->
+                            <div *ngIf="showArticleChart" class="chart-container p-3 border rounded mb-3">
+                                <div id="chartArticulos" class="mixed-chart">
+                                    <apx-chart #chartArticulos [series]="chartOptionsArticulos.series!"
+                                        [chart]="chartOptionsArticulos.chart!" [labels]="chartOptionsArticulos.labels!"
+                                        [tooltip]="chartOptionsArticulos.tooltip!"
+                                        [colors]="chartOptionsArticulos.colors!"
+                                        [legend]="chartOptionsArticulos.legend!"
+                                        [responsive]="chartOptionsArticulos.responsive!"
+                                        [title]="chartOptionsArticulos.title!"></apx-chart>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Licencias por Mes -->
+                        <div class="col-md-5 mb-3">
+                            <h6 class="text-secondary mb-3">
+                                <i class="fa fa-calendar me-1"></i>
+                                Distribución Mensual
+                            </h6>
+
+                            <!-- Gráfico de barras para la distribución mensual -->
+                            <div *ngIf="showMonthlyChart" class="chart-container p-3 border rounded">
+                                <div id="chart" class="mixed-chart">
+                                    <apx-chart #chart [series]="chartOptions.series!" [chart]="chartOptions.chart!"
+                                        [xaxis]="chartOptions.xaxis!" [yaxis]="chartOptions.yaxis!"
+                                        [dataLabels]="chartOptions.dataLabels!"
+                                        [plotOptions]="chartOptions.plotOptions!" [stroke]="chartOptions.stroke!"
+                                        [fill]="chartOptions.fill!" [tooltip]="chartOptions.tooltip!"
+                                        [title]="chartOptions.title!" [colors]="chartOptions.colors!"></apx-chart>
+                                </div>
+                            </div>
+
+                            <!-- Mensaje cuando no hay licencias -->
+                            <div *ngIf="getMesesLicencia().length === 0"
+                                class="text-center py-4 border rounded bg-light">
+                                <i class="fa fa-info-circle text-muted me-2"></i>
+                                No hay registros de licencias para este período
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Estado vacío -->
+    <div *ngIf="!reporte" class="text-center py-5">
+        <i class="fa fa-exclamation-triangle text-warning fa-3x mb-3"></i>
+        <h4>No se ha cargado el reporte</h4>
+        <p class="text-muted">Espere mientras se cargan los datos o verifique que el DNI y año sean correctos.</p>
+    </div>
+</div>

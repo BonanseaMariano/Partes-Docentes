@@ -18,6 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import unpsjb.labprog.backend.Response;
 import unpsjb.labprog.backend.business.service.PersonaService;
+import unpsjb.labprog.backend.business.service.ReporteConceptoService;
+import unpsjb.labprog.backend.business.service.ReporteService;
+import unpsjb.labprog.backend.dto.ReporteConceptoDTO;
+import unpsjb.labprog.backend.dto.ReporteDTO;
 import unpsjb.labprog.backend.model.Persona;
 import unpsjb.labprog.backend.utils.constants.AppConstants;
 
@@ -42,6 +46,18 @@ public class PersonaPresenter {
      */
     @Autowired
     private PersonaService service;
+
+    /**
+     * Servicio especializado en la generación de reportes para docentes.
+     */
+    @Autowired
+    private ReporteService reporteService;
+
+    /**
+     * Servicio especializado en la generación de reportes de concepto general.
+     */
+    @Autowired
+    private ReporteConceptoService reporteConceptoService;
 
     /**
      * Obtiene todas las personas registradas en el sistema.
@@ -191,6 +207,70 @@ public class PersonaPresenter {
                                     deletedPersona.getNombre(),
                                     deletedPersona.getApellido(),
                                     deletedPersona.getDni()));
+        }
+    }
+
+    /**
+     * Genera un reporte para un docente específico en un año determinado. El
+     * reporte incluye análisis estadístico de licencias, designaciones y
+     * calificación automática del desempeño del docente.
+     *
+     * @param dni DNI del docente para quien generar el reporte
+     * @param año Año para el cual generar el reporte
+     * @return ResponseEntity con ReporteDTO si la operación es exitosa, o un
+     * mensaje de error si no se encuentra el docente
+     */
+    @GetMapping("/dni/{dni}/reporte/{año}")
+    public ResponseEntity<Object> generarReporte(
+            @PathVariable Long dni,
+            @PathVariable Integer año) {
+        try {
+            ReporteDTO reporte = reporteService.generarReporte(dni, año);
+            String mensaje = String.format(
+                    "Reporte generado exitosamente para DNI %d en el año %d",
+                    dni, año);
+            logger.log(Level.INFO, mensaje);
+            return Response.ok(reporte, mensaje);
+        } catch (IllegalArgumentException e) {
+            String mensajeError = String.format(
+                    "No se pudo generar el reporte: %s",
+                    e.getMessage());
+            logger.log(Level.WARNING, mensajeError);
+            return Response.notFound(mensajeError);
+        } catch (Exception e) {
+            String mensajeError = String.format(
+                    "Error interno al generar el reporte para DNI %d en el año %d: %s",
+                    dni, año, e.getMessage());
+            logger.log(Level.SEVERE, mensajeError, e);
+            return Response.internalServerError(mensajeError);
+        }
+    }
+
+    /**
+     * Genera un reporte general para todos los docentes en un año determinado.
+     * El reporte incluye estadísticas consolidadas de la institución como total
+     * de designaciones, total de docentes, estadísticas de licencias por tipo,
+     * distribución mensual y calificación general.
+     *
+     * @param año Año para el cual generar el reporte general
+     * @return ResponseEntity con ReporteConceptoDTO si la operación es exitosa,
+     * o un mensaje de error en caso contrario
+     */
+    @GetMapping("/reporte-concepto/{año}")
+    public ResponseEntity<Object> generarReporteGeneral(@PathVariable Integer año) {
+        try {
+            ReporteConceptoDTO reporteConcepto = reporteConceptoService.generarReporteConcepto(año);
+            String mensaje = String.format(
+                    "Reporte de concepto generado exitosamente para el año %d",
+                    año);
+            logger.log(Level.INFO, mensaje);
+            return Response.ok(reporteConcepto, mensaje);
+        } catch (Exception e) {
+            String mensajeError = String.format(
+                    "Error interno al generar el reporte de concepto para el año %d: %s",
+                    año, e.getMessage());
+            logger.log(Level.SEVERE, mensajeError, e);
+            return Response.internalServerError(mensajeError);
         }
     }
 

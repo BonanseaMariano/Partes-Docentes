@@ -106,4 +106,35 @@ public interface LicenciaRepository extends JpaRepository<Licencia, Integer> {
             Persona persona,
             LocalDateTime pedidoDesde,
             LocalDateTime pedidoHasta);
+
+    /**
+     * Busca licencias VÁLIDAS que estén activas en una fecha específica
+     *
+     * @param fecha La fecha a consultar (inicio del día)
+     * @param fechaFin La fecha a consultar (fin del día)
+     * @return Lista de licencias válidas activas en esa fecha
+     */
+    @Query("SELECT l FROM Licencia l WHERE l.estado = unpsjb.labprog.backend.model.enums.Estado.VALIDO "
+            + "AND l.pedidoDesde <= :fechaFin "
+            + "AND l.pedidoHasta >= :fecha "
+            + "ORDER BY l.persona.apellido, l.persona.nombre")
+    List<Licencia> findLicenciasValidasEnFecha(
+            @Param("fecha") LocalDateTime fecha,
+            @Param("fechaFin") LocalDateTime fechaFin);
+
+    /**
+     * Busca licencias VÁLIDAS para una persona en un año específico para
+     * reporte
+     *
+     * @param persona La persona asociada a las licencias
+     * @param anio El año a consultar
+     * @return Lista de licencias válidas de la persona en el año especificado
+     */
+    @Query("SELECT l FROM Licencia l WHERE l.persona = :persona "
+            + "AND EXTRACT(YEAR FROM l.pedidoDesde) = :anio "
+            + "AND l.estado = unpsjb.labprog.backend.model.enums.Estado.VALIDO "
+            + "ORDER BY l.pedidoDesde")
+    List<Licencia> findLicenciasPorPersonaYAño(
+            @Param("persona") Persona persona,
+            @Param("anio") Integer anio);
 }

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterOutlet, Router } from '@angular/router';
+import { RouterOutlet, Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { NgbDropdownModule, NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
 import { ValidationService } from './core/services/validation.service';
@@ -8,13 +8,16 @@ import { ModalService } from './modal/modal.service';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, CommonModule, NgbDropdownModule, NgbCollapseModule],
+  imports: [RouterOutlet, RouterLink, CommonModule, NgbDropdownModule, NgbCollapseModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
 })
 export class AppComponent {
   title = 'Sistema de Gestión de Novedades Docentes';
   isMenuCollapsed = true;
+  
+  // Fecha actual para el enlace del parte diario
+  fechaHoy = new Date();
 
   constructor(
     private validationService: ValidationService,
@@ -62,5 +65,23 @@ export class AppComponent {
         // Si cancela, no hacemos nada
       });
     });
+  }
+
+  /**
+   * Devuelve la fecha actual en formato yyyy-MM-dd para usarla en la URL del parte diario
+   */
+  getFechaHoy(): string {
+    const fecha = new Date();
+    const year = fecha.getFullYear();
+    const month = String(fecha.getMonth() + 1).padStart(2, '0');
+    const day = String(fecha.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  /**
+   * Devuelve el año actual para usarlo en la URL del reporte de concepto
+   */
+  getAnioActual(): number {
+    return new Date().getFullYear();
   }
 }

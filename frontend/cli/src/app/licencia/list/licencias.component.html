@@ -29,8 +29,8 @@
                         <td>{{ (resultsPage.number * resultsPage.size) + i + 1 }}</td>
                         <td>{{ licencia.persona.dni | dniFormat }} - {{ licencia.persona.apellido }}, {{
                             licencia.persona.nombre }}</td>
-                        <td>{{ licencia.pedidoDesde | date:'dd/MM/yyyy' }}</td>
-                        <td>{{ licencia.pedidoHasta | date:'dd/MM/yyyy' }}</td>
+                        <td>{{ licencia.pedidoDesde | fechaFormat }}</td>
+                        <td>{{ licencia.pedidoHasta | fechaFormat }}</td>
                         <td>{{ licencia.domicilio || '' }}</td>
                         <td class="text-center">
                             <i *ngIf="licencia.certificadoMedico" class="fa fa-check text-success"
@@ -115,8 +115,8 @@
                         designacion.cargo.division.orientacion : '' }}
                     </td>
                     <td>{{ designacion.situacionRevista || '' }}</td>
-                    <td>{{ formatFechaDesignacion(designacion.fechaInicio) }}</td>
-                    <td>{{ formatFechaDesignacion(designacion.fechaFin) }}</td>
+                    <td>{{ designacion.fechaInicio | fechaFormat }}</td>
+                    <td>{{ designacion.fechaFin | fechaFormat }}</td>
                     <td>
                         <i class="fa fa-2x" [ngClass]="{
                             'fa-check-circle text-success': isDesignacionActive(designacion),

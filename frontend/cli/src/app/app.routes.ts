@@ -10,6 +10,9 @@ import { DesignacionesComponent } from './designacion/list/designaciones.compone
 import { DesignacionDetailComponent } from './designacion/detail/designacion-detail.component';
 import { LicenciasComponent } from './licencia/list/licencias.component';
 import { LicenciaDetailComponent } from './licencia/detail/licencia-detail.component';
+import { ParteDiarioComponent } from './parte-diario/parte-diario.component';
+import { ReporteComponent } from './reporte/reporte.component';
+import { ReporteConceptoComponent } from './reporte-concepto/reporte-concepto.component';
 
 export const routes: Routes = [
     { path: "", component: HomeComponent },
@@ -22,5 +25,8 @@ export const routes: Routes = [
     { path: "designaciones", component: DesignacionesComponent },
     { path: "designaciones/:id", component: DesignacionDetailComponent },
     { path: "licencias", component: LicenciasComponent },
+    { path: "licencias/parte-diario/:fecha", component: ParteDiarioComponent },
     { path: "licencias/:id", component: LicenciaDetailComponent },
+    { path: "personas/dni/:dni/reporte/:anio", component: ReporteComponent },
+    { path: "personas/reporte-concepto/:anio", component: ReporteConceptoComponent },
 ];
