@@ -44,36 +44,31 @@
                     <div class="row mb-4">
                         <!-- Totales -->
                         <div class="col-lg-3 col-md-6 mb-3">
-                            <div class="card border-info h-100">
-                                <div class="card-body text-center">
-                                    <h6 class="card-title text-info">Total Designaciones</h6>
-                                    <h3 class="mb-0">{{ reporteConcepto.EstadisticasGenerales.TotalDesignaciones }}</h3>
-                                </div>
+                            <div class="text-center p-3 bg-light rounded stats-card">
+                                <h4 class="text-info mb-1">{{ reporteConcepto.EstadisticasGenerales.TotalDesignaciones
+                                    }}</h4>
+                                <small class="text-muted">Total Designaciones</small>
                             </div>
                         </div>
                         <div class="col-lg-3 col-md-6 mb-3">
-                            <div class="card border-warning h-100">
-                                <div class="card-body text-center">
-                                    <h6 class="card-title text-warning">Total Licencias</h6>
-                                    <h3 class="mb-0">{{ reporteConcepto.EstadisticasGenerales.TotalLicencias }}</h3>
-                                </div>
+                            <div class="text-center p-3 bg-light rounded stats-card">
+                                <h4 class="text-warning mb-1">{{ reporteConcepto.EstadisticasGenerales.TotalLicencias }}
+                                </h4>
+                                <small class="text-muted">Total Licencias</small>
                             </div>
                         </div>
                         <div class="col-lg-3 col-md-6 mb-3">
-                            <div class="card border-secondary h-100">
-                                <div class="card-body text-center">
-                                    <h6 class="card-title text-secondary">Licencias Sin Suplente</h6>
-                                    <h3 class="mb-0">{{ reporteConcepto.EstadisticasGenerales.LicenciasSinSuplente }}
-                                    </h3>
-                                </div>
+                            <div class="text-center p-3 bg-light rounded stats-card">
+                                <h4 class="text-secondary mb-1">{{
+                                    reporteConcepto.EstadisticasGenerales.LicenciasSinSuplente }}</h4>
+                                <small class="text-muted">Licencias Sin Suplente</small>
                             </div>
                         </div>
                         <div class="col-lg-3 col-md-6 mb-3">
-                            <div class="card border-danger h-100">
-                                <div class="card-body text-center">
-                                    <h6 class="card-title text-danger">Total Días Licencia</h6>
-                                    <h3 class="mb-0">{{ reporteConcepto.EstadisticasGenerales.TotalDiasLicencias }}</h3>
-                                </div>
+                            <div class="text-center p-3 bg-light rounded stats-card">
+                                <h4 class="text-danger mb-1">{{ reporteConcepto.EstadisticasGenerales.TotalDiasLicencias
+                                    }}</h4>
+                                <small class="text-muted">Total Días Licencia</small>
                             </div>
                         </div>
                     </div>
@@ -81,45 +76,35 @@
                     <!-- Métricas calculadas -->
                     <div class="row">
                         <div class="col-lg-4 col-md-6 mb-3">
-                            <div class="card bg-light h-100" title="Total Licencias / Total Designaciones.">
-                                <div class="card-body text-center">
-                                    <h6 class="card-title">
-                                        Promedio Licencias por Designación
-                                    </h6>
-                                    <h4 class="mb-0 text-primary">{{
-                                        reporteConcepto.EstadisticasGenerales.PromedioLicenciasPorDesignacion |
-                                        number:'1.2-2' }}</h4>
-                                </div>
+                            <div class="text-center p-3 bg-light rounded stats-card"
+                                title="Total Licencias / Total Designaciones.">
+                                <h4 class="text-primary mb-1">{{
+                                    reporteConcepto.EstadisticasGenerales.PromedioLicenciasPorDesignacion |
+                                    number:'1.2-2' }}</h4>
+                                <small class="text-muted">Promedio Licencias por Designación</small>
                             </div>
                         </div>
                         <div class="col-lg-4 col-md-6 mb-3">
-                            <div class="card bg-light h-100" title="(Total Días Licencia × 100) / días laborables.">
-                                <div class="card-body text-center">
-                                    <h6 class="card-title">
-                                        Porcentaje Días Licencia Anual
-                                    </h6>
-                                    <h4 class="mb-0 text-warning">{{
-                                        reporteConcepto.EstadisticasGenerales.PorcentajeDiasLicenciaAnual |
-                                        number:'1.2-2' }}%</h4>
-                                </div>
+                            <div class="text-center p-3 bg-light rounded stats-card"
+                                title="(Total Días Licencia × 100) / días laborables.">
+                                <h4 class="text-warning mb-1">{{
+                                    reporteConcepto.EstadisticasGenerales.PorcentajeDiasLicenciaAnual |
+                                    number:'1.2-2' }}%</h4>
+                                <small class="text-muted">Porcentaje Días Licencia Anual</small>
                             </div>
                         </div>
                         <div class="col-lg-4 col-md-12 mb-3">
-                            <div class="card h-100"
-                                [ngClass]="getCalificacionClass().includes('success') ? 'border-success' : 
-                                              getCalificacionClass().includes('info') ? 'border-info' : 
-                                              getCalificacionClass().includes('primary') ? 'border-primary' : 
-                                              getCalificacionClass().includes('warning') ? 'border-warning' : 'border-danger'"
-                                title="Porcentaje Días Licencia Anual: Excelente (≤5%), Muy Bueno (≤10%), Bueno (≤30%), Regular (≤50%), Deficiente (>50%).">
-                                <div class="card-body text-center">
-                                    <h6 class="card-title">
-                                        Calificación General
-                                    </h6>
-                                    <h4 class="mb-0">
-                                        <span [ngClass]="getCalificacionClass()">{{ reporteConcepto.CalificacionGeneral
-                                            }}</span>
-                                    </h4>
-                                </div>
+                            <div class="text-center p-3 bg-light rounded stats-card calificacion-card"
+                                title="Porcentaje Días Licencia Anual: Excelente (≤5%), Muy Bueno (≤10%), Bueno (≤30%), Regular (≤50%), Deficiente (>50%)."
+                                [ngClass]="getCalificacionClass().includes('success') ? 'border-success-subtle' : 
+                                          getCalificacionClass().includes('info') ? 'border-info-subtle' : 
+                                          getCalificacionClass().includes('primary') ? 'border-primary-subtle' : 
+                                          getCalificacionClass().includes('warning') ? 'border-warning-subtle' : 'border-danger-subtle'">
+                                <h4 class="mb-1">
+                                    <span [ngClass]="getCalificacionClass()">{{ reporteConcepto.CalificacionGeneral
+                                        }}</span>
+                                </h4>
+                                <small class="text-muted">Calificación General</small>
                             </div>
                         </div>
                     </div>

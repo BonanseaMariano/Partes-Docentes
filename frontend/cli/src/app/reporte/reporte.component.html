@@ -113,13 +113,13 @@
                     <!-- Resumen General -->
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <div class="text-center p-3 bg-light rounded">
+                            <div class="text-center p-3 bg-light rounded stats-card">
                                 <h4 class="text-primary mb-1">{{ reporte.EstadisticasLicencias.TotalDiasLicencia }}</h4>
                                 <small class="text-muted">Total días de licencia</small>
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <div class="text-center p-3 bg-light rounded">
+                            <div class="text-center p-3 bg-light rounded stats-card">
                                 <h4 class="text-warning mb-1">{{ reporte.EstadisticasLicencias.PorcentajeLicenciaAnual |
                                     number:'1.2-2' }}%</h4>
                                 <small class="text-muted">Porcentaje anual</small>
@@ -128,11 +128,15 @@
                     </div>
                     <div class="row mb-4">
                         <div class="col-md-6 offset-md-3">
-                            <div class="text-center p-3 bg-light rounded">
-                                <h4 [class]="getCalificacionClass() + ' mb-1'" style="cursor: help;"
-                                    title="Excelente (≤ 2.0%), Muy Bueno (≤ 5.0%), Bueno (≤ 8.0%), Regular (≤ 12.0%), Deficiente (> 12.0%)">
-                                    {{ reporte.Calificacion }}</h4>
-                                <br>
+                            <div class="text-center p-3 bg-light rounded stats-card calificacion-card"
+                                [ngClass]="getCalificacionClass().includes('success') ? 'border-success-subtle' : 
+                                          getCalificacionClass().includes('info') ? 'border-info-subtle' : 
+                                          getCalificacionClass().includes('primary') ? 'border-primary-subtle' : 
+                                          getCalificacionClass().includes('warning') ? 'border-warning-subtle' : 'border-danger-subtle'"
+                                title="Excelente (≤ 2.0%), Muy Bueno (≤ 5.0%), Bueno (≤ 8.0%), Regular (≤ 12.0%), Deficiente (> 12.0%)">
+                                <h4 class="mb-1">
+                                    <span [ngClass]="getCalificacionClass()">{{ reporte.Calificacion }}</span>
+                                </h4>
                                 <small class="text-muted">Calificación</small>
                             </div>
                         </div>
