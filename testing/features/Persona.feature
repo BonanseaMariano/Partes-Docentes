@@ -31,5 +31,6 @@ Módulo responsable de administrar a las personas del sistema
       | 88600000 | Marta       | Ríos         | 27886000009 | F    | Profesora de Arte            | Yrigoyen 654   | +54 (280) 486-0000 |    200 | Marta Ríos con DNI 88600000 ingresado/a correctamente          |
       | 88700000 | Rosalía     | Ramón        | 27887000009 | F    | Profesora de Música          | Pellegrini 987 | +54 (280) 487-0000 |    200 | Rosalía Ramón con DNI 88700000 ingresado/a correctamente       |
       | 88800000 | José        | Pérez        | 20888000009 | M    | Profesor de Tecnología       | Maipú 135      | +54 (280) 488-0000 |    200 | José Pérez con DNI 88800000 ingresado/a correctamente          |
+      | 11111111 | Susana      | Giménez      | 27111111119 | F    | Profesora de Matemática      | Belgrano 789   | +54 (280) 411-1111 |    200 | Susana Giménez con DNI 11111111 ingresado/a correctamente      |
       | 99300000 | Luis        | Perez        | 20884000008 | M    | Profesor de Quimica          | Rivadavia 123  | +54 (280) 420-0000 |    500 | Ya existe una persona con el mismo DNI o CUIL                  |
       | 88400000 | Carla       | Guitierrez   | 20993000008 | F    | Profesora de Artes           | Lavalle 1425   | +54 (280) 450-0000 |    500 | Ya existe una persona con el mismo DNI o CUIL                  |
