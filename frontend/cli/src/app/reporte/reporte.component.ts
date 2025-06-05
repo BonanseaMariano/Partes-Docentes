@@ -121,7 +121,7 @@ export class ReporteComponent implements OnInit {
                 type: "bar",
                 height: 350,
                 toolbar: {
-                    show: false
+                    show: true
                 },
                 animations: {
                     enabled: true,
@@ -233,7 +233,7 @@ export class ReporteComponent implements OnInit {
                 type: "pie",
                 height: 350,
                 toolbar: {
-                    show: false
+                    show: true
                 },
                 animations: {
                     enabled: true,

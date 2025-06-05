@@ -1,0 +1,186 @@
+<div class="container-fluid mt-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-0">
+                <i class="fa fa-file-text-o me-2"></i>
+                Reporte Concepto {{ getAnioReporte() }}
+            </h2>
+        </div>
+        <div class="d-flex gap-2">
+            <!-- Selector de año -->
+            <div class="input-group" style="width: 200px;">
+                <span class="input-group-text">
+                    <i class="fa fa-calendar"></i>
+                </span>
+                <select class="form-select" [(ngModel)]="anioSeleccionado" (change)="onAnioChange()">
+                    <option [value]="2021">2021</option>
+                    <option [value]="2022">2022</option>
+                    <option [value]="2023">2023</option>
+                    <option [value]="2024">2024</option>
+                    <option [value]="2025">2025</option>
+                </select>
+            </div>
+            <button type="button" class="btn btn-outline-secondary" (click)="volver()">
+                <i class="fa fa-arrow-left me-1"></i>
+                Volver
+            </button>
+        </div>
+    </div>
+
+    <!-- Reporte -->
+    <div *ngIf="reporteConcepto" class="row">
+
+        <!-- Estadísticas Generales -->
+        <div class="col-12 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header text-white" style="background-color: var(--color-primary);">
+                    <h5 class="mb-0" style="color: white;">
+                        <i class="fa fa-chart-bar me-2"></i>
+                        Estadísticas Generales
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <!-- Totales -->
+                        <div class="col-lg-4 col-md-6 mb-3">
+                            <div class="card border-info h-100">
+                                <div class="card-body text-center">
+                                    <h6 class="card-title text-info">Total Designaciones</h6>
+                                    <h3 class="mb-0">{{ reporteConcepto.EstadisticasGenerales.TotalDesignaciones }}</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 mb-3">
+                            <div class="card border-warning h-100">
+                                <div class="card-body text-center">
+                                    <h6 class="card-title text-warning">Total Licencias</h6>
+                                    <h3 class="mb-0">{{ reporteConcepto.EstadisticasGenerales.TotalLicencias }}</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 mb-3">
+                            <div class="card border-danger h-100">
+                                <div class="card-body text-center">
+                                    <h6 class="card-title text-danger">Total Días Licencia</h6>
+                                    <h3 class="mb-0">{{ reporteConcepto.EstadisticasGenerales.TotalDiasLicencias }}</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Métricas calculadas -->
+                    <div class="row">
+                        <div class="col-lg-4 col-md-6 mb-3">
+                            <div class="card bg-light h-100" title="Total Licencias / Total Designaciones.">
+                                <div class="card-body text-center">
+                                    <h6 class="card-title">
+                                        Promedio Licencias por Designación
+                                    </h6>
+                                    <h4 class="mb-0 text-primary">{{
+                                        reporteConcepto.EstadisticasGenerales.PromedioLicenciasPorDesignacion |
+                                        number:'1.2-2' }}</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 mb-3">
+                            <div class="card bg-light h-100" title="(Total Días Licencia × 100) / días laborables.">
+                                <div class="card-body text-center">
+                                    <h6 class="card-title">
+                                        Porcentaje Días Licencia Anual
+                                    </h6>
+                                    <h4 class="mb-0 text-warning">{{
+                                        reporteConcepto.EstadisticasGenerales.PorcentajeDiasLicenciaAnual |
+                                        number:'1.2-2' }}%</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-12 mb-3">
+                            <div class="card h-100"
+                                [ngClass]="getCalificacionClass().includes('success') ? 'border-success' : 
+                                              getCalificacionClass().includes('info') ? 'border-info' : 
+                                              getCalificacionClass().includes('primary') ? 'border-primary' : 
+                                              getCalificacionClass().includes('warning') ? 'border-warning' : 'border-danger'"
+                                title="Excelente (≤5%), Muy Bueno (≤10%), Bueno (≤30%), Regular (≤50%), Deficiente (>50%).">
+                                <div class="card-body text-center">
+                                    <h6 class="card-title">
+                                        Calificación General
+                                    </h6>
+                                    <h4 class="mb-0">
+                                        <span [ngClass]="getCalificacionClass()">{{ reporteConcepto.CalificacionGeneral
+                                            }}</span>
+                                    </h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gráficos -->
+        <div class="col-12 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header text-white" style="background-color: var(--color-primary);">
+                    <h5 class="mb-0" style="color: white;">
+                        <i class="fa fa-chart-pie me-2"></i>
+                        Análisis Gráfico
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+
+                        <!-- Gráfico mensual -->
+                        <div class="col-12 mb-4" *ngIf="showMonthlyChart">
+                            <div class="chart-container">
+                                <apx-chart [series]="chartOptionsMensual.series!" [chart]="chartOptionsMensual.chart!"
+                                    [xaxis]="chartOptionsMensual.xaxis!" [yaxis]="chartOptionsMensual.yaxis!"
+                                    [plotOptions]="chartOptionsMensual.plotOptions!"
+                                    [dataLabels]="chartOptionsMensual.dataLabels!"
+                                    [colors]="chartOptionsMensual.colors!" [title]="chartOptionsMensual.title!"
+                                    [tooltip]="chartOptionsMensual.tooltip!" class="mixed-chart">
+                                </apx-chart>
+                            </div>
+                        </div>
+
+                        <!-- Gráficos de distribución por artículo -->
+                        <div class="col-lg-6 mb-3" *ngIf="showArticleLicenciasChart">
+                            <div class="chart-container">
+                                <apx-chart [series]="chartOptionsArticulosLicencias.series!"
+                                    [chart]="chartOptionsArticulosLicencias.chart!"
+                                    [labels]="chartOptionsArticulosLicencias.labels!"
+                                    [colors]="chartOptionsArticulosLicencias.colors!"
+                                    [title]="chartOptionsArticulosLicencias.title!"
+                                    [tooltip]="chartOptionsArticulosLicencias.tooltip!"
+                                    [legend]="chartOptionsArticulosLicencias.legend!" class="mixed-chart">
+                                </apx-chart>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6 mb-3" *ngIf="showArticleDiasChart">
+                            <div class="chart-container">
+                                <apx-chart [series]="chartOptionsArticulosDias.series!"
+                                    [chart]="chartOptionsArticulosDias.chart!"
+                                    [labels]="chartOptionsArticulosDias.labels!"
+                                    [colors]="chartOptionsArticulosDias.colors!"
+                                    [title]="chartOptionsArticulosDias.title!"
+                                    [tooltip]="chartOptionsArticulosDias.tooltip!"
+                                    [legend]="chartOptionsArticulosDias.legend!" class="mixed-chart">
+                                </apx-chart>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Estado vacío -->
+    <div *ngIf="!reporteConcepto" class="text-center py-5">
+        <i class="fa fa-exclamation-triangle text-warning fa-3x mb-3"></i>
+        <h4>No se ha cargado el reporte</h4>
+        <p class="text-muted">Espere mientras se cargan los datos o verifique que el año sea correcto.</p>
+    </div>
+</div>

@@ -77,4 +77,11 @@ export class AppComponent {
     const day = String(fecha.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
   }
+
+  /**
+   * Devuelve el año actual para usarlo en la URL del reporte de concepto
+   */
+  getAnioActual(): number {
+    return new Date().getFullYear();
+  }
 }
