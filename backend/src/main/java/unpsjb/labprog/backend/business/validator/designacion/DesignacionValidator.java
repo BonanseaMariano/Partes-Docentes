@@ -12,9 +12,10 @@ import unpsjb.labprog.backend.exception.BusinessLogicException;
 import unpsjb.labprog.backend.model.Designacion;
 
 /**
- * Validador principal para designaciones que utiliza el patrón Factory con reflexión automática.
- * Implementa carga lazy, cache de instancias y patrón Singleton en validadores.
- * No requiere archivos de configuración - utiliza convenciones de nomenclatura.
+ * Validador principal para designaciones que utiliza el patrón Factory con
+ * reflexión automática. Implementa carga lazy, cache de instancias y patrón
+ * Singleton en validadores. No requiere archivos de configuración - utiliza
+ * convenciones de nomenclatura.
  */
 @Component
 public class DesignacionValidator {
@@ -35,7 +36,8 @@ public class DesignacionValidator {
     }
 
     /**
-     * Valida todas las reglas de negocio específicas para las designaciones usando el patrón Factory
+     * Valida todas las reglas de negocio específicas para las designaciones
+     * usando el patrón Factory
      *
      * @param designacion Designación a validar
      * @throws BusinessLogicException si no se cumplen las reglas
@@ -58,7 +60,8 @@ public class DesignacionValidator {
     }
 
     /**
-     * Inyecta las dependencias en los validadores singleton después de su creación
+     * Inyecta las dependencias en los validadores singleton después de su
+     * creación
      */
     private void inyectarDependencias() {
         // FechaValidator ya no necesita dependencias - es auto-suficiente

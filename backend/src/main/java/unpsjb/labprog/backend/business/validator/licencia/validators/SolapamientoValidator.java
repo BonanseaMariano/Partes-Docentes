@@ -8,8 +8,8 @@ import unpsjb.labprog.backend.exception.BusinessLogicException;
 import unpsjb.labprog.backend.model.Licencia;
 
 /**
- * Validador para verificar solapamiento entre licencias.
- * Implementa el patrón Singleton requerido por el ValidatorFactory.
+ * Validador para verificar solapamiento entre licencias. Implementa el patrón
+ * Singleton requerido por el ValidatorFactory.
  */
 public class SolapamientoValidator implements Validator<Licencia> {
 
@@ -23,8 +23,9 @@ public class SolapamientoValidator implements Validator<Licencia> {
     }
 
     public static SolapamientoValidator getInstance() {
-        if (instance == null)
+        if (instance == null) {
             instance = new SolapamientoValidator();
+        }
         return instance;
     }
 
@@ -54,10 +55,10 @@ public class SolapamientoValidator implements Validator<Licencia> {
         // Verificar si existen licencias solapadas
         if (!licenciasSolapadas.isEmpty()) {
             // Hay al menos una licencia que se solapa
-            throw new BusinessLogicException("NO se otorga Licencia artículo " +
-                    licencia.getArticuloLicencia().getArticulo() + " a " +
-                    licencia.getPersona().getNombre() + " " + licencia.getPersona().getApellido() +
-                    " debido a que ya posee una licencia en el mismo período");
+            throw new BusinessLogicException("NO se otorga Licencia artículo "
+                    + licencia.getArticuloLicencia().getArticulo() + " a "
+                    + licencia.getPersona().getNombre() + " " + licencia.getPersona().getApellido()
+                    + " debido a que ya posee una licencia en el mismo período");
         }
     }
 }

@@ -9,8 +9,8 @@ import unpsjb.labprog.backend.model.Designacion;
 import unpsjb.labprog.backend.model.Licencia;
 
 /**
- * Validador para verificar designaciones activas durante el período de licencia.
- * Implementa el patrón Singleton requerido por el ValidatorFactory.
+ * Validador para verificar designaciones activas durante el período de
+ * licencia. Implementa el patrón Singleton requerido por el ValidatorFactory.
  */
 public class DesignacionesValidator implements Validator<Licencia> {
 
@@ -24,8 +24,9 @@ public class DesignacionesValidator implements Validator<Licencia> {
     }
 
     public static DesignacionesValidator getInstance() {
-        if (instance == null)
+        if (instance == null) {
             instance = new DesignacionesValidator();
+        }
         return instance;
     }
 
@@ -47,10 +48,10 @@ public class DesignacionesValidator implements Validator<Licencia> {
                 licencia.getPersona().getDni());
 
         if (!tieneAlgunCargo) {
-            throw new BusinessLogicException("NO se otorga Licencia artículo " +
-                    licencia.getArticuloLicencia().getArticulo() + " a " +
-                    licencia.getPersona().getNombre() + " " + licencia.getPersona().getApellido() +
-                    " debido a que el agente no posee ningún cargo en la institución");
+            throw new BusinessLogicException("NO se otorga Licencia artículo "
+                    + licencia.getArticuloLicencia().getArticulo() + " a "
+                    + licencia.getPersona().getNombre() + " " + licencia.getPersona().getApellido()
+                    + " debido a que el agente no posee ningún cargo en la institución");
         }
 
         // Ahora verificamos si existe alguna designación que contenga completamente el
@@ -63,10 +64,10 @@ public class DesignacionesValidator implements Validator<Licencia> {
         // Verificar que exista al menos una designación que cubra completamente el
         // período de la licencia
         if (designacionesActivas == null || designacionesActivas.isEmpty()) {
-            throw new BusinessLogicException("NO se otorga Licencia artículo " +
-                    licencia.getArticuloLicencia().getArticulo() + " a " +
-                    licencia.getPersona().getNombre() + " " + licencia.getPersona().getApellido() +
-                    " debido a que el agente no tiene designación ese día en la institución");
+            throw new BusinessLogicException("NO se otorga Licencia artículo "
+                    + licencia.getArticuloLicencia().getArticulo() + " a "
+                    + licencia.getPersona().getNombre() + " " + licencia.getPersona().getApellido()
+                    + " debido a que el agente no tiene designación ese día en la institución");
         }
     }
 }

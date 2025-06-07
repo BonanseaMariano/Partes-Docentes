@@ -14,8 +14,8 @@ import unpsjb.labprog.backend.model.Persona;
 import unpsjb.labprog.backend.model.enums.TipoDesignacion;
 
 /**
- * Validador para verificar solapamiento de designaciones.
- * Implementa el patrón Singleton requerido por el DesignacionValidatorFactory.
+ * Validador para verificar solapamiento de designaciones. Implementa el patrón
+ * Singleton requerido por el DesignacionValidatorFactory.
  */
 public class SolapamientoValidator implements Validator<Designacion> {
 
@@ -30,8 +30,9 @@ public class SolapamientoValidator implements Validator<Designacion> {
     }
 
     public static SolapamientoValidator getInstance() {
-        if (instance == null)
+        if (instance == null) {
             instance = new SolapamientoValidator();
+        }
         return instance;
     }
 
@@ -73,21 +74,22 @@ public class SolapamientoValidator implements Validator<Designacion> {
             Persona personaExistente = designacionExistente.getPersona();
             Cargo cargoExistente = designacionExistente.getCargo();
 
-            List<Licencia> licenciasDePersonaExistente = licenciaRepository.findLicenciasSuperPuestas(
+            // Obtener licencias ordenadas que se solapan con el período
+            List<Licencia> licencias = licenciaRepository.findLicenciasParaCoberturaContinua(
                     personaExistente.getDni(),
-                    nuevaDesignacion.getFechaInicio(), // Período de la NUEVA designación
-                    nuevaDesignacion.getFechaFin(), // Período de la NUEVA designación
-                    null); // No se excluye ninguna licencia específica para esta comprobación
+                    nuevaDesignacion.getFechaInicio(),
+                    nuevaDesignacion.getFechaFin());
 
-            if (licenciasDePersonaExistente.isEmpty()) {
+            if (licencias.isEmpty()) {
+                // No hay licencias, la persona está activa en el cargo
                 manejarCasoSinLicencias(nuevaDesignacion, cargoExistente, personaExistente);
-                return;
             } else {
-                boolean esReemplazoValidoParaEstaExistente = licenciasDePersonaExistente.stream()
-                        .anyMatch(lic -> lic.getPedidoDesde().compareTo(nuevaDesignacion.getFechaInicio()) <= 0
-                        && lic.getPedidoHasta().compareTo(nuevaDesignacion.getFechaFin()) >= 0);
+                // Verificar si existe cobertura continua
+                boolean existeCoberturaContinua = verificarCobertura(licencias,
+                        nuevaDesignacion.getFechaInicio(),
+                        nuevaDesignacion.getFechaFin());
 
-                if (!esReemplazoValidoParaEstaExistente) {
+                if (!existeCoberturaContinua) {
                     throw new BusinessLogicException(
                             String.format(
                                     "%s %s NO ha sido designado/a como %s, ya cuenta con %s %s asignada al mismo en el período",
@@ -99,6 +101,44 @@ public class SolapamientoValidator implements Validator<Designacion> {
                 }
             }
         }
+    }
+
+    /**
+     * Verifica si las licencias proporcionadas cubren de forma continua el
+     * período especificado. Las licencias deben estar ordenadas por fecha de
+     * inicio.
+     */
+    private boolean verificarCobertura(List<Licencia> licencias,
+            java.time.LocalDateTime fechaInicio, java.time.LocalDateTime fechaFin) {
+
+        if (licencias.isEmpty()) {
+            return false;
+        }
+
+        // Verificar que la primera licencia cubra el inicio del período
+        if (licencias.get(0).getPedidoDesde().isAfter(fechaInicio)) {
+            return false;
+        }
+
+        java.time.LocalDateTime cobertura = licencias.get(0).getPedidoHasta();
+
+        // Verificar continuidad entre licencias
+        for (int i = 1; i < licencias.size(); i++) {
+            Licencia licencia = licencias.get(i);
+
+            // Si hay un gap mayor a 1 día, no hay continuidad
+            if (licencia.getPedidoDesde().isAfter(cobertura.plusDays(1))) {
+                break;
+            }
+
+            // Extender la cobertura si esta licencia va más allá
+            if (licencia.getPedidoHasta().isAfter(cobertura)) {
+                cobertura = licencia.getPedidoHasta();
+            }
+        }
+
+        // Verificar que la cobertura llegue hasta el final del período
+        return !cobertura.isBefore(fechaFin);
     }
 
     /**

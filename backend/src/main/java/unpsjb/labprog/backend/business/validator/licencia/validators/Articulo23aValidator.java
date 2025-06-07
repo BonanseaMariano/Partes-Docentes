@@ -10,16 +10,16 @@ import unpsjb.labprog.backend.exception.BusinessLogicException;
 import unpsjb.labprog.backend.model.Licencia;
 
 /**
- * Validador específico para artículo 23A: Atención de un miembro del grupo familiar.
- * Reglas: Máximo 30 días por año.
- * Implementa el patrón Singleton requerido por el ValidatorFactory.
+ * Validador específico para artículo 23A: Atención de un miembro del grupo
+ * familiar. Reglas: Máximo 30 días por año. Implementa el patrón Singleton
+ * requerido por el ValidatorFactory.
  */
 public class Articulo23aValidator implements Validator<Licencia> {
 
     // Singleton
     private static Articulo23aValidator instance = null;
     private LicenciaRepository licenciaRepository;
-    
+
     private static final int MAX_DIAS_POR_ANIO = 30;
     private static final String ARTICULO_CODE = "23A";
 
@@ -29,8 +29,9 @@ public class Articulo23aValidator implements Validator<Licencia> {
     }
 
     public static Articulo23aValidator getInstance() {
-        if (instance == null)
+        if (instance == null) {
             instance = new Articulo23aValidator();
+        }
         return instance;
     }
 
@@ -69,15 +70,15 @@ public class Articulo23aValidator implements Validator<Licencia> {
         // Calcular días ya utilizados
         long diasYaUtilizados = licenciasDelAnio.stream()
                 .mapToLong(lic -> ChronoUnit.DAYS.between(lic.getPedidoDesde().toLocalDate(),
-                        lic.getPedidoHasta().toLocalDate()) + 1)
+                lic.getPedidoHasta().toLocalDate()) + 1)
                 .sum();
 
         // Verificar que no supere el límite anual
         if (diasYaUtilizados + diasSolicitados > MAX_DIAS_POR_ANIO) {
             throw new BusinessLogicException(
-                    "NO se otorga Licencia artículo " + ARTICULO_CODE + " a " +
-                            licencia.getPersona().getNombre() + " " + licencia.getPersona().getApellido() +
-                            " debido a que supera el tope de " + MAX_DIAS_POR_ANIO + " días de licencia");
+                    "NO se otorga Licencia artículo " + ARTICULO_CODE + " a "
+                    + licencia.getPersona().getNombre() + " " + licencia.getPersona().getApellido()
+                    + " debido a que supera el tope de " + MAX_DIAS_POR_ANIO + " días de licencia");
         }
     }
 }

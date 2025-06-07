@@ -12,21 +12,21 @@ import java.util.Map;
  * - Para validador "designaciones" busca clase: unpsjb.labprog.backend.business.validator.licencia.validators.DesignacionesValidator
  * - Para validador "articulo5a" busca clase: unpsjb.labprog.backend.business.validator.licencia.validators.Articulo5aValidator
  */
-public class ValidatorFactory {
+public class LicenciaValidatorFactory {
 
     // Cache de instancias de validadores para evitar recrearlos
     private Map<String, Validator<?>> validatorMap;
 
     // Singleton
-    private static ValidatorFactory instance = null;
+    private static LicenciaValidatorFactory instance = null;
 
-    private ValidatorFactory() {
+    private LicenciaValidatorFactory() {
         validatorMap = new HashMap<>();
     }
 
-    public static ValidatorFactory getInstance() {
+    public static LicenciaValidatorFactory getInstance() {
         if (instance == null)
-            instance = new ValidatorFactory();
+            instance = new LicenciaValidatorFactory();
         return instance;        
     }
 

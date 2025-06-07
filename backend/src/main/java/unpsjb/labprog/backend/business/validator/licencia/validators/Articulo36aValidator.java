@@ -10,16 +10,16 @@ import unpsjb.labprog.backend.exception.BusinessLogicException;
 import unpsjb.labprog.backend.model.Licencia;
 
 /**
- * Validador específico para artículo 36A: Asuntos particulares.
- * Reglas: Máximo 2 días por mes y máximo 6 días por año.
- * Implementa el patrón Singleton requerido por el ValidatorFactory.
+ * Validador específico para artículo 36A: Asuntos particulares. Reglas: Máximo
+ * 2 días por mes y máximo 6 días por año. Implementa el patrón Singleton
+ * requerido por el ValidatorFactory.
  */
 public class Articulo36aValidator implements Validator<Licencia> {
 
     // Singleton
     private static Articulo36aValidator instance = null;
     private LicenciaRepository licenciaRepository;
-    
+
     private static final int MAX_DIAS_POR_MES = 2;
     private static final int MAX_DIAS_POR_ANIO = 6;
     private static final String ARTICULO_CODE = "36A";
@@ -30,8 +30,9 @@ public class Articulo36aValidator implements Validator<Licencia> {
     }
 
     public static Articulo36aValidator getInstance() {
-        if (instance == null)
+        if (instance == null) {
             instance = new Articulo36aValidator();
+        }
         return instance;
     }
 
@@ -83,15 +84,15 @@ public class Articulo36aValidator implements Validator<Licencia> {
         // Calcular días ya utilizados en el mes
         long diasDelMes = licenciasDelMes.stream()
                 .mapToLong(lic -> ChronoUnit.DAYS.between(lic.getPedidoDesde().toLocalDate(),
-                        lic.getPedidoHasta().toLocalDate()) + 1)
+                lic.getPedidoHasta().toLocalDate()) + 1)
                 .sum();
 
         // Verificar que no supere el límite mensual
         if (diasDelMes + diasSolicitados > MAX_DIAS_POR_MES) {
             throw new BusinessLogicException(
-                    "NO se otorga Licencia artículo " + ARTICULO_CODE + " a " +
-                            licencia.getPersona().getNombre() + " " + licencia.getPersona().getApellido() +
-                            " debido a que supera el tope de " + MAX_DIAS_POR_MES + " días de licencia por mes");
+                    "NO se otorga Licencia artículo " + ARTICULO_CODE + " a "
+                    + licencia.getPersona().getNombre() + " " + licencia.getPersona().getApellido()
+                    + " debido a que supera el tope de " + MAX_DIAS_POR_MES + " días de licencia por mes");
         }
     }
 
@@ -106,15 +107,15 @@ public class Articulo36aValidator implements Validator<Licencia> {
         // Calcular días ya utilizados en el año
         long diasYaUtilizados = licenciasDelAnio.stream()
                 .mapToLong(lic -> ChronoUnit.DAYS.between(lic.getPedidoDesde().toLocalDate(),
-                        lic.getPedidoHasta().toLocalDate()) + 1)
+                lic.getPedidoHasta().toLocalDate()) + 1)
                 .sum();
 
         // Verificar que no supere el límite anual
         if (diasYaUtilizados + diasSolicitados > MAX_DIAS_POR_ANIO) {
             throw new BusinessLogicException(
-                    "NO se otorga Licencia artículo " + ARTICULO_CODE + " a " +
-                            licencia.getPersona().getNombre() + " " + licencia.getPersona().getApellido() +
-                            " debido a que supera el tope de " + MAX_DIAS_POR_ANIO + " días de licencia por año");
+                    "NO se otorga Licencia artículo " + ARTICULO_CODE + " a "
+                    + licencia.getPersona().getNombre() + " " + licencia.getPersona().getApellido()
+                    + " debido a que supera el tope de " + MAX_DIAS_POR_ANIO + " días de licencia por año");
         }
     }
 }

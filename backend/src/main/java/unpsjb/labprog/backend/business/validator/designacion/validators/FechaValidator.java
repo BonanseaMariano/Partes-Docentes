@@ -5,8 +5,8 @@ import unpsjb.labprog.backend.exception.BusinessLogicException;
 import unpsjb.labprog.backend.model.Designacion;
 
 /**
- * Validador para verificar fechas de designaciones.
- * Implementa el patrón Singleton requerido por el DesignacionValidatorFactory.
+ * Validador para verificar fechas de designaciones. Implementa el patrón
+ * Singleton requerido por el DesignacionValidatorFactory.
  */
 public class FechaValidator implements Validator<Designacion> {
 
@@ -18,16 +18,17 @@ public class FechaValidator implements Validator<Designacion> {
     }
 
     public static FechaValidator getInstance() {
-        if (instance == null)
+        if (instance == null) {
             instance = new FechaValidator();
+        }
         return instance;
     }
 
     @Override
     public void validate(Designacion designacion) throws BusinessLogicException {
         // Validar rango de fechas solo si fecha fin no es null
-        if (designacion.getFechaFin() != null && designacion.getFechaInicio() != null 
-            && designacion.getFechaInicio().isAfter(designacion.getFechaFin())) {
+        if (designacion.getFechaFin() != null && designacion.getFechaInicio() != null
+                && designacion.getFechaInicio().isAfter(designacion.getFechaFin())) {
             throw new BusinessLogicException("La fecha de inicio no puede ser posterior a la fecha de fin");
         }
     }

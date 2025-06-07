@@ -5,8 +5,8 @@ import org.springframework.stereotype.Component;
 
 import unpsjb.labprog.backend.business.repository.DesignacionRepository;
 import unpsjb.labprog.backend.business.repository.LicenciaRepository;
+import unpsjb.labprog.backend.business.validator.base.LicenciaValidatorFactory;
 import unpsjb.labprog.backend.business.validator.base.Validator;
-import unpsjb.labprog.backend.business.validator.base.ValidatorFactory;
 import unpsjb.labprog.backend.business.validator.licencia.validators.Articulo23aValidator;
 import unpsjb.labprog.backend.business.validator.licencia.validators.Articulo36aValidator;
 import unpsjb.labprog.backend.business.validator.licencia.validators.Articulo5aValidator;
@@ -23,7 +23,7 @@ import unpsjb.labprog.backend.model.Licencia;
 @Component
 public class LicenciaValidator {
 
-    private final ValidatorFactory validatorFactory;
+    private final LicenciaValidatorFactory validatorFactory;
 
     @Autowired
     private LicenciaRepository licenciaRepository;
@@ -35,7 +35,7 @@ public class LicenciaValidator {
      * Constructor que inicializa el factory y configura las dependencias
      */
     public LicenciaValidator() {
-        this.validatorFactory = ValidatorFactory.getInstance();
+        this.validatorFactory = LicenciaValidatorFactory.getInstance();
     }
 
     /**

@@ -6,8 +6,9 @@ import unpsjb.labprog.backend.model.Cargo;
 import unpsjb.labprog.backend.model.enums.TipoDesignacion;
 
 /**
- * Validador para verificar la relación entre tipo de designación y división asignada.
- * Implementa el patrón Singleton requerido por el CargoValidatorFactory.
+ * Validador para verificar la relación entre tipo de designación y división
+ * asignada. Implementa el patrón Singleton requerido por el
+ * CargoValidatorFactory.
  */
 public class TipodesignaciondivisionValidator implements Validator<Cargo> {
 
@@ -19,8 +20,9 @@ public class TipodesignaciondivisionValidator implements Validator<Cargo> {
     }
 
     public static TipodesignaciondivisionValidator getInstance() {
-        if (instance == null)
+        if (instance == null) {
             instance = new TipodesignaciondivisionValidator();
+        }
         return instance;
     }
 
@@ -31,8 +33,7 @@ public class TipodesignaciondivisionValidator implements Validator<Cargo> {
             if (cargo.getDivision() == null) {
                 throw new BusinessLogicException("Espacio Curricular " + cargo.getNombre() + " falta asignar división");
             }
-        }
-        // Validaciones para CARGO
+        } // Validaciones para CARGO
         else if (TipoDesignacion.CARGO.equals(cargo.getTipoDesignacion()) && cargo.getDivision() != null) {
             // Si está el campo division asignado, no importa si tiene ID o no, es un error
             throw new BusinessLogicException(

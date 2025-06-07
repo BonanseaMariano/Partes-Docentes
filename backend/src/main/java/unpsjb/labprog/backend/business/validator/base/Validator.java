@@ -4,13 +4,12 @@ import unpsjb.labprog.backend.exception.BusinessLogicException;
 
 /**
  * Interfaz base para todos los validadores del sistema.
- * Similar a Command en el patrón Factory original.
  */
 public interface Validator<T> {
-    
+
     /**
      * Ejecuta la validación sobre la entidad proporcionada
-     * 
+     *
      * @param entity Entidad a validar
      * @throws BusinessLogicException si la validación falla
      */
