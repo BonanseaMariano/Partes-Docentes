@@ -1,27 +1,47 @@
-package unpsjb.labprog.backend.business.validator.licencia;
+package unpsjb.labprog.backend.business.validator.licencia.validators;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import unpsjb.labprog.backend.business.repository.DesignacionRepository;
+import unpsjb.labprog.backend.business.validator.base.Validator;
 import unpsjb.labprog.backend.exception.BusinessLogicException;
 import unpsjb.labprog.backend.model.Designacion;
 import unpsjb.labprog.backend.model.Licencia;
 
 /**
- * Validación para verificar si la persona tiene designaciones activas durante
- * el periodo de licencia
+ * Validador para verificar designaciones activas durante el período de licencia.
+ * Implementa el patrón Singleton requerido por el ValidatorFactory.
  */
-@Component
-public class DesignacionesActivasRule implements LicenciaValidationRule {
+public class DesignacionesValidator implements Validator<Licencia> {
 
-    @Autowired
+    // Singleton
+    private static DesignacionesValidator instance = null;
     private DesignacionRepository designacionRepository;
+
+    private DesignacionesValidator() {
+        // Constructor privado para Singleton
+        // La inyección se hará después de la creación
+    }
+
+    public static DesignacionesValidator getInstance() {
+        if (instance == null)
+            instance = new DesignacionesValidator();
+        return instance;
+    }
+
+    /**
+     * Método para inyectar dependencias después de la creación
+     */
+    public void setDesignacionRepository(DesignacionRepository designacionRepository) {
+        this.designacionRepository = designacionRepository;
+    }
 
     @Override
     public void validate(Licencia licencia) throws BusinessLogicException {
+        if (designacionRepository == null) {
+            throw new IllegalStateException("DesignacionRepository no ha sido inyectado");
+        }
+
         // Primero verificamos si la persona tiene algún cargo en la institución
         boolean tieneAlgunCargo = designacionRepository.existsDesignacionesPorPersona(
                 licencia.getPersona().getDni());

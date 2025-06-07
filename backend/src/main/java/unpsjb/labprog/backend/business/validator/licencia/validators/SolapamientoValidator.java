@@ -1,25 +1,46 @@
-package unpsjb.labprog.backend.business.validator.licencia;
+package unpsjb.labprog.backend.business.validator.licencia.validators;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import unpsjb.labprog.backend.business.repository.LicenciaRepository;
+import unpsjb.labprog.backend.business.validator.base.Validator;
 import unpsjb.labprog.backend.exception.BusinessLogicException;
 import unpsjb.labprog.backend.model.Licencia;
 
 /**
- * Validación para verificar que no haya solapamiento con otras licencias
+ * Validador para verificar solapamiento entre licencias.
+ * Implementa el patrón Singleton requerido por el ValidatorFactory.
  */
-@Component
-public class SolapamientoLicenciasRule implements LicenciaValidationRule {
+public class SolapamientoValidator implements Validator<Licencia> {
 
-    @Autowired
+    // Singleton
+    private static SolapamientoValidator instance = null;
     private LicenciaRepository licenciaRepository;
+
+    private SolapamientoValidator() {
+        // Constructor privado para Singleton
+        // La inyección se hará después de la creación
+    }
+
+    public static SolapamientoValidator getInstance() {
+        if (instance == null)
+            instance = new SolapamientoValidator();
+        return instance;
+    }
+
+    /**
+     * Método para inyectar dependencias después de la creación
+     */
+    public void setLicenciaRepository(LicenciaRepository licenciaRepository) {
+        this.licenciaRepository = licenciaRepository;
+    }
 
     @Override
     public void validate(Licencia licencia) throws BusinessLogicException {
+        if (licenciaRepository == null) {
+            throw new IllegalStateException("LicenciaRepository no ha sido inyectado");
+        }
+
         // Obtenemos el ID de la licencia (será null si es nueva)
         Integer licenciaId = licencia.getId() > 0 ? licencia.getId() : null;
 
