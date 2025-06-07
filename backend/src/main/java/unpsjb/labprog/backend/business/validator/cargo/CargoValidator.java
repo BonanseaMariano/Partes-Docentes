@@ -1,52 +1,57 @@
 package unpsjb.labprog.backend.business.validator.cargo;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import unpsjb.labprog.backend.business.validator.FechaValidationRule;
+import unpsjb.labprog.backend.business.validator.base.CargoValidatorFactory;
+import unpsjb.labprog.backend.business.validator.base.Validator;
 import unpsjb.labprog.backend.exception.BusinessLogicException;
 import unpsjb.labprog.backend.model.Cargo;
 
 /**
- * Validador que implementa las reglas de negocio para la entidad Cargo
- *
- * @see Cargo
+ * Validador principal para cargos que utiliza el patrón Factory con reflexión automática.
+ * Implementa carga lazy, cache de instancias y patrón Singleton en validadores.
+ * No requiere archivos de configuración - utiliza convenciones de nomenclatura.
  */
 @Component
 public class CargoValidator {
 
-    private final List<CargoValidationRule> validationRules;
-
-    @Autowired
-    private FechaValidationRule fechaValidationRule;
+    private final CargoValidatorFactory validatorFactory;
 
     /**
-     * Constructor que recibe una lista de reglas de validación
-     *
-     * @param validationRules Lista de reglas de validación
+     * Constructor que inicializa el factory
      */
-    public CargoValidator(List<CargoValidationRule> validationRules) {
-        this.validationRules = validationRules;
+    public CargoValidator() {
+        this.validatorFactory = CargoValidatorFactory.getInstance();
     }
 
     /**
-     * Valida todas las reglas de negocio específicas para los cargos
+     * Valida todas las reglas de negocio específicas para los cargos usando el patrón Factory
      *
      * @param cargo Cargo a validar
      * @throws BusinessLogicException si no se cumplen las reglas
      */
     public void validar(Cargo cargo) throws BusinessLogicException {
-        // PRIMERA REGLA: Validar fechas
-        fechaValidationRule.validarRangoFechas(
-                cargo.getFechaInicio(),
-                cargo.getFechaFin()
-        );
+        // Inyectar dependencias en los validadores antes de usarlos
+        inyectarDependencias();
 
-        // Resto de reglas específicas
-        for (CargoValidationRule rule : validationRules) {
-            rule.validate(cargo);
+        // PRIMERA REGLA: Validar fechas
+        Validator<Cargo> fechaValidator = validatorFactory.getValidator("fecha");
+        if (fechaValidator != null) {
+            fechaValidator.validate(cargo);
         }
+
+        // SEGUNDA REGLA: Validar tipo de designación y división
+        Validator<Cargo> tipoDesignacionValidator = validatorFactory.getValidator("tipodesignaciondivision");
+        if (tipoDesignacionValidator != null) {
+            tipoDesignacionValidator.validate(cargo);
+        }
+    }
+
+    /**
+     * Inyecta las dependencias en los validadores singleton después de su creación
+     */
+    private void inyectarDependencias() {
+        // FechaValidator ya no necesita dependencias - es auto-suficiente
+        // TipodesignaciondivisionValidator no necesita dependencias inyectadas
     }
 }

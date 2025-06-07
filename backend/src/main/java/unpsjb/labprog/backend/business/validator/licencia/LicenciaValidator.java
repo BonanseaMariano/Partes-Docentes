@@ -5,14 +5,12 @@ import org.springframework.stereotype.Component;
 
 import unpsjb.labprog.backend.business.repository.DesignacionRepository;
 import unpsjb.labprog.backend.business.repository.LicenciaRepository;
-import unpsjb.labprog.backend.business.validator.FechaValidationRule;
 import unpsjb.labprog.backend.business.validator.base.Validator;
 import unpsjb.labprog.backend.business.validator.base.ValidatorFactory;
 import unpsjb.labprog.backend.business.validator.licencia.validators.Articulo23aValidator;
 import unpsjb.labprog.backend.business.validator.licencia.validators.Articulo36aValidator;
 import unpsjb.labprog.backend.business.validator.licencia.validators.Articulo5aValidator;
 import unpsjb.labprog.backend.business.validator.licencia.validators.DesignacionesValidator;
-import unpsjb.labprog.backend.business.validator.licencia.validators.FechaValidator;
 import unpsjb.labprog.backend.business.validator.licencia.validators.SolapamientoValidator;
 import unpsjb.labprog.backend.exception.BusinessLogicException;
 import unpsjb.labprog.backend.model.Licencia;
@@ -32,9 +30,6 @@ public class LicenciaValidator {
 
     @Autowired
     private DesignacionRepository designacionRepository;
-
-    @Autowired
-    private FechaValidationRule fechaValidationRule;
 
     /**
      * Constructor que inicializa el factory y configura las dependencias
@@ -83,11 +78,7 @@ public class LicenciaValidator {
      * Inyecta las dependencias en los validadores singleton después de su creación
      */
     private void inyectarDependencias() {
-        // Inyectar dependencias en FechaValidator
-        FechaValidator fechaValidator = (FechaValidator) validatorFactory.<Licencia>getValidator("fecha");
-        if (fechaValidator != null) {
-            fechaValidator.setFechaValidationRule(fechaValidationRule);
-        }
+        // FechaValidator ya no necesita dependencias - es auto-suficiente
 
         // Inyectar dependencias en DesignacionesValidator
         DesignacionesValidator designacionesValidator = (DesignacionesValidator) validatorFactory.<Licencia>getValidator("designaciones");

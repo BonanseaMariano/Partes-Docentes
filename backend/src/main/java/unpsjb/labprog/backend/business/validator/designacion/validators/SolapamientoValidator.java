@@ -1,12 +1,10 @@
-package unpsjb.labprog.backend.business.validator.designacion;
+package unpsjb.labprog.backend.business.validator.designacion.validators;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import unpsjb.labprog.backend.business.repository.DesignacionRepository;
 import unpsjb.labprog.backend.business.repository.LicenciaRepository;
+import unpsjb.labprog.backend.business.validator.base.Validator;
 import unpsjb.labprog.backend.exception.BusinessLogicException;
 import unpsjb.labprog.backend.model.Cargo;
 import unpsjb.labprog.backend.model.Designacion;
@@ -16,19 +14,46 @@ import unpsjb.labprog.backend.model.Persona;
 import unpsjb.labprog.backend.model.enums.TipoDesignacion;
 
 /**
- * Regla de validación para solapamiento de designaciones
+ * Validador para verificar solapamiento de designaciones.
+ * Implementa el patrón Singleton requerido por el DesignacionValidatorFactory.
  */
-@Component
-public class SolapamientoDesignacionRule implements DesignacionValidationRule {
+public class SolapamientoValidator implements Validator<Designacion> {
 
-    @Autowired
+    // Singleton
+    private static SolapamientoValidator instance = null;
     private DesignacionRepository designacionRepository;
-
-    @Autowired
     private LicenciaRepository licenciaRepository;
+
+    private SolapamientoValidator() {
+        // Constructor privado para Singleton
+        // La inyección se hará después de la creación
+    }
+
+    public static SolapamientoValidator getInstance() {
+        if (instance == null)
+            instance = new SolapamientoValidator();
+        return instance;
+    }
+
+    /**
+     * Métodos para inyectar dependencias después de la creación
+     */
+    public void setDesignacionRepository(DesignacionRepository designacionRepository) {
+        this.designacionRepository = designacionRepository;
+    }
+
+    public void setLicenciaRepository(LicenciaRepository licenciaRepository) {
+        this.licenciaRepository = licenciaRepository;
+    }
 
     @Override
     public void validate(Designacion nuevaDesignacion) throws BusinessLogicException {
+        if (designacionRepository == null) {
+            throw new IllegalStateException("DesignacionRepository no ha sido inyectado");
+        }
+        if (licenciaRepository == null) {
+            throw new IllegalStateException("LicenciaRepository no ha sido inyectado");
+        }
 
         Integer designacionIdOriginal = (nuevaDesignacion.getId() > 0) ? nuevaDesignacion.getId() : null;
 
