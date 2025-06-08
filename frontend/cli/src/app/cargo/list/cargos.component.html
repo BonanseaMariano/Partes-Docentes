@@ -37,7 +37,7 @@
                         </td>
                         <td>
                             {{ cargo.division ? cargo.division.anio + '° ' + cargo.division.numDivision + '° ' +
-                            cargo.division.orientacion : '' }}
+                            cargo.division.orientacion + ' - ' + cargo.division.turno : '' }}
                         </td>
                         <td>{{ cargo.fechaInicio | fechaFormat }}</td>
                         <td>{{ cargo.fechaFin ? (cargo.fechaFin | fechaFormat) : '' }}</td>
