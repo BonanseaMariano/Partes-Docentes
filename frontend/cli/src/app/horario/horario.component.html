@@ -21,7 +21,7 @@
               </select>
             </div>
             <div class="input-group input-group-sm">
-              <input type="text" class="form-control date-input border-primary-light" placeholder="dd/mm/yyyy"
+              <input id="fechaHorario" type="text" class="form-control date-input border-primary-light" placeholder="dd/mm/yyyy"
                 name="fechaHorario" [(ngModel)]="fechaSeleccionada" (ngModelChange)="onFiltrosChange()" ngbDatepicker
                 #dHeader="ngbDatepicker" readonly>
               <button class="btn btn-sm btn-outline-primary calendar-btn" (click)="dHeader.toggle()" type="button"
@@ -114,7 +114,7 @@
               <div class="col-md-6">
                 <label for="fecha-inicial" class="form-label">Fecha:</label>
                 <div class="input-group">
-                  <input class="form-control" placeholder="dd/mm/yyyy" name="dpInicial" [(ngModel)]="fechaSeleccionada"
+                  <input id="fecha-inicial" class="form-control" placeholder="dd/mm/yyyy" name="dpInicial" [(ngModel)]="fechaSeleccionada"
                     ngbDatepicker #dpInicial="ngbDatepicker" (ngModelChange)="onFiltrosChange()" readonly>
                   <button class="btn btn-outline-secondary" (click)="dpInicial.toggle()" type="button">
                     <i class="fa fa-calendar"></i>
