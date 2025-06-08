@@ -1,47 +1,38 @@
 <div class="container-fluid mt-4">
-  <!-- Título -->
-  <div class="row mb-4">
-    <div class="col-12">
-      <h2>
-        <i class="fa fa-clock me-2"></i>Grilla de Horarios
+  <!-- Encabezado principal similar al de parte diario -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+      <h2 class="mb-0">
+        <i class="fa fa-clock me-2"></i>Grilla de Horarios - {{ horarioData ? (getNombreTurno(horarioData.turno) + ' - '
+        + horarioData.fecha) : (getNombreTurnoFromString(turnoSeleccionado) + ' - ' + formatearFecha(fechaSeleccionada))
+        }}
       </h2>
-    </div>
-  </div>
-
-  <!-- Filtros -->
-  <div class="row mb-4">
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-header">
-          <i class="fa fa-filter me-2"></i>Filtros
-        </div>
-        <div class="card-body">
-          <div class="row">
-            <div class="col-md-6">
-              <label for="turno" class="form-label">Turno:</label>
-              <select id="turno" class="form-select" [(ngModel)]="turnoSeleccionado" (change)="onFiltrosChange()">
+      <div class="header-controls d-flex align-items-center">
+        <div class="control-container">
+          <div class="date-selector-group">
+            <div class="filtro-item me-3">
+              <label for="turno-header" class="form-label-inline me-2">Turno:</label>
+              <select id="turno-header" class="form-select form-select-sm" [(ngModel)]="turnoSeleccionado"
+                (change)="onFiltrosChange()">
                 <option value="MANIANA">Mañana</option>
                 <option value="TARDE">Tarde</option>
                 <option value="VESPERTINO">Vespertino</option>
                 <option value="NOCHE">Noche</option>
               </select>
             </div>
-            <div class="col-md-6">
-              <label for="fecha" class="form-label">Fecha:</label>
-              <input type="date" id="fecha" class="form-control" [(ngModel)]="fechaSeleccionada" (change)="onFiltrosChange()">
+            <div class="input-group input-group-sm">
+              <input type="text" class="form-control date-input border-primary-light" placeholder="dd/mm/yyyy"
+                name="fechaHorario" [(ngModel)]="fechaSeleccionada" (ngModelChange)="onFiltrosChange()" ngbDatepicker
+                #dHeader="ngbDatepicker" readonly>
+              <button class="btn btn-sm btn-outline-primary calendar-btn" (click)="dHeader.toggle()" type="button"
+                title="Abrir calendario">
+                <i class="fa fa-calendar"></i>
+              </button>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-
-  <!-- Loading -->
-  <div *ngIf="loading" class="text-center">
-    <div class="spinner-border text-primary" role="status">
-      <span class="visually-hidden">Cargando...</span>
-    </div>
-    <p class="mt-2">Cargando horarios...</p>
   </div>
 
   <!-- Error -->
@@ -50,52 +41,46 @@
   </div>
 
   <!-- Grilla de Horarios -->
-  <div *ngIf="horarioData && !loading" class="row">
+  <div *ngIf="horarioData" class="row">
     <div class="col-12">
-      <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-          <span>
-            <i class="fa fa-calendar me-2"></i>
-            Horarios - {{ getNombreTurno(horarioData.turno) }} - {{ horarioData.fecha }}
-          </span>
-        </div>
+      <div class="card horario-card">
         <div class="card-body p-0">
           <div class="table-responsive">
-            <table class="table table-bordered table-striped mb-0">
+            <table class="table table-bordered horario-table mb-0">
               <!-- Encabezado -->
-              <thead class="table-dark">
+              <thead class="horario-header">
                 <tr>
-                  <th class="text-center" style="width: 10%;">Hora</th>
-                  <th class="text-center" style="width: 18%;" *ngFor="let dia of dias">
+                  <th class="text-center hora-column">Hora</th>
+                  <th class="text-center dia-column" *ngFor="let dia of dias">
                     {{ getNombreDia(dia) }}
                   </th>
                 </tr>
               </thead>
               <!-- Cuerpo de la tabla -->
               <tbody>
-                <tr *ngFor="let hora of horas">
+                <tr *ngFor="let hora of horas" class="horario-row">
                   <!-- Columna de hora -->
-                  <td class="text-center align-middle fw-bold bg-light">
-                    {{ hora }}° hora
+                  <td class="text-center align-middle hora-cell">
+                    <div class="hora-badge">
+                      {{ hora }}°
+                    </div>
                   </td>
                   <!-- Columnas de días -->
-                  <td *ngFor="let dia of dias" class="p-2" style="vertical-align: top;">
-                    <div *ngFor="let espacio of getEspaciosParaDiaYHora(dia, hora)" 
-                         class="mb-2 p-2 border rounded bg-light">
-                      <div class="fw-bold text-primary mb-1">
+                  <td *ngFor="let dia of dias" class="dia-cell">
+                    <div *ngFor="let espacio of getEspaciosParaDiaYHora(dia, hora)" class="espacio-curricular mb-2">
+                      <div class="espacio-nombre">
                         {{ espacio.espacio_curricular }}
                       </div>
-                      <div class="small text-muted mb-1">
+                      <div class="espacio-division">
                         <i class="fa fa-users me-1"></i>{{ espacio.division }}
                       </div>
-                      <div class="small text-dark">
+                      <div class="espacio-docente">
                         <i class="fa fa-user me-1"></i>{{ espacio.docente }}
                       </div>
                     </div>
                     <!-- Mensaje cuando no hay espacios curriculares -->
-                    <div *ngIf="getEspaciosParaDiaYHora(dia, hora).length === 0" 
-                         class="text-center text-muted small p-2">
-                      -
+                    <div *ngIf="getEspaciosParaDiaYHora(dia, hora).length === 0" class="celda-vacia">
+                      <span class="texto-vacio">-</span>
                     </div>
                   </td>
                 </tr>
@@ -108,8 +93,39 @@
   </div>
 
   <!-- Mensaje cuando no hay datos -->
-  <div *ngIf="!horarioData && !loading && !error" class="text-center p-4">
-    <i class="fa fa-info-circle fa-3x text-muted mb-3"></i>
-    <p class="text-muted">Selecciona un turno y fecha para ver los horarios</p>
+  <div *ngIf="!horarioData && !error" class="text-center p-4">
+    <div class="card">
+      <div class="card-body">
+        <i class="fa fa-filter fa-3x text-muted mb-3"></i>
+        <h5 class="text-muted mb-3">Filtros de Horarios</h5>
+        <div class="row justify-content-center">
+          <div class="col-md-6">
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="turno-inicial" class="form-label">Turno:</label>
+                <select id="turno-inicial" class="form-select" [(ngModel)]="turnoSeleccionado"
+                  (change)="onFiltrosChange()">
+                  <option value="MANIANA">Mañana</option>
+                  <option value="TARDE">Tarde</option>
+                  <option value="VESPERTINO">Vespertino</option>
+                  <option value="NOCHE">Noche</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label for="fecha-inicial" class="form-label">Fecha:</label>
+                <div class="input-group">
+                  <input class="form-control" placeholder="dd/mm/yyyy" name="dpInicial" [(ngModel)]="fechaSeleccionada"
+                    ngbDatepicker #dpInicial="ngbDatepicker" (ngModelChange)="onFiltrosChange()" readonly>
+                  <button class="btn btn-outline-secondary" (click)="dpInicial.toggle()" type="button">
+                    <i class="fa fa-calendar"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <p class="text-muted small">Selecciona un turno y fecha para ver los horarios</p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

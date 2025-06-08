@@ -52,39 +52,6 @@
     background-color: rgba(220, 53, 69, 0.05);
 }
 
-/* Estilos para el selector de años */
-.input-group {
-    transition: box-shadow 0.15s ease-in-out;
-}
-
-.input-group:hover {
-    box-shadow: var(--shadow-md);
-}
-
-.input-group-text {
-    background: linear-gradient(135deg, #e9ecef 0%, #f8f9fa 100%);
-    transition: all 0.15s ease-in-out;
-}
-
-.input-group:hover .input-group-text {
-    background: linear-gradient(135deg, #dee2e6 0%, #e9ecef 100%);
-    color: var(--color-text-secondary);
-}
-
-.form-select:hover {
-    border-color: #adb5bd;
-    background-color: var(--color-background);
-}
-
-.form-select:focus {
-    border-color: #86b7fe;
-    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-}
-
-.form-select option {
-    padding: 0.5rem;
-}
-
 /* Estilos para contenedores de gráficos */
 .chart-container {
     margin-bottom: 1.5rem;
@@ -101,21 +68,8 @@
     width: 100%;
 }
 
-/* Media queries para responsividad */
+/* Media queries para responsividad específicas del reporte */
 @media (max-width: 768px) {
-    .container-fluid {
-        padding: 1rem;
-    }
-
-    .d-flex.justify-content-between {
-        flex-direction: column;
-        gap: 1rem;
-    }
-
-    .input-group {
-        width: 100%;
-    }
-
     .stats-card {
         margin-bottom: 1rem;
     }
