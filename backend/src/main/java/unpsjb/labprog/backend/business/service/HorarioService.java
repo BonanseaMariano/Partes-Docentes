@@ -57,8 +57,8 @@ public class HorarioService {
                     .findDesignacionActivaPorCargoYFecha(cargo.getId(), fechaHora);
 
             if (!designacionesActivas.isEmpty()) {
-                // Tomar la primera designación activa (debería ser única)
-                Designacion designacionActiva = designacionesActivas.get(0);
+                // Tomar la ultima designación activa para el cargo (el reemplazo)
+                Designacion designacionActiva = designacionesActivas.get(designacionesActivas.size() - 1);
 
                 // Procesar los horarios del cargo
                 for (Horario horario : cargo.getHorarios()) {

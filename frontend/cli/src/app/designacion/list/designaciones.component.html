@@ -39,7 +39,7 @@
                         <td>
                             {{ designacion.cargo.division ? designacion.cargo.division.anio + '° ' +
                             designacion.cargo.division.numDivision + '° ' +
-                            designacion.cargo.division.orientacion : '' }}
+                            designacion.cargo.division.orientacion + ' - ' + designacion.cargo.division.turno : '' }}
                         </td>
                         <td>{{ designacion.situacionRevista }}</td>
                         <td>{{ designacion.fechaInicio | fechaFormat }}</td>
