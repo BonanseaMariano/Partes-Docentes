@@ -16,9 +16,10 @@ import unpsjb.labprog.backend.exception.BusinessLogicException;
 import unpsjb.labprog.backend.model.Licencia;
 
 /**
- * Validador principal para licencias que utiliza el patrón Factory con reflexión automática.
- * Implementa carga lazy, cache de instancias y patrón Singleton en validadores.
- * No requiere archivos de configuración - utiliza convenciones de nomenclatura.
+ * Validador principal para licencias que utiliza el patrón Factory con
+ * reflexión automática. Implementa carga lazy, cache de instancias y patrón
+ * Singleton en validadores. No requiere archivos de configuración - utiliza
+ * convenciones de nomenclatura.
  */
 @Component
 public class LicenciaValidator {
@@ -39,7 +40,8 @@ public class LicenciaValidator {
     }
 
     /**
-     * Valida todas las reglas de negocio específicas para las licencias usando el patrón Factory
+     * Valida todas las reglas de negocio específicas para las licencias usando
+     * el patrón Factory
      *
      * @param licencia Licencia a validar
      * @throws BusinessLogicException si no se cumplen las reglas
@@ -75,10 +77,10 @@ public class LicenciaValidator {
     }
 
     /**
-     * Inyecta las dependencias en los validadores singleton después de su creación
+     * Inyecta las dependencias en los validadores singleton después de su
+     * creación
      */
     private void inyectarDependencias() {
-        // FechaValidator ya no necesita dependencias - es auto-suficiente
 
         // Inyectar dependencias en DesignacionesValidator
         DesignacionesValidator designacionesValidator = (DesignacionesValidator) validatorFactory.<Licencia>getValidator("designaciones");

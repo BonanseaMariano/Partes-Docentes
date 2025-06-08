@@ -1,3 +1,5 @@
+import { Reporte } from './reporte';
+
 export interface EstadisticasGenerales {
     TotalDesignaciones: number;
     TotalLicencias: number;
@@ -14,4 +16,5 @@ export interface ReporteConcepto {
     EstadisticasGenerales: EstadisticasGenerales;
     DistribucionDiasLicencias: { [mes: string]: number };
     CalificacionGeneral: string;
+    ReportesDocentes: Reporte[];
 }

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import unpsjb.labprog.backend.dto.ReporteConceptoDTO;
+import unpsjb.labprog.backend.dto.ReporteDTO;
 import unpsjb.labprog.backend.model.Designacion;
 import unpsjb.labprog.backend.model.Licencia;
 import unpsjb.labprog.backend.model.Persona;
@@ -76,10 +77,11 @@ public class ReporteConceptoService {
 
     /**
      * Genera el reporte de concepto general para todos los docentes en un año
-     * determinado. Incluye estadísticas consolidadas de la institución.
+     * determinado. Incluye estadísticas consolidadas de la institución y reportes
+     * completos de todos los docentes.
      *
      * @param año Año para el cual generar el reporte
-     * @return ReporteConceptoDTO con estadísticas generales
+     * @return ReporteConceptoDTO con estadísticas generales y reportes individuales
      */
     public ReporteConceptoDTO generarReporteConcepto(Integer año) {
         // Obtener todos los docentes
@@ -93,11 +95,14 @@ public class ReporteConceptoService {
         Map<String, Integer> distribucionDiasLicencias
                 = calcularDistribucionGeneralPorMes(todasLasPersonas, año);
 
+        // Generar reportes completos para todos los docentes que tienen designaciones
+        List<ReporteDTO> reportesDocentes = generarReportesCompletos(todasLasPersonas, año);
+
         // Determinar calificación general
         String calificacionGeneral = determinarCalificacionGeneral(estadisticasGenerales);
 
         return new ReporteConceptoDTO(año, estadisticasGenerales,
-                distribucionDiasLicencias, calificacionGeneral);
+                distribucionDiasLicencias, calificacionGeneral, reportesDocentes);
     }
 
     /**
@@ -201,20 +206,71 @@ public class ReporteConceptoService {
                 List<Licencia> licenciasDelDocente
                         = licenciaService.findLicenciasPorPersonaYAño(persona, año);
 
-                // Calcular distribución por mes para este docente
-                Map<String, Integer> licenciasPorMes
-                        = reporteService.calcularLicenciasPorMes(licenciasDelDocente, año);
-
-                // Agregar a la distribución general
-                for (Map.Entry<String, Integer> entry : licenciasPorMes.entrySet()) {
-                    String mes = entry.getKey();
-                    Integer dias = entry.getValue();
-                    distribucionGeneral.put(mes, distribucionGeneral.get(mes) + dias);
+                // Calcular distribución por mes para este docente implementando la lógica directamente
+                for (Licencia licencia : licenciasDelDocente) {
+                    // Determinar el rango de fechas de la licencia dentro del año
+                    java.time.LocalDate inicioLicencia = licencia.getPedidoDesde().toLocalDate();
+                    java.time.LocalDate finLicencia = licencia.getPedidoHasta().toLocalDate();
+                    
+                    java.time.LocalDate inicioAño = java.time.LocalDate.of(año, 1, 1);
+                    java.time.LocalDate finAño = java.time.LocalDate.of(año, 12, 31);
+                    
+                    // Ajustar fechas si la licencia se extiende fuera del año
+                    if (inicioLicencia.isBefore(inicioAño)) {
+                        inicioLicencia = inicioAño;
+                    }
+                    if (finLicencia.isAfter(finAño)) {
+                        finLicencia = finAño;
+                    }
+                    
+                    // Iterar por cada día de la licencia y agregarlo al mes correspondiente
+                    java.time.LocalDate fechaActual = inicioLicencia;
+                    while (!fechaActual.isAfter(finLicencia)) {
+                        String nombreMes = NOMBRES_MESES[fechaActual.getMonthValue() - 1];
+                        distribucionGeneral.put(nombreMes, distribucionGeneral.get(nombreMes) + 1);
+                        fechaActual = fechaActual.plusDays(1);
+                    }
                 }
             }
         }
 
         return distribucionGeneral;
+    }
+
+    /**
+     * Genera reportes completos para todos los docentes que tienen designaciones en el año especificado
+     */
+    private List<ReporteDTO> generarReportesCompletos(List<Persona> personas, Integer año) {
+        List<ReporteDTO> reportesDocentes = new java.util.ArrayList<>();
+
+        for (Persona persona : personas) {
+            // Verificar si el docente tiene designaciones en el año
+            boolean tieneDesignacionesEnAño = persona.getDesignaciones()
+                    .stream()
+                    .anyMatch(d -> designacionAplicaAlAño(d, año));
+
+            if (tieneDesignacionesEnAño) {
+                try {
+                    // Generar reporte completo usando el ReporteService
+                    ReporteDTO reporteDocente = reporteService.generarReporte(persona.getDni(), año);
+                    reportesDocentes.add(reporteDocente);
+                } catch (Exception e) {
+                    // Si hay error generando el reporte individual, continuar con el siguiente
+                    System.err.println("Error generando reporte para docente " + persona.getDni() + ": " + e.getMessage());
+                }
+            }
+        }
+
+        // Ordenar por apellido y luego por nombre para mejor presentación
+        reportesDocentes.sort((r1, r2) -> {
+            int apellidoComparison = r1.getDocente().getApellido().compareToIgnoreCase(r2.getDocente().getApellido());
+            if (apellidoComparison != 0) {
+                return apellidoComparison;
+            }
+            return r1.getDocente().getNombre().compareToIgnoreCase(r2.getDocente().getNombre());
+        });
+
+        return reportesDocentes;
     }
 
     /**
@@ -239,12 +295,19 @@ public class ReporteConceptoService {
     }
 
     /**
-     * Verifica si una designación aplica al año especificado (delegado desde
-     * ReporteService para evitar duplicación)
+     * Verifica si una designación aplica al año especificado
+     * Implementación local para evitar acceso a métodos privados del ReporteService
      */
     private boolean designacionAplicaAlAño(Designacion designacion, Integer año) {
-        // Reutilizar la lógica del ReporteService a través de un método helper
-        // Por ahora implementamos la lógica directamente
-        return reporteService.designacionAplicaAlAño(designacion, año);
+        java.time.LocalDate inicioAño = java.time.LocalDate.of(año, 1, 1);
+        java.time.LocalDate finAño = java.time.LocalDate.of(año, 12, 31);
+        
+        java.time.LocalDate inicioDesignacion = designacion.getFechaInicio().toLocalDate();
+        java.time.LocalDate finDesignacion = designacion.getFechaFin() != null 
+            ? designacion.getFechaFin().toLocalDate() 
+            : java.time.LocalDate.now();
+        
+        // La designación aplica si se superpone con el año
+        return !inicioDesignacion.isAfter(finAño) && !finDesignacion.isBefore(inicioAño);
     }
 }

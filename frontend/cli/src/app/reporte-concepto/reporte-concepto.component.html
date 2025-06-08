@@ -168,6 +168,76 @@
             </div>
         </div>
 
+        <!-- Reportes Completos por Docente -->
+        <div class="col-12 mb-4"
+            *ngIf="reporteConcepto.ReportesDocentes && reporteConcepto.ReportesDocentes.length > 0">
+            <div class="card shadow-sm">
+                <div class="card-header text-white" style="background-color: var(--color-primary);">
+                    <h5 class="mb-0" style="color: white;">
+                        <i class="fa fa-users me-2"></i>
+                        Reportes Detallados por Docente
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col">
+                                        DNI
+                                    </th>
+                                    <th scope="col">
+                                        Apellido y Nombre
+                                    </th>
+                                    <th scope="col" class="text-center">
+                                        Designaciones
+                                    </th>
+                                    <th scope="col" class="text-center">
+                                        Total Licencias
+                                    </th>
+                                    <th scope="col" class="text-center">
+                                        Total Días
+                                    </th>
+                                    <th scope="col" class="text-center"
+                                        title="(Total días de licencia × 100) / Total días de designación del docente en el año.">
+                                        Porcentaje Licencias
+
+                                    </th>
+                                    <th scope="col" class="text-center">
+                                        Calificación
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    *ngFor="let reporte of reporteConcepto.ReportesDocentes; trackBy: trackByDocenteDni">
+                                    <td>{{ reporte.Docente.DNI | dniFormat }}</td>
+                                    <td>{{ reporte.Docente.Apellido }}, {{ reporte.Docente.Nombre }}</td>
+                                    <td class="text-center">
+                                        <button class="btn-popup"
+                                            [ngClass]="{'btn-popup-empty': getDesignacionCount(reporte) === 0}"
+                                            (click)="openDesignacionesPopup(reporte)" title="Mostrar designaciones">
+                                            <i class="fa fa-user-tie"></i>
+                                            <span class="ms-1">{{ getDesignacionCount(reporte) }}</span>
+                                        </button>
+                                    </td>
+                                    <td class="text-center">{{ getTotalLicenciasDocente(reporte) }}</td>
+                                    <td class="text-center">{{ reporte.EstadisticasLicencias.TotalDiasLicencia }}</td>
+                                    <td class="text-center">{{ reporte.EstadisticasLicencias.PorcentajeLicenciaAnual |
+                                        number:'1.1-1' }}%</td>
+                                    <td class="text-center">
+                                        <span [ngClass]="getCalificacionClass(reporte.Calificacion)">
+                                            {{ reporte.Calificacion }}
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <!-- Estado vacío -->
@@ -177,3 +247,39 @@
         <p class="text-muted">Espere mientras se cargan los datos o verifique que el año sea correcto.</p>
     </div>
 </div>
+
+<!-- Template para el popup de designaciones -->
+<ng-template #designacionesTemplate let-reporte>
+    <div *ngIf="reporte.Designaciones && reporte.Designaciones.length > 0" class="table-responsive">
+        <table class="table table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th scope="col">Cargo</th>
+                    <th scope="col">Situación</th>
+                    <th scope="col">División</th>
+                    <th scope="col">Inicio</th>
+                    <th scope="col">Fin</th>
+                    <th scope="col">Días en Año</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let designacionConDias of reporte.Designaciones">
+                    <td>{{ designacionConDias.Designacion?.Cargo?.Nombre || '' }}</td>
+                    <td>{{ designacionConDias.Designacion?.SituacionRevista || '' }}</td>
+                    <td>{{ designacionConDias.Designacion?.Cargo?.Division ?
+                        designacionConDias.Designacion.Cargo.Division.Anio + '° ' +
+                        designacionConDias.Designacion.Cargo.Division.NumDivision + '° ' +
+                        designacionConDias.Designacion.Cargo.Division.Orientacion : '' }}
+                    </td>
+                    <td>{{ designacionConDias.Designacion?.FechaInicio | fechaFormat }}</td>
+                    <td>{{ designacionConDias.Designacion?.FechaFin | fechaFormat }}</td>
+                    <td class="text-center">{{ designacionConDias.DiasDesignacionEnAnio }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div *ngIf="!reporte.Designaciones || reporte.Designaciones.length === 0" class="empty-state-message">
+        <i class="fa fa-info-circle me-2"></i>
+        Este docente no tiene designaciones registradas para el año {{ getAnioReporte() }}
+    </div>
+</ng-template>

@@ -343,19 +343,19 @@ export class ReporteComponent implements OnInit {
     getCalificacionClass(): string {
         if (!this.reporte?.Calificacion) return '';
 
-        switch (this.reporte.Calificacion.toLowerCase()) {
-            case 'excelente':
-                return 'badge bg-success';
-            case 'muy bueno':
-                return 'badge bg-primary';
-            case 'bueno':
-                return 'badge bg-info';
-            case 'regular':
-                return 'badge bg-warning';
-            case 'deficiente':
-                return 'badge bg-danger';
+        switch (this.reporte.Calificacion) {
+            case 'Excelente':
+                return 'text-success';
+            case 'Muy Bueno':
+                return 'text-info';
+            case 'Bueno':
+                return 'text-primary';
+            case 'Regular':
+                return 'text-warning';
+            case 'Deficiente':
+                return 'text-danger';
             default:
-                return 'badge bg-secondary';
+                return 'text-secondary';
         }
     }
 
