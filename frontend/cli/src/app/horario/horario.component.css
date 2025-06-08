@@ -1,0 +1,67 @@
+/* Estilos para la grilla de horarios */
+.table td {
+    max-width: 200px;
+    word-wrap: break-word;
+}
+
+/* Espacios curriculares individuales */
+.espacio-curricular {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-left: 4px solid #007bff;
+    transition: all 0.2s ease;
+}
+
+.espacio-curricular:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Colores para diferentes tipos de información */
+.espacio-curricular .fw-bold {
+    color: #0056b3 !important;
+}
+
+.espacio-curricular .text-muted {
+    color: #6c757d !important;
+}
+
+/* Responsividad para dispositivos móviles */
+@media (max-width: 768px) {
+    .table-responsive {
+        font-size: 0.85rem;
+    }
+    
+    .espacio-curricular {
+        padding: 0.5rem !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    .espacio-curricular .small {
+        font-size: 0.75rem !important;
+    }
+}
+
+/* Mejoras visuales para las celdas */
+td {
+    min-height: 100px;
+}
+
+.table-dark th {
+    background-color: #495057 !important;
+    border-color: #6c757d !important;
+}
+
+/* Animaciones sutiles */
+.card {
+    transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+/* Loading spinner personalizado */
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+}

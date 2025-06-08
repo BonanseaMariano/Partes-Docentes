@@ -4,6 +4,8 @@ import { Observable } from 'rxjs';
 import { Cargo } from '../../models/cargo';
 import { DataPackage } from '../../models/data-package';
 import { DiaSemana, DiaSemanaLabels, Horario } from '../../models/horario';
+import { HorarioDTO } from '../../models/horario-dto';
+import { Turno } from '../../models/turno';
 
 @Injectable({
     providedIn: 'root'
@@ -124,5 +126,15 @@ export class CargoService {
         }
 
         return result;
+    }
+
+    /**
+     * Obtiene los horarios de espacios curriculares para un turno y fecha específicos
+     * @param turno Turno para filtrar las divisiones
+     * @param fecha Fecha para verificar la vigencia de cargos y designaciones (formato: yyyy-MM-dd)
+     * @returns Observable con los horarios organizados en una grilla semanal
+     */
+    obtenerHorarios(turno: Turno, fecha: string): Observable<DataPackage> {
+        return this.http.get<DataPackage>(encodeURI(`${this.cargosUrl}/horarios/${turno}/${fecha}`));
     }
 }

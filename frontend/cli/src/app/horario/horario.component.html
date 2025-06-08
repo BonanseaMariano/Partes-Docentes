@@ -1,0 +1,115 @@
+<div class="container-fluid mt-4">
+  <!-- Título -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <h2>
+        <i class="fa fa-clock me-2"></i>Grilla de Horarios
+      </h2>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <i class="fa fa-filter me-2"></i>Filtros
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <label for="turno" class="form-label">Turno:</label>
+              <select id="turno" class="form-select" [(ngModel)]="turnoSeleccionado" (change)="onFiltrosChange()">
+                <option value="MANIANA">Mañana</option>
+                <option value="TARDE">Tarde</option>
+                <option value="VESPERTINO">Vespertino</option>
+                <option value="NOCHE">Noche</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label for="fecha" class="form-label">Fecha:</label>
+              <input type="date" id="fecha" class="form-control" [(ngModel)]="fechaSeleccionada" (change)="onFiltrosChange()">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="text-center">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+    <p class="mt-2">Cargando horarios...</p>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="error" class="alert alert-danger">
+    <i class="fa fa-exclamation-triangle me-2"></i>{{ error }}
+  </div>
+
+  <!-- Grilla de Horarios -->
+  <div *ngIf="horarioData && !loading" class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <span>
+            <i class="fa fa-calendar me-2"></i>
+            Horarios - {{ getNombreTurno(horarioData.turno) }} - {{ horarioData.fecha }}
+          </span>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-bordered table-striped mb-0">
+              <!-- Encabezado -->
+              <thead class="table-dark">
+                <tr>
+                  <th class="text-center" style="width: 10%;">Hora</th>
+                  <th class="text-center" style="width: 18%;" *ngFor="let dia of dias">
+                    {{ getNombreDia(dia) }}
+                  </th>
+                </tr>
+              </thead>
+              <!-- Cuerpo de la tabla -->
+              <tbody>
+                <tr *ngFor="let hora of horas">
+                  <!-- Columna de hora -->
+                  <td class="text-center align-middle fw-bold bg-light">
+                    {{ hora }}° hora
+                  </td>
+                  <!-- Columnas de días -->
+                  <td *ngFor="let dia of dias" class="p-2" style="vertical-align: top;">
+                    <div *ngFor="let espacio of getEspaciosParaDiaYHora(dia, hora)" 
+                         class="mb-2 p-2 border rounded bg-light">
+                      <div class="fw-bold text-primary mb-1">
+                        {{ espacio.espacio_curricular }}
+                      </div>
+                      <div class="small text-muted mb-1">
+                        <i class="fa fa-users me-1"></i>{{ espacio.division }}
+                      </div>
+                      <div class="small text-dark">
+                        <i class="fa fa-user me-1"></i>{{ espacio.docente }}
+                      </div>
+                    </div>
+                    <!-- Mensaje cuando no hay espacios curriculares -->
+                    <div *ngIf="getEspaciosParaDiaYHora(dia, hora).length === 0" 
+                         class="text-center text-muted small p-2">
+                      -
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mensaje cuando no hay datos -->
+  <div *ngIf="!horarioData && !loading && !error" class="text-center p-4">
+    <i class="fa fa-info-circle fa-3x text-muted mb-3"></i>
+    <p class="text-muted">Selecciona un turno y fecha para ver los horarios</p>
+  </div>
+</div>

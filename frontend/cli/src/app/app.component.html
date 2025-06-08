@@ -56,6 +56,8 @@
                         <li><a ngbDropdownItem href="cargos"><i class="fa fa-list me-1"></i> Listar</a></li>
                         <li><a ngbDropdownItem href="javascript:void(0)" (click)="crearNuevoCargo()"><i
                                     class="fa fa-plus me-1"></i> Nuevo</a></li>
+                        <li><a ngbDropdownItem [routerLink]="['/cargos/horarios', 'MANIANA', getFechaHoy()]"><i
+                                    class="fa fa-calendar me-1"></i> Grilla de Horarios</a></li>
                     </ul>
                 </li>
 
