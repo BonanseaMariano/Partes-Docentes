@@ -11,77 +11,96 @@ import unpsjb.labprog.backend.model.Designacion;
 
 public interface DesignacionRepository extends JpaRepository<Designacion, Integer> {
 
-        /**
-         * Busca designaciones que se solapen con el periodo especificado para el mismo
-         * cargo.
-         * 
-         * La consulta maneja casos donde la fecha de fin puede ser nula, lo que indica
-         * un período indefinido. La función utiliza la lógica de negación de la no
-         * superposición para determinar si dos períodos se solapan.
-         *
-         * @param cargoId       El ID del cargo a verificar
-         * @param fechaInicio   Fecha de inicio del periodo a verificar
-         * @param fechaFin      Fecha de fin del periodo a verificar (puede ser null
-         *                      para periodos indefinidos)
-         * @param designacionId ID de la designación a excluir (útil para
-         *                      actualizaciones, puede ser null para nuevas)
-         * @return Lista de designaciones que se solapan con el periodo especificado
-         */
-        @Query(value = "SELECT d FROM Designacion d WHERE d.cargo.id = :cargo " +
-                        "AND (:designacionId IS NULL OR d.id != :designacionId) " +
-                        "AND (" +
-                        "  (d.fechaInicio <= COALESCE(:fechaFin, d.fechaInicio) " +
-                        "   AND COALESCE(d.fechaFin, :fechaFin) >= :fechaInicio)" +
-                        "  OR (d.fechaFin IS NULL AND CAST(:fechaFin AS java.time.LocalDateTime) IS NULL)" +
-                        ")")
-        List<Designacion> findDesignacionesSuperpuestas(
-                        @Param("cargo") Integer cargoId,
-                        @Param("fechaInicio") LocalDateTime fechaInicio,
-                        @Param("fechaFin") LocalDateTime fechaFin,
-                        @Param("designacionId") Integer designacionId);
+    /**
+     * Busca designaciones que se solapen con el periodo especificado para el
+     * mismo cargo.
+     *
+     * La consulta maneja casos donde la fecha de fin puede ser nula, lo que
+     * indica un período indefinido. La función utiliza la lógica de negación de
+     * la no superposición para determinar si dos períodos se solapan.
+     *
+     * @param cargoId El ID del cargo a verificar
+     * @param fechaInicio Fecha de inicio del periodo a verificar
+     * @param fechaFin Fecha de fin del periodo a verificar (puede ser null para
+     * periodos indefinidos)
+     * @param designacionId ID de la designación a excluir (útil para
+     * actualizaciones, puede ser null para nuevas)
+     * @return Lista de designaciones que se solapan con el periodo especificado
+     */
+    @Query(value = "SELECT d FROM Designacion d WHERE d.cargo.id = :cargo "
+            + "AND (:designacionId IS NULL OR d.id != :designacionId) "
+            + "AND ("
+            + "  (d.fechaInicio <= COALESCE(:fechaFin, d.fechaInicio) "
+            + "   AND COALESCE(d.fechaFin, :fechaFin) >= :fechaInicio)"
+            + "  OR (d.fechaFin IS NULL AND CAST(:fechaFin AS java.time.LocalDateTime) IS NULL)"
+            + ")")
+    List<Designacion> findDesignacionesSuperpuestas(
+            @Param("cargo") Integer cargoId,
+            @Param("fechaInicio") LocalDateTime fechaInicio,
+            @Param("fechaFin") LocalDateTime fechaFin,
+            @Param("designacionId") Integer designacionId);
 
-        /**
-         * Busca designaciones para una persona específica que contienen completamente
-         * el período especificado por las fechas de inicio y fin de la licencia.
-         * 
-         * Una designación contiene completamente el período de licencia si:
-         * - La fecha de inicio de la designación es anterior o igual a la fecha de inicio de la licencia, Y
-         * - La fecha de fin de la designación es posterior o igual a la fecha de fin de la licencia, O es null (vigente)
-         *
-         * @param personaDni  El DNI de la persona a buscar
-         * @param fechaInicio Fecha de inicio de la licencia a verificar
-         * @param fechaFin    Fecha de fin de la licencia a verificar
-         * @return Lista de designaciones que contienen completamente el período de licencia especificado
-         */
-        @Query(value = "SELECT d FROM Designacion d WHERE d.persona.dni = :personaDni " +
-                        "AND d.fechaInicio <= :fechaInicio " +
-                        "AND (d.fechaFin IS NULL OR d.fechaFin >= :fechaFin)")
-        List<Designacion> findDesignacionesActivasPorPersonaYPeriodo(
-                        @Param("personaDni") Long personaDni,
-                        @Param("fechaInicio") LocalDateTime fechaInicio,
-                        @Param("fechaFin") LocalDateTime fechaFin);
+    /**
+     * Busca designaciones para una persona específica que contienen
+     * completamente el período especificado por las fechas de inicio y fin de
+     * la licencia.
+     *
+     * Una designación contiene completamente el período de licencia si: - La
+     * fecha de inicio de la designación es anterior o igual a la fecha de
+     * inicio de la licencia, Y - La fecha de fin de la designación es posterior
+     * o igual a la fecha de fin de la licencia, O es null (vigente)
+     *
+     * @param personaDni El DNI de la persona a buscar
+     * @param fechaInicio Fecha de inicio de la licencia a verificar
+     * @param fechaFin Fecha de fin de la licencia a verificar
+     * @return Lista de designaciones que contienen completamente el período de
+     * licencia especificado
+     */
+    @Query(value = "SELECT d FROM Designacion d WHERE d.persona.dni = :personaDni "
+            + "AND d.fechaInicio <= :fechaInicio "
+            + "AND (d.fechaFin IS NULL OR d.fechaFin >= :fechaFin)")
+    List<Designacion> findDesignacionesActivasPorPersonaYPeriodo(
+            @Param("personaDni") Long personaDni,
+            @Param("fechaInicio") LocalDateTime fechaInicio,
+            @Param("fechaFin") LocalDateTime fechaFin);
 
-        /**
-         * Verifica si una persona tiene al menos una designación (cargo) en la
-         * institución.
-         *
-         * @param personaDni El DNI de la persona a verificar
-         * @return true si la persona tiene al menos una designación, false en caso
-         *         contrario
-         */
-        @Query(value = "SELECT COUNT(d) > 0 FROM Designacion d WHERE d.persona.dni = :personaDni")
-        boolean existsDesignacionesPorPersona(@Param("personaDni") Long personaDni);
+    /**
+     * Verifica si una persona tiene al menos una designación (cargo) en la
+     * institución.
+     *
+     * @param personaDni El DNI de la persona a verificar
+     * @return true si la persona tiene al menos una designación, false en caso
+     * contrario
+     */
+    @Query(value = "SELECT COUNT(d) > 0 FROM Designacion d WHERE d.persona.dni = :personaDni")
+    boolean existsDesignacionesPorPersona(@Param("personaDni") Long personaDni);
 
-        /**
-         * Encuentra designaciones que contengan completamente el período especificado.
-         */
-        @Query(value = "SELECT d FROM Designacion d WHERE d.cargo.id = :cargo " +
-                        "AND (:designacionId IS NULL OR d.id != :designacionId) " +
-                        "AND d.fechaInicio <= :fechaInicio " +
-                        "AND (d.fechaFin IS NULL OR (CAST(:fechaFin AS java.time.LocalDateTime) IS NOT NULL AND d.fechaFin >= :fechaFin))")
-        List<Designacion> findDesignacionesContenedoras(
-                        @Param("cargo") Integer cargoId,
-                        @Param("fechaInicio") LocalDateTime fechaInicio,
-                        @Param("fechaFin") LocalDateTime fechaFin,
-                        @Param("designacionId") Integer designacionId);
+    /**
+     * Encuentra designaciones que contengan completamente el período
+     * especificado.
+     */
+    @Query(value = "SELECT d FROM Designacion d WHERE d.cargo.id = :cargo "
+            + "AND (:designacionId IS NULL OR d.id != :designacionId) "
+            + "AND d.fechaInicio <= :fechaInicio "
+            + "AND (d.fechaFin IS NULL OR (CAST(:fechaFin AS java.time.LocalDateTime) IS NOT NULL AND d.fechaFin >= :fechaFin))")
+    List<Designacion> findDesignacionesContenedoras(
+            @Param("cargo") Integer cargoId,
+            @Param("fechaInicio") LocalDateTime fechaInicio,
+            @Param("fechaFin") LocalDateTime fechaFin,
+            @Param("designacionId") Integer designacionId);
+
+    /**
+     * Busca la designación activa para un cargo específico en una fecha
+     * determinada
+     *
+     * @param cargoId El ID del cargo
+     * @param fecha La fecha para verificar la designación activa
+     * @return La designación activa si existe
+     */
+    @Query(value = "SELECT d FROM Designacion d WHERE d.cargo.id = :cargoId "
+            + "AND d.fechaInicio <= :fecha "
+            + "AND (d.fechaFin IS NULL OR d.fechaFin >= :fecha)")
+    List<Designacion> findDesignacionActivaPorCargoYFecha(
+            @Param("cargoId") Integer cargoId,
+            @Param("fecha") LocalDateTime fecha);
 }

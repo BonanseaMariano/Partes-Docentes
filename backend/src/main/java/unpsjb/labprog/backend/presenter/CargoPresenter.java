@@ -1,5 +1,6 @@
 package unpsjb.labprog.backend.presenter;
 
+import java.time.LocalDate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import unpsjb.labprog.backend.Response;
 import unpsjb.labprog.backend.business.service.CargoService;
+import unpsjb.labprog.backend.business.service.HorarioService;
+import unpsjb.labprog.backend.dto.HorarioDTO;
 import unpsjb.labprog.backend.exception.BusinessLogicException;
 import unpsjb.labprog.backend.model.Cargo;
 import unpsjb.labprog.backend.model.enums.TipoDesignacion;
@@ -38,7 +41,7 @@ public class CargoPresenter {
     /**
      * Logger de la clase para registrar eventos y mensajes.
      */
-    private Logger logger = Logger.getLogger(getClass().getSimpleName());
+    private static final Logger logger = Logger.getLogger(CargoPresenter.class.getSimpleName());
 
     /**
      * Servicio que implementa la lógica de negocio para las operaciones con
@@ -46,6 +49,12 @@ public class CargoPresenter {
      */
     @Autowired
     private CargoService service;
+
+    /**
+     * Servicio que implementa la lógica de negocio para los horarios.
+     */
+    @Autowired
+    private HorarioService horarioService;
 
     /**
      * Obtiene todos los cargos en el sistema
@@ -239,6 +248,36 @@ public class CargoPresenter {
                                 nombre,
                                 tipoDesignacion.getValor(),
                                 divisionMessage));
+    }
+
+    /**
+     * Obtiene los horarios de espacios curriculares para un turno y fecha
+     * específicos
+     *
+     * @param turno Turno para filtrar las divisiones (Mañana, Tarde,
+     * Vespertino, Noche)
+     * @param fecha Fecha para verificar la vigencia de cargos y designaciones
+     * (formato: yyyy-MM-dd)
+     * @return ResponseEntity con la grilla de horarios organizada por día y
+     * hora
+     */
+    @GetMapping("/horarios/{turno}/{fecha}")
+    public ResponseEntity<Object> obtenerHorarios(
+            @PathVariable Turno turno,
+            @PathVariable String fecha) {
+        try {
+            // Parsear la fecha
+            LocalDate fechaParsed = LocalDate.parse(fecha);
+
+            // Obtener los horarios usando el servicio
+            HorarioDTO horarios = horarioService.obtenerHorariosPorTurnoYFecha(turno, fechaParsed);
+
+            return Response.ok(horarios);
+        } catch (Exception e) {
+            logger.log(Level.SEVERE,
+                    "Error al obtener horarios para turno " + turno + " y fecha " + fecha, e);
+            return Response.internalServerError("Error al obtener los horarios: " + e.getMessage());
+        }
     }
 
 }
