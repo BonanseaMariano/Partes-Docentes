@@ -1,11 +1,8 @@
 package unpsjb.labprog.backend.business.validator.licencia.validators;
 
-import java.util.List;
-
-import unpsjb.labprog.backend.business.repository.DesignacionRepository;
 import unpsjb.labprog.backend.business.validator.base.Validator;
+import unpsjb.labprog.backend.business.validator.licencia.util.DesignacionCalculadorUtil;
 import unpsjb.labprog.backend.exception.BusinessLogicException;
-import unpsjb.labprog.backend.model.Designacion;
 import unpsjb.labprog.backend.model.Licencia;
 
 /**
@@ -16,11 +13,9 @@ public class DesignacionesValidator implements Validator<Licencia> {
 
     // Singleton
     private static DesignacionesValidator instance = null;
-    private DesignacionRepository designacionRepository;
 
     private DesignacionesValidator() {
         // Constructor privado para Singleton
-        // La inyección se hará después de la creación
     }
 
     public static DesignacionesValidator getInstance() {
@@ -30,21 +25,10 @@ public class DesignacionesValidator implements Validator<Licencia> {
         return instance;
     }
 
-    /**
-     * Método para inyectar dependencias después de la creación
-     */
-    public void setDesignacionRepository(DesignacionRepository designacionRepository) {
-        this.designacionRepository = designacionRepository;
-    }
-
     @Override
     public void validate(Licencia licencia) throws BusinessLogicException {
-        if (designacionRepository == null) {
-            throw new IllegalStateException("DesignacionRepository no ha sido inyectado");
-        }
-
         // Primero verificamos si la persona tiene algún cargo en la institución
-        boolean tieneAlgunCargo = designacionRepository.existsDesignacionesPorPersona(
+        boolean tieneAlgunCargo = DesignacionCalculadorUtil.tieneAlgunCargo(
                 licencia.getPersona().getDni());
 
         if (!tieneAlgunCargo) {
@@ -56,14 +40,14 @@ public class DesignacionesValidator implements Validator<Licencia> {
 
         // Ahora verificamos si existe alguna designación que contenga completamente el
         // período de licencia
-        List<Designacion> designacionesActivas = designacionRepository.findDesignacionesActivasPorPersonaYPeriodo(
+        boolean tieneDesignacionesActivas = DesignacionCalculadorUtil.tieneDesignacionesActivasEnPeriodo(
                 licencia.getPersona().getDni(),
                 licencia.getPedidoDesde(),
                 licencia.getPedidoHasta());
 
         // Verificar que exista al menos una designación que cubra completamente el
         // período de la licencia
-        if (designacionesActivas == null || designacionesActivas.isEmpty()) {
+        if (!tieneDesignacionesActivas) {
             throw new BusinessLogicException("NO se otorga Licencia artículo "
                     + licencia.getArticuloLicencia().getArticulo() + " a "
                     + licencia.getPersona().getNombre() + " " + licencia.getPersona().getApellido()

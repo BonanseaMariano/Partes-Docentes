@@ -1,14 +1,9 @@
 package unpsjb.labprog.backend.business.validator.licencia;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import unpsjb.labprog.backend.business.repository.DesignacionRepository;
-import unpsjb.labprog.backend.business.repository.LicenciaRepository;
 import unpsjb.labprog.backend.business.validator.base.LicenciaValidatorFactory;
 import unpsjb.labprog.backend.business.validator.base.Validator;
-import unpsjb.labprog.backend.business.validator.licencia.validators.DesignacionesValidator;
-import unpsjb.labprog.backend.business.validator.licencia.validators.SolapamientoValidator;
 import unpsjb.labprog.backend.exception.BusinessLogicException;
 import unpsjb.labprog.backend.model.Licencia;
 
@@ -23,14 +18,8 @@ public class LicenciaValidator {
 
     private final LicenciaValidatorFactory validatorFactory;
 
-    @Autowired
-    private LicenciaRepository licenciaRepository;
-
-    @Autowired
-    private DesignacionRepository designacionRepository;
-
     /**
-     * Constructor que inicializa el factory y configura las dependencias
+     * Constructor que inicializa el factory
      */
     public LicenciaValidator() {
         this.validatorFactory = LicenciaValidatorFactory.getInstance();
@@ -44,9 +33,6 @@ public class LicenciaValidator {
      * @throws BusinessLogicException si no se cumplen las reglas
      */
     public void validar(Licencia licencia) throws BusinessLogicException {
-        // Inyectar dependencias en los validadores antes de usarlos
-        inyectarDependencias();
-
         // PRIMERA REGLA: Validar fechas
         Validator<Licencia> fechaValidator = validatorFactory.getValidator("fecha");
         if (fechaValidator != null) {
@@ -71,27 +57,5 @@ public class LicenciaValidator {
         if (articuloValidator != null) {
             articuloValidator.validate(licencia);
         }
-    }
-
-    /**
-     * Inyecta las dependencias en los validadores singleton después de su
-     * creación
-     */
-    private void inyectarDependencias() {
-
-        // Inyectar dependencias en DesignacionesValidator
-        DesignacionesValidator designacionesValidator = (DesignacionesValidator) validatorFactory.<Licencia>getValidator("designaciones");
-        if (designacionesValidator != null) {
-            designacionesValidator.setDesignacionRepository(designacionRepository);
-        }
-
-        // Inyectar dependencias en SolapamientoValidator
-        SolapamientoValidator solapamientoValidator = (SolapamientoValidator) validatorFactory.<Licencia>getValidator("solapamiento");
-        if (solapamientoValidator != null) {
-            solapamientoValidator.setLicenciaRepository(licenciaRepository);
-        }
-
-        // Los validadores de artículos ya no necesitan inyección de dependencias
-        // porque utilizan la clase utilitaria LicenciaCalculadorUtil
     }
 }
