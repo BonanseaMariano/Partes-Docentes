@@ -2,10 +2,9 @@ package unpsjb.labprog.backend.business.validator.licencia.validators;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
 
-import unpsjb.labprog.backend.business.repository.LicenciaRepository;
 import unpsjb.labprog.backend.business.validator.base.Validator;
+import unpsjb.labprog.backend.business.validator.licencia.util.DiasCalculadorUtil;
 import unpsjb.labprog.backend.exception.BusinessLogicException;
 import unpsjb.labprog.backend.model.Licencia;
 
@@ -18,7 +17,6 @@ public class Articulo36aValidator implements Validator<Licencia> {
 
     // Singleton
     private static Articulo36aValidator instance = null;
-    private LicenciaRepository licenciaRepository;
 
     private static final int MAX_DIAS_POR_MES = 2;
     private static final int MAX_DIAS_POR_ANIO = 6;
@@ -26,7 +24,6 @@ public class Articulo36aValidator implements Validator<Licencia> {
 
     private Articulo36aValidator() {
         // Constructor privado para Singleton
-        // La inyección se hará después de la creación
     }
 
     public static Articulo36aValidator getInstance() {
@@ -36,19 +33,8 @@ public class Articulo36aValidator implements Validator<Licencia> {
         return instance;
     }
 
-    /**
-     * Método para inyectar dependencias después de la creación
-     */
-    public void setLicenciaRepository(LicenciaRepository licenciaRepository) {
-        this.licenciaRepository = licenciaRepository;
-    }
-
     @Override
     public void validate(Licencia licencia) throws BusinessLogicException {
-        if (licenciaRepository == null) {
-            throw new IllegalStateException("LicenciaRepository no ha sido inyectado");
-        }
-
         // Solo aplica para artículo 36A
         if (!ARTICULO_CODE.equals(licencia.getArticuloLicencia().getArticulo())) {
             return; // No aplica para este artículo
@@ -56,7 +42,6 @@ public class Articulo36aValidator implements Validator<Licencia> {
 
         LocalDateTime inicio = licencia.getPedidoDesde();
         LocalDateTime fin = licencia.getPedidoHasta();
-        int anio = inicio.getYear();
 
         // Calcular días solicitados en esta licencia
         long diasSolicitados = ChronoUnit.DAYS.between(inicio.toLocalDate(), fin.toLocalDate()) + 1;
@@ -65,27 +50,18 @@ public class Articulo36aValidator implements Validator<Licencia> {
         validarDiasPorMes(licencia, diasSolicitados);
 
         // Verificar días por año
-        validarDiasPorAnio(licencia, anio, diasSolicitados);
+        validarDiasPorAnio(licencia, diasSolicitados);
     }
 
     private void validarDiasPorMes(Licencia licencia, long diasSolicitados) throws BusinessLogicException {
         LocalDateTime inicio = licencia.getPedidoDesde();
-        int anio = inicio.getYear();
-        int mes = inicio.getMonthValue();
 
-        // Buscar licencias del mismo artículo para el mismo mes y año
-        List<Licencia> licenciasDelMes = licenciaRepository.findLicenciasPorPersonaArticuloYMes(
-                licencia.getPersona().getDni(),
+        // Calcular días ya utilizados en el mes usando la clase utilitaria
+        long diasDelMes = DiasCalculadorUtil.calcularDiasMes(
                 ARTICULO_CODE,
-                anio,
-                mes,
+                inicio,
+                licencia.getPersona().getDni(),
                 licencia.getId() > 0 ? licencia.getId() : null);
-
-        // Calcular días ya utilizados en el mes
-        long diasDelMes = licenciasDelMes.stream()
-                .mapToLong(lic -> ChronoUnit.DAYS.between(lic.getPedidoDesde().toLocalDate(),
-                lic.getPedidoHasta().toLocalDate()) + 1)
-                .sum();
 
         // Verificar que no supere el límite mensual
         if (diasDelMes + diasSolicitados > MAX_DIAS_POR_MES) {
@@ -96,19 +72,15 @@ public class Articulo36aValidator implements Validator<Licencia> {
         }
     }
 
-    private void validarDiasPorAnio(Licencia licencia, int anio, long diasSolicitados) throws BusinessLogicException {
-        // Buscar licencias existentes del mismo artículo para el mismo año
-        List<Licencia> licenciasDelAnio = licenciaRepository.findLicenciasPorPersonaArticuloYAnio(
-                licencia.getPersona().getDni(),
-                ARTICULO_CODE,
-                anio,
-                licencia.getId() > 0 ? licencia.getId() : null);
+    private void validarDiasPorAnio(Licencia licencia, long diasSolicitados) throws BusinessLogicException {
+        LocalDateTime inicio = licencia.getPedidoDesde();
 
-        // Calcular días ya utilizados en el año
-        long diasYaUtilizados = licenciasDelAnio.stream()
-                .mapToLong(lic -> ChronoUnit.DAYS.between(lic.getPedidoDesde().toLocalDate(),
-                lic.getPedidoHasta().toLocalDate()) + 1)
-                .sum();
+        // Calcular días ya utilizados en el año usando la clase utilitaria
+        long diasYaUtilizados = DiasCalculadorUtil.calcularDiasAnio(
+                ARTICULO_CODE,
+                inicio,
+                licencia.getPersona().getDni(),
+                licencia.getId() > 0 ? licencia.getId() : null);
 
         // Verificar que no supere el límite anual
         if (diasYaUtilizados + diasSolicitados > MAX_DIAS_POR_ANIO) {

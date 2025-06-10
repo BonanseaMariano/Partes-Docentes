@@ -4,13 +4,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Fábrica de validadores que utiliza reflexión automática para cargar validadores bajo demanda.
- * Implementa el patrón Singleton y cache de instancias para optimizar rendimiento.
- * 
- * Convenciones de nomenclatura:
- * - Para validador "solapamiento" busca clase: unpsjb.labprog.backend.business.validator.licencia.validators.SolapamientoValidator
- * - Para validador "designaciones" busca clase: unpsjb.labprog.backend.business.validator.licencia.validators.DesignacionesValidator
- * - Para validador "articulo5a" busca clase: unpsjb.labprog.backend.business.validator.licencia.validators.Articulo5aValidator
+ * Fábrica de validadores que utiliza reflexión automática para cargar
+ * validadores bajo demanda. Implementa el patrón Singleton y cache de
+ * instancias para optimizar rendimiento.
+ *
+ * Convenciones de nomenclatura: - Para validador "solapamiento" busca clase:
+ * unpsjb.labprog.backend.business.validator.licencia.validators.SolapamientoValidator
+ * - Para validador "designaciones" busca clase:
+ * unpsjb.labprog.backend.business.validator.licencia.validators.DesignacionesValidator
+ * - Para validador "articulo5a" busca clase:
+ * unpsjb.labprog.backend.business.validator.licencia.validators.Articulo5aValidator
  */
 public class LicenciaValidatorFactory {
 
@@ -25,29 +28,32 @@ public class LicenciaValidatorFactory {
     }
 
     public static LicenciaValidatorFactory getInstance() {
-        if (instance == null)
+        if (instance == null) {
             instance = new LicenciaValidatorFactory();
-        return instance;        
+        }
+        return instance;
     }
 
     /**
-     * Obtiene un validador por nombre. Si no está en cache, lo carga usando reflexión.
-     * 
-     * @param validatorName Nombre del validador (ej: "solapamiento", "designaciones", "articulo5a")
+     * Obtiene un validador por nombre. Si no está en cache, lo carga usando
+     * reflexión.
+     *
+     * @param validatorName Nombre del validador (ej: "solapamiento",
+     * "designaciones", "articulo5a")
      * @return Instancia del validador o null si no se encuentra
      */
     @SuppressWarnings("unchecked")
     public <T> Validator<T> getValidator(String validatorName) {
-        
+
         if (!validatorMap.containsKey(validatorName)) {
-            
+
             // Construir nombre de clase siguiendo convenciones
-            String name = "unpsjb.labprog.backend.business.validator.licencia.validators." + 
-                         capitalizeFirst(validatorName.toLowerCase()) + "Validator";
-            
+            String name = "unpsjb.labprog.backend.business.validator.licencia.validators."
+                    + capitalizeFirst(validatorName.toLowerCase()) + "Validator";
+
             try {
-                
-                Class<?> validatorClass = Class.forName(name);                
+
+                Class<?> validatorClass = Class.forName(name);
                 Validator<T> validatorInstance = (Validator<T>) validatorClass.getMethod("getInstance").invoke(null);
                 validatorMap.put(validatorName, validatorInstance);
 
@@ -63,7 +69,7 @@ public class LicenciaValidatorFactory {
             }
         }
 
-        return (Validator<T>) validatorMap.get(validatorName);     
+        return (Validator<T>) validatorMap.get(validatorName);
     }
 
     /**

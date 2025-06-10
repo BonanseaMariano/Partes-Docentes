@@ -7,9 +7,6 @@ import unpsjb.labprog.backend.business.repository.DesignacionRepository;
 import unpsjb.labprog.backend.business.repository.LicenciaRepository;
 import unpsjb.labprog.backend.business.validator.base.LicenciaValidatorFactory;
 import unpsjb.labprog.backend.business.validator.base.Validator;
-import unpsjb.labprog.backend.business.validator.licencia.validators.Articulo23aValidator;
-import unpsjb.labprog.backend.business.validator.licencia.validators.Articulo36aValidator;
-import unpsjb.labprog.backend.business.validator.licencia.validators.Articulo5aValidator;
 import unpsjb.labprog.backend.business.validator.licencia.validators.DesignacionesValidator;
 import unpsjb.labprog.backend.business.validator.licencia.validators.SolapamientoValidator;
 import unpsjb.labprog.backend.exception.BusinessLogicException;
@@ -94,20 +91,7 @@ public class LicenciaValidator {
             solapamientoValidator.setLicenciaRepository(licenciaRepository);
         }
 
-        // Inyectar dependencias en validadores de artículos
-        Articulo5aValidator articulo5aValidator = (Articulo5aValidator) validatorFactory.<Licencia>getValidator("articulo5a");
-        if (articulo5aValidator != null) {
-            articulo5aValidator.setLicenciaRepository(licenciaRepository);
-        }
-
-        Articulo23aValidator articulo23aValidator = (Articulo23aValidator) validatorFactory.<Licencia>getValidator("articulo23a");
-        if (articulo23aValidator != null) {
-            articulo23aValidator.setLicenciaRepository(licenciaRepository);
-        }
-
-        Articulo36aValidator articulo36aValidator = (Articulo36aValidator) validatorFactory.<Licencia>getValidator("articulo36a");
-        if (articulo36aValidator != null) {
-            articulo36aValidator.setLicenciaRepository(licenciaRepository);
-        }
+        // Los validadores de artículos ya no necesitan inyección de dependencias
+        // porque utilizan la clase utilitaria LicenciaCalculadorUtil
     }
 }
