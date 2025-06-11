@@ -3,8 +3,8 @@
   <div class="card shadow-sm mb-4">
     <div class="card-header bg-light d-flex justify-content-between align-items-center">
       <h2 class="mb-0">
-        <i class="fa fa-clock me-2"></i>Grilla de Horarios - {{ horarioData ? (getNombreTurno(horarioData.turno) + ' - '
-        + horarioData.fecha) : (getNombreTurnoFromString(turnoSeleccionado) + ' - ' + formatearFecha(fechaSeleccionada))
+        <i class="fa fa-clock me-2"></i> Horarios {{ horarioData ? (getNombreTurno(horarioData.turno) + ' - '
+        + horarioData.fecha) : (getNombreTurnoFromString(turnoSeleccionado) + formatearFecha(fechaSeleccionada))
         }}
       </h2>
       <div class="header-controls d-flex align-items-center">
@@ -21,9 +21,9 @@
               </select>
             </div>
             <div class="input-group input-group-sm">
-              <input id="fechaHorario" type="text" class="form-control date-input border-primary-light" placeholder="dd/mm/yyyy"
-                name="fechaHorario" [(ngModel)]="fechaSeleccionada" (ngModelChange)="onFiltrosChange()" ngbDatepicker
-                #dHeader="ngbDatepicker" readonly>
+              <input id="fechaHorario" type="text" class="form-control date-input border-primary-light"
+                placeholder="dd/mm/yyyy" name="fechaHorario" [(ngModel)]="fechaSeleccionada"
+                (ngModelChange)="onFiltrosChange()" ngbDatepicker #dHeader="ngbDatepicker" readonly>
               <button class="btn btn-sm btn-outline-primary calendar-btn" (click)="dHeader.toggle()" type="button"
                 title="Abrir calendario">
                 <i class="fa fa-calendar"></i>
@@ -72,7 +72,7 @@
                         {{ espacio.espacio_curricular }}
                       </div>
                       <div class="espacio-division">
-                        <i class="fa fa-users me-1"></i>{{ espacio.division }}
+                        <i class="fa fa-list me-1"></i>{{ espacio.division }}
                       </div>
                       <div class="espacio-docente">
                         <i class="fa fa-user me-1"></i>{{ espacio.docente }}
@@ -114,8 +114,9 @@
               <div class="col-md-6">
                 <label for="fecha-inicial" class="form-label">Fecha:</label>
                 <div class="input-group">
-                  <input id="fecha-inicial" class="form-control" placeholder="dd/mm/yyyy" name="dpInicial" [(ngModel)]="fechaSeleccionada"
-                    ngbDatepicker #dpInicial="ngbDatepicker" (ngModelChange)="onFiltrosChange()" readonly>
+                  <input id="fecha-inicial" class="form-control" placeholder="dd/mm/yyyy" name="dpInicial"
+                    [(ngModel)]="fechaSeleccionada" ngbDatepicker #dpInicial="ngbDatepicker"
+                    (ngModelChange)="onFiltrosChange()" readonly>
                   <button class="btn btn-outline-secondary" (click)="dpInicial.toggle()" type="button">
                     <i class="fa fa-calendar"></i>
                   </button>

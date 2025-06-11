@@ -39,6 +39,10 @@ Característica: otorgar o denegar licencia a una persona a un cargo docente
       | 11111111 | Susana      | Giménez    |      23A | NO          | ATENCIÓN DE UN MIEMBRO DEL GF | 2024-06-03 | 2024-06-14 |    200 | Se otorga Licencia artículo 23A a Susana Giménez                                                                           |
       | 11111111 | Susana      | Giménez    |      23A | NO          | ATENCIÓN DE UN MIEMBRO DEL GF | 2024-08-12 | 2024-08-14 |    500 | NO se otorga Licencia artículo 23A a Susana Giménez debido a que supera el tope de 30 días de licencia                     |
       | 11111111 | Susana      | Giménez    |      23A | NO          | ATENCIÓN DE UN MIEMBRO DEL GF | 2025-03-10 | 2025-03-15 |    200 | Se otorga Licencia artículo 23A a Susana Giménez                                                                           |
+      | 10100100 | Alberto     | Lopez      |       5A | SI          | ENFERMEDAD DE CORTA EVOLUCIÓN | 2020-03-07 | 2020-03-14 |    200 | Se otorga Licencia artículo 5A a Alberto Lopez                                                                             |
+      | 10100100 | Alberto     | Lopez      |       5A | SI          | ENFERMEDAD DE CORTA EVOLUCIÓN | 2020-03-15 | 2020-03-22 |    200 | Se otorga Licencia artículo 5A a Alberto Lopez                                                                             |
+      | 10100100 | Alberto     | Lopez      |       5A | SI          | ENFERMEDAD DE CORTA EVOLUCIÓN | 2020-03-23 | 2020-03-30 |    200 | Se otorga Licencia artículo 5A a Alberto Lopez                                                                             |
+      | 10100100 | Alberto     | Lopez      |       5A | SI          | ENFERMEDAD DE CORTA EVOLUCIÓN | 2020-04-01 | 2020-04-06 |    200 | Se otorga Licencia artículo 5A a Alberto Lopez                                                                             |
 
   Escenario: 1 persona en instancias de designación de cargo que cubre una licencia de otra persona en la misma designación. Infomar que está correcto y que reemplaza al docente que solicitó licencia.
     Dado que existe la persona
