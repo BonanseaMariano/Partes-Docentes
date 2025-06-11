@@ -705,3 +705,85 @@ figcaption {
   /* gris oscuro al pasar el mouse */
   color: white;
 }
+
+/* ======= ESTILOS PARA CABECERAS ORDENABLES ======= */
+/* Estos estilos se aplican a cualquier tabla con cabeceras clickeables para ordenamiento */
+
+.sortable-header {
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s ease;
+  position: relative;
+  padding-right: 20px !important;
+}
+
+.sortable-header:hover {
+  background-color: rgba(0, 123, 255, 0.1);
+}
+
+.sortable-header.active {
+  background-color: rgba(0, 123, 255, 0.15);
+  font-weight: 600;
+}
+
+.sortable-header i {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.7em;
+  /* Reducido de 0.8em a 0.7em */
+}
+
+/* Estilos para los iconos de ordenamiento */
+.fa-sort {
+  opacity: 0.4;
+  /* Reducido de 0.5 a 0.4 para ser más sutil */
+}
+
+.fa-sort-up,
+.fa-sort-down {
+  opacity: 0.8;
+  /* Reducido de 1 a 0.8 para ser menos prominente */
+}
+
+/* Mejorar la apariencia visual cuando se hoverea */
+.sortable-header:hover i.fa-sort {
+  opacity: 0.7;
+  /* Reducido de 0.8 a 0.7 */
+}
+
+/* Estilos para el estado activo de ordenamiento */
+.sortable-header.active i {
+  color: #007bff;
+}
+
+/* Responsive: En pantallas pequeñas, usar símbolos Unicode en lugar de iconos FontAwesome */
+@media (max-width: 768px) {
+  .sortable-header i {
+    display: none;
+  }
+
+  .sortable-header::after {
+    content: "⇅";
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.4;
+    /* Reducido de 0.5 a 0.4 */
+    font-size: 0.8em;
+    /* Reducido de 0.9em a 0.8em */
+  }
+
+  .sortable-header.active::after {
+    content: "↑";
+    opacity: 0.8;
+    /* Reducido de 1 a 0.8 */
+    color: #007bff;
+  }
+
+  .sortable-header.active[data-direction="desc"]::after {
+    content: "↓";
+  }
+}

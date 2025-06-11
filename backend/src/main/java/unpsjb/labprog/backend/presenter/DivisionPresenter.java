@@ -153,12 +153,17 @@ public class DivisionPresenter {
      *
      * @param page Número de página solicitada (comienza en 0)
      * @param size Cantidad de elementos por página
+     * @param sortField Campo por el cual ordenar (anio, numDivision,
+     * orientacion, turno)
+     * @param sortDirection Dirección del ordenamiento (asc o desc)
      * @return ResponseEntity con la página de divisiones solicitada
      */
     @GetMapping("/page")
     public ResponseEntity<Object> findByPage(@RequestParam(defaultValue = AppConstants.DEFAULT_PAGE) int page,
-            @RequestParam(defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size) {
-        return Response.ok(service.findByPage(page, size));
+            @RequestParam(defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size,
+            @RequestParam(defaultValue = "id") String sortField,
+            @RequestParam(defaultValue = "desc") String sortDirection) {
+        return Response.ok(service.findByPage(page, size, sortField, sortDirection));
     }
 
     /**

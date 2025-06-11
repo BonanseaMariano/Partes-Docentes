@@ -12,14 +12,38 @@
                 <thead class="table-light">
                     <tr>
                         <th scope="col"></th>
-                        <th scope="col">Persona</th>
-                        <th scope="col">Desde</th>
-                        <th scope="col">Hasta</th>
+                        <th scope="col" class="sortable-header" (click)="onSort('persona.dni')"
+                            [ngClass]="{'active': isSortActive('persona.dni')}"
+                            [attr.data-direction]="isSortActive('persona.dni') ? sortDirection : null">
+                            Persona <i [ngClass]="getSortIcon('persona.dni')"></i>
+                        </th>
+                        <th scope="col" class="sortable-header" (click)="onSort('pedidoDesde')"
+                            [ngClass]="{'active': isSortActive('pedidoDesde')}"
+                            [attr.data-direction]="isSortActive('pedidoDesde') ? sortDirection : null">
+                            Desde <i [ngClass]="getSortIcon('pedidoDesde')"></i>
+                        </th>
+                        <th scope="col" class="sortable-header" (click)="onSort('pedidoHasta')"
+                            [ngClass]="{'active': isSortActive('pedidoHasta')}"
+                            [attr.data-direction]="isSortActive('pedidoHasta') ? sortDirection : null">
+                            Hasta <i [ngClass]="getSortIcon('pedidoHasta')"></i>
+                        </th>
                         <th scope="col">Domicilio</th>
-                        <th scope="col">Cert. Médico</th>
-                        <th scope="col">Artículo</th>
+                        <th scope="col" class="sortable-header" (click)="onSort('certificadoMedico')"
+                            [ngClass]="{'active': isSortActive('certificadoMedico')}"
+                            [attr.data-direction]="isSortActive('certificadoMedico') ? sortDirection : null">
+                            Cert. Médico <i [ngClass]="getSortIcon('certificadoMedico')"></i>
+                        </th>
+                        <th scope="col" class="sortable-header" (click)="onSort('articuloLicencia.articulo')"
+                            [ngClass]="{'active': isSortActive('articuloLicencia.articulo')}"
+                            [attr.data-direction]="isSortActive('articuloLicencia.articulo') ? sortDirection : null">
+                            Artículo <i [ngClass]="getSortIcon('articuloLicencia.articulo')"></i>
+                        </th>
                         <th scope="col">Designaciones</th>
-                        <th scope="col">Estado</th>
+                        <th scope="col" class="sortable-header" (click)="onSort('estado')"
+                            [ngClass]="{'active': isSortActive('estado')}"
+                            [attr.data-direction]="isSortActive('estado') ? sortDirection : null">
+                            Estado <i [ngClass]="getSortIcon('estado')"></i>
+                        </th>
                         <th scope="col">Logs</th>
                         <th scope="col" class="text-end">Acciones</th>
                     </tr>

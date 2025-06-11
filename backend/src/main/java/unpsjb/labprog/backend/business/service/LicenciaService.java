@@ -126,6 +126,43 @@ public class LicenciaService {
     }
 
     /**
+     * Obtiene una página de entidades Licencia con ordenamiento personalizado.
+     *
+     * @param page el índice de página basado en cero
+     * @param size el tamaño de la página a devolver
+     * @param sortField el campo por el cual ordenar
+     * @param sortDirection la dirección del ordenamiento (asc o desc)
+     * @return un objeto Page que contiene las entidades Licencia solicitadas
+     */
+    public Page<Licencia> findByPage(int page, int size, String sortField, String sortDirection) {
+        // Validar campos permitidos para ordenamiento por seguridad
+        String[] allowedFields = {"id", "persona.dni", "pedidoDesde", "pedidoHasta", "certificadoMedico",
+            "articuloLicencia.articulo", "estado"};
+        boolean isValidField = false;
+        for (String field : allowedFields) {
+            if (field.equals(sortField)) {
+                isValidField = true;
+                break;
+            }
+        }
+
+        // Si el campo no es válido, usar "id" por defecto
+        if (!isValidField) {
+            sortField = "id";
+        }
+
+        // Validar dirección de ordenamiento
+        Sort.Direction direction;
+        if ("asc".equalsIgnoreCase(sortDirection)) {
+            direction = Sort.Direction.ASC;
+        } else {
+            direction = Sort.Direction.DESC;
+        }
+
+        return repository.findAll(PageRequest.of(page, size, Sort.by(direction, sortField)));
+    }
+
+    /**
      * Genera el parte diario de licencias para una fecha específica
      *
      * @param fecha Fecha para la cual generar el parte diario

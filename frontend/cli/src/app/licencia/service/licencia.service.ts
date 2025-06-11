@@ -30,9 +30,9 @@ export class LicenciaService {
         return this.http.delete<DataPackage>(encodeURI(`${this.licenciasUrl}/${id}`));
     }
 
-    byPage(page: number, size: number): Observable<DataPackage> {
+    byPage(page: number, size: number, sortField: string = 'id', sortDirection: string = 'desc'): Observable<DataPackage> {
         return this.http.get<DataPackage>(
-            encodeURI(`${this.licenciasUrl}/page?page=${page - 1}&size=${size}`)
+            encodeURI(`${this.licenciasUrl}/page?page=${page - 1}&size=${size}&sortField=${sortField}&sortDirection=${sortDirection}`)
         );
     }
 

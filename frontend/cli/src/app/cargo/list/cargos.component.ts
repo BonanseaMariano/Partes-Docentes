@@ -31,6 +31,10 @@ export class CargosComponent {
     selectedCargo: Cargo | null = null;
     Object = Object; // Para poder usar Object.keys en la plantilla
 
+    // Propiedades para el ordenamiento
+    sortField: string = 'id';
+    sortDirection: string = 'desc';
+
     @ViewChild('horariosTemplate', { static: true }) horariosTemplate!: TemplateRef<any>;
 
     constructor(
@@ -69,7 +73,7 @@ export class CargosComponent {
     }
 
     getCargos(): void {
-        this.cargoService.byPage(this.currentPage, this.pageSize).subscribe((dataPackage) => {
+        this.cargoService.byPage(this.currentPage, this.pageSize, this.sortField, this.sortDirection).subscribe((dataPackage) => {
             this.resultsPage = <ResultsPage>dataPackage.data;
         });
     }
@@ -127,5 +131,41 @@ export class CargosComponent {
     onPageChangeRequested(page: number): void {
         this.currentPage = page;
         this.getCargos();
+    }
+
+    /**
+     * Maneja el click en una cabecera de columna para cambiar el ordenamiento
+     */
+    onSort(field: string): void {
+        if (this.sortField === field) {
+            // Si es el mismo campo, cambiar dirección
+            this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            // Si es un campo diferente, ordenar ascendente por defecto
+            this.sortField = field;
+            this.sortDirection = 'asc';
+        }
+
+        // Volver a la primera página cuando se cambia el ordenamiento
+        this.currentPage = 1;
+        this.getCargos();
+    }
+
+    /**
+     * Verifica si el campo actual está siendo usado para ordenamiento
+     */
+    isSortActive(field: string): boolean {
+        return this.sortField === field;
+    }
+
+    /**
+     * Obtiene la clase del icono de ordenamiento para un campo específico
+     */
+    getSortIcon(field: string): string {
+        if (!this.isSortActive(field)) {
+            return 'fa fa-sort'; // Icono neutral cuando no está activo
+        }
+
+        return this.sortDirection === 'asc' ? 'fa fa-sort-up' : 'fa fa-sort-down';
     }
 }

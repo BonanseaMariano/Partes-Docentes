@@ -26,6 +26,10 @@ export class DesignacionesComponent {
     pageSize: number = PaginationConfig.PAGE_SIZE;
     tipoDesignacionEnum = TipoDesignacion;
 
+    // Propiedades para el ordenamiento
+    sortField: string = 'id';
+    sortDirection: string = 'desc';
+
     constructor(
         private designacionService: DesignacionService,
         private modalService: ModalService,
@@ -34,7 +38,7 @@ export class DesignacionesComponent {
     ) { }
 
     getDesignaciones(): void {
-        this.designacionService.byPage(this.currentPage, this.pageSize).subscribe((dataPackage) => {
+        this.designacionService.byPage(this.currentPage, this.pageSize, this.sortField, this.sortDirection).subscribe((dataPackage) => {
             this.resultsPage = <ResultsPage>dataPackage.data;
         });
     }
@@ -84,5 +88,41 @@ export class DesignacionesComponent {
     onPageChangeRequested(page: number): void {
         this.currentPage = page;
         this.getDesignaciones();
+    }
+
+    /**
+     * Maneja el click en una cabecera de columna para cambiar el ordenamiento
+     */
+    onSort(field: string): void {
+        if (this.sortField === field) {
+            // Si es el mismo campo, cambiar dirección
+            this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            // Si es un campo diferente, ordenar ascendente por defecto
+            this.sortField = field;
+            this.sortDirection = 'asc';
+        }
+
+        // Volver a la primera página cuando se cambia el ordenamiento
+        this.currentPage = 1;
+        this.getDesignaciones();
+    }
+
+    /**
+     * Verifica si el campo actual está siendo usado para ordenamiento
+     */
+    isSortActive(field: string): boolean {
+        return this.sortField === field;
+    }
+
+    /**
+     * Obtiene la clase del icono de ordenamiento para un campo específico
+     */
+    getSortIcon(field: string): string {
+        if (!this.isSortActive(field)) {
+            return 'fa fa-sort'; // Icono neutral cuando no está activo
+        }
+
+        return this.sortDirection === 'asc' ? 'fa fa-sort-up' : 'fa fa-sort-down';
     }
 }

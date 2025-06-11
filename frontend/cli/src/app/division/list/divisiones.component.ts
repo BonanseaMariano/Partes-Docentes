@@ -22,13 +22,17 @@ export class DivisionesComponent {
     pageSize: number = PaginationConfig.PAGE_SIZE;
     turnoEnum = Turno;
 
+    // Propiedades para el ordenamiento
+    sortField: string = 'id';
+    sortDirection: string = 'desc';
+
     constructor(
         private divisionService: DivisionService,
         private modalService: ModalService
     ) { }
 
     getDivisiones(): void {
-        this.divisionService.byPage(this.currentPage, this.pageSize).subscribe((dataPackage) => {
+        this.divisionService.byPage(this.currentPage, this.pageSize, this.sortField, this.sortDirection).subscribe((dataPackage) => {
             this.resultsPage = <ResultsPage>dataPackage.data;
         });
     }
@@ -64,5 +68,41 @@ export class DivisionesComponent {
     onPageChangeRequested(page: number): void {
         this.currentPage = page;
         this.getDivisiones();
+    }
+
+    /**
+     * Maneja el click en una cabecera de columna para cambiar el ordenamiento
+     */
+    onSort(field: string): void {
+        if (this.sortField === field) {
+            // Si es el mismo campo, cambiar dirección
+            this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            // Si es un campo diferente, ordenar ascendente por defecto
+            this.sortField = field;
+            this.sortDirection = 'asc';
+        }
+
+        // Volver a la primera página cuando se cambia el ordenamiento
+        this.currentPage = 1;
+        this.getDivisiones();
+    }
+
+    /**
+     * Verifica si el campo actual está siendo usado para ordenamiento
+     */
+    isSortActive(field: string): boolean {
+        return this.sortField === field;
+    }
+
+    /**
+     * Obtiene la clase del icono de ordenamiento para un campo específico
+     */
+    getSortIcon(field: string): string {
+        if (!this.isSortActive(field)) {
+            return 'fa fa-sort'; // Icono neutral cuando no está activo
+        }
+
+        return this.sortDirection === 'asc' ? 'fa fa-sort-up' : 'fa fa-sort-down';
     }
 }

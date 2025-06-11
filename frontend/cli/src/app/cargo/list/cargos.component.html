@@ -12,12 +12,36 @@
                 <thead class="table-light">
                     <tr>
                         <th scope="col"></th>
-                        <th scope="col">Nombre</th>
-                        <th scope="col">Carga Horaria</th>
-                        <th scope="col">Tipo Designación</th>
-                        <th scope="col">División</th>
-                        <th scope="col">Vigencia Desde</th>
-                        <th scope="col">Vigencia Hasta</th>
+                        <th scope="col" class="sortable-header" (click)="onSort('nombre')"
+                            [ngClass]="{'active': isSortActive('nombre')}"
+                            [attr.data-direction]="isSortActive('nombre') ? sortDirection : null">
+                            Nombre <i [ngClass]="getSortIcon('nombre')"></i>
+                        </th>
+                        <th scope="col" class="sortable-header" (click)="onSort('cargaHoraria')"
+                            [ngClass]="{'active': isSortActive('cargaHoraria')}"
+                            [attr.data-direction]="isSortActive('cargaHoraria') ? sortDirection : null">
+                            Carga Horaria <i [ngClass]="getSortIcon('cargaHoraria')"></i>
+                        </th>
+                        <th scope="col" class="sortable-header" (click)="onSort('tipoDesignacion')"
+                            [ngClass]="{'active': isSortActive('tipoDesignacion')}"
+                            [attr.data-direction]="isSortActive('tipoDesignacion') ? sortDirection : null">
+                            Tipo Designación <i [ngClass]="getSortIcon('tipoDesignacion')"></i>
+                        </th>
+                        <th scope="col" class="sortable-header" (click)="onSort('division.orientacion')"
+                            [ngClass]="{'active': isSortActive('division.orientacion')}"
+                            [attr.data-direction]="isSortActive('division.orientacion') ? sortDirection : null">
+                            División <i [ngClass]="getSortIcon('division.orientacion')"></i>
+                        </th>
+                        <th scope="col" class="sortable-header" (click)="onSort('fechaInicio')"
+                            [ngClass]="{'active': isSortActive('fechaInicio')}"
+                            [attr.data-direction]="isSortActive('fechaInicio') ? sortDirection : null">
+                            Vigencia Desde <i [ngClass]="getSortIcon('fechaInicio')"></i>
+                        </th>
+                        <th scope="col" class="sortable-header" (click)="onSort('fechaFin')"
+                            [ngClass]="{'active': isSortActive('fechaFin')}"
+                            [attr.data-direction]="isSortActive('fechaFin') ? sortDirection : null">
+                            Vigencia Hasta <i [ngClass]="getSortIcon('fechaFin')"></i>
+                        </th>
                         <th scope="col">Horarios</th>
                         <th scope="col" class="text-end">Acciones</th>
                     </tr>

@@ -216,11 +216,18 @@ public class DesignacionPresenter {
      *
      * @param page Número de página solicitada (comienza en 0)
      * @param size Cantidad de elementos por página
+     * @param sortField Campo por el cual ordenar (opcional, por defecto "id").
+     * Campos válidos: id, persona.dni, cargo.nombre, cargo.tipoDesignacion,
+     * cargo.division.orientacion, situacionRevista, fechaInicio, fechaFin
+     * @param sortDirection Dirección del ordenamiento (opcional, por defecto
+     * "desc"). Valores válidos: "asc", "desc"
      * @return ResponseEntity con la página de designaciones solicitada
      */
     @GetMapping("/page")
     public ResponseEntity<Object> findByPage(@RequestParam(defaultValue = AppConstants.DEFAULT_PAGE) int page,
-            @RequestParam(defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size) {
-        return Response.ok(service.findByPage(page, size));
+            @RequestParam(defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size,
+            @RequestParam(defaultValue = "id") String sortField,
+            @RequestParam(defaultValue = "desc") String sortDirection) {
+        return Response.ok(service.findByPage(page, size, sortField, sortDirection));
     }
 }
