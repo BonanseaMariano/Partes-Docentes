@@ -56,6 +56,40 @@ Given('que si el tipo es espacio curricular, opcionalmente se asigna a la divisi
     });
 
 
+// Paso: Y que tiene los siguientes horarios: "<horarios>"
+Given('que tiene los siguientes horarios: {string}', function (horariosStr) {
+    // Si la cadena está vacía, no agregamos horarios
+    if (!horariosStr || horariosStr.trim() === '') {
+        return;
+    }
+
+    // Parseamos los horarios en formato: "DIA:hora-hora-hora,DIA:hora-hora"
+    // Ejemplo: "LUNES:1-2,MARTES:3-4-5"
+    const horariosArray = [];
+    const diasHorarios = horariosStr.split(',');
+
+    diasHorarios.forEach(diaHorario => {
+        if (diaHorario.trim() === '') return;
+        
+        const [dia, horas] = diaHorario.split(':');
+        if (!dia || !horas) return;
+
+        const horasArray = horas.split('-').map(h => parseInt(h.trim()));
+        
+        horasArray.forEach(hora => {
+            if (hora >= 1 && hora <= 8) {
+                horariosArray.push({
+                    dia: dia.trim(),
+                    hora: hora
+                });
+            }
+        });
+    });
+
+    // Asignamos los horarios al cargo actual
+    this.currentCargo.horarios = horariosArray;
+});
+
 // Cuando se presiona el botón de guardar
 When('se presiona el botón de guardar', function () {
 
