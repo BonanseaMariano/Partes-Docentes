@@ -2,9 +2,8 @@ package unpsjb.labprog.backend.business.validator.designacion.validators;
 
 import java.util.List;
 
-import unpsjb.labprog.backend.business.repository.DesignacionRepository;
-import unpsjb.labprog.backend.business.repository.LicenciaRepository;
 import unpsjb.labprog.backend.business.validator.base.Validator;
+import unpsjb.labprog.backend.business.validator.util.DesignacionSolapamientoUtil;
 import unpsjb.labprog.backend.exception.BusinessLogicException;
 import unpsjb.labprog.backend.model.Cargo;
 import unpsjb.labprog.backend.model.Designacion;
@@ -21,12 +20,9 @@ public class SolapamientoValidator implements Validator<Designacion> {
 
     // Singleton
     private static SolapamientoValidator instance = null;
-    private DesignacionRepository designacionRepository;
-    private LicenciaRepository licenciaRepository;
 
     private SolapamientoValidator() {
         // Constructor privado para Singleton
-        // La inyección se hará después de la creación
     }
 
     public static SolapamientoValidator getInstance() {
@@ -36,30 +32,12 @@ public class SolapamientoValidator implements Validator<Designacion> {
         return instance;
     }
 
-    /**
-     * Métodos para inyectar dependencias después de la creación
-     */
-    public void setDesignacionRepository(DesignacionRepository designacionRepository) {
-        this.designacionRepository = designacionRepository;
-    }
-
-    public void setLicenciaRepository(LicenciaRepository licenciaRepository) {
-        this.licenciaRepository = licenciaRepository;
-    }
-
     @Override
     public void validate(Designacion nuevaDesignacion) throws BusinessLogicException {
-        if (designacionRepository == null) {
-            throw new IllegalStateException("DesignacionRepository no ha sido inyectado");
-        }
-        if (licenciaRepository == null) {
-            throw new IllegalStateException("LicenciaRepository no ha sido inyectado");
-        }
-
         Integer designacionIdOriginal = (nuevaDesignacion.getId() > 0) ? nuevaDesignacion.getId() : null;
 
         // Buscar TODAS las designaciones existentes para el MISMO CARGO que se SOLAPEN en el tiempo con la nuevaDesignacion
-        List<Designacion> designacionesSuperpuestas = designacionRepository.findDesignacionesSuperpuestas(
+        List<Designacion> designacionesSuperpuestas = DesignacionSolapamientoUtil.buscarDesignacionesSuperpuestas(
                 nuevaDesignacion.getCargo().getId(),
                 nuevaDesignacion.getFechaInicio(),
                 nuevaDesignacion.getFechaFin(),
@@ -75,7 +53,7 @@ public class SolapamientoValidator implements Validator<Designacion> {
             Cargo cargoExistente = designacionExistente.getCargo();
 
             // Obtener licencias ordenadas que se solapan con el período
-            List<Licencia> licencias = licenciaRepository.findLicenciasParaCoberturaContinua(
+            List<Licencia> licencias = DesignacionSolapamientoUtil.buscarLicenciasParaCoberturaContinua(
                     personaExistente.getDni(),
                     nuevaDesignacion.getFechaInicio(),
                     nuevaDesignacion.getFechaFin());
@@ -85,7 +63,7 @@ public class SolapamientoValidator implements Validator<Designacion> {
                 manejarCasoSinLicencias(nuevaDesignacion, cargoExistente, personaExistente);
             } else {
                 // Verificar si existe cobertura continua
-                boolean existeCoberturaContinua = verificarCobertura(licencias,
+                boolean existeCoberturaContinua = DesignacionSolapamientoUtil.verificarCoberturaContinua(licencias,
                         nuevaDesignacion.getFechaInicio(),
                         nuevaDesignacion.getFechaFin());
 
@@ -101,44 +79,6 @@ public class SolapamientoValidator implements Validator<Designacion> {
                 }
             }
         }
-    }
-
-    /**
-     * Verifica si las licencias proporcionadas cubren de forma continua el
-     * período especificado. Las licencias deben estar ordenadas por fecha de
-     * inicio.
-     */
-    private boolean verificarCobertura(List<Licencia> licencias,
-            java.time.LocalDateTime fechaInicio, java.time.LocalDateTime fechaFin) {
-
-        if (licencias.isEmpty()) {
-            return false;
-        }
-
-        // Verificar que la primera licencia cubra el inicio del período
-        if (licencias.get(0).getPedidoDesde().isAfter(fechaInicio)) {
-            return false;
-        }
-
-        java.time.LocalDateTime cobertura = licencias.get(0).getPedidoHasta();
-
-        // Verificar continuidad entre licencias
-        for (int i = 1; i < licencias.size(); i++) {
-            Licencia licencia = licencias.get(i);
-
-            // Si hay un gap mayor a 1 día, no hay continuidad
-            if (licencia.getPedidoDesde().isAfter(cobertura.plusDays(1))) {
-                break;
-            }
-
-            // Extender la cobertura si esta licencia va más allá
-            if (licencia.getPedidoHasta().isAfter(cobertura)) {
-                cobertura = licencia.getPedidoHasta();
-            }
-        }
-
-        // Verificar que la cobertura llegue hasta el final del período
-        return !cobertura.isBefore(fechaFin);
     }
 
     /**

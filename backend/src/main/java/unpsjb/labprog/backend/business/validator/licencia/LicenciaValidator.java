@@ -2,8 +2,9 @@ package unpsjb.labprog.backend.business.validator.licencia;
 
 import org.springframework.stereotype.Component;
 
-import unpsjb.labprog.backend.business.validator.base.LicenciaValidatorFactory;
+import unpsjb.labprog.backend.business.validator.base.GenericFechaValidator;
 import unpsjb.labprog.backend.business.validator.base.Validator;
+import unpsjb.labprog.backend.business.validator.factory.LicenciaValidatorFactory;
 import unpsjb.labprog.backend.exception.BusinessLogicException;
 import unpsjb.labprog.backend.model.Licencia;
 
@@ -33,11 +34,9 @@ public class LicenciaValidator {
      * @throws BusinessLogicException si no se cumplen las reglas
      */
     public void validar(Licencia licencia) throws BusinessLogicException {
-        // PRIMERA REGLA: Validar fechas
-        Validator<Licencia> fechaValidator = validatorFactory.getValidator("fecha");
-        if (fechaValidator != null) {
-            fechaValidator.validate(licencia);
-        }
+        // PRIMERA REGLA: Validar fechas usando validador genérico
+        GenericFechaValidator<Licencia> fechaValidator = GenericFechaValidator.getInstance();
+        fechaValidator.validate(licencia);
 
         // SEGUNDA REGLA: Validar designaciones activas
         Validator<Licencia> designacionesValidator = validatorFactory.getValidator("designaciones");

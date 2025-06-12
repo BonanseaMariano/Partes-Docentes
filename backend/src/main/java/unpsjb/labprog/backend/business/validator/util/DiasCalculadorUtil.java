@@ -1,4 +1,4 @@
-package unpsjb.labprog.backend.business.validator.licencia.util;
+package unpsjb.labprog.backend.business.validator.util;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;

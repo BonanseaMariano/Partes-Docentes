@@ -1,7 +1,7 @@
 package unpsjb.labprog.backend.business.validator.licencia.validators;
 
 import unpsjb.labprog.backend.business.validator.base.Validator;
-import unpsjb.labprog.backend.business.validator.licencia.util.SolapamientoCalculadorUtil;
+import unpsjb.labprog.backend.business.validator.util.LicenciaSolapamientoUtil;
 import unpsjb.labprog.backend.exception.BusinessLogicException;
 import unpsjb.labprog.backend.model.Licencia;
 
@@ -31,7 +31,7 @@ public class SolapamientoValidator implements Validator<Licencia> {
         Integer licenciaId = licencia.getId() > 0 ? licencia.getId() : null;
 
         // Verificamos si existen licencias solapadas usando la clase utilitaria
-        boolean hayLicenciasSolapadas = SolapamientoCalculadorUtil.existenLicenciasSolapadas(
+        boolean hayLicenciasSolapadas = LicenciaSolapamientoUtil.existenLicenciasSolapadas(
                 licencia.getPersona().getDni(),
                 licencia.getPedidoDesde(),
                 licencia.getPedidoHasta(),

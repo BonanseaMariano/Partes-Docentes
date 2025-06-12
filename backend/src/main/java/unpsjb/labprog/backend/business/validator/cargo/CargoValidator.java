@@ -2,8 +2,9 @@ package unpsjb.labprog.backend.business.validator.cargo;
 
 import org.springframework.stereotype.Component;
 
-import unpsjb.labprog.backend.business.validator.base.CargoValidatorFactory;
+import unpsjb.labprog.backend.business.validator.base.GenericFechaValidator;
 import unpsjb.labprog.backend.business.validator.base.Validator;
+import unpsjb.labprog.backend.business.validator.factory.CargoValidatorFactory;
 import unpsjb.labprog.backend.exception.BusinessLogicException;
 import unpsjb.labprog.backend.model.Cargo;
 
@@ -33,28 +34,15 @@ public class CargoValidator {
      * @throws BusinessLogicException si no se cumplen las reglas
      */
     public void validar(Cargo cargo) throws BusinessLogicException {
-        // Inyectar dependencias en los validadores antes de usarlos
-        inyectarDependencias();
 
-        // PRIMERA REGLA: Validar fechas
-        Validator<Cargo> fechaValidator = validatorFactory.getValidator("fecha");
-        if (fechaValidator != null) {
-            fechaValidator.validate(cargo);
-        }
+        // PRIMERA REGLA: Validar fechas usando validador genérico
+        GenericFechaValidator<Cargo> fechaValidator = GenericFechaValidator.getInstance();
+        fechaValidator.validate(cargo);
 
         // SEGUNDA REGLA: Validar tipo de designación y división
         Validator<Cargo> tipoDesignacionValidator = validatorFactory.getValidator("tipodesignaciondivision");
         if (tipoDesignacionValidator != null) {
             tipoDesignacionValidator.validate(cargo);
         }
-    }
-
-    /**
-     * Inyecta las dependencias en los validadores singleton después de su
-     * creación
-     */
-    private void inyectarDependencias() {
-        // FechaValidator ya no necesita dependencias - es auto-suficiente
-        // TipodesignaciondivisionValidator no necesita dependencias inyectadas
     }
 }

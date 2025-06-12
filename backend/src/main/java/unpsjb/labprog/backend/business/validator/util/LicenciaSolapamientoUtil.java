@@ -1,4 +1,4 @@
-package unpsjb.labprog.backend.business.validator.licencia.util;
+package unpsjb.labprog.backend.business.validator.util;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,12 +14,12 @@ import unpsjb.labprog.backend.model.Licencia;
  * para que los validadores no necesiten inyección de dependencias.
  */
 @Component
-public class SolapamientoCalculadorUtil {
+public class LicenciaSolapamientoUtil {
 
     private static LicenciaRepository licenciaRepository;
 
-    public SolapamientoCalculadorUtil(LicenciaRepository licenciaRepository) {
-        SolapamientoCalculadorUtil.licenciaRepository = licenciaRepository;
+    public LicenciaSolapamientoUtil(LicenciaRepository licenciaRepository) {
+        LicenciaSolapamientoUtil.licenciaRepository = licenciaRepository;
     }
 
     /**

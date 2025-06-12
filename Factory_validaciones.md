@@ -1,75 +1,70 @@
-# Sistema de Validaciones con Patrón Factory
+# Sistema de Validaciones de Licencias con Patrón Factory
 
-Este documento describe el sistema de validaciones basado en el patrón Factory implementado para reemplazar el sistema anterior basado en Spring DI.
+Este documento describe el sistema de validaciones de licencias basado en el patrón Factory, que permite aplicar múltiples reglas de negocio de forma modular y extensible.
 
 ## Características Principales
 
-- **Carga lazy (bajo demanda)**: Los validadores se cargan solo cuando se necesitan
-- **Cache de instancias**: Una vez cargado, el validador se mantiene en memoria
-- **Patrón Singleton**: Cada validador implementa Singleton
-- **Manejo de errores robusto**: Captura errores de reflexión y los maneja apropiadamente
-- **Sin archivos de configuración**: Utiliza convenciones de nomenclatura
+- **Carga dinámica**: Los validadores se cargan automáticamente usando reflexión
+- **Cache de instancias**: Cada validador se carga una sola vez y se reutiliza
+- **Patrón Singleton**: Todos los validadores son singleton para optimizar memoria
+- **Extensibilidad**: Agregar nuevos validadores es tan simple como crear una clase
+- **Separación de responsabilidades**: Cada validador maneja una regla específica
+- **Manejo robusto de errores**: Fallos en validadores individuales no rompen el flujo
 
-## Arquitectura
+## Arquitectura del Sistema de Validaciones de Licencias
 
 ### Componentes Principales
 
-1. **Validator<T>**: Interfaz base para todos los validadores
-2. **ValidatorFactory**: Factory que gestiona la carga y cache de validadores para licencias
-3. **DesignacionValidatorFactory**: Factory específico para validadores de designaciones
-4. **CargoValidatorFactory**: Factory específico para validadores de cargos
-5. **Validadores principales**: LicenciaValidator, DesignacionValidator, CargoValidator
-6. **Validadores específicos**: Implementaciones concretas en los paquetes `validators`
+1. **Validator<T>**: Interfaz base que define el contrato `validate(T entity)` para todos los validadores
+2. **ValidatorFactory**: Factory principal que gestiona la carga, cache y creación de validadores de licencias
+3. **LicenciaValidator**: Orquestador principal que coordina todas las validaciones de una licencia
+4. **Validadores específicos**: Clases especializadas en validar reglas concretas (fechas, solapamientos, artículos específicos)
+5. **GenericFechaValidator**: Validador genérico consolidado que maneja validaciones de fechas para cualquier entidad
 
-### Convenciones de Nomenclatura
+### Convención de Nomenclatura
 
-Los factories buscan clases siguiendo estos patrones:
+El ValidatorFactory utiliza una convención específica para localizar validadores:
 
-**Para Licencias:**
+**Patrón de búsqueda:**
 ```
 unpsjb.labprog.backend.business.validator.licencia.validators.{CapitalizedName}Validator
 ```
 
-**Para Designaciones:**
-```
-unpsjb.labprog.backend.business.validator.designacion.validators.{CapitalizedName}Validator
-```
-
-**Para Cargos:**
-```
-unpsjb.labprog.backend.business.validator.cargo.validators.{CapitalizedName}Validator
-```
-
-Ejemplos:
+**Ejemplos de transformación:**
+- `"fecha"` → `FechaValidator` → Se resuelve a `GenericFechaValidator<Licencia>`  
 - `"solapamiento"` → `SolapamientoValidator`
 - `"designaciones"` → `DesignacionesValidator` 
 - `"articulo5a"` → `Articulo5aValidator`
-- `"fecha"` → `FechaValidator`
-- `"tipodesignaciondivision"` → `TipodesignaciondivisionValidator`
+- `"articulo23a"` → `Articulo23aValidator`
+- `"articulo36a"` → `Articulo36aValidator`
 
-## Validadores Implementados
+## Validadores de Licencias Implementados
 
-### Validadores de Licencias
-- **FechaValidator**: Valida rangos de fechas
-- **SolapamientoValidator**: Verifica solapamiento entre licencias
-- **DesignacionesValidator**: Verifica designaciones activas
-- **Articulo5aValidator**: Artículo 5A - Enfermedad (máx 30 días/año, certificado médico)
-- **Articulo23aValidator**: Artículo 23A - Atención familiar (máx 30 días/año)
-- **Articulo36aValidator**: Artículo 36A - Asuntos particulares (máx 2 días/mes, 6 días/año)
+### Validadores Básicos
+- **GenericFechaValidator**: Valida que la fecha de inicio no sea posterior a la fecha de fin (consolidado para todas las entidades)
+- **SolapamientoValidator**: Verifica que no existan solapamientos temporales entre licencias de la misma persona
+- **DesignacionesValidator**: Verifica que existan designaciones activas durante el período de la licencia
 
-### Validadores de Designaciones
-- **FechaValidator**: Valida rangos de fechas
-- **SolapamientoValidator**: Verifica solapamiento entre designaciones
+### Validadores por Artículo Específico  
+- **Articulo5aValidator**: Artículo 5A - Enfermedad (máximo 30 días por año, requiere certificado médico)
+- **Articulo23aValidator**: Artículo 23A - Atención familiar (máximo 30 días por año)
+- **Articulo36aValidator**: Artículo 36A - Asuntos particulares (máximo 2 días por mes, 6 días por año)
 
-### Validadores de Cargos
-- **FechaValidator**: Valida rangos de fechas
-- **TipodesignaciondivisionValidator**: Valida relación entre tipo de designación y división
+### Arquitectura de Validadores por Artículo
 
-## Funcionamiento del Sistema por Dominio
+Los validadores de artículos específicos siguen un patrón común:
 
-### Sistema de Validaciones de Licencias
+1. **Filtrado**: Solo procesan licencias del artículo correspondiente
+2. **Cálculo de días**: Determinan los días solicitados en la licencia actual
+3. **Consulta histórica**: Utilizan `DiasCalculadorUtil` para obtener días ya utilizados
+4. **Validación de límites**: Verifican que no se superen los límites establecidos
+5. **Mensajes específicos**: Proporcionan mensajes de error personalizados con datos del docente
 
-El `LicenciaValidator` utiliza el `ValidatorFactory` para cargar y aplicar múltiples validadores específicos:
+## Funcionamiento del Sistema de Validaciones de Licencias
+
+### Flujo Principal de Validación
+
+El `LicenciaValidator` actúa como orquestador principal y ejecuta las validaciones en este orden:
 
 ```java
 @Component
@@ -78,19 +73,25 @@ public class LicenciaValidator {
     private ValidatorFactory validatorFactory;
     
     public void validar(Licencia licencia) throws BusinessLogicException {
-        // Validaciones básicas
+        // 1. Validación básica de fechas
         Validator<Licencia> fechaValidator = validatorFactory.getValidator("fecha");
         if (fechaValidator != null) {
             fechaValidator.validate(licencia);
         }
         
-        // Validación de solapamiento
+        // 2. Validación de solapamiento con otras licencias
         Validator<Licencia> solapamientoValidator = validatorFactory.getValidator("solapamiento");
         if (solapamientoValidator != null) {
             solapamientoValidator.validate(licencia);
         }
         
-        // Validaciones específicas por artículo
+        // 3. Validación de designaciones activas
+        Validator<Licencia> designacionesValidator = validatorFactory.getValidator("designaciones");
+        if (designacionesValidator != null) {
+            designacionesValidator.validate(licencia);
+        }
+        
+        // 4. Validaciones específicas por artículo (si aplica)
         if (licencia.getArticulo() != null) {
             String validatorName = licencia.getArticulo().getDescripcion().toLowerCase().replace(" ", "");
             Validator<Licencia> articuloValidator = validatorFactory.getValidator(validatorName);
@@ -102,61 +103,60 @@ public class LicenciaValidator {
 }
 ```
 
-### Sistema de Validaciones de Designaciones
+### Mecanismo del ValidatorFactory
 
-El `DesignacionValidator` funciona de manera similar pero con su propio factory:
+El factory implementa un sistema de carga dinámica con cache:
 
 ```java
 @Component
-public class DesignacionValidator {
-    @Autowired
-    private DesignacionValidatorFactory validatorFactory;
+public class ValidatorFactory {
+    private final Map<String, Validator<Licencia>> validatorCache = new HashMap<>();
     
-    public void validar(Designacion designacion) throws BusinessLogicException {
-        // Validación de fechas
-        Validator<Designacion> fechaValidator = validatorFactory.getValidator("fecha");
-        if (fechaValidator != null) {
-            fechaValidator.validate(designacion);
+    public Validator<Licencia> getValidator(String name) {
+        // 1. Buscar en cache
+        if (validatorCache.containsKey(name)) {
+            return validatorCache.get(name);
         }
         
-        // Validación de solapamiento
-        Validator<Designacion> solapamientoValidator = validatorFactory.getValidator("solapamiento");
-        if (solapamientoValidator != null) {
-            solapamientoValidator.validate(designacion);
+        // 2. Cargar dinámicamente si no existe
+        Validator<Licencia> validator = loadValidator(name);
+        
+        // 3. Guardar en cache para futuras consultas
+        if (validator != null) {
+            validatorCache.put(name, validator);
+        }
+        
+        return validator;
+    }
+    
+    private Validator<Licencia> loadValidator(String name) {
+        try {
+            // Construir nombre de clase siguiendo convención
+            String className = "unpsjb.labprog.backend.business.validator.licencia.validators." 
+                             + capitalize(name) + "Validator";
+            
+            // Cargar clase usando reflexión
+            Class<?> clazz = Class.forName(className);
+            
+            // Obtener instancia singleton
+            Method getInstance = clazz.getMethod("getInstance");
+            Validator<Licencia> validator = (Validator<Licencia>) getInstance.invoke(null);
+            
+            // Inyectar dependencias si es necesario
+            injectDependencies(validator);
+            
+            return validator;
+        } catch (Exception e) {
+            // Manejo silencioso - permite que el flujo continúe
+            return null;
         }
     }
 }
 ```
 
-### Sistema de Validaciones de Cargos
+## Uso del Sistema en el Servicio
 
-El `CargoValidator` aplica validaciones específicas para cargos:
-
-```java
-@Component
-public class CargoValidator {
-    @Autowired
-    private CargoValidatorFactory validatorFactory;
-    
-    public void validar(Cargo cargo) throws BusinessLogicException {
-        // Validación de fechas
-        Validator<Cargo> fechaValidator = validatorFactory.getValidator("fecha");
-        if (fechaValidator != null) {
-            fechaValidator.validate(cargo);
-        }
-        
-        // Validación de tipo designación y división
-        Validator<Cargo> tipoValidator = validatorFactory.getValidator("tipodesignaciondivision");
-        if (tipoValidator != null) {
-            tipoValidator.validate(cargo);
-        }
-    }
-}
-```
-
-## Uso del Sistema
-
-Los servicios utilizan los validadores principales:
+El `LicenciaService` utiliza el validador principal para aplicar todas las reglas de negocio:
 
 ```java
 @Service
@@ -166,12 +166,28 @@ public class LicenciaService {
     
     public Licencia save(Licencia licencia) {
         try {
-            validator.validar(licencia); // Aplica todas las reglas
+            // Aplicar todas las validaciones configuradas
+            validator.validar(licencia);
+            
+            // Si no hay excepciones, la licencia es válida
             licencia.setEstado(Estado.VALIDO);
+            
+            // Crear log de éxito
+            Log logExito = new Log();
+            logExito.setFechaHora(LocalDateTime.now());
+            logExito.setDescripcion("Licencia validada correctamente");
+            licencia.getLogs().add(logExito);
+            
         } catch (BusinessLogicException e) {
+            // En caso de error, marcar como inválida y registrar el error
             licencia.setEstado(Estado.INVALIDO);
-            // Manejar error...
+            
+            Log logError = new Log();
+            logError.setFechaHora(LocalDateTime.now());
+            logError.setDescripcion(e.getMessage());
+            licencia.getLogs().add(logError);
         }
+        
         return repository.save(licencia);
     }
 }
@@ -179,241 +195,88 @@ public class LicenciaService {
 
 ## Agregar Nuevos Validadores
 
-Para agregar un nuevo validador:
+Agregar un nuevo validador al sistema es un proceso simple que requiere únicamente crear la nueva clase siguiendo las convenciones establecidas:
 
-1. Crear la clase en `validators/` siguiendo las convenciones:
+### Paso 1: Crear la Clase del Validador
+
+Crear una nueva clase en el paquete `validators` que implemente la interfaz `Validator<Licencia>`:
+
 ```java
-public class MiNuevoValidator implements Validator<Licencia> {
-    private static MiNuevoValidator instance = null;
+package unpsjb.labprog.backend.business.validator.licencia.validators;
+
+import unpsjb.labprog.backend.business.validator.base.Validator;
+import unpsjb.labprog.backend.exception.BusinessLogicException;
+import unpsjb.labprog.backend.model.Licencia;
+
+/**
+ * Validador para mi nueva regla de negocio.
+ * Implementa el patrón Singleton requerido por el ValidatorFactory.
+ */
+public class MiNuevaReglaValidator implements Validator<Licencia> {
     
-    private MiNuevoValidator() {}
+    // Singleton - Obligatorio para el sistema
+    private static MiNuevaReglaValidator instance = null;
     
-    public static MiNuevoValidator getInstance() {
-        if (instance == null)
-            instance = new MiNuevoValidator();
+    private MiNuevaReglaValidator() {
+        // Constructor privado para Singleton
+    }
+    
+    public static MiNuevaReglaValidator getInstance() {
+        if (instance == null) {
+            instance = new MiNuevaReglaValidator();
+        }
         return instance;
     }
     
     @Override
     public void validate(Licencia licencia) throws BusinessLogicException {
-        // Lógica de validación
+        // Implementar lógica de validación específica
+        if (/* condición de error */) {
+            throw new BusinessLogicException("Mensaje de error descriptivo");
+        }
     }
 }
 ```
 
-2. Usar en LicenciaValidator:
+### Paso 2: Usar el Validador en LicenciaValidator
+
+Modificar `LicenciaValidator` para invocar el nuevo validador:
+
 ```java
-Validator<Licencia> miValidador = validatorFactory.getValidator("minuevo");
-if (miValidador != null) {
-    miValidador.validate(licencia);
+public void validar(Licencia licencia) throws BusinessLogicException {
+    // ...validaciones existentes...
+    
+    // Agregar la nueva validación
+    Validator<Licencia> miNuevaReglaValidator = validatorFactory.getValidator("minuevaregla");
+    if (miNuevaReglaValidator != null) {
+        miNuevaReglaValidator.validate(licencia);
+    }
 }
 ```
+
+### Consideraciones Importantes
+
+1. **Convención de nombres**: El nombre de la clase debe seguir el patrón `{CapitalizedName}Validator`
+2. **Patrón Singleton**: Obligatorio para la integración con el ValidatorFactory
+3. **Manejo de errores**: Usar `BusinessLogicException` para reportar errores de validación
+4. **Mensajes descriptivos**: Incluir información específica sobre el error (datos del docente, fechas, etc.)
+5. **Performance**: Los validadores son reutilizados, evitar estado mutable o sincronizar acceso
+
 
 ## Ventajas del Sistema
 
-1. **Extensibilidad**: Fácil agregar nuevos validadores sin modificar código existente
-2. **Mantenibilidad**: Cada validador es independiente y reutilizable
-3. **Performance**: Cache evita recrear instancias
-4. **Flexibilidad**: Validadores se cargan dinámicamente según necesidad
-5. **Testabilidad**: Cada validador puede probarse independientemente
+### Para el Desarrollo
+- **Extensibilidad**: Agregar nuevos validadores requiere solo crear una clase, sin modificar código existente
+- **Mantenibilidad**: Cada validador es independiente con una responsabilidad específica  
+- **Testabilidad**: Los validadores pueden probarse de forma aislada usando mocks
+- **Flexibilidad**: El sistema se adapta automáticamente a nuevos validadores sin configuración
 
-## Migración desde Sistema Anterior
+### Para el Rendimiento
+- **Cache inteligente**: Los validadores se cargan una sola vez y se reutilizan
+- **Carga bajo demanda**: Solo se instancian los validadores que realmente se necesitan
+- **Singleton optimizado**: Una instancia por validador reduce el uso de memoria
 
-El sistema anterior basado en `LicenciaValidationRule` y Spring DI ha sido completamente reemplazado. Los tests existentes deberían seguir funcionando sin cambios ya que la interfaz pública del `LicenciaValidator.validar()` se mantiene igual.
-
-## Diagrama de Clases
-
-```mermaid
-classDiagram
-    class Validator~T~ {
-        <<interface>>
-        +validate(T entity)
-    }
-    
-    %% Factories
-    class ValidatorFactory {
-        -Map~String, Validator~ validatorCache
-        -LicenciaRepository licenciaRepository
-        +getValidator(String name) Validator~Licencia~
-        -loadValidator(String name) Validator~Licencia~
-    }
-    
-    class DesignacionValidatorFactory {
-        -Map~String, Validator~ validatorCache
-        -DesignacionRepository designacionRepository
-        +getValidator(String name) Validator~Designacion~
-        -loadValidator(String name) Validator~Designacion~
-    }
-    
-    class CargoValidatorFactory {
-        -Map~String, Validator~ validatorCache
-        -CargoRepository cargoRepository
-        +getValidator(String name) Validator~Cargo~
-        -loadValidator(String name) Validator~Cargo~
-    }
-    
-    %% Main Validators
-    class LicenciaValidator {
-        -ValidatorFactory validatorFactory
-        +validar(Licencia licencia)
-    }
-    
-    class DesignacionValidator {
-        -DesignacionValidatorFactory validatorFactory
-        +validar(Designacion designacion)
-    }
-    
-    class CargoValidator {
-        -CargoValidatorFactory validatorFactory
-        +validar(Cargo cargo)
-    }
-    
-    %% Licencia Validators
-    class LicenciaFechaValidator {
-        -LicenciaFechaValidator instance
-        +getInstance() LicenciaFechaValidator
-        +validate(Licencia licencia)
-    }
-    
-    class LicenciaSolapamientoValidator {
-        -LicenciaSolapamientoValidator instance
-        -LicenciaRepository licenciaRepository
-        +getInstance() LicenciaSolapamientoValidator
-        +setLicenciaRepository(LicenciaRepository repo)
-        +validate(Licencia licencia)
-    }
-    
-    class DesignacionesValidator {
-        -DesignacionesValidator instance
-        -DesignacionRepository designacionRepository
-        +getInstance() DesignacionesValidator
-        +setDesignacionRepository(DesignacionRepository repo)
-        +validate(Licencia licencia)
-    }
-    
-    class Articulo5aValidator {
-        -Articulo5aValidator instance
-        -LicenciaRepository licenciaRepository
-        +getInstance() Articulo5aValidator
-        +setLicenciaRepository(LicenciaRepository repo)
-        +validate(Licencia licencia)
-    }
-    
-    class Articulo23aValidator {
-        -Articulo23aValidator instance
-        -LicenciaRepository licenciaRepository
-        +getInstance() Articulo23aValidator
-        +setLicenciaRepository(LicenciaRepository repo)
-        +validate(Licencia licencia)
-    }
-    
-    class Articulo36aValidator {
-        -Articulo36aValidator instance
-        -LicenciaRepository licenciaRepository
-        +getInstance() Articulo36aValidator
-        +setLicenciaRepository(LicenciaRepository repo)
-        +validate(Licencia licencia)
-    }
-    
-    %% Designacion Validators
-    class DesignacionFechaValidator {
-        -DesignacionFechaValidator instance
-        +getInstance() DesignacionFechaValidator
-        +validate(Designacion designacion)
-    }
-    
-    class DesignacionSolapamientoValidator {
-        -DesignacionSolapamientoValidator instance
-        -DesignacionRepository designacionRepository
-        +getInstance() DesignacionSolapamientoValidator
-        +setDesignacionRepository(DesignacionRepository repo)
-        +validate(Designacion designacion)
-    }
-    
-    %% Cargo Validators
-    class CargoFechaValidator {
-        -CargoFechaValidator instance
-        +getInstance() CargoFechaValidator
-        +validate(Cargo cargo)
-    }
-    
-    class TipodesignaciondivisionValidator {
-        -TipodesignaciondivisionValidator instance
-        -CargoRepository cargoRepository
-        +getInstance() TipodesignaciondivisionValidator
-        +setCargoRepository(CargoRepository repo)
-        +validate(Cargo cargo)
-    }
-    
-    %% Relationships
-    Validator~T~ <|.. LicenciaFechaValidator
-    Validator~T~ <|.. LicenciaSolapamientoValidator
-    Validator~T~ <|.. DesignacionesValidator
-    Validator~T~ <|.. Articulo5aValidator
-    Validator~T~ <|.. Articulo23aValidator
-    Validator~T~ <|.. Articulo36aValidator
-    Validator~T~ <|.. DesignacionFechaValidator
-    Validator~T~ <|.. DesignacionSolapamientoValidator
-    Validator~T~ <|.. CargoFechaValidator
-    Validator~T~ <|.. TipodesignaciondivisionValidator
-    
-    LicenciaValidator --> ValidatorFactory : uses
-    DesignacionValidator --> DesignacionValidatorFactory : uses
-    CargoValidator --> CargoValidatorFactory : uses
-    
-    ValidatorFactory --> LicenciaFechaValidator : creates
-    ValidatorFactory --> LicenciaSolapamientoValidator : creates
-    ValidatorFactory --> DesignacionesValidator : creates
-    ValidatorFactory --> Articulo5aValidator : creates
-    ValidatorFactory --> Articulo23aValidator : creates
-    ValidatorFactory --> Articulo36aValidator : creates
-    
-    DesignacionValidatorFactory --> DesignacionFechaValidator : creates
-    DesignacionValidatorFactory --> DesignacionSolapamientoValidator : creates
-    
-    CargoValidatorFactory --> CargoFechaValidator : creates
-    CargoValidatorFactory --> TipodesignaciondivisionValidator : creates
-    
-    note for ValidatorFactory "Utiliza reflexión para cargar\nvalidadores dinámicamente\nsegún convención de nombres"
-    note for DesignacionValidatorFactory "Factory específico para\nvalidadores de designaciones"
-    note for CargoValidatorFactory "Factory específico para\nvalidadores de cargos"
-```
-
-## Flujo de Ejecución
-
-```mermaid
-sequenceDiagram
-    participant Service as LicenciaService
-    participant MainValidator as LicenciaValidator
-    participant Factory as ValidatorFactory
-    participant SpecificValidator as FechaValidator
-    participant Repository as LicenciaRepository
-    
-    Service->>MainValidator: validar(licencia)
-    MainValidator->>Factory: getValidator("fecha")
-    
-    alt Validador no está en cache
-        Factory->>Factory: loadValidator("fecha")
-        Factory->>SpecificValidator: Class.forName().getInstance()
-        Factory->>SpecificValidator: setLicenciaRepository(repo)
-        Factory->>Factory: cache.put("fecha", validator)
-    end
-    
-    Factory-->>MainValidator: FechaValidator instance
-    MainValidator->>SpecificValidator: validate(licencia)
-    
-    alt Validación exitosa
-        SpecificValidator-->>MainValidator: return
-        MainValidator-->>Service: return
-    else Validación falla
-        SpecificValidator-->>MainValidator: throw BusinessLogicException
-        MainValidator-->>Service: throw BusinessLogicException
-    end
-```
-
-## Notas de Implementación
-
-- **Inyección de Dependencias**: Los validadores Singleton reciben dependencias vía setters después de la creación
-- **Manejo de Errores**: El factory captura errores de reflexión y retorna null, permitiendo que el flujo continúe
-- **Thread Safety**: Los validadores Singleton deben ser thread-safe
-- **Convenciones**: Es importante seguir las convenciones de nomenclatura para que la reflexión funcione correctamente
+### Para la Robustez
+- **Manejo silencioso de errores**: Si un validador no se encuentra, el flujo continúa
+- **Separación de concerns**: Cada validador maneja una regla específica de negocio
+- **Evolución gradual**: Validadores pueden agregarse o modificarse independientemente

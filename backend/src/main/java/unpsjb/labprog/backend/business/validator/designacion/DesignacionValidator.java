@@ -1,13 +1,10 @@
 package unpsjb.labprog.backend.business.validator.designacion;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import unpsjb.labprog.backend.business.repository.DesignacionRepository;
-import unpsjb.labprog.backend.business.repository.LicenciaRepository;
-import unpsjb.labprog.backend.business.validator.base.DesignacionValidatorFactory;
+import unpsjb.labprog.backend.business.validator.base.GenericFechaValidator;
 import unpsjb.labprog.backend.business.validator.base.Validator;
-import unpsjb.labprog.backend.business.validator.designacion.validators.SolapamientoValidator;
+import unpsjb.labprog.backend.business.validator.factory.DesignacionValidatorFactory;
 import unpsjb.labprog.backend.exception.BusinessLogicException;
 import unpsjb.labprog.backend.model.Designacion;
 
@@ -22,14 +19,8 @@ public class DesignacionValidator {
 
     private final DesignacionValidatorFactory validatorFactory;
 
-    @Autowired
-    private DesignacionRepository designacionRepository;
-
-    @Autowired
-    private LicenciaRepository licenciaRepository;
-
     /**
-     * Constructor que inicializa el factory y configura las dependencias
+     * Constructor que inicializa el factory
      */
     public DesignacionValidator() {
         this.validatorFactory = DesignacionValidatorFactory.getInstance();
@@ -43,34 +34,14 @@ public class DesignacionValidator {
      * @throws BusinessLogicException si no se cumplen las reglas
      */
     public void validar(Designacion designacion) throws BusinessLogicException {
-        // Inyectar dependencias en los validadores antes de usarlos
-        inyectarDependencias();
-
-        // PRIMERA REGLA: Validar fechas
-        Validator<Designacion> fechaValidator = validatorFactory.getValidator("fecha");
-        if (fechaValidator != null) {
-            fechaValidator.validate(designacion);
-        }
+        // PRIMERA REGLA: Validar fechas usando validador genérico
+        GenericFechaValidator<Designacion> fechaValidator = GenericFechaValidator.getInstance();
+        fechaValidator.validate(designacion);
 
         // SEGUNDA REGLA: Validar solapamiento de designaciones
         Validator<Designacion> solapamientoValidator = validatorFactory.getValidator("solapamiento");
         if (solapamientoValidator != null) {
             solapamientoValidator.validate(designacion);
-        }
-    }
-
-    /**
-     * Inyecta las dependencias en los validadores singleton después de su
-     * creación
-     */
-    private void inyectarDependencias() {
-        // FechaValidator ya no necesita dependencias - es auto-suficiente
-
-        // Inyectar dependencias en SolapamientoValidator
-        SolapamientoValidator solapamientoValidator = (SolapamientoValidator) validatorFactory.<Designacion>getValidator("solapamiento");
-        if (solapamientoValidator != null) {
-            solapamientoValidator.setDesignacionRepository(designacionRepository);
-            solapamientoValidator.setLicenciaRepository(licenciaRepository);
         }
     }
 }

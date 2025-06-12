@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 import unpsjb.labprog.backend.business.validator.base.Validator;
-import unpsjb.labprog.backend.business.validator.licencia.util.DiasCalculadorUtil;
+import unpsjb.labprog.backend.business.validator.util.DiasCalculadorUtil;
 import unpsjb.labprog.backend.exception.BusinessLogicException;
 import unpsjb.labprog.backend.model.Licencia;
 

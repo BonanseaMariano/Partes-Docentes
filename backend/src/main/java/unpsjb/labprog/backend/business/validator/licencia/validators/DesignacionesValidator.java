@@ -1,7 +1,7 @@
 package unpsjb.labprog.backend.business.validator.licencia.validators;
 
 import unpsjb.labprog.backend.business.validator.base.Validator;
-import unpsjb.labprog.backend.business.validator.licencia.util.DesignacionCalculadorUtil;
+import unpsjb.labprog.backend.business.validator.util.DesignacionCalculadorUtil;
 import unpsjb.labprog.backend.exception.BusinessLogicException;
 import unpsjb.labprog.backend.model.Licencia;
 

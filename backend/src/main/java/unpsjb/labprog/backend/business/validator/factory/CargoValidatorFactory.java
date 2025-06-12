@@ -1,33 +1,35 @@
-package unpsjb.labprog.backend.business.validator.base;
+package unpsjb.labprog.backend.business.validator.factory;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import unpsjb.labprog.backend.business.validator.base.Validator;
+
 /**
- * Fábrica de validadores específica para designaciones que utiliza reflexión
+ * Fábrica de validadores específica para cargos que utiliza reflexión
  * automática. Implementa el patrón Singleton y cache de instancias para
  * optimizar rendimiento.
  *
  * Convenciones de nomenclatura: - Para validador "fecha" busca clase:
- * unpsjb.labprog.backend.business.validator.designacion.validators.FechaValidator
- * - Para validador "solapamiento" busca clase:
- * unpsjb.labprog.backend.business.validator.designacion.validators.SolapamientoValidator
+ * unpsjb.labprog.backend.business.validator.cargo.validators.FechaValidator -
+ * Para validador "tipodesignaciondivision" busca clase:
+ * unpsjb.labprog.backend.business.validator.cargo.validators.TipodesignaciondivisionValidator
  */
-public class DesignacionValidatorFactory {
+public class CargoValidatorFactory {
 
     // Cache de instancias de validadores para evitar recrearlos
     private final Map<String, Validator<?>> validatorMap;
 
     // Singleton
-    private static DesignacionValidatorFactory instance = null;
+    private static CargoValidatorFactory instance = null;
 
-    private DesignacionValidatorFactory() {
+    private CargoValidatorFactory() {
         this.validatorMap = new HashMap<>();
     }
 
-    public static DesignacionValidatorFactory getInstance() {
+    public static CargoValidatorFactory getInstance() {
         if (instance == null) {
-            instance = new DesignacionValidatorFactory();
+            instance = new CargoValidatorFactory();
         }
         return instance;
     }
@@ -36,7 +38,8 @@ public class DesignacionValidatorFactory {
      * Obtiene un validador por nombre. Si no está en cache, lo carga usando
      * reflexión.
      *
-     * @param validatorName Nombre del validador (ej: "fecha", "solapamiento")
+     * @param validatorName Nombre del validador (ej: "fecha",
+     * "tipodesignaciondivision")
      * @return Instancia del validador o null si no se encuentra
      */
     @SuppressWarnings("unchecked")
@@ -45,7 +48,7 @@ public class DesignacionValidatorFactory {
         if (!validatorMap.containsKey(validatorName)) {
 
             // Construir nombre de clase siguiendo convenciones
-            String name = "unpsjb.labprog.backend.business.validator.designacion.validators."
+            String name = "unpsjb.labprog.backend.business.validator.cargo.validators."
                     + capitalizeFirst(validatorName.toLowerCase()) + "Validator";
 
             try {

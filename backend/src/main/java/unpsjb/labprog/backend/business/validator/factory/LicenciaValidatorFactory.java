@@ -1,7 +1,9 @@
-package unpsjb.labprog.backend.business.validator.base;
+package unpsjb.labprog.backend.business.validator.factory;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import unpsjb.labprog.backend.business.validator.base.Validator;
 
 /**
  * Fábrica de validadores que utiliza reflexión automática para cargar
