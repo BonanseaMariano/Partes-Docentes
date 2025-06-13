@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import unpsjb.labprog.backend.Response;
 import unpsjb.labprog.backend.business.service.LicenciaService;
+import unpsjb.labprog.backend.business.service.ParteDiarioService;
 import unpsjb.labprog.backend.dto.ParteDiarioDTO;
 import unpsjb.labprog.backend.exception.NotModifiableException;
 import unpsjb.labprog.backend.model.Licencia;
@@ -52,6 +53,12 @@ public class LicenciaPresenter {
      */
     @Autowired
     private LicenciaService service;
+
+    /**
+     * Servicio especializado en la generación de partes diarios de licencias.
+     */
+    @Autowired
+    private ParteDiarioService parteDiarioService;
 
     /**
      * Obtiene todas las licencias registradas en el sistema.
@@ -222,7 +229,7 @@ public class LicenciaPresenter {
     public ResponseEntity<Object> getParteDiario(@PathVariable String fecha) {
         try {
             LocalDate fechaConsulta = LocalDate.parse(fecha);
-            ParteDiarioDTO parteDiario = service.generarParteDiario(fechaConsulta);
+            ParteDiarioDTO parteDiario = parteDiarioService.generarParteDiario(fechaConsulta);
 
             // Crear respuesta con el formato específico requerido
             Map<String, Object> response = new HashMap<>();
