@@ -63,6 +63,30 @@ Característica: otorgar o denegar licencia a una persona a un cargo docente
       }
       """
 
+  Escenario: Asignación de licencia 5A a Jorge Dismal que ya está en reemplazo de Susana Álvarez
+    Dado el docente con DNI 70700700, nombre "Jorge" y apellido "Dismal"
+    Cuando solicita una licencia artículo "5A" con certificado médico "SI" con descripción "ENFERMEDAD DE CORTA EVOLUCIÓN" para el período "2023-06-14" "2023-06-18"
+    Entonces se espera el siguiente 200 con la "Se otorga Licencia artículo 5A a Jorge Dismal"
+
+  Escenario: Homero Manzi reemplaza a Jorge Dismal durante su licencia 5A
+    Dado que existe la persona
+      | DNI      | Nombre | Apellido |
+      | 99300000 | Homero | Manzi    |
+    Y que existen las siguientes instancias de designación asignada
+      | TipoDesignacion | NombreTipoDesignacion | CargaHoraria |
+      | CARGO           | Preceptor/a           |           36 |
+    Y que la instancia de designación está asignada a la persona con licencia "5A" comprendida en el período desde "2023-06-14" hasta "2023-06-18"
+      | DNI      | Nombre | Apellido | Desde      | Hasta      |
+      | 70700700 | Jorge  | Dismal   | 2023-06-12 | 2023-06-29 |
+    Cuando se solicita el servicio de designación de la persona al cargo en el período comprendido desde "2023-06-14" hasta "2023-06-18"
+    Entonces se recupera el mensaje
+      """
+      {
+         "status": 200,
+         "message": "Homero Manzi ha sido designado/a como Preceptor/a exitosamente, en reemplazo de Jorge Dismal"
+      }
+      """
+
   Escenario: 1 persona en instancias de designación de cargo que cubre una licencia de otra persona en la misma designación, pero que no coincide el mismo período. Infomar el error respectivo y abortar la transacción.
     Dado que existe la persona
       | DNI      | Nombre | Apellido |
