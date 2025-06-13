@@ -1,54 +1,47 @@
 package unpsjb.labprog.backend.business.validator.designacion;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import unpsjb.labprog.backend.business.validator.FechaValidationRule;
+import unpsjb.labprog.backend.business.validator.base.GenericFechaValidator;
+import unpsjb.labprog.backend.business.validator.base.Validator;
+import unpsjb.labprog.backend.business.validator.factory.DesignacionValidatorFactory;
 import unpsjb.labprog.backend.exception.BusinessLogicException;
 import unpsjb.labprog.backend.model.Designacion;
 
 /**
- * Validador que implementa las reglas de negocio para la entidad Designacion
- *
- * @see Designacion
+ * Validador principal para designaciones que utiliza el patrón Factory con
+ * reflexión automática. Implementa carga lazy, cache de instancias y patrón
+ * Singleton en validadores. No requiere archivos de configuración - utiliza
+ * convenciones de nomenclatura.
  */
 @Component
 public class DesignacionValidator {
 
-    private final List<DesignacionValidationRule> validationRules;
-
-    @Autowired
-    private FechaValidationRule fechaValidationRule;
+    private final DesignacionValidatorFactory validatorFactory;
 
     /**
-     * Constructor que recibe una lista de reglas de validación
-     *
-     * @param validationRules Lista de reglas de validación
+     * Constructor que inicializa el factory
      */
-    public DesignacionValidator(List<DesignacionValidationRule> validationRules) {
-        this.validationRules = validationRules;
+    public DesignacionValidator() {
+        this.validatorFactory = DesignacionValidatorFactory.getInstance();
     }
 
     /**
      * Valida todas las reglas de negocio específicas para las designaciones
+     * usando el patrón Factory
      *
      * @param designacion Designación a validar
      * @throws BusinessLogicException si no se cumplen las reglas
      */
     public void validar(Designacion designacion) throws BusinessLogicException {
-        // PRIMERA REGLA: Validar fechas (solo si fecha fin no es null)
-        if (designacion.getFechaFin() != null) {
-            fechaValidationRule.validarRangoFechas(
-                    designacion.getFechaInicio(),
-                    designacion.getFechaFin()
-            );
-        }
+        // PRIMERA REGLA: Validar fechas usando validador genérico
+        GenericFechaValidator<Designacion> fechaValidator = GenericFechaValidator.getInstance();
+        fechaValidator.validate(designacion);
 
-        // Resto de reglas específicas
-        for (DesignacionValidationRule rule : validationRules) {
-            rule.validate(designacion);
+        // SEGUNDA REGLA: Validar solapamiento de designaciones
+        Validator<Designacion> solapamientoValidator = validatorFactory.getValidator("solapamiento");
+        if (solapamientoValidator != null) {
+            solapamientoValidator.validate(designacion);
         }
     }
 }

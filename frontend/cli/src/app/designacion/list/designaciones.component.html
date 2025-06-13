@@ -12,13 +12,41 @@
                 <thead class="table-light">
                     <tr>
                         <th scope="col"></th>
-                        <th scope="col">Persona</th>
-                        <th scope="col">Cargo</th>
-                        <th scope="col">Tipo</th>
-                        <th scope="col">División</th>
-                        <th scope="col">Situación revista</th>
-                        <th scope="col">Vigencia Desde</th>
-                        <th scope="col">Vigencia Hasta</th>
+                        <th scope="col" class="sortable-header" (click)="onSort('persona.dni')"
+                            [ngClass]="{'active': isSortActive('persona.dni')}"
+                            [attr.data-direction]="isSortActive('persona.dni') ? sortDirection : null">
+                            Persona <i [ngClass]="getSortIcon('persona.dni')"></i>
+                        </th>
+                        <th scope="col" class="sortable-header" (click)="onSort('cargo.nombre')"
+                            [ngClass]="{'active': isSortActive('cargo.nombre')}"
+                            [attr.data-direction]="isSortActive('cargo.nombre') ? sortDirection : null">
+                            Cargo <i [ngClass]="getSortIcon('cargo.nombre')"></i>
+                        </th>
+                        <th scope="col" class="sortable-header" (click)="onSort('cargo.tipoDesignacion')"
+                            [ngClass]="{'active': isSortActive('cargo.tipoDesignacion')}"
+                            [attr.data-direction]="isSortActive('cargo.tipoDesignacion') ? sortDirection : null">
+                            Tipo <i [ngClass]="getSortIcon('cargo.tipoDesignacion')"></i>
+                        </th>
+                        <th scope="col" class="sortable-header" (click)="onSort('cargo.division.orientacion')"
+                            [ngClass]="{'active': isSortActive('cargo.division.orientacion')}"
+                            [attr.data-direction]="isSortActive('cargo.division.orientacion') ? sortDirection : null">
+                            División <i [ngClass]="getSortIcon('cargo.division.orientacion')"></i>
+                        </th>
+                        <th scope="col" class="sortable-header" (click)="onSort('situacionRevista')"
+                            [ngClass]="{'active': isSortActive('situacionRevista')}"
+                            [attr.data-direction]="isSortActive('situacionRevista') ? sortDirection : null">
+                            Situación revista <i [ngClass]="getSortIcon('situacionRevista')"></i>
+                        </th>
+                        <th scope="col" class="sortable-header" (click)="onSort('fechaInicio')"
+                            [ngClass]="{'active': isSortActive('fechaInicio')}"
+                            [attr.data-direction]="isSortActive('fechaInicio') ? sortDirection : null">
+                            Vigencia Desde <i [ngClass]="getSortIcon('fechaInicio')"></i>
+                        </th>
+                        <th scope="col" class="sortable-header" (click)="onSort('fechaFin')"
+                            [ngClass]="{'active': isSortActive('fechaFin')}"
+                            [attr.data-direction]="isSortActive('fechaFin') ? sortDirection : null">
+                            Vigencia Hasta <i [ngClass]="getSortIcon('fechaFin')"></i>
+                        </th>
                         <th scope="col" class="text-end">Acciones</th>
                     </tr>
                 </thead>
@@ -39,7 +67,7 @@
                         <td>
                             {{ designacion.cargo.division ? designacion.cargo.division.anio + '° ' +
                             designacion.cargo.division.numDivision + '° ' +
-                            designacion.cargo.division.orientacion : '' }}
+                            designacion.cargo.division.orientacion + ' - ' + designacion.cargo.division.turno : '' }}
                         </td>
                         <td>{{ designacion.situacionRevista }}</td>
                         <td>{{ designacion.fechaInicio | fechaFormat }}</td>

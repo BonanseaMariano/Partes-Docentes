@@ -18,7 +18,7 @@ import unpsjb.labprog.backend.model.enums.Turno;
 
 /**
  * Servicio que implementa la lógica de negocio para la entidad Cargo
- * 
+ *
  * @see Cargo
  */
 @Service
@@ -32,7 +32,7 @@ public class CargoService {
 
     /**
      * Busca un cargo por su ID
-     * 
+     *
      * @param id ID del cargo a buscar
      * @return Cargo encontrado o null si no existe
      */
@@ -42,7 +42,7 @@ public class CargoService {
 
     /**
      * Obtiene todos los cargos registrados
-     * 
+     *
      * @return Lista de todos los cargos
      */
     public List<Cargo> findAll() {
@@ -52,7 +52,7 @@ public class CargoService {
     /**
      * Guarda un nuevo cargo o actualiza uno existente, aplicando las reglas de
      * negocio
-     * 
+     *
      * @param cargo Cargo a guardar
      * @return Cargo guardado
      * @throws BusinessLogicException si no se cumplen las reglas de negocio
@@ -68,7 +68,7 @@ public class CargoService {
 
     /**
      * Elimina un cargo por su ID
-     * 
+     *
      * @param id ID del cargo a eliminar
      */
     @Transactional
@@ -78,7 +78,7 @@ public class CargoService {
 
     /**
      * Obtiene una página de entidades Cargo.
-     * 
+     *
      * @param page el índice de página basado en cero
      * @param size el tamaño de la página a devolver
      * @return un objeto Page que contiene las entidades Cargo solicitadas
@@ -88,8 +88,44 @@ public class CargoService {
     }
 
     /**
+     * Obtiene una página de entidades Cargo con ordenamiento personalizado.
+     *
+     * @param page el índice de página basado en cero
+     * @param size el tamaño de la página a devolver
+     * @param sortField el campo por el cual ordenar
+     * @param sortDirection la dirección del ordenamiento (asc o desc)
+     * @return un objeto Page que contiene las entidades Cargo solicitadas
+     */
+    public Page<Cargo> findByPage(int page, int size, String sortField, String sortDirection) {
+        // Validar campos permitidos para ordenamiento por seguridad
+        String[] allowedFields = {"id", "nombre", "cargaHoraria", "tipoDesignacion", "fechaInicio", "fechaFin", "division.orientacion"};
+        boolean isValidField = false;
+        for (String field : allowedFields) {
+            if (field.equals(sortField)) {
+                isValidField = true;
+                break;
+            }
+        }
+
+        // Si el campo no es válido, usar "id" por defecto
+        if (!isValidField) {
+            sortField = "id";
+        }
+
+        // Validar dirección de ordenamiento
+        Sort.Direction direction;
+        if ("asc".equalsIgnoreCase(sortDirection)) {
+            direction = Sort.Direction.ASC;
+        } else {
+            direction = Sort.Direction.DESC;
+        }
+
+        return repository.findAll(PageRequest.of(page, size, Sort.by(direction, sortField)));
+    }
+
+    /**
      * Busca cargos por un término de búsqueda.
-     * 
+     *
      * @param term el término de búsqueda
      * @return una lista de cargos que coinciden con el término de búsqueda
      */
@@ -100,14 +136,14 @@ public class CargoService {
     /**
      * Busca un cargo por su nombre, tipo de designación y opcionalmente por los
      * atributos de la división
-     * 
-     * @param nombre          Nombre del cargo a buscar
+     *
+     * @param nombre Nombre del cargo a buscar
      * @param tipoDesignacion Tipo de designación del cargo a buscar
-     * @param anio            Año de la división (opcional)
-     * @param numDivision     Número de la división (opcional)
-     * @param turno           Turno de la división (opcional)
-     * @return Cargo encontrado que coincide con los criterios de búsqueda o null si
-     *         no existe
+     * @param anio Año de la división (opcional)
+     * @param numDivision Número de la división (opcional)
+     * @param turno Turno de la división (opcional)
+     * @return Cargo encontrado que coincide con los criterios de búsqueda o
+     * null si no existe
      */
     public Cargo findByNombreAndTipoDesignacionAndDivision(
             String nombre,

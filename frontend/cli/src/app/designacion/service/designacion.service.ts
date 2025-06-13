@@ -30,9 +30,9 @@ export class DesignacionService {
         return this.http.delete<DataPackage>(encodeURI(`${this.designacionesUrl}/${id}`));
     }
 
-    byPage(page: number, size: number): Observable<DataPackage> {
+    byPage(page: number, size: number, sortField: string = 'id', sortDirection: string = 'desc'): Observable<DataPackage> {
         return this.http.get<DataPackage>(
-            encodeURI(`${this.designacionesUrl}/page?page=${page - 1}&size=${size}`)
+            encodeURI(`${this.designacionesUrl}/page?page=${page - 1}&size=${size}&sortField=${sortField}&sortDirection=${sortDirection}`)
         );
     }
 

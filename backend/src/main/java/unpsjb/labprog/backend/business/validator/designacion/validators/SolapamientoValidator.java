@@ -1,12 +1,9 @@
-package unpsjb.labprog.backend.business.validator.designacion;
+package unpsjb.labprog.backend.business.validator.designacion.validators;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import unpsjb.labprog.backend.business.repository.DesignacionRepository;
-import unpsjb.labprog.backend.business.repository.LicenciaRepository;
+import unpsjb.labprog.backend.business.validator.base.Validator;
+import unpsjb.labprog.backend.business.validator.util.DesignacionSolapamientoUtil;
 import unpsjb.labprog.backend.exception.BusinessLogicException;
 import unpsjb.labprog.backend.model.Cargo;
 import unpsjb.labprog.backend.model.Designacion;
@@ -16,24 +13,31 @@ import unpsjb.labprog.backend.model.Persona;
 import unpsjb.labprog.backend.model.enums.TipoDesignacion;
 
 /**
- * Regla de validación para solapamiento de designaciones
+ * Validador para verificar solapamiento de designaciones. Implementa el patrón
+ * Singleton requerido por el DesignacionValidatorFactory.
  */
-@Component
-public class SolapamientoDesignacionRule implements DesignacionValidationRule {
+public class SolapamientoValidator implements Validator<Designacion> {
 
-    @Autowired
-    private DesignacionRepository designacionRepository;
+    // Singleton
+    private static SolapamientoValidator instance = null;
 
-    @Autowired
-    private LicenciaRepository licenciaRepository;
+    private SolapamientoValidator() {
+        // Constructor privado para Singleton
+    }
+
+    public static SolapamientoValidator getInstance() {
+        if (instance == null) {
+            instance = new SolapamientoValidator();
+        }
+        return instance;
+    }
 
     @Override
     public void validate(Designacion nuevaDesignacion) throws BusinessLogicException {
-
         Integer designacionIdOriginal = (nuevaDesignacion.getId() > 0) ? nuevaDesignacion.getId() : null;
 
         // Buscar TODAS las designaciones existentes para el MISMO CARGO que se SOLAPEN en el tiempo con la nuevaDesignacion
-        List<Designacion> designacionesSuperpuestas = designacionRepository.findDesignacionesSuperpuestas(
+        List<Designacion> designacionesSuperpuestas = DesignacionSolapamientoUtil.buscarDesignacionesSuperpuestas(
                 nuevaDesignacion.getCargo().getId(),
                 nuevaDesignacion.getFechaInicio(),
                 nuevaDesignacion.getFechaFin(),
@@ -48,21 +52,22 @@ public class SolapamientoDesignacionRule implements DesignacionValidationRule {
             Persona personaExistente = designacionExistente.getPersona();
             Cargo cargoExistente = designacionExistente.getCargo();
 
-            List<Licencia> licenciasDePersonaExistente = licenciaRepository.findLicenciasSuperPuestas(
+            // Obtener licencias ordenadas que se solapan con el período
+            List<Licencia> licencias = DesignacionSolapamientoUtil.buscarLicenciasParaCoberturaContinua(
                     personaExistente.getDni(),
-                    nuevaDesignacion.getFechaInicio(), // Período de la NUEVA designación
-                    nuevaDesignacion.getFechaFin(), // Período de la NUEVA designación
-                    null); // No se excluye ninguna licencia específica para esta comprobación
+                    nuevaDesignacion.getFechaInicio(),
+                    nuevaDesignacion.getFechaFin());
 
-            if (licenciasDePersonaExistente.isEmpty()) {
+            if (licencias.isEmpty()) {
+                // No hay licencias, la persona está activa en el cargo
                 manejarCasoSinLicencias(nuevaDesignacion, cargoExistente, personaExistente);
-                return;
             } else {
-                boolean esReemplazoValidoParaEstaExistente = licenciasDePersonaExistente.stream()
-                        .anyMatch(lic -> lic.getPedidoDesde().compareTo(nuevaDesignacion.getFechaInicio()) <= 0
-                        && lic.getPedidoHasta().compareTo(nuevaDesignacion.getFechaFin()) >= 0);
+                // Verificar si existe cobertura continua
+                boolean existeCoberturaContinua = DesignacionSolapamientoUtil.verificarCoberturaContinua(licencias,
+                        nuevaDesignacion.getFechaInicio(),
+                        nuevaDesignacion.getFechaFin());
 
-                if (!esReemplazoValidoParaEstaExistente) {
+                if (!existeCoberturaContinua) {
                     throw new BusinessLogicException(
                             String.format(
                                     "%s %s NO ha sido designado/a como %s, ya cuenta con %s %s asignada al mismo en el período",

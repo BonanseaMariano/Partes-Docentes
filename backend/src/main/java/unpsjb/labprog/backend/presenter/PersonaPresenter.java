@@ -170,12 +170,17 @@ public class PersonaPresenter {
      *
      * @param page Número de página solicitada (comienza en 0)
      * @param size Cantidad de elementos por página
+     * @param sortField Campo por el cual ordenar (dni, nombre, apellido, cuil,
+     * titulo, sexo, domicilio, telefono)
+     * @param sortDirection Dirección del ordenamiento (asc o desc)
      * @return ResponseEntity con la página de personas solicitada
      */
     @GetMapping("/page")
     public ResponseEntity<Object> findByPage(@RequestParam(defaultValue = AppConstants.DEFAULT_PAGE) int page,
-            @RequestParam(defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size) {
-        return Response.ok(service.findByPage(page, size));
+            @RequestParam(defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size,
+            @RequestParam(defaultValue = "id") String sortField,
+            @RequestParam(defaultValue = "desc") String sortDirection) {
+        return Response.ok(service.findByPage(page, size, sortField, sortDirection));
     }
 
     /**

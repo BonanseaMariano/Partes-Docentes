@@ -39,6 +39,10 @@ Característica: otorgar o denegar licencia a una persona a un cargo docente
       | 11111111 | Susana      | Giménez    |      23A | NO          | ATENCIÓN DE UN MIEMBRO DEL GF | 2024-06-03 | 2024-06-14 |    200 | Se otorga Licencia artículo 23A a Susana Giménez                                                                           |
       | 11111111 | Susana      | Giménez    |      23A | NO          | ATENCIÓN DE UN MIEMBRO DEL GF | 2024-08-12 | 2024-08-14 |    500 | NO se otorga Licencia artículo 23A a Susana Giménez debido a que supera el tope de 30 días de licencia                     |
       | 11111111 | Susana      | Giménez    |      23A | NO          | ATENCIÓN DE UN MIEMBRO DEL GF | 2025-03-10 | 2025-03-15 |    200 | Se otorga Licencia artículo 23A a Susana Giménez                                                                           |
+      | 10100100 | Alberto     | Lopez      |       5A | SI          | ENFERMEDAD DE CORTA EVOLUCIÓN | 2020-03-07 | 2020-03-14 |    200 | Se otorga Licencia artículo 5A a Alberto Lopez                                                                             |
+      | 10100100 | Alberto     | Lopez      |       5A | SI          | ENFERMEDAD DE CORTA EVOLUCIÓN | 2020-03-15 | 2020-03-22 |    200 | Se otorga Licencia artículo 5A a Alberto Lopez                                                                             |
+      | 10100100 | Alberto     | Lopez      |       5A | SI          | ENFERMEDAD DE CORTA EVOLUCIÓN | 2020-03-23 | 2020-03-30 |    200 | Se otorga Licencia artículo 5A a Alberto Lopez                                                                             |
+      | 10100100 | Alberto     | Lopez      |       5A | SI          | ENFERMEDAD DE CORTA EVOLUCIÓN | 2020-04-01 | 2020-04-06 |    200 | Se otorga Licencia artículo 5A a Alberto Lopez                                                                             |
 
   Escenario: 1 persona en instancias de designación de cargo que cubre una licencia de otra persona en la misma designación. Infomar que está correcto y que reemplaza al docente que solicitó licencia.
     Dado que existe la persona
@@ -56,6 +60,30 @@ Característica: otorgar o denegar licencia a una persona a un cargo docente
       {
          "status": 200,
          "message": "Jorge Dismal ha sido designado/a como Preceptor/a exitosamente, en reemplazo de Susana Álvarez"
+      }
+      """
+
+  Escenario: Asignación de licencia 5A a Jorge Dismal que ya está en reemplazo de Susana Álvarez
+    Dado el docente con DNI 70700700, nombre "Jorge" y apellido "Dismal"
+    Cuando solicita una licencia artículo "5A" con certificado médico "SI" con descripción "ENFERMEDAD DE CORTA EVOLUCIÓN" para el período "2023-06-14" "2023-06-18"
+    Entonces se espera el siguiente 200 con la "Se otorga Licencia artículo 5A a Jorge Dismal"
+
+  Escenario: Homero Manzi reemplaza a Jorge Dismal durante su licencia 5A
+    Dado que existe la persona
+      | DNI      | Nombre | Apellido |
+      | 99300000 | Homero | Manzi    |
+    Y que existen las siguientes instancias de designación asignada
+      | TipoDesignacion | NombreTipoDesignacion | CargaHoraria |
+      | CARGO           | Preceptor/a           |           36 |
+    Y que la instancia de designación está asignada a la persona con licencia "5A" comprendida en el período desde "2023-06-14" hasta "2023-06-18"
+      | DNI      | Nombre | Apellido | Desde      | Hasta      |
+      | 70700700 | Jorge  | Dismal   | 2023-06-12 | 2023-06-29 |
+    Cuando se solicita el servicio de designación de la persona al cargo en el período comprendido desde "2023-06-14" hasta "2023-06-18"
+    Entonces se recupera el mensaje
+      """
+      {
+         "status": 200,
+         "message": "Homero Manzi ha sido designado/a como Preceptor/a exitosamente, en reemplazo de Jorge Dismal"
       }
       """
 

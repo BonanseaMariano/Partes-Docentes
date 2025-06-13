@@ -1,12 +1,16 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { NgApexchartsModule, ChartComponent } from 'ng-apexcharts';
 
 import { ReporteConcepto, EstadisticasGenerales } from '../models/reporte-concepto';
+import { Reporte } from '../models/reporte';
 import { PersonaService } from '../persona/service/persona.service';
 import { ModalService } from '../modal/modal.service';
+import { PopupService } from '../popup/popup.service';
+import { DniFormatPipe } from '../pipes/dni-format.pipe';
+import { FechaFormatPipe } from '../pipes/fecha-format.pipe';
 
 import {
     ApexAxisChartSeries,
@@ -43,7 +47,7 @@ export type ChartOptions = {
 @Component({
     selector: 'app-reporte-concepto',
     standalone: true,
-    imports: [CommonModule, RouterModule, FormsModule, NgApexchartsModule],
+    imports: [CommonModule, RouterModule, FormsModule, NgApexchartsModule, DniFormatPipe, FechaFormatPipe],
     templateUrl: './reporte-concepto.component.html',
     styleUrl: './reporte-concepto.component.css'
 })
@@ -55,6 +59,11 @@ export class ReporteConceptoComponent implements OnInit {
     aniosDisponibles: number[] = [];
     anioMinimo: number = 2020;
     anioMaximo: number = new Date().getFullYear();
+
+    // Propiedades para el popup de designaciones
+    selectedReporte: Reporte | null = null;
+
+    @ViewChild('designacionesTemplate', { static: true }) designacionesTemplate!: TemplateRef<any>;
 
     // Gráfico de distribución mensual
     @ViewChild("chartMensual") chartMensual!: ChartComponent;
@@ -75,7 +84,8 @@ export class ReporteConceptoComponent implements OnInit {
         private route: ActivatedRoute,
         private router: Router,
         private personaService: PersonaService,
-        private modalService: ModalService
+        private modalService: ModalService,
+        private popupService: PopupService
     ) {
         // Generar lista de años disponibles
         this.generarAniosDisponibles();
@@ -272,27 +282,44 @@ export class ReporteConceptoComponent implements OnInit {
         return resultado;
     }
 
-    getCalificacionClass(): string {
-        if (!this.reporteConcepto?.CalificacionGeneral) return '';
+    getCalificacionClass(calificacion?: string): string {
+        if (!calificacion) {
+            // Usar la calificación general del reporte si no se proporciona una específica
+            if (!this.reporteConcepto) return '';
+            calificacion = this.reporteConcepto.CalificacionGeneral;
+        }
 
-        switch (this.reporteConcepto.CalificacionGeneral) {
+        switch (calificacion) {
             case 'Excelente':
-                return 'badge bg-success';
+                return 'text-success';
             case 'Muy Bueno':
-                return 'badge bg-info';
+                return 'text-info';
             case 'Bueno':
-                return 'badge bg-primary';
+                return 'text-primary';
             case 'Regular':
-                return 'badge bg-warning';
+                return 'text-warning';
             case 'Deficiente':
-                return 'badge bg-danger';
+                return 'text-danger';
             default:
-                return 'badge bg-secondary';
+                return 'text-secondary';
         }
     }
 
-    getAnioReporte(): number {
-        return this.reporteConcepto?.Anio || this.anioSeleccionado;
+    /**
+     * Obtiene el total de licencias para un docente específico
+     */
+    getTotalLicenciasDocente(reporte: Reporte): number {
+        if (!reporte.EstadisticasLicencias.LicenciasPorArticulo) return 0;
+
+        return Object.values(reporte.EstadisticasLicencias.LicenciasPorArticulo)
+            .reduce((total, articulo) => total + articulo.Cantidad, 0);
+    }
+
+    /**
+     * Función para trackBy en la tabla de reportes de docentes
+     */
+    trackByDocenteDni(index: number, reporte: Reporte): number {
+        return reporte.Docente.DNI;
     }
 
     /**
@@ -316,5 +343,35 @@ export class ReporteConceptoComponent implements OnInit {
         this.anioMinimo = minimo;
         this.anioMaximo = maximo;
         this.generarAniosDisponibles();
+    }
+
+    /**
+     * Función para trackBy en la tabla de docentes
+     */
+    trackByDni(index: number, docente: any): string {
+        return docente.DNI;
+    }
+
+    getAnioReporte(): number {
+        return this.reporteConcepto?.Anio ?? this.anioSeleccionado;
+    }
+
+    /**
+     * Abre el popup mostrando las designaciones del docente
+     */
+    openDesignacionesPopup(reporte: Reporte): void {
+        this.selectedReporte = reporte;
+        this.popupService.show(this.designacionesTemplate, {
+            title: `Designaciones de ${reporte.Docente.Nombre} ${reporte.Docente.Apellido}`,
+            icon: 'fa-user-tie',
+            data: reporte
+        });
+    }
+
+    /**
+     * Obtiene el conteo de designaciones para un reporte
+     */
+    getDesignacionCount(reporte: Reporte): number {
+        return reporte.Designaciones ? reporte.Designaciones.length : 0;
     }
 }

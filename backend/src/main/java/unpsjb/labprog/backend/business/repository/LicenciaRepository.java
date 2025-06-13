@@ -123,6 +123,25 @@ public interface LicenciaRepository extends JpaRepository<Licencia, Integer> {
             @Param("fechaFin") LocalDateTime fechaFin);
 
     /**
+     * Verifica si existen licencias que cubran completamente un período específico.
+     * Busca licencias ordenadas por fecha y verifica si forman una cobertura continua.
+     *
+     * @param personaDni El DNI de la persona a verificar
+     * @param fechaInicio Fecha de inicio del período a cubrir
+     * @param fechaFin Fecha de fin del período a cubrir
+     * @return Lista de licencias ordenadas que se solapan con el período
+     */
+    @Query("SELECT l FROM Licencia l WHERE l.persona.dni = :personaDni "
+            + "AND l.estado = unpsjb.labprog.backend.model.enums.Estado.VALIDO "
+            + "AND l.pedidoDesde <= :fechaFin "
+            + "AND l.pedidoHasta >= :fechaInicio "
+            + "ORDER BY l.pedidoDesde")
+    List<Licencia> findLicenciasParaCoberturaContinua(
+            @Param("personaDni") Long personaDni,
+            @Param("fechaInicio") LocalDateTime fechaInicio,
+            @Param("fechaFin") LocalDateTime fechaFin);
+
+    /**
      * Busca licencias VÁLIDAS para una persona en un año específico para
      * reporte
      *

@@ -12,10 +12,26 @@
                 <thead class="table-light">
                     <tr>
                         <th scope="col"></th>
-                        <th scope="col">Año</th>
-                        <th scope="col">Número</th>
-                        <th scope="col">Orientación</th>
-                        <th scope="col">Turno</th>
+                        <th scope="col" class="sortable-header" (click)="onSort('anio')"
+                            [ngClass]="{'active': isSortActive('anio')}"
+                            [attr.data-direction]="isSortActive('anio') ? sortDirection : null">
+                            Año <i [ngClass]="getSortIcon('anio')"></i>
+                        </th>
+                        <th scope="col" class="sortable-header" (click)="onSort('numDivision')"
+                            [ngClass]="{'active': isSortActive('numDivision')}"
+                            [attr.data-direction]="isSortActive('numDivision') ? sortDirection : null">
+                            Número <i [ngClass]="getSortIcon('numDivision')"></i>
+                        </th>
+                        <th scope="col" class="sortable-header" (click)="onSort('orientacion')"
+                            [ngClass]="{'active': isSortActive('orientacion')}"
+                            [attr.data-direction]="isSortActive('orientacion') ? sortDirection : null">
+                            Orientación <i [ngClass]="getSortIcon('orientacion')"></i>
+                        </th>
+                        <th scope="col" class="sortable-header" (click)="onSort('turno')"
+                            [ngClass]="{'active': isSortActive('turno')}"
+                            [attr.data-direction]="isSortActive('turno') ? sortDirection : null">
+                            Turno <i [ngClass]="getSortIcon('turno')"></i>
+                        </th>
                         <th scope="col" class="text-end">Acciones</th>
                     </tr>
                 </thead>

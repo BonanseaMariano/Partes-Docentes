@@ -1,5 +1,6 @@
 package unpsjb.labprog.backend.dto;
 
+import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -18,17 +19,21 @@ public class ReporteConceptoDTO {
     @JsonProperty("CalificacionGeneral")
     private String calificacionGeneral;
 
+    @JsonProperty("ReportesDocentes")
+    private List<ReporteDTO> reportesDocentes;
+
     // Constructores
     public ReporteConceptoDTO() {
     }
 
     public ReporteConceptoDTO(Integer año, EstadisticasGenerales estadisticasGenerales,
             Map<String, Integer> distribucionDiasLicencias,
-            String calificacionGeneral) {
+            String calificacionGeneral, List<ReporteDTO> reportesDocentes) {
         this.año = año;
         this.estadisticasGenerales = estadisticasGenerales;
         this.distribucionDiasLicencias = distribucionDiasLicencias;
         this.calificacionGeneral = calificacionGeneral;
+        this.reportesDocentes = reportesDocentes;
     }
 
     // Getters y Setters
@@ -62,6 +67,14 @@ public class ReporteConceptoDTO {
 
     public void setCalificacionGeneral(String calificacionGeneral) {
         this.calificacionGeneral = calificacionGeneral;
+    }
+
+    public List<ReporteDTO> getReportesDocentes() {
+        return reportesDocentes;
+    }
+
+    public void setReportesDocentes(List<ReporteDTO> reportesDocentes) {
+        this.reportesDocentes = reportesDocentes;
     }
 
     // Clase interna para las estadísticas generales

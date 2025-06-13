@@ -18,13 +18,17 @@ import { PersonaService } from '../service/persona.service';
 @Component({
   selector: 'app-persona',
   imports: [CommonModule, RouterModule, PaginationComponent, CuilFormatPipe, DniFormatPipe, FechaFormatPipe],
-  templateUrl: './personas.component.html',
+  templateUrl: './personas.component.html'
 })
 export class PersonasComponent {
   resultsPage: ResultsPage = <ResultsPage>{};
   currentPage: number = PaginationConfig.INITIAL_PAGE;
   pageSize: number = PaginationConfig.PAGE_SIZE;
   currentYear: number = new Date().getFullYear();
+
+  // Propiedades para el ordenamiento
+  sortField: string = 'id';
+  sortDirection: string = 'desc';
 
   selectedPersona: Persona | null = null;
 
@@ -39,7 +43,7 @@ export class PersonasComponent {
   ) { }
 
   getPersonas(): void {
-    this.personaService.byPage(this.currentPage, this.pageSize).subscribe((dataPackage) => {
+    this.personaService.byPage(this.currentPage, this.pageSize, this.sortField, this.sortDirection).subscribe((dataPackage) => {
       this.resultsPage = <ResultsPage>dataPackage.data;
     });
   }
@@ -92,5 +96,41 @@ export class PersonasComponent {
   onPageChangeRequested(page: number): void {
     this.currentPage = page;
     this.getPersonas();
+  }
+
+  /**
+   * Maneja el click en una cabecera de columna para cambiar el ordenamiento
+   */
+  onSort(field: string): void {
+    if (this.sortField === field) {
+      // Si es el mismo campo, cambiar dirección
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      // Si es un campo diferente, ordenar ascendente por defecto
+      this.sortField = field;
+      this.sortDirection = 'asc';
+    }
+
+    // Volver a la primera página cuando se cambia el ordenamiento
+    this.currentPage = 1;
+    this.getPersonas();
+  }
+
+  /**
+   * Verifica si el campo actual está siendo usado para ordenamiento
+   */
+  isSortActive(field: string): boolean {
+    return this.sortField === field;
+  }
+
+  /**
+   * Obtiene la clase del icono de ordenamiento para un campo específico
+   */
+  getSortIcon(field: string): string {
+    if (!this.isSortActive(field)) {
+      return 'fa fa-sort'; // Icono neutral cuando no está activo
+    }
+
+    return this.sortDirection === 'asc' ? 'fa fa-sort-up' : 'fa fa-sort-down';
   }
 }

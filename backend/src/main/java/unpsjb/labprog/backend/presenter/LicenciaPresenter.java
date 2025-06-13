@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import unpsjb.labprog.backend.Response;
 import unpsjb.labprog.backend.business.service.LicenciaService;
+import unpsjb.labprog.backend.business.service.ParteDiarioService;
 import unpsjb.labprog.backend.dto.ParteDiarioDTO;
 import unpsjb.labprog.backend.exception.NotModifiableException;
 import unpsjb.labprog.backend.model.Licencia;
@@ -52,6 +53,12 @@ public class LicenciaPresenter {
      */
     @Autowired
     private LicenciaService service;
+
+    /**
+     * Servicio especializado en la generación de partes diarios de licencias.
+     */
+    @Autowired
+    private ParteDiarioService parteDiarioService;
 
     /**
      * Obtiene todas las licencias registradas en el sistema.
@@ -196,12 +203,19 @@ public class LicenciaPresenter {
      *
      * @param page Número de página solicitada (comienza en 0)
      * @param size Cantidad de elementos por página
+     * @param sortField Campo por el cual ordenar (opcional, por defecto "id").
+     * Campos válidos: id, persona.dni, pedidoDesde, pedidoHasta,
+     * certificadoMedico, articuloLicencia.articulo, estado
+     * @param sortDirection Dirección del ordenamiento (opcional, por defecto
+     * "desc"). Valores válidos: "asc", "desc"
      * @return ResponseEntity con la página de licencias solicitada
      */
     @GetMapping("/page")
     public ResponseEntity<Object> findByPage(@RequestParam(defaultValue = AppConstants.DEFAULT_PAGE) int page,
-            @RequestParam(defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size) {
-        return Response.ok(service.findByPage(page, size));
+            @RequestParam(defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size,
+            @RequestParam(defaultValue = "id") String sortField,
+            @RequestParam(defaultValue = "desc") String sortDirection) {
+        return Response.ok(service.findByPage(page, size, sortField, sortDirection));
     }
 
     /**
@@ -215,7 +229,7 @@ public class LicenciaPresenter {
     public ResponseEntity<Object> getParteDiario(@PathVariable String fecha) {
         try {
             LocalDate fechaConsulta = LocalDate.parse(fecha);
-            ParteDiarioDTO parteDiario = service.generarParteDiario(fechaConsulta);
+            ParteDiarioDTO parteDiario = parteDiarioService.generarParteDiario(fechaConsulta);
 
             // Crear respuesta con el formato específico requerido
             Map<String, Object> response = new HashMap<>();

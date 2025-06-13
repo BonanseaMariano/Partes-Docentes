@@ -4,7 +4,6 @@ import { Observable } from 'rxjs';
 import { DataPackage } from '../../models/data-package';
 import { Persona } from '../../models/persona';
 import { ReporteResponse } from '../../models/reporte';
-import { ReporteConcepto } from '../../models/reporte-concepto';
 
 @Injectable({
   providedIn: 'root'
@@ -32,9 +31,9 @@ export class PersonaService {
     return this.http.delete<DataPackage>(encodeURI(`${this.personasUrl}/${id}`));
   }
 
-  byPage(page: number, size: number): Observable<DataPackage> {
+  byPage(page: number, size: number, sortField: string = 'id', sortDirection: string = 'desc'): Observable<DataPackage> {
     return this.http.get<DataPackage>(
-      encodeURI(`${this.personasUrl}/page?page=${page - 1}&size=${size}`)
+      encodeURI(`${this.personasUrl}/page?page=${page - 1}&size=${size}&sortField=${sortField}&sortDirection=${sortDirection}`)
     );
   }
 

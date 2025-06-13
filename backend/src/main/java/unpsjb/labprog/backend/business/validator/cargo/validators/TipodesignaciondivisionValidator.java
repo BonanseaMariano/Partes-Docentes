@@ -1,16 +1,30 @@
-package unpsjb.labprog.backend.business.validator.cargo;
+package unpsjb.labprog.backend.business.validator.cargo.validators;
 
-import org.springframework.stereotype.Component;
-
+import unpsjb.labprog.backend.business.validator.base.Validator;
 import unpsjb.labprog.backend.exception.BusinessLogicException;
 import unpsjb.labprog.backend.model.Cargo;
 import unpsjb.labprog.backend.model.enums.TipoDesignacion;
 
 /**
- * Regla que valida la relación entre tipo de designación y división asignada
+ * Validador para verificar la relación entre tipo de designación y división
+ * asignada. Implementa el patrón Singleton requerido por el
+ * CargoValidatorFactory.
  */
-@Component
-public class TipoDesignacionDivisionRule implements CargoValidationRule {
+public class TipodesignaciondivisionValidator implements Validator<Cargo> {
+
+    // Singleton
+    private static TipodesignaciondivisionValidator instance = null;
+
+    private TipodesignaciondivisionValidator() {
+        // Constructor privado para Singleton
+    }
+
+    public static TipodesignaciondivisionValidator getInstance() {
+        if (instance == null) {
+            instance = new TipodesignaciondivisionValidator();
+        }
+        return instance;
+    }
 
     @Override
     public void validate(Cargo cargo) throws BusinessLogicException {
@@ -19,8 +33,7 @@ public class TipoDesignacionDivisionRule implements CargoValidationRule {
             if (cargo.getDivision() == null) {
                 throw new BusinessLogicException("Espacio Curricular " + cargo.getNombre() + " falta asignar división");
             }
-        }
-        // Validaciones para CARGO
+        } // Validaciones para CARGO
         else if (TipoDesignacion.CARGO.equals(cargo.getTipoDesignacion()) && cargo.getDivision() != null) {
             // Si está el campo division asignado, no importa si tiene ID o no, es un error
             throw new BusinessLogicException(

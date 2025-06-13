@@ -62,12 +62,6 @@ public class Licencia {
     private LocalDateTime pedidoHasta;
 
     /**
-     * Domicilio de la licencia
-     */
-    @Column(length = 90)
-    private String domicilio;
-
-    /**
      * Si la licencia cuenta con certificado médico
      */
     @NotNull
