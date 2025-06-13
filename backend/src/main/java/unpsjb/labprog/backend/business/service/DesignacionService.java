@@ -200,7 +200,24 @@ public class DesignacionService {
             for (Designacion designacion : designacionesSuperpuestas) {
                 if (!designacion.getPersona().getDni().equals(licencia.getPersona().getDni())
                         && esDesignacionContenidaEnPeriodo(designacion, licencia.getPedidoDesde(), licencia.getPedidoHasta())) {
-                    reemplazos.add(designacion);
+
+                    // Verificar si esta designación no está contenida dentro del período de otra ya agregada
+                    boolean estaContenidaEnOtra = false;
+                    for (Designacion reemplazoExistente : reemplazos) {
+                        if (esDesignacionContenidaEnDesignacion(designacion, reemplazoExistente)) {
+                            estaContenidaEnOtra = true;
+                            break;
+                        }
+                    }
+
+                    // Solo agregar si no está contenida en otra designación ya agregada
+                    if (!estaContenidaEnOtra) {
+                        // Remover designaciones existentes que estén contenidas en esta nueva
+                        reemplazos.removeIf(reemplazoExistente
+                                -> esDesignacionContenidaEnDesignacion(reemplazoExistente, designacion));
+
+                        reemplazos.add(designacion);
+                    }
                 }
             }
         }
@@ -226,6 +243,36 @@ public class DesignacionService {
         // La designación debe terminar antes o en el fin del período
         boolean terminaEnPeriodo = designacion.getFechaFin() == null
                 || designacion.getFechaFin().compareTo(fechaFinPeriodo) <= 0;
+
+        return iniciaEnPeriodo && terminaEnPeriodo;
+    }
+
+    /**
+     * Verifica si una designación está completamente contenida dentro del
+     * período de otra designación.
+     *
+     * @param designacionContenida La designación que se verifica si está
+     * contenida
+     * @param designacionContenedora La designación que podría contener a la
+     * primera
+     * @return true si la primera designación está contenida en la segunda
+     */
+    private boolean esDesignacionContenidaEnDesignacion(Designacion designacionContenida, Designacion designacionContenedora) {
+        // La designación contenida debe empezar después o al mismo tiempo que la contenedora
+        boolean iniciaEnPeriodo = designacionContenida.getFechaInicio().compareTo(designacionContenedora.getFechaInicio()) >= 0;
+
+        // La designación contenida debe terminar antes o al mismo tiempo que la contenedora
+        boolean terminaEnPeriodo;
+        if (designacionContenedora.getFechaFin() == null) {
+            // Si la contenedora no tiene fecha fin, solo verificar que la contenida termine
+            terminaEnPeriodo = designacionContenida.getFechaFin() != null;
+        } else if (designacionContenida.getFechaFin() == null) {
+            // Si la contenida no tiene fecha fin, no puede estar contenida en una con fecha fin
+            terminaEnPeriodo = false;
+        } else {
+            // Ambas tienen fecha fin, verificar que la contenida termine antes o igual
+            terminaEnPeriodo = designacionContenida.getFechaFin().compareTo(designacionContenedora.getFechaFin()) <= 0;
+        }
 
         return iniciaEnPeriodo && terminaEnPeriodo;
     }
