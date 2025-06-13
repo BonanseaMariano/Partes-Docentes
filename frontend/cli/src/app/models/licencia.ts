@@ -21,11 +21,6 @@ export interface Licencia {
     pedidoHasta: Date;
 
     /**
-     * Domicilio de la licencia (opcional)
-     */
-    domicilio?: string;
-
-    /**
      * Si la licencia cuenta con certificado médico
      */
     certificadoMedico: boolean;

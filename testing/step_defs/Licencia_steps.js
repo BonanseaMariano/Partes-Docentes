@@ -13,7 +13,6 @@ function LicenciaWorld() {
         pedidoDesde: null,
         pedidoHasta: null,
         certificadoMedico: false,
-        domicilio: null,
         designaciones: []
     };
     this.apiResponse = {}; // Esta variable será usada por common_steps.js
@@ -34,7 +33,6 @@ Given('el docente con DNI {int}, nombre {string} y apellido {string}', function 
             pedidoDesde: null,
             pedidoHasta: null,
             certificadoMedico: false,
-            domicilio: null,
             designaciones: []
         };
     }

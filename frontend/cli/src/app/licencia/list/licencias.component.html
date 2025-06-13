@@ -27,7 +27,6 @@
                             [attr.data-direction]="isSortActive('pedidoHasta') ? sortDirection : null">
                             Hasta <i [ngClass]="getSortIcon('pedidoHasta')"></i>
                         </th>
-                        <th scope="col">Domicilio</th>
                         <th scope="col" class="sortable-header" (click)="onSort('certificadoMedico')"
                             [ngClass]="{'active': isSortActive('certificadoMedico')}"
                             [attr.data-direction]="isSortActive('certificadoMedico') ? sortDirection : null">
@@ -55,7 +54,6 @@
                             licencia.persona.nombre }}</td>
                         <td>{{ licencia.pedidoDesde | fechaFormat }}</td>
                         <td>{{ licencia.pedidoHasta | fechaFormat }}</td>
-                        <td>{{ licencia.domicilio || '' }}</td>
                         <td class="text-center">
                             <i *ngIf="licencia.certificadoMedico" class="fa fa-check text-success"
                                 title="Con certificado médico"></i>
@@ -97,7 +95,7 @@
                         </td>
                     </tr>
                     <tr *ngIf="!resultsPage.content || resultsPage.content.length === 0">
-                        <td colspan="11" class="empty-state-cell">
+                        <td colspan="10" class="empty-state-cell">
                             <i class="fa fa-info-circle me-2"></i>No hay licencias registradas
                         </td>
                     </tr>
