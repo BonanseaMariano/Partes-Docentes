@@ -1,6 +1,6 @@
 package unpsjb.labprog.backend.business.validator.util;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -33,7 +33,7 @@ public class DiasCalculadorUtil {
      * @param licenciaId ID de la licencia a excluir (opcional, puede ser null)
      * @return Total de días utilizados en el año
      */
-    public static long calcularDiasAnio(String codigoArticulo, LocalDateTime fecha, Long personaDni, Integer licenciaId) {
+    public static long calcularDiasAnio(String codigoArticulo, LocalDate fecha, Long personaDni, Integer licenciaId) {
         if (licenciaRepository == null) {
             throw new IllegalStateException("LicenciaCalculadorUtil no ha sido inicializado correctamente");
         }
@@ -48,8 +48,8 @@ public class DiasCalculadorUtil {
 
         return licenciasDelAnio.stream()
                 .mapToLong(lic -> ChronoUnit.DAYS.between(
-                lic.getPedidoDesde().toLocalDate(),
-                lic.getPedidoHasta().toLocalDate()) + 1)
+                lic.getPedidoDesde(),
+                lic.getPedidoHasta()) + 1)
                 .sum();
     }
 
@@ -63,7 +63,7 @@ public class DiasCalculadorUtil {
      * @param licenciaId ID de la licencia a excluir (opcional, puede ser null)
      * @return Total de días utilizados en el mes
      */
-    public static long calcularDiasMes(String codigoArticulo, LocalDateTime fecha, Long personaDni, Integer licenciaId) {
+    public static long calcularDiasMes(String codigoArticulo, LocalDate fecha, Long personaDni, Integer licenciaId) {
         if (licenciaRepository == null) {
             throw new IllegalStateException("LicenciaCalculadorUtil no ha sido inicializado correctamente");
         }
@@ -80,22 +80,22 @@ public class DiasCalculadorUtil {
 
         return licenciasDelMes.stream()
                 .mapToLong(lic -> ChronoUnit.DAYS.between(
-                lic.getPedidoDesde().toLocalDate(),
-                lic.getPedidoHasta().toLocalDate()) + 1)
+                lic.getPedidoDesde(),
+                lic.getPedidoHasta()) + 1)
                 .sum();
     }
 
     /**
      * Versión simplificada para calcular días del año (sin excluir licencia)
      */
-    public static long calcularDiasAnio(String codigoArticulo, LocalDateTime fecha, Long personaDni) {
+    public static long calcularDiasAnio(String codigoArticulo, LocalDate fecha, Long personaDni) {
         return calcularDiasAnio(codigoArticulo, fecha, personaDni, null);
     }
 
     /**
      * Versión simplificada para calcular días del mes (sin excluir licencia)
      */
-    public static long calcularDiasMes(String codigoArticulo, LocalDateTime fecha, Long personaDni) {
+    public static long calcularDiasMes(String codigoArticulo, LocalDate fecha, Long personaDni) {
         return calcularDiasMes(codigoArticulo, fecha, personaDni, null);
     }
 }

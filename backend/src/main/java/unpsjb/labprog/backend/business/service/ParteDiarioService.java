@@ -1,7 +1,6 @@
 package unpsjb.labprog.backend.business.service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,12 +34,8 @@ public class ParteDiarioService {
      * @return DTO con el parte diario estructurado
      */
     public ParteDiarioDTO generarParteDiario(LocalDate fecha) {
-        // Convertir a LocalDateTime para la consulta
-        LocalDateTime inicioDia = fecha.atStartOfDay();
-        LocalDateTime finDia = fecha.atTime(23, 59, 59);
-
         // Buscar licencias válidas que contengan la fecha solicitada
-        List<Licencia> licenciasDelDia = licenciaRepository.findLicenciasValidasEnFecha(inicioDia, finDia);
+        List<Licencia> licenciasDelDia = licenciaRepository.findLicenciasValidasEnFecha(fecha);
 
         // Crear DTO del parte diario
         ParteDiarioDTO parteDiario = new ParteDiarioDTO();
@@ -72,8 +67,8 @@ public class ParteDiarioService {
         docente.setApellido(licencia.getPersona().getApellido());
         docente.setArticulo(licencia.getArticuloLicencia().getArticulo());
         docente.setDescripcion(licencia.getArticuloLicencia().getDescripcion());
-        docente.setDesde(licencia.getPedidoDesde().toLocalDate());
-        docente.setHasta(licencia.getPedidoHasta().toLocalDate());
+        docente.setDesde(licencia.getPedidoDesde());
+        docente.setHasta(licencia.getPedidoHasta());
         docente.setReemplazos(reemplazos);
 
         return docente;

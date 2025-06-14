@@ -126,9 +126,9 @@ public class ReporteService {
         LocalDate inicioAño = LocalDate.of(año, 1, 1);
         LocalDate finAño = LocalDate.of(año, 12, 31);
 
-        LocalDate fechaInicio = designacion.getFechaInicio().toLocalDate();
+        LocalDate fechaInicio = designacion.getFechaInicio();
         LocalDate fechaFin = designacion.getFechaFin() != null
-                ? designacion.getFechaFin().toLocalDate() : finAño;
+                ? designacion.getFechaFin() : finAño;
 
         return !(fechaFin.isBefore(inicioAño) || fechaInicio.isAfter(finAño));
     }
@@ -140,9 +140,9 @@ public class ReporteService {
         LocalDate inicioAño = LocalDate.of(año, 1, 1);
         LocalDate finAño = LocalDate.of(año, 12, 31);
 
-        LocalDate fechaInicio = designacion.getFechaInicio().toLocalDate();
+        LocalDate fechaInicio = designacion.getFechaInicio();
         LocalDate fechaFin = designacion.getFechaFin() != null
-                ? designacion.getFechaFin().toLocalDate() : finAño;
+                ? designacion.getFechaFin() : finAño;
 
         // Ajustar fechas al año consultado
         LocalDate inicioEnAño = fechaInicio.isBefore(inicioAño) ? inicioAño : fechaInicio;
@@ -257,8 +257,8 @@ public class ReporteService {
                 continue;
             }
 
-            LocalDate desde = licencia.getPedidoDesde().toLocalDate();
-            LocalDate hasta = licencia.getPedidoHasta().toLocalDate();
+            LocalDate desde = licencia.getPedidoDesde();
+            LocalDate hasta = licencia.getPedidoHasta();
 
             LocalDate fecha = desde;
             while (!fecha.isAfter(hasta)) {
@@ -326,7 +326,7 @@ public class ReporteService {
      */
     private int calcularDiasLicencia(Licencia licencia) {
         return (int) ChronoUnit.DAYS.between(
-                licencia.getPedidoDesde().toLocalDate(),
-                licencia.getPedidoHasta().toLocalDate()) + 1;
+                licencia.getPedidoDesde(),
+                licencia.getPedidoHasta()) + 1;
     }
 }

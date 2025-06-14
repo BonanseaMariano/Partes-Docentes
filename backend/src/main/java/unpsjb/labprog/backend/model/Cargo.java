@@ -1,6 +1,6 @@
 package unpsjb.labprog.backend.model;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -89,13 +89,13 @@ public class Cargo {
      */
     @NotNull
     @Column(name = "fecha_inicio", nullable = false)
-    private LocalDateTime fechaInicio;
+    private LocalDate fechaInicio;
 
     /**
      * Fecha de finalización de vigencia del cargo. Puede ser nula
      */
     @Column(name = "fecha_fin")
-    private LocalDateTime fechaFin;
+    private LocalDate fechaFin;
 
     /**
      * Tipo de designación del cargo (ej. suplente, titular, interino).

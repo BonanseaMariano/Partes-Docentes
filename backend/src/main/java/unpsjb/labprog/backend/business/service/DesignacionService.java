@@ -1,6 +1,6 @@
 package unpsjb.labprog.backend.business.service;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -136,7 +136,7 @@ public class DesignacionService {
      * especificado
      */
     public List<Designacion> findDesignacionesActivasPorPersonaYPeriodo(
-            Long personaDni, LocalDateTime fechaInicio, LocalDateTime fechaFin) {
+            Long personaDni, LocalDate fechaInicio, LocalDate fechaFin) {
         return repository.findDesignacionesActivasPorPersonaYPeriodo(personaDni, fechaInicio, fechaFin);
     }
 
@@ -235,7 +235,7 @@ public class DesignacionService {
      * @return true si la designación está contenida en el período
      */
     private boolean esDesignacionContenidaEnPeriodo(Designacion designacion,
-            LocalDateTime fechaInicioPeriodo, LocalDateTime fechaFinPeriodo) {
+            LocalDate fechaInicioPeriodo, LocalDate fechaFinPeriodo) {
 
         // La designación debe empezar después o en el inicio del período
         boolean iniciaEnPeriodo = designacion.getFechaInicio().compareTo(fechaInicioPeriodo) >= 0;

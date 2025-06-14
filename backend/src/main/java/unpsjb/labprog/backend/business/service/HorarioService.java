@@ -1,7 +1,6 @@
 package unpsjb.labprog.backend.business.service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -52,9 +51,8 @@ public class HorarioService {
         // Procesar cada cargo vigente
         for (Cargo cargo : cargosVigentes) {
             // Buscar designación activa para este cargo en la fecha especificada
-            LocalDateTime fechaHora = fecha.atStartOfDay();
             List<Designacion> designacionesActivas = designacionRepository
-                    .findDesignacionActivaPorCargoYFecha(cargo.getId(), fechaHora);
+                    .findDesignacionActivaPorCargoYFecha(cargo.getId(), fecha);
 
             if (!designacionesActivas.isEmpty()) {
                 // Tomar la ultima designación activa para el cargo (el reemplazo)

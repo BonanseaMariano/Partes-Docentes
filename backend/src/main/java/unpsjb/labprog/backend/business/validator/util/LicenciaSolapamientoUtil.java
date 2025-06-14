@@ -1,6 +1,6 @@
 package unpsjb.labprog.backend.business.validator.util;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
@@ -34,8 +34,8 @@ public class LicenciaSolapamientoUtil {
      * @return Lista de licencias que se solapan con el período especificado
      */
     public static List<Licencia> buscarLicenciasSolapadas(Long personaDni,
-            LocalDateTime pedidoDesde,
-            LocalDateTime pedidoHasta,
+            LocalDate pedidoDesde,
+            LocalDate pedidoHasta,
             Integer licenciaId) {
         if (licenciaRepository == null) {
             throw new IllegalStateException("SolapamientoCalculadorUtil no ha sido inicializado correctamente");
@@ -55,8 +55,8 @@ public class LicenciaSolapamientoUtil {
      * @return true si existen licencias solapadas, false en caso contrario
      */
     public static boolean existenLicenciasSolapadas(Long personaDni,
-            LocalDateTime pedidoDesde,
-            LocalDateTime pedidoHasta,
+            LocalDate pedidoDesde,
+            LocalDate pedidoHasta,
             Integer licenciaId) {
         List<Licencia> licenciasSolapadas = buscarLicenciasSolapadas(
                 personaDni, pedidoDesde, pedidoHasta, licenciaId);
@@ -67,8 +67,8 @@ public class LicenciaSolapamientoUtil {
      * Versión simplificada sin licenciaId (para licencias nuevas)
      */
     public static boolean existenLicenciasSolapadas(Long personaDni,
-            LocalDateTime pedidoDesde,
-            LocalDateTime pedidoHasta) {
+            LocalDate pedidoDesde,
+            LocalDate pedidoHasta) {
         return existenLicenciasSolapadas(personaDni, pedidoDesde, pedidoHasta, null);
     }
 }

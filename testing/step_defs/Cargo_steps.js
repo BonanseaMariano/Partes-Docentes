@@ -34,9 +34,9 @@ Given('que es del tipo de designación {string}', function (tipoDesignacion) {
 Given('que tiene una carga horaria de {int} horas, con vigencia desde {string} hasta {string}', function (cargaHoraria, fechaDesdeCargo, fechaHastaCargo) {
     this.currentCargo.cargaHoraria = cargaHoraria;
 
-    // Cargar las fechas
-    this.currentCargo.fechaInicio = fechaDesdeCargo ? fechaDesdeCargo + "T03:00:00" : null;
-    this.currentCargo.fechaFin = fechaHastaCargo && fechaHastaCargo !== '' ? fechaHastaCargo + "T03:00:00" : null;
+    // Cargar las fechas - ahora solo fecha sin hora
+    this.currentCargo.fechaInicio = fechaDesdeCargo ? fechaDesdeCargo : null;
+    this.currentCargo.fechaFin = fechaHastaCargo && fechaHastaCargo !== '' ? fechaHastaCargo : null;
 
     // Inicializar horarios como un array vacío
     this.currentCargo.horarios = [];

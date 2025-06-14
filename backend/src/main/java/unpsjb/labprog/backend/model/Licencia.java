@@ -1,6 +1,6 @@
 package unpsjb.labprog.backend.model;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,18 +48,18 @@ public class Licencia {
     private int id;
 
     /**
-     * Fecha y hora de la solicitud de la licencia
+     * Fecha de la solicitud de la licencia
      */
     @NotNull
     @Column(name = "pedido_desde", nullable = false)
-    private LocalDateTime pedidoDesde;
+    private LocalDate pedidoDesde;
 
     /**
-     * Fecha y hora de la finalización de la licencia
+     * Fecha de la finalización de la licencia
      */
     @NotNull
     @Column(name = "pedido_hasta", nullable = false)
-    private LocalDateTime pedidoHasta;
+    private LocalDate pedidoHasta;
 
     /**
      * Si la licencia cuenta con certificado médico

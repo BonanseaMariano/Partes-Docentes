@@ -1,6 +1,6 @@
 package unpsjb.labprog.backend.model;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -48,17 +48,17 @@ public class Designacion {
     private String situacionRevista;
 
     /**
-     * Fecha y hora de inicio de la designación, no puede ser nula
+     * Fecha de inicio de la designación, no puede ser nula
      */
     @NotNull
     @Column(name = "fecha_inicio", nullable = false)
-    private LocalDateTime fechaInicio;
+    private LocalDate fechaInicio;
 
     /**
-     * Fecha y hora de finalización de la designación, opcional
+     * Fecha de finalización de la designación, opcional
      */
     @Column(name = "fecha_fin")
-    private LocalDateTime fechaFin;
+    private LocalDate fechaFin;
 
     // Relaciones
     /**

@@ -1,6 +1,6 @@
 package unpsjb.labprog.backend.business.validator.util;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
@@ -45,8 +45,8 @@ public class DesignacionCalculadorUtil {
      * @return Lista de designaciones activas en el período
      */
     public static List<Designacion> buscarDesignacionesActivas(Long personaDni,
-            LocalDateTime fechaDesde,
-            LocalDateTime fechaHasta) {
+            LocalDate fechaDesde,
+            LocalDate fechaHasta) {
         if (designacionRepository == null) {
             throw new IllegalStateException("DesignacionCalculadorUtil no ha sido inicializado correctamente");
         }
@@ -66,8 +66,8 @@ public class DesignacionCalculadorUtil {
      * contrario
      */
     public static boolean tieneDesignacionesActivasEnPeriodo(Long personaDni,
-            LocalDateTime fechaDesde,
-            LocalDateTime fechaHasta) {
+            LocalDate fechaDesde,
+            LocalDate fechaHasta) {
         List<Designacion> designaciones = buscarDesignacionesActivas(personaDni, fechaDesde, fechaHasta);
         return designaciones != null && !designaciones.isEmpty();
     }
