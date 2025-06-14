@@ -158,7 +158,6 @@ export class LicenciaDetailComponent implements OnInit, AfterViewChecked {
                 }
             },
             error: (error) => {
-                console.error('Error al guardar la licencia', error);
                 this.modalService.error(
                     "Error al guardar",
                     "Error al guardar la licencia",
@@ -199,7 +198,6 @@ export class LicenciaDetailComponent implements OnInit, AfterViewChecked {
                     }
                 },
                 error: (error) => {
-                    console.error('Error al cargar la licencia', error);
                     this.modalService.error(
                         "Error al cargar",
                         "Error al cargar la licencia",

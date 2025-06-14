@@ -104,7 +104,6 @@ export class ReporteConceptoComponent implements OnInit {
         this.reporteConcepto = null;
         this.personaService.obtenerReporteConcepto(this.anioSeleccionado).subscribe({
             next: (response: any) => {
-                console.log('Respuesta del servidor:', response);
                 this.reporteConcepto = response.data || response;
 
                 if (this.reporteConcepto) {
@@ -117,7 +116,6 @@ export class ReporteConceptoComponent implements OnInit {
                 }
             },
             error: (error: any) => {
-                console.error('Error al cargar reporte de concepto:', error);
                 this.modalService.error('Error', 'No se pudo cargar el reporte de concepto general. ' +
                     (error.error?.message || error.message || 'Error desconocido'));
             }
