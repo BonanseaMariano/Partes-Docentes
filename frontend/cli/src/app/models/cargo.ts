@@ -19,14 +19,14 @@ export interface Cargo {
     cargaHoraria: number;
 
     /**
-     * Fecha de inicio de vigencia del cargo.
+     * Fecha de inicio de vigencia del cargo (formato: YYYY-MM-DD)
      */
-    fechaInicio: Date;
+    fechaInicio: Date | string;
 
     /**
-     * Fecha de finalización de vigencia del cargo.
+     * Fecha de finalización de vigencia del cargo (formato: YYYY-MM-DD)
      */
-    fechaFin?: Date;
+    fechaFin?: Date | string;
 
     /**
      * Tipo de designación del cargo (ej. suplente, titular, interino).

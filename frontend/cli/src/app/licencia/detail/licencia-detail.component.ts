@@ -3,6 +3,7 @@ import { AfterViewChecked, ChangeDetectorRef, Component, OnInit, ViewChild, Temp
 import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { NgbCalendar, NgbDatepickerModule, NgbDateStruct, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
+import { DateUtils } from '../../utils/date-utils';
 import { Observable, of } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators';
 import { TypeaheadConfig } from '../../core/constants/typeahead.constants';
@@ -119,23 +120,13 @@ export class LicenciaDetailComponent implements OnInit, AfterViewChecked {
     }
 
     save(): void {
-        // Convertir las fechas de NgbDateStruct a objetos Date para el backend
+        // Convertir las fechas de NgbDateStruct a strings en formato YYYY-MM-DD para el backend
         if (this.fechaDesdeDate) {
-            const fechaDesde = new Date(
-                this.fechaDesdeDate.year,
-                this.fechaDesdeDate.month - 1,
-                this.fechaDesdeDate.day
-            );
-            this.licencia.pedidoDesde = fechaDesde;
+            this.licencia.pedidoDesde = DateUtils.ngbDateToString(this.fechaDesdeDate) as any;
         }
 
         if (this.fechaHastaDate) {
-            const fechaHasta = new Date(
-                this.fechaHastaDate.year,
-                this.fechaHastaDate.month - 1,
-                this.fechaHastaDate.day
-            );
-            this.licencia.pedidoHasta = fechaHasta;
+            this.licencia.pedidoHasta = DateUtils.ngbDateToString(this.fechaHastaDate) as any;
         }
 
         this.licenciaService.save(this.licencia, this.isNewLicencia).subscribe({
@@ -191,21 +182,11 @@ export class LicenciaDetailComponent implements OnInit, AfterViewChecked {
 
                     // Configurar los datepickers con las fechas recibidas
                     if (this.licencia.pedidoDesde) {
-                        const fechaDesde = new Date(this.licencia.pedidoDesde);
-                        this.fechaDesdeDate = {
-                            year: fechaDesde.getFullYear(),
-                            month: fechaDesde.getMonth() + 1,
-                            day: fechaDesde.getDate()
-                        };
+                        this.fechaDesdeDate = DateUtils.dateToNgbDate(this.licencia.pedidoDesde);
                     }
 
                     if (this.licencia.pedidoHasta) {
-                        const fechaHasta = new Date(this.licencia.pedidoHasta);
-                        this.fechaHastaDate = {
-                            year: fechaHasta.getFullYear(),
-                            month: fechaHasta.getMonth() + 1,
-                            day: fechaHasta.getDate()
-                        };
+                        this.fechaHastaDate = DateUtils.dateToNgbDate(this.licencia.pedidoHasta);
                     }
 
                     // Establecer los valores seleccionados para los typeahead

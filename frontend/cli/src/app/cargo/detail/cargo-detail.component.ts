@@ -3,6 +3,7 @@ import { AfterViewChecked, ChangeDetectorRef, Component, OnInit, ViewChild } fro
 import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { NgbCalendar, NgbDatepickerModule, NgbDateStruct, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
+import { DateUtils } from '../../utils/date-utils';
 import { Observable, of } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators';
 import { TypeaheadConfig } from '../../core/constants/typeahead.constants';
@@ -150,23 +151,13 @@ export class CargoDetailComponent implements OnInit, AfterViewChecked {
             return;
         }
 
-        // Convertir las fechas de NgbDateStruct a objetos Date para el backend
+        // Convertir las fechas de NgbDateStruct a strings en formato YYYY-MM-DD para el backend
         if (this.fechaInicioDate) {
-            const fechaInicio = new Date(
-                this.fechaInicioDate.year,
-                this.fechaInicioDate.month - 1,
-                this.fechaInicioDate.day
-            );
-            this.cargo.fechaInicio = fechaInicio;
+            this.cargo.fechaInicio = DateUtils.ngbDateToString(this.fechaInicioDate) as any;
         }
 
         if (this.fechaFinDate) {
-            const fechaFin = new Date(
-                this.fechaFinDate.year,
-                this.fechaFinDate.month - 1,
-                this.fechaFinDate.day
-            );
-            this.cargo.fechaFin = fechaFin;
+            this.cargo.fechaFin = DateUtils.ngbDateToString(this.fechaFinDate) as any;
         } else {
             // Si no hay fecha fin, establecer a undefined (en lugar de null)
             this.cargo.fechaFin = undefined;
@@ -241,21 +232,11 @@ export class CargoDetailComponent implements OnInit, AfterViewChecked {
 
                     // Convertir fechas del cargo a objetos NgbDateStruct
                     if (this.cargo.fechaInicio) {
-                        const fechaInicio = new Date(this.cargo.fechaInicio);
-                        this.fechaInicioDate = {
-                            year: fechaInicio.getFullYear(),
-                            month: fechaInicio.getMonth() + 1,
-                            day: fechaInicio.getDate()
-                        };
+                        this.fechaInicioDate = DateUtils.dateToNgbDate(this.cargo.fechaInicio);
                     }
 
                     if (this.cargo.fechaFin) {
-                        const fechaFin = new Date(this.cargo.fechaFin);
-                        this.fechaFinDate = {
-                            year: fechaFin.getFullYear(),
-                            month: fechaFin.getMonth() + 1,
-                            day: fechaFin.getDate()
-                        };
+                        this.fechaFinDate = DateUtils.dateToNgbDate(this.cargo.fechaFin);
                     }
 
                     // Verificar el estado inicial del formulario

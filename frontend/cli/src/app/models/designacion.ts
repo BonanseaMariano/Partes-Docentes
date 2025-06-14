@@ -13,14 +13,14 @@ export interface Designacion {
     situacionRevista?: string;
 
     /**
-     * Fecha y hora de inicio de la designación
+     * Fecha de inicio de la designación (formato: YYYY-MM-DD)
      */
-    fechaInicio: Date;
+    fechaInicio: Date | string;
 
     /**
-     * Fecha y hora de finalización de la designación
+     * Fecha de finalización de la designación (formato: YYYY-MM-DD)
      */
-    fechaFin?: Date;
+    fechaFin?: Date | string;
 
     /**
      * Persona a la que se le asigna la designación
