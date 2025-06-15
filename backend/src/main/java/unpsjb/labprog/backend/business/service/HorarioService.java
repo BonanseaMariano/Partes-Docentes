@@ -87,6 +87,132 @@ public class HorarioService {
     }
 
     /**
+     * Obtiene los horarios de espacios curriculares para un turno, año y fecha
+     * específicos
+     *
+     * @param turno Turno para filtrar las divisiones
+     * @param anio Año de la división para filtrar
+     * @param fecha Fecha para verificar la vigencia de cargos y designaciones
+     * @return HorarioDTO con la grilla de horarios organizada por día y hora
+     */
+    public HorarioDTO obtenerHorariosPorTurnoAnioYFecha(Turno turno, Integer anio, LocalDate fecha) {
+        // Buscar cargos de tipo ESPACIO_CURRICULAR vigentes para el turno, año y fecha
+        List<Cargo> cargosVigentes = cargoRepository.findEspaciosCurricularesByTurnoAndAnioAndFechaVigente(turno, anio, fecha);
+
+        // Crear la grilla de horarios
+        Map<DiaSemana, List<HoraEspacioCurricular>> grilla = inicializarGrilla();
+
+        // Procesar cada cargo vigente
+        for (Cargo cargo : cargosVigentes) {
+            // Buscar designación activa para este cargo en la fecha especificada
+            List<Designacion> designacionesActivas = designacionRepository
+                    .findDesignacionActivaPorCargoYFecha(cargo.getId(), fecha);
+
+            if (!designacionesActivas.isEmpty()) {
+                // Tomar la ultima designación activa para el cargo (el reemplazo)
+                Designacion designacionActiva = designacionesActivas.get(designacionesActivas.size() - 1);
+
+                // Procesar los horarios del cargo
+                for (Horario horario : cargo.getHorarios()) {
+                    String nombreDocente = obtenerNombreCompleto(designacionActiva.getPersona());
+                    String nombreDivision = obtenerNombreDivision(cargo);
+
+                    HoraEspacioCurricular horaEspacio = new HoraEspacioCurricular(
+                            horario.getHora(),
+                            cargo.getNombre(),
+                            nombreDivision,
+                            nombreDocente
+                    );
+
+                    // Agregar a la grilla en el día y hora correspondiente
+                    grilla.get(horario.getDia()).add(horaEspacio);
+                }
+            }
+        }
+
+        // Ordenar cada día por hora
+        for (DiaSemana dia : DiaSemana.values()) {
+            if (dia != DiaSemana.SABADO && dia != DiaSemana.DOMINGO) { // Solo días laborables
+                grilla.get(dia).sort((h1, h2) -> Integer.compare(h1.getHora(), h2.getHora()));
+            }
+        }
+
+        return new HorarioDTO(fecha, turno, grilla);
+    }
+
+    /**
+     * Obtiene los horarios de espacios curriculares para un turno y fecha
+     * específicos, con filtro opcional por año
+     *
+     * @param turno Turno para filtrar las divisiones
+     * @param anio Año de la división para filtrar (null para todos los años)
+     * @param fecha Fecha para verificar la vigencia de cargos y designaciones
+     * @return HorarioDTO con la grilla de horarios organizada por día y hora
+     */
+    public HorarioDTO obtenerHorarios(Turno turno, Integer anio, LocalDate fecha) {
+        List<Cargo> cargosVigentes;
+
+        if (anio != null) {
+            // Filtrar por año específico
+            cargosVigentes = cargoRepository.findEspaciosCurricularesByTurnoAndAnioAndFechaVigente(turno, anio, fecha);
+        } else {
+            // Obtener todos los años
+            cargosVigentes = cargoRepository.findEspaciosCurricularesByTurnoAndFechaVigente(turno, fecha);
+        }
+
+        // Crear la grilla de horarios
+        Map<DiaSemana, List<HoraEspacioCurricular>> grilla = inicializarGrilla();
+
+        // Procesar cada cargo vigente
+        for (Cargo cargo : cargosVigentes) {
+            // Buscar designación activa para este cargo en la fecha especificada
+            List<Designacion> designacionesActivas = designacionRepository
+                    .findDesignacionActivaPorCargoYFecha(cargo.getId(), fecha);
+
+            if (!designacionesActivas.isEmpty()) {
+                // Tomar la ultima designación activa para el cargo (el reemplazo)
+                Designacion designacionActiva = designacionesActivas.get(designacionesActivas.size() - 1);
+
+                // Procesar los horarios del cargo
+                for (Horario horario : cargo.getHorarios()) {
+                    String nombreDocente = obtenerNombreCompleto(designacionActiva.getPersona());
+                    String nombreDivision = obtenerNombreDivision(cargo);
+
+                    HoraEspacioCurricular horaEspacio = new HoraEspacioCurricular(
+                            horario.getHora(),
+                            cargo.getNombre(),
+                            nombreDivision,
+                            nombreDocente
+                    );
+
+                    // Agregar a la grilla en el día y hora correspondiente
+                    grilla.get(horario.getDia()).add(horaEspacio);
+                }
+            }
+        }
+
+        // Ordenar cada día por hora
+        for (DiaSemana dia : DiaSemana.values()) {
+            if (dia != DiaSemana.SABADO && dia != DiaSemana.DOMINGO) { // Solo días laborables
+                grilla.get(dia).sort((h1, h2) -> Integer.compare(h1.getHora(), h2.getHora()));
+            }
+        }
+
+        return new HorarioDTO(fecha, turno, grilla);
+    }
+
+    /**
+     * Obtiene los años disponibles para un turno y fecha específicos
+     *
+     * @param turno Turno para filtrar las divisiones
+     * @param fecha Fecha para verificar la vigencia de cargos y designaciones
+     * @return Lista de años únicos disponibles
+     */
+    public List<Integer> obtenerAniosDisponibles(Turno turno, LocalDate fecha) {
+        return cargoRepository.findAniosDisponiblesByTurnoAndFechaVigente(turno, fecha);
+    }
+
+    /**
      * Inicializa la grilla de horarios con listas vacías para cada día laboral
      * Los días se ordenan de lunes a viernes
      */

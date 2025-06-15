@@ -3,8 +3,10 @@
   <div class="card shadow-sm mb-4">
     <div class="card-header bg-light d-flex justify-content-between align-items-center">
       <h2 class="mb-0">
-        <i class="fa fa-clock me-2"></i> Horarios {{ horarioData ? (getNombreTurno(horarioData.turno) + ' - '
-        + horarioData.fecha) : (getNombreTurnoFromString(turnoSeleccionado) + formatearFecha(fechaSeleccionada))
+        <i class="fa fa-clock me-2"></i> Horarios {{ horarioData ? (getNombreTurno(horarioData.turno) +
+        (anioSeleccionado !== null ? ' - ' + anioSeleccionado + '°' : '') + ' - ' + horarioData.fecha) :
+        (getNombreTurnoFromString(turnoSeleccionado) +
+        (anioSeleccionado !== null ? ' - ' + anioSeleccionado + '°' : '') + ' - ' + formatearFecha(fechaSeleccionada))
         }}
       </h2>
       <div class="header-controls d-flex align-items-center">
@@ -18,6 +20,14 @@
                 <option value="TARDE">Tarde</option>
                 <option value="VESPERTINO">Vespertino</option>
                 <option value="NOCHE">Noche</option>
+              </select>
+            </div>
+            <div class="filtro-item me-3" *ngIf="aniosDisponibles.length > 0">
+              <label for="anio-header" class="form-label-inline me-2">Año:</label>
+              <select id="anio-header" class="form-select form-select-sm anio-selector" [(ngModel)]="anioSeleccionado"
+                (change)="onAnioChange()">
+                <option [ngValue]="null">Todos</option>
+                <option *ngFor="let anio of aniosDisponibles" [ngValue]="anio">{{ anio }}°</option>
               </select>
             </div>
             <div class="input-group input-group-sm">
@@ -101,7 +111,7 @@
         <div class="row justify-content-center">
           <div class="col-md-6">
             <div class="row mb-3">
-              <div class="col-md-6">
+              <div class="col-md-4">
                 <label for="turno-inicial" class="form-label">Turno:</label>
                 <select id="turno-inicial" class="form-select" [(ngModel)]="turnoSeleccionado"
                   (change)="onFiltrosChange()">
@@ -111,7 +121,15 @@
                   <option value="NOCHE">Noche</option>
                 </select>
               </div>
-              <div class="col-md-6">
+              <div class="col-md-4" *ngIf="aniosDisponibles.length > 0">
+                <label for="anio-inicial" class="form-label">Año:</label>
+                <select id="anio-inicial" class="form-select anio-selector" [(ngModel)]="anioSeleccionado"
+                  (change)="onAnioChange()">
+                  <option [ngValue]="null">Todos</option>
+                  <option *ngFor="let anio of aniosDisponibles" [ngValue]="anio">{{ anio }}°</option>
+                </select>
+              </div>
+              <div class="col-md-4">
                 <label for="fecha-inicial" class="form-label">Fecha:</label>
                 <div class="input-group">
                   <input id="fecha-inicial" class="form-control" placeholder="dd/mm/yyyy" name="dpInicial"
@@ -123,7 +141,8 @@
                 </div>
               </div>
             </div>
-            <p class="text-muted small">Selecciona un turno y fecha para ver los horarios</p>
+            <p class="text-muted small">Selecciona un turno{{ aniosDisponibles.length > 0 ? ', año (opcional)' : '' }} y
+              fecha para ver los horarios</p>
           </div>
         </div>
       </div>

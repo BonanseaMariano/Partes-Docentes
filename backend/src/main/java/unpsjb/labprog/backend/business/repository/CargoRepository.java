@@ -79,4 +79,42 @@ public interface CargoRepository extends JpaRepository<Cargo, Integer> {
             @Param("turno") Turno turno,
             @Param("fecha") java.time.LocalDate fecha);
 
+    /**
+     * Busca cargos de tipo ESPACIO_CURRICULAR con división de un turno y año
+     * específicos que estén vigentes en una fecha determinada
+     *
+     * @param turno Turno de la división
+     * @param anio Año de la división
+     * @param fecha Fecha para verificar vigencia del cargo
+     * @return Lista de cargos que cumplen los criterios
+     */
+    @Query("SELECT c FROM Cargo c JOIN c.division d "
+            + "WHERE c.tipoDesignacion = 'ESPACIO_CURRICULAR' "
+            + "AND d.turno = :turno "
+            + "AND d.anio = :anio "
+            + "AND (c.fechaInicio IS NULL OR DATE(c.fechaInicio) <= :fecha) "
+            + "AND (c.fechaFin IS NULL OR DATE(c.fechaFin) >= :fecha)")
+    List<Cargo> findEspaciosCurricularesByTurnoAndAnioAndFechaVigente(
+            @Param("turno") Turno turno,
+            @Param("anio") Integer anio,
+            @Param("fecha") java.time.LocalDate fecha);
+
+    /**
+     * Obtiene los años únicos de divisiones que tienen cargos de tipo
+     * ESPACIO_CURRICULAR vigentes para un turno específico
+     *
+     * @param turno Turno de la división
+     * @param fecha Fecha para verificar vigencia del cargo
+     * @return Lista de años únicos ordenados
+     */
+    @Query("SELECT DISTINCT d.anio FROM Cargo c JOIN c.division d "
+            + "WHERE c.tipoDesignacion = 'ESPACIO_CURRICULAR' "
+            + "AND d.turno = :turno "
+            + "AND (c.fechaInicio IS NULL OR DATE(c.fechaInicio) <= :fecha) "
+            + "AND (c.fechaFin IS NULL OR DATE(c.fechaFin) >= :fecha) "
+            + "ORDER BY d.anio")
+    List<Integer> findAniosDisponiblesByTurnoAndFechaVigente(
+            @Param("turno") Turno turno,
+            @Param("fecha") java.time.LocalDate fecha);
+
 }

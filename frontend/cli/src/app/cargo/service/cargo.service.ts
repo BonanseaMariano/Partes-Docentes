@@ -137,4 +137,25 @@ export class CargoService {
     obtenerHorarios(turno: Turno, fecha: string): Observable<DataPackage> {
         return this.http.get<DataPackage>(encodeURI(`${this.cargosUrl}/horarios/${turno}/${fecha}`));
     }
+
+    /**
+     * Obtiene los horarios de espacios curriculares para un turno, año y fecha específicos
+     * @param turno Turno para filtrar las divisiones
+     * @param anio Año de la división para filtrar
+     * @param fecha Fecha para verificar la vigencia de cargos y designaciones (formato: yyyy-MM-dd)
+     * @returns Observable con los horarios organizados en una grilla semanal
+     */
+    obtenerHorariosConAnio(turno: Turno, anio: number, fecha: string): Observable<DataPackage> {
+        return this.http.get<DataPackage>(encodeURI(`${this.cargosUrl}/horarios/${turno}/${anio}/${fecha}`));
+    }
+
+    /**
+     * Obtiene los años disponibles para un turno y fecha específicos
+     * @param turno Turno para filtrar las divisiones
+     * @param fecha Fecha para verificar la vigencia de cargos y designaciones (formato: yyyy-MM-dd)
+     * @returns Observable con la lista de años disponibles
+     */
+    obtenerAniosDisponibles(turno: Turno, fecha: string): Observable<DataPackage> {
+        return this.http.get<DataPackage>(encodeURI(`${this.cargosUrl}/horarios/anios/${turno}/${fecha}`));
+    }
 }
