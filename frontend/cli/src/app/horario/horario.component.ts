@@ -2,17 +2,21 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NgbDatepickerModule, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDateParserFormatter, NgbDatepickerModule, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { firstValueFrom } from 'rxjs';
 import { CargoService } from '../cargo/service/cargo.service';
-import { HorarioDTO, HoraEspacioCurricular } from '../models/horario-dto';
-import { Turno } from '../models/turno';
 import { DiaSemana } from '../models/horario';
+import { HoraEspacioCurricular, HorarioDTO } from '../models/horario-dto';
+import { Turno } from '../models/turno';
+import { ArgentinaDateParserFormatter } from '../utils/argentina-date-formatter';
 
 @Component({
   selector: 'app-horario',
   standalone: true,
   imports: [CommonModule, FormsModule, NgbDatepickerModule],
+  providers: [
+    { provide: NgbDateParserFormatter, useClass: ArgentinaDateParserFormatter }
+  ],
   templateUrl: './horario.component.html',
   styleUrl: './horario.component.css'
 })
@@ -46,7 +50,7 @@ export class HorarioComponent implements OnInit {
     this.route.params.subscribe(params => {
       if (params['turno']) {
         this.turnoSeleccionado = params['turno'];
-        
+
         // Verificar si tenemos año y fecha en la URL
         if (params['anio'] && params['fecha'] && !isNaN(params['anio'])) {
           // Estructura: /horarios/:turno/:anio/:fecha
@@ -55,10 +59,10 @@ export class HorarioComponent implements OnInit {
         } else if (params['fecha']) {
           // Estructura antigua: /horarios/:turno/:fecha (sin año específico)
           // En este caso, cargar años disponibles primero y seleccionar el primero
-          this.anioSeleccionado = null; 
+          this.anioSeleccionado = null;
           this.fechaSeleccionada = this.stringAFecha(params['fecha']);
         }
-        
+
         this.cargarAniosDisponibles().then(() => {
           this.cargarHorarios();
         });
@@ -85,10 +89,10 @@ export class HorarioComponent implements OnInit {
       const fechaFormateada = this.formatearFecha(this.fechaSeleccionada);
 
       const response = await firstValueFrom(this.cargoService.obtenerAniosDisponibles(turnoEnum, fechaFormateada));
-      
+
       if (response && response.status === 200) {
         this.aniosDisponibles = response.data as number[];
-        
+
         // Si no hay año seleccionado y hay años disponibles, mantener null para "todos los años"
         if (this.anioSeleccionado === null) {
           // Mantener null (todos los años) como opción por defecto
@@ -168,7 +172,7 @@ export class HorarioComponent implements OnInit {
    */
   private navegarConParametros(): void {
     const fechaFormateada = this.formatearFecha(this.fechaSeleccionada);
-    
+
     // Si hay año seleccionado (y no es null), usar la ruta con año
     if (this.anioSeleccionado !== null) {
       this.router.navigate(['/cargos/horarios', this.turnoSeleccionado, this.anioSeleccionado, fechaFormateada]);

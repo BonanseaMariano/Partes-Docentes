@@ -24,7 +24,7 @@ export class DateUtils {
     static dateToNgbDate(date: Date | string | null | undefined): NgbDateStruct | null {
         if (!date) return null;
 
-        const fechaDate = date instanceof Date ? date : new Date(date);
+        const fechaDate = this.toLocalDate(date);
 
         if (isNaN(fechaDate.getTime())) return null;
 
@@ -46,5 +46,41 @@ export class DateUtils {
 
         const date = new Date(dateString);
         return !isNaN(date.getTime());
+    }
+
+    /**
+     * Convierte una fecha en formato yyyy-MM-dd a Date respetando la zona horaria local
+     * Evita el problema de conversión UTC que causa diferencias de un día
+     * 
+     * @param dateString Fecha en formato yyyy-MM-dd
+     * @returns Date en zona horaria local
+     */
+    static parseLocalDate(dateString: string | null | undefined): Date {
+        if (!dateString) return new Date();
+
+        // Si es formato ISO con tiempo, usar Date constructor normal
+        if (dateString.includes('T')) {
+            return new Date(dateString);
+        }
+
+        // Para fechas en formato yyyy-MM-dd, parsing local
+        const [year, month, day] = dateString.split('-').map(Number);
+        return new Date(year, month - 1, day); // month es 0-indexado en JavaScript
+    }
+
+    /**
+     * Convierte una fecha (Date o string) a Date asegurando zona horaria local
+     * 
+     * @param value Fecha como Date o string
+     * @returns Date en zona horaria local
+     */
+    static toLocalDate(value: Date | string | null | undefined): Date {
+        if (!value) return new Date();
+
+        if (value instanceof Date) {
+            return value;
+        }
+
+        return this.parseLocalDate(value);
     }
 }

@@ -2,8 +2,7 @@ import { CommonModule, Location } from '@angular/common';
 import { AfterViewChecked, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { NgbCalendar, NgbDatepickerModule, NgbDateStruct, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
-import { DateUtils } from '../../utils/date-utils';
+import { NgbCalendar, NgbDateParserFormatter, NgbDatepickerModule, NgbDateStruct, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 import { Observable, of } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators';
 import { TypeaheadConfig } from '../../core/constants/typeahead.constants';
@@ -15,6 +14,8 @@ import { DiaSemana, DiaSemanaLabels, Horario } from '../../models/horario';
 import { TipoDesignacion } from '../../models/tipo-designacion';
 import { Turno } from '../../models/turno';
 import { TipoDesignacionPipe } from '../../pipes/tipo-designacion.pipe';
+import { ArgentinaDateParserFormatter } from '../../utils/argentina-date-formatter';
+import { DateUtils } from '../../utils/date-utils';
 import { CargoService } from '../service/cargo.service';
 
 
@@ -22,6 +23,9 @@ import { CargoService } from '../service/cargo.service';
     selector: 'app-cargo-detail',
     standalone: true,
     imports: [CommonModule, FormsModule, NgbDatepickerModule, NgbTypeaheadModule, TipoDesignacionPipe],
+    providers: [
+        { provide: NgbDateParserFormatter, useClass: ArgentinaDateParserFormatter }
+    ],
     templateUrl: './cargo-detail.component.html',
     styleUrl: './cargo-detail.component.css'
 })

@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NgbDatepickerModule, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDateParserFormatter, NgbDatepickerModule, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { DesignacionService } from '../designacion/service/designacion.service';
 import { LicenciaService } from '../licencia/service/licencia.service';
 import { DataPackage } from '../models/data-package';
@@ -11,11 +11,16 @@ import { DocenteLicencia, ParteDiario } from '../models/parte-diario';
 import { DniFormatPipe } from '../pipes/dni-format.pipe';
 import { FechaFormatPipe } from '../pipes/fecha-format.pipe';
 import { PopupService } from '../popup/popup.service';
+import { ArgentinaDateParserFormatter } from '../utils/argentina-date-formatter';
+import { DateUtils } from '../utils/date-utils';
 
 @Component({
     selector: 'app-parte-diario',
     standalone: true,
     imports: [CommonModule, FormsModule, NgbDatepickerModule, DniFormatPipe, FechaFormatPipe],
+    providers: [
+        { provide: NgbDateParserFormatter, useClass: ArgentinaDateParserFormatter }
+    ],
     templateUrl: './parte-diario.component.html',
     styleUrl: './parte-diario.component.css'
 })
@@ -91,15 +96,15 @@ export class ParteDiarioComponent implements OnInit {
                         if (responseData.ParteDiario) {
                             // Mapeamos los datos correctamente desde la estructura de la API
                             this.parteDiario = {
-                                fecha: new Date(responseData.ParteDiario.Fecha),
+                                fecha: DateUtils.parseLocalDate(responseData.ParteDiario.Fecha),
                                 docentes: responseData.ParteDiario.Docentes.map((docente: any) => ({
                                     dni: docente.DNI,
                                     nombre: docente.Nombre,
                                     apellido: docente.Apellido,
                                     articulo: docente.Artículo,
                                     descripcion: docente.Descripción,
-                                    desde: new Date(docente.Desde),
-                                    hasta: new Date(docente.Hasta),
+                                    desde: DateUtils.parseLocalDate(docente.Desde),
+                                    hasta: DateUtils.parseLocalDate(docente.Hasta),
                                     reemplazos: docente.Reemplazos || []
                                 }))
                             };

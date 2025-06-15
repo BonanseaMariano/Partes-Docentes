@@ -1,27 +1,31 @@
 import { CommonModule, Location } from '@angular/common';
-import { AfterViewChecked, ChangeDetectorRef, Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
+import { AfterViewChecked, ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { NgbCalendar, NgbDatepickerModule, NgbDateStruct, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
-import { DateUtils } from '../../utils/date-utils';
+import { NgbCalendar, NgbDateParserFormatter, NgbDatepickerModule, NgbDateStruct, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 import { Observable, of } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators';
 import { TypeaheadConfig } from '../../core/constants/typeahead.constants';
 import { ModalService } from '../../modal/modal.service';
 import { ArticuloLicencia } from '../../models/articulo-licencia';
+import { Estado } from '../../models/estado';
 import { Licencia } from '../../models/licencia';
 import { Persona } from '../../models/persona';
 import { PersonaService } from '../../persona/service/persona.service';
 import { DniFormatPipe } from '../../pipes/dni-format.pipe';
+import { PopupComponent } from '../../popup/popup.component';
+import { ArgentinaDateParserFormatter } from '../../utils/argentina-date-formatter';
+import { DateUtils } from '../../utils/date-utils';
 import { ArticuloLicenciaService } from '../service/articulo-licencia.service';
 import { LicenciaService } from '../service/licencia.service';
-import { Estado } from '../../models/estado';
-import { PopupComponent } from '../../popup/popup.component';
 
 @Component({
     selector: 'app-licencia-detail',
     standalone: true,
     imports: [CommonModule, FormsModule, NgbDatepickerModule, NgbTypeaheadModule, DniFormatPipe, PopupComponent],
+    providers: [
+        { provide: NgbDateParserFormatter, useClass: ArgentinaDateParserFormatter }
+    ],
     templateUrl: './licencia-detail.component.html',
     styles: `
     .input-group-text {

@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { DataPackage } from '../../models/data-package';
 import { Designacion } from '../../models/designacion';
+import { DateUtils } from '../../utils/date-utils';
 
 @Injectable({
     providedIn: 'root'
@@ -49,7 +50,7 @@ export class DesignacionService {
         // Si no hay fecha de fin o es posterior a la fecha actual, está activa
         if (!designacion.fechaFin) return true;
 
-        const fechaFin = designacion.fechaFin instanceof Date ? designacion.fechaFin : new Date(designacion.fechaFin);
+        const fechaFin = DateUtils.toLocalDate(designacion.fechaFin);
         return fechaFin >= new Date();
     }
 }

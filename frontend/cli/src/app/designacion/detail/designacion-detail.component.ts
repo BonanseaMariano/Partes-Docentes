@@ -2,8 +2,7 @@ import { CommonModule, Location } from '@angular/common';
 import { AfterViewChecked, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { NgbCalendar, NgbDatepickerModule, NgbDateStruct, NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { DateUtils } from '../../utils/date-utils';
+import { NgbCalendar, NgbDateParserFormatter, NgbDatepickerModule, NgbDateStruct, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { Observable, of } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators';
 import { CargoService } from '../../cargo/service/cargo.service';
@@ -17,6 +16,8 @@ import { TipoDesignacion } from '../../models/tipo-designacion';
 import { PersonaService } from '../../persona/service/persona.service';
 import { DniFormatPipe } from '../../pipes/dni-format.pipe';
 import { TipoDesignacionPipe } from '../../pipes/tipo-designacion.pipe';
+import { ArgentinaDateParserFormatter } from '../../utils/argentina-date-formatter';
+import { DateUtils } from '../../utils/date-utils';
 import { DesignacionService } from '../service/designacion.service';
 
 @Component({
@@ -30,6 +31,9 @@ import { DesignacionService } from '../service/designacion.service';
         NgbDatepickerModule,
         TipoDesignacionPipe,
         DniFormatPipe
+    ],
+    providers: [
+        { provide: NgbDateParserFormatter, useClass: ArgentinaDateParserFormatter }
     ],
     templateUrl: './designacion-detail.component.html',
     styles: `
