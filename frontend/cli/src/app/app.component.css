@@ -1,11 +1,11 @@
 /* ======= NAVBAR MODERNO Y PROFESIONAL ======= */
 .navbar {
-    background: linear-gradient(135deg, 
-        var(--color-primary) 0%, 
-        var(--color-primary-dark) 60%, 
-        var(--color-primary-darker) 100%) !important;
-    box-shadow: 0 2px 20px rgba(13, 110, 253, 0.15), 
-                0 8px 40px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(135deg,
+            var(--color-primary) 0%,
+            var(--color-primary-dark) 60%,
+            var(--color-primary-darker) 100%) !important;
+    box-shadow: 0 2px 20px rgba(13, 110, 253, 0.15),
+        0 8px 40px rgba(0, 0, 0, 0.1);
     padding: 0.5rem 0;
     backdrop-filter: blur(10px);
     border-bottom: none;
@@ -27,12 +27,10 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(
-        90deg,
-        rgba(255, 255, 255, 0.1) 0%,
-        rgba(255, 255, 255, 0.05) 50%,
-        rgba(255, 255, 255, 0.1) 100%
-    );
+    background: linear-gradient(90deg,
+            rgba(255, 255, 255, 0.1) 0%,
+            rgba(255, 255, 255, 0.05) 50%,
+            rgba(255, 255, 255, 0.1) 100%);
     pointer-events: none;
 }
 
@@ -44,18 +42,23 @@
     left: 0;
     right: 0;
     height: 3px;
-    background: linear-gradient(
-        90deg,
-        rgba(255, 255, 255, 0.3),
-        rgba(255, 255, 255, 0.8),
-        rgba(255, 255, 255, 0.3)
-    );
+    background: linear-gradient(90deg,
+            rgba(255, 255, 255, 0.3),
+            rgba(255, 255, 255, 0.8),
+            rgba(255, 255, 255, 0.3));
     animation: shimmer 3s ease-in-out infinite;
 }
 
 @keyframes shimmer {
-    0%, 100% { opacity: 0.3; }
-    50% { opacity: 0.8; }
+
+    0%,
+    100% {
+        opacity: 0.3;
+    }
+
+    50% {
+        opacity: 0.8;
+    }
 }
 
 /* ======= MARCA/LOGO ======= */
@@ -69,6 +72,8 @@
     z-index: 10;
     transition: all 0.3s ease;
     padding: 0.25rem 0;
+    cursor: pointer;
+    filter: brightness(1);
 }
 
 .navbar-brand:hover {
@@ -116,12 +121,14 @@
     color: rgba(255, 255, 255, 0.95) !important;
     padding: 0.6rem 0.8rem;
     border-radius: 6px;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: none;
+    /* GSAP controlará las transiciones */
     position: relative;
     overflow: hidden;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     border: 1px solid transparent;
+    transform: scale(1);
 }
 
 /* Efecto de hover moderno */
@@ -141,12 +148,10 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(255, 255, 255, 0.2),
-        transparent
-    );
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.2),
+            transparent);
     transition: left 0.5s;
 }
 
@@ -179,15 +184,25 @@
 .dropdown-menu {
     background: rgba(255, 255, 255, 0.98);
     backdrop-filter: blur(20px);
-    border: none;
+    border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 12px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1),
-                0 2px 8px rgba(0, 0, 0, 0.05);
+        0 2px 8px rgba(0, 0, 0, 0.05);
     padding: 0.5rem 0;
     margin-top: 0.5rem;
     min-width: 220px;
     animation: slideInDown 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     overflow: hidden;
+    transform-origin: top center;
+    opacity: 0;
+    /* Inicialmente oculto para GSAP */
+    transform: scale(0.95) translateY(-10px);
+}
+
+.dropdown-menu.show {
+    /* Cuando se muestra, GSAP manejará la animación */
+    opacity: 1;
+    transform: scale(1) translateY(0);
 }
 
 .dropdown-menu::before {
@@ -208,47 +223,53 @@
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-medium);
     color: var(--color-text);
-    padding: 0.75rem 1.25rem;
+    padding: 0.6rem 1rem;
     border: none;
     border-left: 3px solid transparent;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: none;
+    /* GSAP controlará las transiciones */
     position: relative;
     overflow: hidden;
+    color: var(--text-color);
+    border-radius: 4px;
+    margin: 0 0.5rem;
+    font-weight: var(--font-weight-medium);
+    display: flex;
+    align-items: center;
 }
 
-.dropdown-item:hover {
-    background: linear-gradient(135deg, 
-        var(--color-primary-light), 
-        rgba(13, 110, 253, 0.08));
-    color: var(--color-primary-darker);
-    border-left: 3px solid var(--color-primary);
-    transform: translateX(5px);
-    padding-left: 1.5rem;
+/* Efecto de shimmer para dropdown items */
+.dropdown-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(13, 110, 253, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.dropdown-item:hover::before {
+    left: 100%;
 }
 
 .dropdown-item i {
-    color: var(--color-primary);
-    width: 20px;
+    margin-right: 0.5rem;
+    width: 16px;
     text-align: center;
-    margin-right: 10px;
-    font-size: 0.9rem;
-    transition: all 0.3s ease;
-}
-
-.dropdown-item:hover i {
-    transform: scale(1.1);
-    color: var(--color-primary-dark);
+    transition: none;
+    /* GSAP controlará las transiciones */
 }
 
 /* ======= BOTÓN HAMBURGUESA MEJORADO ======= */
 .navbar-toggler {
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-radius: 8px;
-    padding: 0.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 6px;
+    padding: 0.4rem;
+    transition: none;
+    /* GSAP controlará las transiciones */
     background: rgba(255, 255, 255, 0.1);
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
 }
 
 .navbar-toggler:hover {
@@ -258,16 +279,12 @@
 }
 
 .navbar-toggler:focus {
-    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25);
 }
 
 .navbar-toggler-icon {
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.9%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='m4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
-    transition: transform 0.3s ease;
-}
-
-.navbar-toggler:hover .navbar-toggler-icon {
-    transform: rotate(90deg);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.95%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    filter: brightness(1.1);
 }
 
 /* ======= RESPONSIVIDAD MEJORADA ======= */
@@ -280,16 +297,21 @@
         padding: 1rem;
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     }
-    
+
     .navbar-nav .nav-link {
         margin: 0.25rem 0;
         text-align: center;
     }
-    
+
     .dropdown-menu {
-        background: rgba(255, 255, 255, 0.95);
-        margin: 0.5rem 0;
+        position: static !important;
+        float: none;
+        box-shadow: none;
+        border: none;
+        background: rgba(255, 255, 255, 0.05);
+        margin: 0.5rem 0.5rem 0 0.5rem;
         border-radius: 8px;
+        backdrop-filter: none;
     }
 }
 
@@ -297,15 +319,15 @@
     .navbar-brand {
         font-size: 1.1rem;
     }
-    
+
     .navbar-brand img {
         height: 32px;
     }
-    
+
     .navbar-brand span {
         margin-left: 6px;
     }
-    
+
     .navbar {
         border-bottom-left-radius: 6px;
         border-bottom-right-radius: 6px;
@@ -318,6 +340,7 @@
         opacity: 0;
         transform: translateY(-10px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -326,12 +349,14 @@
 
 /* ======= EFECTOS DE SCROLL ======= */
 .navbar.scrolled {
-    background: linear-gradient(135deg, 
-        rgba(13, 110, 253, 0.95) 0%, 
-        rgba(11, 94, 215, 0.95) 60%, 
-        rgba(10, 88, 202, 0.95) 100%) !important;
+    background: linear-gradient(135deg,
+            rgba(13, 110, 253, 0.95) 0%,
+            rgba(11, 94, 215, 0.95) 60%,
+            rgba(10, 88, 202, 0.95) 100%) !important;
     backdrop-filter: blur(15px);
     box-shadow: 0 2px 30px rgba(13, 110, 253, 0.2);
+    transition: none;
+    /* Deshabilitar CSS transitions para que GSAP tenga control total */
 }
 
 /* ======= CONTENIDO PRINCIPAL ======= */
@@ -350,9 +375,9 @@
 
 /* ======= FOOTER MEJORADO ======= */
 footer {
-    background: linear-gradient(135deg, 
-        var(--color-background) 0%, 
-        #ffffff 100%) !important;
+    background: linear-gradient(135deg,
+            var(--color-background) 0%,
+            #ffffff 100%) !important;
     border-top: 1px solid var(--color-border);
     color: var(--color-text-muted);
     padding: 2rem 0;
@@ -368,10 +393,254 @@ footer::before {
     left: 0;
     right: 0;
     height: 2px;
-    background: linear-gradient(90deg, 
-        transparent, 
-        var(--color-primary), 
-        transparent);
+    background: linear-gradient(90deg,
+            transparent,
+            var(--color-primary),
+            transparent);
+}
+
+footer small {
+    font-family: var(--font-primary);
+    font-weight: var(--font-weight-medium);
+    letter-spacing: 0.5px;
+}
+
+/* ======= ANIMACIONES GSAP NAVBAR ======= */
+
+/* Optimización para animaciones */
+.navbar,
+.navbar-brand,
+.nav-item,
+.nav-link,
+.dropdown-menu,
+.dropdown-item {
+    will-change: transform, opacity;
+}
+
+/* Mejoras para animaciones de scroll */
+.navbar.scrolled {
+    /* Las propiedades se aplicarán via GSAP */
+    transition: none;
+    /* Deshabilitar CSS transitions para que GSAP tenga control total */
+}
+
+/* Efectos de hover mejorados con GSAP */
+.navbar-brand {
+    cursor: pointer;
+    filter: brightness(1);
+    transition: none;
+    /* GSAP controlará las transiciones */
+}
+
+/* Nav links optimizados para GSAP */
+.navbar-nav .nav-link {
+    transition: none;
+    /* GSAP controlará las transiciones */
+    transform: scale(1);
+}
+
+/* Dropdowns optimizados para animaciones */
+.dropdown-menu {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    padding: 0.5rem 0;
+    margin-top: 0.5rem;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.95);
+    transform-origin: top center;
+    opacity: 0;
+    /* Inicialmente oculto para GSAP */
+    transform: scale(0.95) translateY(-10px);
+}
+
+.dropdown-menu.show {
+    /* Cuando se muestra, GSAP manejará la animación */
+    opacity: 1;
+    transform: scale(1) translateY(0);
+}
+
+.dropdown-menu::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: 20px;
+    width: 16px;
+    height: 16px;
+    background: white;
+    transform: rotate(45deg);
+    border-radius: 2px;
+    box-shadow: -2px -2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.dropdown-item {
+    padding: 0.6rem 1rem;
+    transition: none;
+    /* GSAP controlará las transiciones */
+    color: var(--text-color);
+    border-radius: 4px;
+    margin: 0 0.5rem;
+    font-weight: var(--font-weight-medium);
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Efecto de shimmer para dropdown items */
+.dropdown-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(13, 110, 253, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.dropdown-item:hover::before {
+    left: 100%;
+}
+
+.dropdown-item i {
+    margin-right: 0.5rem;
+    width: 16px;
+    text-align: center;
+    transition: none;
+    /* GSAP controlará las transiciones */
+}
+
+/* ======= BOTÓN HAMBURGUESA MEJORADO ======= */
+.navbar-toggler {
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 6px;
+    padding: 0.4rem;
+    transition: none;
+    /* GSAP controlará las transiciones */
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.navbar-toggler:focus {
+    box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25);
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.95%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    filter: brightness(1.1);
+}
+
+/* ======= RESPONSIVIDAD MEJORADA ======= */
+@media (max-width: 991.98px) {
+    .navbar-collapse {
+        background: rgba(13, 110, 253, 0.95);
+        backdrop-filter: blur(20px);
+        margin-top: 1rem;
+        border-radius: 12px;
+        padding: 1rem;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar-nav .nav-link {
+        margin: 0.25rem 0;
+        text-align: center;
+    }
+
+    .dropdown-menu {
+        position: static !important;
+        float: none;
+        box-shadow: none;
+        border: none;
+        background: rgba(255, 255, 255, 0.05);
+        margin: 0.5rem 0.5rem 0 0.5rem;
+        border-radius: 8px;
+        backdrop-filter: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .navbar-brand {
+        font-size: 1.1rem;
+    }
+
+    .navbar-brand img {
+        height: 32px;
+    }
+
+    .navbar-brand span {
+        margin-left: 6px;
+    }
+
+    .navbar {
+        border-bottom-left-radius: 6px;
+        border-bottom-right-radius: 6px;
+    }
+}
+
+/* ======= ANIMACIONES PERSONALIZADAS ======= */
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ======= EFECTOS DE SCROLL ======= */
+.navbar.scrolled {
+    background: linear-gradient(135deg,
+            rgba(13, 110, 253, 0.95) 0%,
+            rgba(11, 94, 215, 0.95) 60%,
+            rgba(10, 88, 202, 0.95) 100%) !important;
+    backdrop-filter: blur(15px);
+    box-shadow: 0 2px 30px rgba(13, 110, 253, 0.2);
+    transition: none;
+    /* Deshabilitar CSS transitions para que GSAP tenga control total */
+}
+
+/* ======= CONTENIDO PRINCIPAL ======= */
+.main-content {
+    margin-top: 75px;
+    padding-top: 1rem;
+    min-height: calc(100vh - 75px);
+}
+
+@media (max-width: 768px) {
+    .main-content {
+        margin-top: 70px;
+        min-height: calc(100vh - 70px);
+    }
+}
+
+/* ======= FOOTER MEJORADO ======= */
+footer {
+    background: linear-gradient(135deg,
+            var(--color-background) 0%,
+            #ffffff 100%) !important;
+    border-top: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    padding: 2rem 0;
+    margin-top: auto;
+    position: relative;
+    overflow: hidden;
+}
+
+footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg,
+            transparent,
+            var(--color-primary),
+            transparent);
 }
 
 footer small {

@@ -1,9 +1,10 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit, HostListener, AfterViewInit, ElementRef } from '@angular/core';
 import { RouterOutlet, Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { NgbDropdownModule, NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
 import { ValidationService } from './core/services/validation.service';
 import { ModalService } from './modal/modal.service';
+import { NavbarAnimationService } from './navbar-animation.service';
 
 @Component({
   selector: 'app-root',
@@ -12,22 +13,37 @@ import { ModalService } from './modal/modal.service';
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, AfterViewInit {
   title = 'Sistema de Gestión de Novedades Docentes';
   isMenuCollapsed = true;
   isNavbarScrolled = false;
-  
+
   // Fecha actual para el enlace del parte diario
   fechaHoy = new Date();
 
   constructor(
     private validationService: ValidationService,
     private modalService: ModalService,
-    private router: Router
-  ) {}
+    private router: Router,
+    private elementRef: ElementRef,
+    private navbarAnimationService: NavbarAnimationService
+  ) { }
 
   ngOnInit(): void {
     // Inicialización del componente
+  }
+
+  ngAfterViewInit(): void {
+    // Configurar animaciones iniciales del navbar
+    this.navbarAnimationService.animateInitialEntrance(this.elementRef);
+
+    // Configurar efectos de hover
+    this.navbarAnimationService.setupHoverEffects(this.elementRef);
+
+    // Animar elementos activos si existen
+    setTimeout(() => {
+      this.navbarAnimationService.animateActiveElements(this.elementRef);
+    }, 1000);
   }
 
   /**
@@ -36,14 +52,58 @@ export class AppComponent implements OnInit {
   @HostListener('window:scroll', ['$event'])
   onWindowScroll(): void {
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+    const wasScrolled = this.isNavbarScrolled;
     this.isNavbarScrolled = scrollTop > 50;
+
+    // Solo animar si cambió el estado
+    if (wasScrolled !== this.isNavbarScrolled) {
+      this.navbarAnimationService.animateScrollEffect(this.elementRef, this.isNavbarScrolled);
+    }
   }
 
   /**
    * Cierra el menú móvil cuando se hace clic en un enlace
    */
   closeNavbar(): void {
-    this.isMenuCollapsed = true;
+    if (!this.isMenuCollapsed) {
+      this.navbarAnimationService.animateMobileMenuCollapse(this.elementRef);
+      setTimeout(() => {
+        this.isMenuCollapsed = true;
+      }, 300);
+    } else {
+      this.isMenuCollapsed = true;
+    }
+  }
+
+  /**
+   * Toggle del menú móvil con animaciones
+   */
+  toggleMobileMenu(): void {
+    if (this.isMenuCollapsed) {
+      this.isMenuCollapsed = false;
+      setTimeout(() => {
+        this.navbarAnimationService.animateMobileMenuExpand(this.elementRef);
+      }, 10);
+    } else {
+      this.navbarAnimationService.animateMobileMenuCollapse(this.elementRef);
+      setTimeout(() => {
+        this.isMenuCollapsed = true;
+      }, 300);
+    }
+  }
+
+  /**
+   * Maneja la apertura de dropdowns
+   */
+  onDropdownOpen(dropdownId: string): void {
+    this.navbarAnimationService.animateDropdownOpen(dropdownId, this.elementRef);
+  }
+
+  /**
+   * Maneja el cierre de dropdowns
+   */
+  onDropdownClose(dropdownId: string): void {
+    this.navbarAnimationService.animateDropdownClose(dropdownId, this.elementRef);
   }
 
   /**
@@ -67,13 +127,13 @@ export class AppComponent implements OnInit {
   crearNuevoCargo(): void {
     this.validationService.checkDivisiones().subscribe(result => {
       const hayDivisiones = result.isValid;
-      
+
       // Si hay divisiones, navegamos directamente
       if (hayDivisiones) {
         this.router.navigate(['/cargos/new']);
         return;
       }
-      
+
       // Si no hay divisiones, mostramos confirmación
       this.modalService.confirm(
         result.errorTitle || 'No existen divisiones',

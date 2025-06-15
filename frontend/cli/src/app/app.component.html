@@ -1,6 +1,5 @@
 <!-- Menú y navegación principal -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm fixed-top" 
-     [class.scrolled]="isNavbarScrolled">
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm fixed-top" [class.scrolled]="isNavbarScrolled">
 
     <div class="container">
         <!-- Logo y nombre del sistema -->
@@ -10,8 +9,8 @@
         </a>
 
         <!-- Botón hamburguesa para móviles usando ngbCollapse -->
-        <button class="navbar-toggler" type="button" (click)="isMenuCollapsed = !isMenuCollapsed"
-            aria-controls="navbarSupportedContent" [attr.aria-expanded]="!isMenuCollapsed" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" (click)="toggleMobileMenu()" aria-controls="navbarSupportedContent"
+            [attr.aria-expanded]="!isMenuCollapsed" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
 
@@ -20,70 +19,84 @@
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
                 <!-- Dropdown para Personal -->
-                <li class="nav-item" ngbDropdown>
+                <li class="nav-item" ngbDropdown
+                    (openChange)="$event ? onDropdownOpen('personasDropdown') : onDropdownClose('personasDropdown')">
                     <button class="btn nav-link border-0 bg-transparent" ngbDropdownToggle id="personasDropdown"
                         aria-expanded="false">
                         <i class="fa fa-users me-1"></i> Personas
                     </button>
                     <ul ngbDropdownMenu aria-labelledby="personasDropdown">
-                        <li><a ngbDropdownItem href="personas" (click)="closeNavbar()"><i class="fa fa-list me-1"></i> Listar</a></li>
-                        <li><a ngbDropdownItem href="personas/new" (click)="closeNavbar()"><i class="fa fa-plus me-1"></i> Nueva</a></li>
-                        <li><a ngbDropdownItem [routerLink]="['/personas/reporte-concepto/', getAnioActual()]" (click)="closeNavbar()"><i
-                                    class="fa fa-file-text-o me-1"></i> Reporte Concepto</a>
+                        <li><a ngbDropdownItem href="personas" (click)="closeNavbar()"><i class="fa fa-list me-1"></i>
+                                Listar</a></li>
+                        <li><a ngbDropdownItem href="personas/new" (click)="closeNavbar()"><i
+                                    class="fa fa-plus me-1"></i> Nueva</a></li>
+                        <li><a ngbDropdownItem [routerLink]="['/personas/reporte-concepto/', getAnioActual()]"
+                                (click)="closeNavbar()"><i class="fa fa-file-text-o me-1"></i> Reporte Concepto</a>
                     </ul>
                 </li>
 
                 <!-- Dropdown para Divisiones -->
-                <li class="nav-item" ngbDropdown>
+                <li class="nav-item" ngbDropdown
+                    (openChange)="$event ? onDropdownOpen('divisionesDropdown') : onDropdownClose('divisionesDropdown')">
                     <button class="btn nav-link border-0 bg-transparent" ngbDropdownToggle id="divisionesDropdown"
                         aria-expanded="false">
                         <i class="fa fa-layer-group me-1"></i> Divisiones
                     </button>
                     <ul ngbDropdownMenu aria-labelledby="divisionesDropdown">
-                        <li><a ngbDropdownItem href="divisiones" (click)="closeNavbar()"><i class="fa fa-list me-1"></i> Listar</a></li>
-                        <li><a ngbDropdownItem href="divisiones/new" (click)="closeNavbar()"><i class="fa fa-plus me-1"></i> Nueva</a></li>
+                        <li><a ngbDropdownItem href="divisiones" (click)="closeNavbar()"><i class="fa fa-list me-1"></i>
+                                Listar</a></li>
+                        <li><a ngbDropdownItem href="divisiones/new" (click)="closeNavbar()"><i
+                                    class="fa fa-plus me-1"></i> Nueva</a></li>
                     </ul>
                 </li>
 
                 <!-- Dropdown para Cargos -->
-                <li class="nav-item" ngbDropdown>
+                <li class="nav-item" ngbDropdown
+                    (openChange)="$event ? onDropdownOpen('cargosDropdown') : onDropdownClose('cargosDropdown')">
                     <button class="btn nav-link border-0 bg-transparent" ngbDropdownToggle id="cargosDropdown"
                         aria-expanded="false">
                         <i class="fa fa-briefcase me-1"></i> Cargos
                     </button>
                     <ul ngbDropdownMenu aria-labelledby="cargosDropdown">
-                        <li><a ngbDropdownItem href="cargos" (click)="closeNavbar()"><i class="fa fa-list me-1"></i> Listar</a></li>
+                        <li><a ngbDropdownItem href="cargos" (click)="closeNavbar()"><i class="fa fa-list me-1"></i>
+                                Listar</a></li>
                         <li><a ngbDropdownItem href="javascript:void(0)" (click)="crearNuevoCargo(); closeNavbar()"><i
                                     class="fa fa-plus me-1"></i> Nuevo</a></li>
-                        <li><a ngbDropdownItem [routerLink]="['/cargos/horarios', 'MANIANA', getFechaHoy()]" (click)="closeNavbar()"><i
-                                    class="fa fa-clock me-1"></i> Horarios</a></li>
+                        <li><a ngbDropdownItem [routerLink]="['/cargos/horarios', 'MANIANA', getFechaHoy()]"
+                                (click)="closeNavbar()"><i class="fa fa-clock me-1"></i> Horarios</a></li>
                     </ul>
                 </li>
 
                 <!-- Dropdown para Designaciones -->
-                <li class="nav-item" ngbDropdown>
+                <li class="nav-item" ngbDropdown
+                    (openChange)="$event ? onDropdownOpen('designacionesDropdown') : onDropdownClose('designacionesDropdown')">
                     <button class="btn nav-link border-0 bg-transparent" ngbDropdownToggle id="designacionesDropdown"
                         aria-expanded="false">
                         <i class="fa fa-user-tie me-2"></i> Designaciones
                     </button>
                     <ul ngbDropdownMenu aria-labelledby="designacionesDropdown">
-                        <li><a ngbDropdownItem href="designaciones" (click)="closeNavbar()"><i class="fa fa-list me-1"></i> Listar</a></li>
-                        <li><a ngbDropdownItem href="javascript:void(0)" (click)="crearNuevaDesignacion(); closeNavbar()"><i
-                                    class="fa fa-plus me-1"></i> Nueva</a></li>
+                        <li><a ngbDropdownItem href="designaciones" (click)="closeNavbar()"><i
+                                    class="fa fa-list me-1"></i> Listar</a></li>
+                        <li><a ngbDropdownItem href="javascript:void(0)"
+                                (click)="crearNuevaDesignacion(); closeNavbar()"><i class="fa fa-plus me-1"></i>
+                                Nueva</a></li>
                     </ul>
                 </li>
 
                 <!-- Dropdown para Licencias -->
-                <li class="nav-item" ngbDropdown>
+                <li class="nav-item" ngbDropdown
+                    (openChange)="$event ? onDropdownOpen('licenciasDropdown') : onDropdownClose('licenciasDropdown')">
                     <button class="btn nav-link border-0 bg-transparent" ngbDropdownToggle id="licenciasDropdown"
                         aria-expanded="false">
                         <i class="fa-solid fa fa-calendar-check me-2"></i> Licencias
                     </button>
                     <ul ngbDropdownMenu aria-labelledby="licenciasDropdown">
-                        <li><a ngbDropdownItem href="licencias" (click)="closeNavbar()"><i class="fa fa-list me-1"></i> Listar</a></li>
-                        <li><a ngbDropdownItem href="licencias/new" (click)="closeNavbar()"><i class="fa fa-plus me-1"></i> Nueva</a></li>
-                        <li><a ngbDropdownItem [routerLink]="['/licencias/parte-diario', getFechaHoy()]" (click)="closeNavbar()"><i
-                                    class="fa-solid fa-clipboard-list me-1"></i> Parte Diario</a>
+                        <li><a ngbDropdownItem href="licencias" (click)="closeNavbar()"><i class="fa fa-list me-1"></i>
+                                Listar</a></li>
+                        <li><a ngbDropdownItem href="licencias/new" (click)="closeNavbar()"><i
+                                    class="fa fa-plus me-1"></i> Nueva</a></li>
+                        <li><a ngbDropdownItem [routerLink]="['/licencias/parte-diario', getFechaHoy()]"
+                                (click)="closeNavbar()"><i class="fa-solid fa-clipboard-list me-1"></i> Parte Diario</a>
                         </li>
                     </ul>
                 </li>

@@ -773,3 +773,52 @@ figcaption {
     content: "↓";
   }
 }
+
+/* ======= FIX GLOBAL PARA DATEPICKER Z-INDEX ======= */
+
+/* Asegurar que todos los datepickers de NgBootstrap tengan z-index alto */
+ngb-datepicker {
+  z-index: 9999 !important;
+}
+
+.ngb-dp-popup {
+  z-index: 9999 !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25) !important;
+  border: 1px solid rgba(0, 0, 0, 0.15) !important;
+  border-radius: 8px !important;
+}
+
+.ngb-dp-content {
+  z-index: 9999 !important;
+}
+
+.ngb-dp-month {
+  z-index: 9999 !important;
+}
+
+/* Asegurar que los dropdowns de datepicker tengan prioridad */
+.dropdown-menu.show {
+  z-index: 9998 !important;
+}
+
+/* Fix para contenedores que puedan estar bloqueando */
+.table-responsive {
+  overflow: visible !important;
+}
+
+/* Containers principales deben permitir overflow */
+.main-content {
+  overflow: visible !important;
+}
+
+.card {
+  overflow: visible !important;
+}
+
+.card-body {
+  overflow: visible !important;
+}
+
+.card-header {
+  overflow: visible !important;
+}

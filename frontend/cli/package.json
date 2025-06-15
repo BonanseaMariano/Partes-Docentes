@@ -23,6 +23,7 @@
     "apexcharts": "^4.7.0",
     "bootstrap": "^5.3.5",
     "font-awesome": "^4.7.0",
+    "gsap": "^3.13.0",
     "ng-apexcharts": "^1.15.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
@@ -34,6 +35,7 @@
     "@angular/compiler-cli": "^19.2.0",
     "@angular/localize": "^19.2.0",
     "@types/aos": "^3.0.7",
+    "@types/gsap": "^1.20.2",
     "typescript": "~5.7.2"
   }
 }

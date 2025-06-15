@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef, AfterViewInit, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -11,6 +11,7 @@ import { ModalService } from '../modal/modal.service';
 import { PopupService } from '../popup/popup.service';
 import { DniFormatPipe } from '../pipes/dni-format.pipe';
 import { FechaFormatPipe } from '../pipes/fecha-format.pipe';
+import { ReporteConceptoAnimationService } from './reporte-concepto-animation.service';
 
 import {
     ApexAxisChartSeries,
@@ -51,9 +52,10 @@ export type ChartOptions = {
     templateUrl: './reporte-concepto.component.html',
     styleUrl: './reporte-concepto.component.css'
 })
-export class ReporteConceptoComponent implements OnInit {
+export class ReporteConceptoComponent implements OnInit, AfterViewInit {
     reporteConcepto: ReporteConcepto | null = null;
     anioSeleccionado: number = new Date().getFullYear();
+    isLoading: boolean = false;
 
     // Propiedades para el selector de años dinámico
     aniosDisponibles: number[] = [];
@@ -85,7 +87,9 @@ export class ReporteConceptoComponent implements OnInit {
         private router: Router,
         private personaService: PersonaService,
         private modalService: ModalService,
-        private popupService: PopupService
+        private popupService: PopupService,
+        private elementRef: ElementRef,
+        private reporteAnimationService: ReporteConceptoAnimationService
     ) {
         // Generar lista de años disponibles
         this.generarAniosDisponibles();
@@ -100,26 +104,76 @@ export class ReporteConceptoComponent implements OnInit {
         });
     }
 
+    ngAfterViewInit(): void {
+        // Configurar animaciones iniciales
+        this.reporteAnimationService.animateInitialEntrance(this.elementRef);
+    }
+
     cargarReporteConcepto(): void {
         this.reporteConcepto = null;
+        this.isLoading = true;
+
+        // Si hay datos existentes, animar transición
+        if (this.reporteConcepto) {
+            this.reporteAnimationService.animateDataTransition(this.elementRef, () => {
+                this.loadReporteData();
+            });
+        } else {
+            this.loadReporteData();
+        }
+    }
+
+    /**
+     * Método privado para cargar los datos del reporte
+     */
+    private loadReporteData(): void {
         this.personaService.obtenerReporteConcepto(this.anioSeleccionado).subscribe({
             next: (response: any) => {
+                this.isLoading = false;
                 this.reporteConcepto = response.data || response;
 
                 if (this.reporteConcepto) {
-                    // Inicializar gráficos después de cargar los datos
+                    // Animar carga de datos con secuencia completa
                     setTimeout(() => {
-                        this.inicializarGraficoMensual();
-                        this.inicializarGraficoArticulosLicencias();
-                        this.inicializarGraficoArticulosDias();
-                    }, 100);
+                        this.reporteAnimationService.animateDataLoad(
+                            this.elementRef,
+                            () => {
+                                // Configurar hover effects después de cargar
+                                this.reporteAnimationService.setupHoverEffects(this.elementRef);
+
+                                // Animar contadores
+                                this.reporteAnimationService.animateCounters(this.elementRef);
+
+                                // Inicializar gráficos con delay para animaciones
+                                this.initializeChartsWithAnimation();
+                            }
+                        );
+                    }, 50);
                 }
             },
             error: (error: any) => {
+                this.isLoading = false;
                 this.modalService.error('Error', 'No se pudo cargar el reporte de concepto general. ' +
                     (error.error?.message || error.message || 'Error desconocido'));
+
+                // Animar error
+                setTimeout(() => {
+                    this.reporteAnimationService.animateError(this.elementRef);
+                }, 50);
             }
         });
+    }
+
+    /**
+     * Inicializa gráficos con animaciones
+     */
+    private initializeChartsWithAnimation(): void {
+        // Delay para permitir que las animaciones anteriores terminen
+        setTimeout(() => {
+            this.inicializarGraficoMensual();
+            this.inicializarGraficoArticulosLicencias();
+            this.inicializarGraficoArticulosDias();
+        }, 300);
     }
 
     inicializarGraficoMensual(): void {
@@ -250,7 +304,10 @@ export class ReporteConceptoComponent implements OnInit {
     }
 
     onAnioChange(): void {
-        this.router.navigate(['/personas/reporte-concepto', this.anioSeleccionado]);
+        // Animar transición de cambio de año
+        this.reporteAnimationService.animateYearChange(this.elementRef, () => {
+            this.router.navigate(['/personas/reporte-concepto', this.anioSeleccionado]);
+        });
     }
 
     volver(): void {
@@ -364,6 +421,15 @@ export class ReporteConceptoComponent implements OnInit {
             icon: 'fa-user-tie',
             data: reporte
         });
+
+        // Animar entrada del popup después de un pequeño delay
+        setTimeout(() => {
+            const popupContainer = document.querySelector('.popup-container');
+            if (popupContainer) {
+                const elementRef = { nativeElement: popupContainer };
+                this.reporteAnimationService.animatePopupEntrance(elementRef as ElementRef);
+            }
+        }, 50);
     }
 
     /**

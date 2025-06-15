@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ElementRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbDateParserFormatter, NgbDatepickerModule, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
@@ -9,6 +9,7 @@ import { DiaSemana } from '../models/horario';
 import { HoraEspacioCurricular, HorarioDTO } from '../models/horario-dto';
 import { Turno } from '../models/turno';
 import { ArgentinaDateParserFormatter } from '../utils/argentina-date-formatter';
+import { HorarioAnimationService } from './horario-animation.service';
 
 @Component({
   selector: 'app-horario',
@@ -20,10 +21,11 @@ import { ArgentinaDateParserFormatter } from '../utils/argentina-date-formatter'
   templateUrl: './horario.component.html',
   styleUrl: './horario.component.css'
 })
-export class HorarioComponent implements OnInit {
+export class HorarioComponent implements OnInit, AfterViewInit {
 
   horarioData: HorarioDTO | null = null;
   error: string | null = null;
+  isLoading: boolean = false;
 
   // Filtros
   turnoSeleccionado: string = 'MANIANA'; // Usar la clave del enum, no el valor
@@ -39,7 +41,9 @@ export class HorarioComponent implements OnInit {
   constructor(
     private cargoService: CargoService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private elementRef: ElementRef,
+    private horarioAnimationService: HorarioAnimationService
   ) {
     // Inicializar con la fecha actual
     this.fechaSeleccionada = this.getFechaActual();
@@ -73,6 +77,11 @@ export class HorarioComponent implements OnInit {
         });
       }
     });
+  }
+
+  ngAfterViewInit(): void {
+    // Configurar animaciones iniciales usando el servicio
+    this.horarioAnimationService.animateInitialEntrance(this.elementRef);
   }
 
   /**
@@ -120,7 +129,22 @@ export class HorarioComponent implements OnInit {
     }
 
     this.error = null;
+    this.isLoading = true;
 
+    // Si hay datos existentes, animar transición
+    if (this.horarioData) {
+      this.horarioAnimationService.animateDataTransition(this.elementRef, () => {
+        this.loadHorarioData();
+      });
+    } else {
+      this.loadHorarioData();
+    }
+  }
+
+  /**
+   * Método privado para cargar los datos del horario
+   */
+  private loadHorarioData(): void {
     // Convertir el string (clave del enum) al valor del enum
     const turnoEnum = Turno[this.turnoSeleccionado as keyof typeof Turno];
     const fechaFormateada = this.formatearFecha(this.fechaSeleccionada);
@@ -132,14 +156,31 @@ export class HorarioComponent implements OnInit {
 
     serviceCall.subscribe({
       next: (response) => {
+        this.isLoading = false;
         if (response.status === 200) {
           this.horarioData = response.data as HorarioDTO;
+
+          // Animar entrada de la grilla con callback para configurar hover effects
+          setTimeout(() => {
+            if (!this.horarioData) return;
+            this.horarioAnimationService.animateScheduleGrid(
+              this.elementRef,
+              () => this.horarioAnimationService.setupHoverEffects(this.elementRef)
+            );
+          }, 50);
         } else {
           this.error = 'Error al cargar los horarios: ' + (response.message || 'Error desconocido');
+          setTimeout(() => {
+            this.horarioAnimationService.animateError(this.elementRef);
+          }, 50);
         }
       },
       error: (err) => {
+        this.isLoading = false;
         this.error = 'Error de conexión: ' + err.message;
+        setTimeout(() => {
+          this.horarioAnimationService.animateError(this.elementRef);
+        }, 50);
       }
     });
   }

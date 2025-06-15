@@ -1,12 +1,13 @@
-<div class="card shadow-sm mb-4">
+<div class="card shadow-sm mb-4 reporte-header">
     <div class="card-header bg-light d-flex justify-content-between align-items-center">
         <h2 class="mb-0">
             <i class="fa fa-file-text-o me-2"></i>
+            <span *ngIf="isLoading" class="loading-spinner me-2"></span>
             Reporte Concepto {{ getAnioReporte() }}
         </h2>
         <div class="header-controls d-flex align-items-center">
             <div class="control-container">
-                <div class="date-selector-group">
+                <div class="date-selector-group year-selector">
                     <div class="input-group input-group-sm">
                         <span class="input-group-text">
                             <i class="fa fa-calendar"></i>
@@ -20,7 +21,7 @@
                     </div>
                 </div>
                 <div class="action-buttons-group ms-2">
-                    <button type="button" class="btn btn-sm btn-outline-secondary" (click)="volver()"
+                    <button type="button" class="btn btn-sm btn-outline-secondary btn-reporte" (click)="volver()"
                         title="Volver al menú anterior">
                         <i class="fa fa-arrow-left"></i>
                     </button>
@@ -29,10 +30,21 @@
         </div>
     </div>
 
-    <div class="card-body container-fluid">
+    <div class="card-body container-fluid content-wrapper">
+
+        <!-- Estado de carga -->
+        <div *ngIf="isLoading && !reporteConcepto" class="text-center p-4 loading-container">
+            <div class="card">
+                <div class="card-body">
+                    <div class="loading-spinner mx-auto mb-3" style="width: 40px; height: 40px;"></div>
+                    <h5 class="text-muted">Cargando reporte...</h5>
+                    <p class="text-muted small">Obteniendo datos del servidor</p>
+                </div>
+            </div>
+        </div>
 
         <!-- Reporte -->
-        <div *ngIf="reporteConcepto" class="row">
+        <div *ngIf="reporteConcepto && !isLoading" class="row year-content">
 
             <!-- Estadísticas Generales -->
             <div class="col-12 mb-4">
@@ -48,7 +60,7 @@
                             <!-- Totales -->
                             <div class="col-lg-3 col-md-6 mb-3">
                                 <div class="text-center p-3 bg-light rounded stats-card">
-                                    <h4 class="text-info mb-1">{{
+                                    <h4 class="text-info mb-1 counter-number">{{
                                         reporteConcepto.EstadisticasGenerales.TotalDesignaciones
                                         }}</h4>
                                     <small class="text-muted">Total Designaciones</small>
@@ -56,7 +68,7 @@
                             </div>
                             <div class="col-lg-3 col-md-6 mb-3">
                                 <div class="text-center p-3 bg-light rounded stats-card">
-                                    <h4 class="text-warning mb-1">{{
+                                    <h4 class="text-warning mb-1 counter-number">{{
                                         reporteConcepto.EstadisticasGenerales.TotalLicencias }}
                                     </h4>
                                     <small class="text-muted">Total Licencias</small>
@@ -64,14 +76,14 @@
                             </div>
                             <div class="col-lg-3 col-md-6 mb-3">
                                 <div class="text-center p-3 bg-light rounded stats-card">
-                                    <h4 class="text-secondary mb-1">{{
+                                    <h4 class="text-secondary mb-1 counter-number">{{
                                         reporteConcepto.EstadisticasGenerales.LicenciasSinSuplente }}</h4>
                                     <small class="text-muted">Licencias Sin Suplente</small>
                                 </div>
                             </div>
                             <div class="col-lg-3 col-md-6 mb-3">
                                 <div class="text-center p-3 bg-light rounded stats-card">
-                                    <h4 class="text-danger mb-1">{{
+                                    <h4 class="text-danger mb-1 counter-number">{{
                                         reporteConcepto.EstadisticasGenerales.TotalDiasLicencias
                                         }}</h4>
                                     <small class="text-muted">Total Días Licencia</small>
@@ -187,7 +199,7 @@
                         </h5>
                     </div>
                     <div class="card-body">
-                        <div class="table-responsive">
+                        <div class="table-responsive table-container">
                             <table class="table table-hover">
                                 <thead class="table-light">
                                     <tr>
@@ -222,7 +234,7 @@
                                         <td>{{ reporte.Docente.DNI | dniFormat }}</td>
                                         <td>{{ reporte.Docente.Apellido }}, {{ reporte.Docente.Nombre }}</td>
                                         <td class="text-center">
-                                            <button class="btn-popup"
+                                            <button class="btn-popup btn-reporte"
                                                 [ngClass]="{'btn-popup-empty': getDesignacionCount(reporte) === 0}"
                                                 (click)="openDesignacionesPopup(reporte)" title="Mostrar designaciones">
                                                 <i class="fa fa-user-tie"></i>
@@ -251,7 +263,7 @@
         </div>
 
         <!-- Estado vacío -->
-        <div *ngIf="!reporteConcepto" class="text-center py-5">
+        <div *ngIf="!reporteConcepto && !isLoading" class="text-center py-5">
             <i class="fa fa-exclamation-triangle text-warning fa-3x mb-3"></i>
             <h4>No se ha cargado el reporte</h4>
             <p class="text-muted">Espere mientras se cargan los datos o verifique que el año sea correcto.</p>
@@ -260,7 +272,7 @@
 
     <!-- Template para el popup de designaciones -->
     <ng-template #designacionesTemplate let-reporte>
-        <div *ngIf="reporte.Designaciones && reporte.Designaciones.length > 0" class="table-responsive">
+        <div *ngIf="reporte.Designaciones && reporte.Designaciones.length > 0" class="table-responsive popup-container">
             <table class="table table-hover">
                 <thead class="table-light">
                     <tr>
@@ -273,7 +285,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let designacionConDias of reporte.Designaciones">
+                    <tr *ngFor="let designacionConDias of reporte.Designaciones" class="popup-designation-item">
                         <td>{{ designacionConDias.Designacion?.Cargo?.Nombre || '' }}</td>
                         <td>{{ designacionConDias.Designacion?.SituacionRevista || '' }}</td>
                         <td>{{ designacionConDias.Designacion?.Cargo?.Division ?
