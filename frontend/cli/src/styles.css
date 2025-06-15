@@ -672,9 +672,9 @@ figcaption {
 
 /* Botón para mostrar popups en tablas (designaciones, horarios, etc.) */
 .btn-popup {
-  background-color: var(--color-primary);
+  background-color: #007bff;
   color: white;
-  border: none;
+  border: 1px solid #007bff;
   border-radius: 4px;
   padding: 4px 12px;
   font-size: var(--font-size-sm);
@@ -692,6 +692,7 @@ figcaption {
 .btn-popup-empty {
   background-color: var(--color-text-muted);
   color: white;
+  border: 1px solid var(--color-text-muted);
 }
 
 .btn-popup-empty:hover {
@@ -778,27 +779,42 @@ figcaption {
 
 /* Asegurar que todos los datepickers de NgBootstrap tengan z-index alto */
 ngb-datepicker {
-  z-index: 9999 !important;
+  z-index: 99999 !important;
 }
 
 .ngb-dp-popup {
-  z-index: 9999 !important;
+  z-index: 99999 !important;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25) !important;
   border: 1px solid rgba(0, 0, 0, 0.15) !important;
   border-radius: 8px !important;
 }
 
 .ngb-dp-content {
-  z-index: 9999 !important;
+  z-index: 99999 !important;
 }
 
 .ngb-dp-month {
-  z-index: 9999 !important;
+  z-index: 99999 !important;
 }
 
 /* Asegurar que los dropdowns de datepicker tengan prioridad */
 .dropdown-menu.show {
-  z-index: 9998 !important;
+  z-index: 99998 !important;
+}
+
+/* Componente específico del datepicker popup */
+ngb-datepicker-popup {
+  z-index: 99999 !important;
+}
+
+/* Overlay del datepicker si existe */
+.ngb-dp-overlay {
+  z-index: 99998 !important;
+}
+
+/* Navigation del datepicker */
+.ngb-dp-navigation {
+  z-index: 99999 !important;
 }
 
 /* Fix para contenedores que puedan estar bloqueando */

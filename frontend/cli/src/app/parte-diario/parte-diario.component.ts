@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild, AfterViewInit, ElementRef, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbDateParserFormatter, NgbDatepickerModule, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
@@ -13,6 +13,7 @@ import { FechaFormatPipe } from '../pipes/fecha-format.pipe';
 import { PopupService } from '../popup/popup.service';
 import { ArgentinaDateParserFormatter } from '../utils/argentina-date-formatter';
 import { DateUtils } from '../utils/date-utils';
+import { ParteDiarioAnimationService } from './parte-diario-animation.service';
 
 @Component({
     selector: 'app-parte-diario',
@@ -24,7 +25,7 @@ import { DateUtils } from '../utils/date-utils';
     templateUrl: './parte-diario.component.html',
     styleUrl: './parte-diario.component.css'
 })
-export class ParteDiarioComponent implements OnInit {
+export class ParteDiarioComponent implements OnInit, AfterViewInit, OnDestroy {
     // Fecha seleccionada para el parte diario
     fechaSeleccionada: NgbDateStruct = this.getFechaActual();
 
@@ -37,6 +38,9 @@ export class ParteDiarioComponent implements OnInit {
     // Para el popup de reemplazos
     selectedDocente: DocenteLicencia | null = null;
 
+    // Estado de carga
+    isLoading: boolean = false;
+
     @ViewChild('reemplazosTemplate', { static: true }) reemplazosTemplate!: TemplateRef<any>;
 
     constructor(
@@ -44,7 +48,9 @@ export class ParteDiarioComponent implements OnInit {
         private route: ActivatedRoute,
         private router: Router,
         private popupService: PopupService,
-        private designacionService: DesignacionService
+        private designacionService: DesignacionService,
+        private elementRef: ElementRef,
+        private parteDiarioAnimationService: ParteDiarioAnimationService
     ) { }
 
     ngOnInit(): void {
@@ -59,6 +65,21 @@ export class ParteDiarioComponent implements OnInit {
                 }
             }
         });
+    }
+
+    ngAfterViewInit(): void {
+        // Configurar animaciones iniciales
+        this.parteDiarioAnimationService.animateInitialEntrance(this.elementRef);
+
+        // Configurar efectos de hover
+        this.parteDiarioAnimationService.setupHoverEffects(this.elementRef);
+
+        // NO iniciamos pulsación automática - usamos solo el efecto CSS de hover
+    }
+
+    ngOnDestroy(): void {
+        // Limpiar animaciones al destruir el componente
+        this.parteDiarioAnimationService.clearAnimations();
     }
 
     /**
@@ -85,10 +106,17 @@ export class ParteDiarioComponent implements OnInit {
      */
     cargarParteDiario(): void {
         const fechaFormateada = this.formatearFecha(this.fechaSeleccionada);
+        this.isLoading = true;
+
+        // Animar estado de carga
+        this.parteDiarioAnimationService.animateLoadingBreath(this.elementRef);
 
         this.licenciaService.getParteDiario(fechaFormateada)
             .subscribe({
                 next: (response: DataPackage) => {
+                    this.isLoading = false;
+                    this.parteDiarioAnimationService.stopLoadingAnimation(this.elementRef);
+
                     if (response.data) {
                         // Necesitamos hacer un cast para acceder a la estructura ParteDiario
                         const responseData = response.data as any;
@@ -108,8 +136,29 @@ export class ParteDiarioComponent implements OnInit {
                                     reemplazos: docente.Reemplazos || []
                                 }))
                             };
+
+                            // Animar la carga de datos
+                            setTimeout(() => {
+                                this.parteDiarioAnimationService.animateDataLoad(this.elementRef, () => {
+                                    // Configurar efectos de hover después de cargar los datos
+                                    this.parteDiarioAnimationService.setupHoverEffects(this.elementRef);
+
+                                    // Animar contadores
+                                    this.parteDiarioAnimationService.animateCounters(this.elementRef);
+
+                                    // NO iniciamos pulsación - el efecto CSS se aplica automáticamente en hover
+                                });
+                            }, 100);
+                        } else {
+                            // Animar estado vacío
+                            this.parteDiarioAnimationService.animateEmptyState(this.elementRef);
                         }
                     }
+                },
+                error: (error) => {
+                    this.isLoading = false;
+                    this.parteDiarioAnimationService.stopLoadingAnimation(this.elementRef);
+                    this.parteDiarioAnimationService.animateError(this.elementRef);
                 }
             });
     }
@@ -134,15 +183,13 @@ export class ParteDiarioComponent implements OnInit {
      */
     reset(): void {
         this.fechaSeleccionada = this.getFechaActual();
-        // Después de reiniciar la fecha, cargar el parte diario para la fecha actual
-        this.cargarParteDiario();
-        // Actualizar la URL para reflejar la fecha actual
-        this.actualizarURL();
+        // Usar la versión con animación para el botón reset
+        this.onFechaChangeWithAnimation();
     }
 
     /**
      * Método que se ejecuta cuando cambia la fecha en el datepicker
-     * Combina la funcionalidad de buscar y actualizarURL
+     * Versión simple sin animaciones para que el datepicker funcione correctamente
      */
     onFechaChange(): void {
         this.cargarParteDiario();
@@ -150,15 +197,41 @@ export class ParteDiarioComponent implements OnInit {
     }
 
     /**
+     * Método específico para cambios de fecha con animación (para botones externos)
+     */
+    onFechaChangeWithAnimation(): void {
+        // Animar transición de cambio de fecha
+        this.parteDiarioAnimationService.animateDateTransition(this.elementRef, () => {
+            this.cargarParteDiario();
+            this.actualizarURL();
+        });
+    }
+
+    /**
      * Abre el popup para mostrar los suplentes de un docente
      */
-    openReemplazosPopup(docente: DocenteLicencia): void {
+    openReemplazosPopup(docente: DocenteLicencia, event?: Event): void {
+        // Animar el botón clickeado
+        const buttonElement = (event?.target as HTMLElement)?.closest('.btn-popup') as HTMLElement;
+        if (buttonElement) {
+            this.parteDiarioAnimationService.animatePopupButtonClick(buttonElement);
+        }
+
         this.selectedDocente = docente;
         this.popupService.show(this.reemplazosTemplate, {
             title: `Suplentes de ${docente.nombre} ${docente.apellido}`,
             icon: 'fa-user-tie',
             data: docente
         });
+
+        // Animar entrada del popup después de un pequeño delay
+        setTimeout(() => {
+            const popupContainer = document.querySelector('.popup-container');
+            if (popupContainer) {
+                const elementRef = { nativeElement: popupContainer };
+                this.parteDiarioAnimationService.animatePopupEntrance(elementRef as ElementRef);
+            }
+        }, 50);
     }
 
     /**

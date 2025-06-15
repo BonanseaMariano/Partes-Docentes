@@ -62,9 +62,10 @@
                             <td>{{ docente.desde | fechaFormat }}</td>
                             <td>{{ docente.hasta | fechaFormat }}</td>
                             <td class="text-center">
-                                <button class="btn-popup"
+                                <button class="btn-popup btn-reporte"
                                     [ngClass]="{'btn-popup-empty': getReemplazoCount(docente) === 0}"
-                                    (click)="openReemplazosPopup(docente)" title="Mostrar suplentes">
+                                    (click)="openReemplazosPopup(docente, $event)" title="Mostrar suplentes"
+                                    [attr.data-count]="getReemplazoCount(docente)">
                                     <i class="fa fa-user-tie"></i>
                                     <span class="ms-1">{{ getReemplazoCount(docente) }}</span>
                                 </button>

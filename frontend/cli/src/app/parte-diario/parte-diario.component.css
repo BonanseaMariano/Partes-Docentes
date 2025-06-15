@@ -72,3 +72,218 @@
 .table-hover tbody tr:hover {
     background-color: rgba(0, 123, 255, 0.05);
 }
+
+/* ========== ANIMACIONES Y EFECTOS GSAP ========== */
+
+/* Solo los efectos de pulsación específicos - los estilos base vienen de styles.css */
+
+/* Efecto de pulso EXACTO del reporte-concepto */
+.btn-popup:hover {
+    animation: pulse-btn 1s infinite;
+}
+
+@keyframes pulse-btn {
+    0% {
+        box-shadow: 0 0 0 0 rgba(13, 110, 253, 0.7);
+    }
+
+    70% {
+        box-shadow: 0 0 0 10px rgba(13, 110, 253, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(13, 110, 253, 0);
+    }
+}
+
+/* Los botones vacíos no tienen efecto de pulso */
+.btn-popup-empty:hover {
+    animation: none !important;
+}
+
+/* Mejorar las filas de la tabla con preparación para GSAP */
+.table tbody tr {
+    transition: all 0.3s ease;
+    transform-origin: center;
+}
+
+/* Estilos para estado de carga */
+.parte-diario-container.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+/* Mejoras para el datepicker con preparación para animaciones */
+.date-selector-group {
+    position: relative;
+    z-index: 100;
+    /* Z-index más alto para el contenedor */
+}
+
+.date-selector-group .input-group {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    border-radius: 0.375rem;
+    /* Removido: overflow: hidden; para permitir datepicker */
+    transform-origin: center;
+    position: relative;
+    z-index: 100;
+    /* Z-index alto para el input group */
+}
+
+.date-input {
+    border-right: none;
+    font-weight: 500;
+    transform-origin: center;
+}
+
+.calendar-btn {
+    border-left: none;
+    background-color: #f8f9fa;
+    border-color: #dee2e6;
+    transition: all 0.2s ease;
+    transform-origin: center;
+}
+
+.calendar-btn:hover {
+    background-color: #e9ecef;
+}
+
+/* Mejorar el header del componente con preparación para animaciones */
+.card-header {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-bottom: 2px solid #dee2e6;
+    transform-origin: top center;
+    /* Permitir overflow para datepicker */
+    overflow: visible !important;
+    /* Z-index bajo para no interferir con datepicker */
+    z-index: 1;
+    position: relative;
+}
+
+/* Preparar tabla para animaciones de entrada */
+.table-responsive {
+    transform-origin: center;
+}
+
+.table thead th {
+    transform-origin: top center;
+}
+
+.table tbody tr {
+    transform-origin: left center;
+}
+
+/* Estilos para el estado vacío con preparación para animaciones */
+.empty-state-cell {
+    background-color: rgba(248, 249, 250, 0.8);
+    color: #6c757d;
+    font-style: italic;
+    text-align: center;
+    padding: 3rem 1rem;
+    border-radius: 0.375rem;
+    transform-origin: center;
+}
+
+/* Contenedor principal preparado para animaciones */
+.parte-diario-container {
+    transform-origin: center;
+    overflow: visible !important;
+}
+
+/* Controles del header preparados para animaciones */
+.header-controls {
+    transform-origin: right center;
+    /* Permitir overflow para datepicker */
+    overflow: visible !important;
+}
+
+.control-container {
+    transform-origin: center;
+    /* Permitir overflow para datepicker */
+    overflow: visible !important;
+}
+
+/* Asegurar que el datepicker se muestre correctamente fuera del campo */
+.date-selector-group {
+    position: relative;
+    z-index: 1;
+}
+
+/* Asegurar z-index alto para el popup del datepicker */
+::ng-deep ngb-datepicker {
+    z-index: 99999 !important;
+}
+
+::ng-deep .ngb-dp-popup {
+    z-index: 99999 !important;
+    position: absolute !important;
+}
+
+::ng-deep .ngb-dp-content {
+    z-index: 99999 !important;
+    position: relative !important;
+}
+
+::ng-deep .ngb-dp-month {
+    z-index: 99999 !important;
+}
+
+/* Asegurar que el dropdown del datepicker tenga z-index máximo */
+::ng-deep .dropdown-menu.show {
+    z-index: 99999 !important;
+}
+
+/* Contenedor específico del datepicker */
+::ng-deep ngb-datepicker-popup {
+    z-index: 99999 !important;
+}
+
+/* Overlay del calendario si existe */
+::ng-deep .ngb-dp-overlay {
+    z-index: 99998 !important;
+}
+
+/* Navegación del datepicker */
+::ng-deep .ngb-dp-navigation {
+    z-index: 99999 !important;
+}
+
+/* Asegurar que todos los contenedores padre permitan overflow */
+.card {
+    overflow: visible !important;
+}
+
+.card-body {
+    overflow: visible !important;
+}
+
+/* ========== FIN ANIMACIONES Y EFECTOS GSAP ========== */
+
+/* ========== DEPURACIÓN Y FUERZA MÁXIMA PARA DATEPICKER ========== */
+
+/* Forzar z-index máximo con especificidad alta */
+body ::ng-deep ngb-datepicker,
+body ::ng-deep .ngb-dp-popup,
+body ::ng-deep ngb-datepicker-popup {
+    z-index: 999999 !important;
+    position: fixed !important;
+}
+
+/* Asegurar que nada pueda estar por encima del datepicker */
+body ::ng-deep .ngb-dp-content,
+body ::ng-deep .ngb-dp-month,
+body ::ng-deep .ngb-dp-navigation {
+    z-index: 999999 !important;
+}
+
+/* Si existe algún backdrop o overlay */
+body ::ng-deep .ngb-dp-backdrop {
+    z-index: 999998 !important;
+}
+
+/* Contenedor raíz del datepicker con máxima prioridad */
+.date-selector-group ::ng-deep ngb-datepicker {
+    z-index: 999999 !important;
+}
+
+/* ========== FIN DEPURACIÓN DATEPICKER ========== */
