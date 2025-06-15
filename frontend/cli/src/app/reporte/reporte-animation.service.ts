@@ -1,11 +1,11 @@
-import { Injectable, ElementRef } from '@angular/core';
+import { ElementRef, Injectable } from '@angular/core';
 import { AnimationService } from '../core/services/animation.service';
-import { ReporteConceptoAnimations } from './reporte-concepto-animations.config';
+import { ReporteAnimations } from '../reporte/reporte-animations.config';
 
 @Injectable({
     providedIn: 'root'
 })
-export class ReporteConceptoAnimationService {
+export class ReporteAnimationService {
 
     constructor(private animationService: AnimationService) { }
 
@@ -15,17 +15,17 @@ export class ReporteConceptoAnimationService {
     animateInitialEntrance(container: ElementRef): void {
         this.animationService.executeAnimationSequence(
             container,
-            ReporteConceptoAnimations.INITIAL_ENTRANCE
+            ReporteAnimations.INITIAL_ENTRANCE
         );
     }
 
     /**
-     * Anima las tarjetas de estadísticas
+     * Anima las tarjetas de designaciones
      */
-    animateStatsCards(container: ElementRef, onComplete?: () => void): void {
+    animateDesignacionesCards(container: ElementRef, onComplete?: () => void): void {
         const timeline = this.animationService.executeAnimationSequence(
             container,
-            ReporteConceptoAnimations.STATS_CARDS
+            ReporteAnimations.DESIGNACIONES_CARDS
         );
 
         if (onComplete) {
@@ -34,12 +34,12 @@ export class ReporteConceptoAnimationService {
     }
 
     /**
-     * Anima la tabla de docentes
+     * Anima las tarjetas de estadísticas
      */
-    animateTableEntrance(container: ElementRef, onComplete?: () => void): void {
+    animateStatsCards(container: ElementRef, onComplete?: () => void): void {
         const timeline = this.animationService.executeAnimationSequence(
             container,
-            ReporteConceptoAnimations.TABLE_ENTRANCE
+            ReporteAnimations.STATS_CARDS
         );
 
         if (onComplete) {
@@ -53,21 +53,21 @@ export class ReporteConceptoAnimationService {
     animateDataLoad(container: ElementRef, onComplete?: () => void): void {
         const timeline = this.animationService.createTimeline();
 
-        // 1. Animar estadísticas
+        // 1. Animar designaciones
         timeline.add(
             this.animationService.executeAnimationSequence(
                 container,
-                ReporteConceptoAnimations.STATS_CARDS
+                ReporteAnimations.DESIGNACIONES_CARDS
             )
         );
 
-        // 2. Animar tabla
+        // 2. Animar estadísticas
         timeline.add(
             this.animationService.executeAnimationSequence(
                 container,
-                ReporteConceptoAnimations.TABLE_ENTRANCE
+                ReporteAnimations.STATS_CARDS
             ),
-            "-=0.2" // Solapamiento
+            "-=0.4" // Solapamiento
         );
 
         if (onComplete) {
@@ -81,7 +81,7 @@ export class ReporteConceptoAnimationService {
     animateDataTransition(container: ElementRef, onComplete?: () => void): void {
         const timeline = this.animationService.executeAnimationSequence(
             container,
-            ReporteConceptoAnimations.DATA_TRANSITION_OUT
+            ReporteAnimations.DATA_TRANSITION_OUT
         );
 
         if (onComplete) {
@@ -99,7 +99,7 @@ export class ReporteConceptoAnimationService {
     animateLoading(container: ElementRef): void {
         this.animationService.executeAnimationSequence(
             container,
-            ReporteConceptoAnimations.LOADING_ANIMATION
+            ReporteAnimations.LOADING_ANIMATION
         );
     }
 
@@ -110,51 +110,51 @@ export class ReporteConceptoAnimationService {
         // Primero ejecutar la animación de entrada
         this.animationService.executeAnimationSequence(
             container,
-            ReporteConceptoAnimations.ERROR_DISPLAY
+            ReporteAnimations.ERROR_DISPLAY
         );
 
         // Luego ejecutar el efecto shake
         setTimeout(() => {
-            const errorElement = container.nativeElement.querySelector(ReporteConceptoAnimations.ERROR_SHAKE.selector);
+            const errorElement = container.nativeElement.querySelector(ReporteAnimations.ERROR_SHAKE.selector);
             if (errorElement) {
                 this.animationService.animateTo(
                     errorElement,
-                    ReporteConceptoAnimations.ERROR_SHAKE.animation
+                    ReporteAnimations.ERROR_SHAKE.animation
                 );
             }
         }, 500);
     }
 
     /**
-     * Anima popups y modales
-     */
-    animatePopupEntrance(container: ElementRef): void {
-        this.animationService.executeAnimationSequence(
-            container,
-            ReporteConceptoAnimations.POPUP_ENTRANCE
-        );
-    }
-
-    /**
      * Anima números con efecto contador
      */
     animateCounters(container: ElementRef): void {
-        const counterElements = container.nativeElement.querySelectorAll('.counter-number');
+        const counterElements = container.nativeElement.querySelectorAll('.counter-number, .stats-card h4');
 
         counterElements.forEach((element: HTMLElement) => {
-            const finalValue = parseInt(element.textContent || '0');
-            const obj = { value: 0 };
+            const textContent = element.textContent || '0';
+            const matches = textContent.match(/[\d.,]+/);
+            if (matches) {
+                const finalValue = parseFloat(matches[0].replace(/,/g, ''));
+                const obj = { value: 0 };
+                const isPercentage = textContent.includes('%');
 
-            // Usar el servicio base para crear una animación personalizada
-            const timeline = this.animationService.createTimeline();
-            timeline.to(obj, {
-                value: finalValue,
-                duration: ReporteConceptoAnimations.COUNTER_ANIMATION.animation.duration,
-                ease: ReporteConceptoAnimations.COUNTER_ANIMATION.animation.ease,
-                onUpdate: () => {
-                    element.textContent = Math.floor(obj.value).toString();
-                }
-            });
+                // Usar el servicio base para crear una animación personalizada
+                const timeline = this.animationService.createTimeline();
+                timeline.to(obj, {
+                    value: finalValue,
+                    duration: ReporteAnimations.COUNTER_ANIMATION.animation.duration,
+                    ease: ReporteAnimations.COUNTER_ANIMATION.animation.ease,
+                    onUpdate: () => {
+                        const currentValue = Math.floor(obj.value * 100) / 100;
+                        if (isPercentage) {
+                            element.textContent = textContent.replace(/[\d.,]+/, currentValue.toFixed(2));
+                        } else {
+                            element.textContent = textContent.replace(/[\d.,]+/, Math.floor(obj.value).toString());
+                        }
+                    }
+                });
+            }
         });
     }
 
@@ -164,7 +164,7 @@ export class ReporteConceptoAnimationService {
     animateYearChange(container: ElementRef, onComplete?: () => void): void {
         const timeline = this.animationService.executeAnimationSequence(
             container,
-            ReporteConceptoAnimations.YEAR_CHANGE_TRANSITION
+            ReporteAnimations.YEAR_CHANGE_TRANSITION
         );
 
         if (onComplete) {
@@ -180,7 +180,7 @@ export class ReporteConceptoAnimationService {
      * Configura todos los efectos de hover
      */
     setupHoverEffects(container: ElementRef): void {
-        const hoverConfigs = ReporteConceptoAnimations.HOVER_EFFECTS;
+        const hoverConfigs = ReporteAnimations.HOVER_EFFECTS;
 
         // Configurar hover para tarjetas de estadísticas
         this.animationService.setupHoverEffects(
@@ -191,13 +191,13 @@ export class ReporteConceptoAnimationService {
             hoverConfigs.statsCards.config
         );
 
-        // Configurar hover para filas de tabla
+        // Configurar hover para designaciones
         this.animationService.setupHoverEffects(
             container,
-            hoverConfigs.tableRows.selector,
-            hoverConfigs.tableRows.hoverIn,
-            hoverConfigs.tableRows.hoverOut,
-            hoverConfigs.tableRows.config
+            hoverConfigs.designacionCards.selector,
+            hoverConfigs.designacionCards.hoverIn,
+            hoverConfigs.designacionCards.hoverOut,
+            hoverConfigs.designacionCards.config
         );
 
         // Configurar hover para botones

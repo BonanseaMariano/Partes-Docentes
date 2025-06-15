@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpStatusCode } from '@angular/common/http';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, ElementRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ModalService } from '../modal/modal.service';
@@ -8,6 +8,7 @@ import { DesignacionConDias, LicenciasPorArticulo, Reporte } from '../models/rep
 import { PersonaService } from '../persona/service/persona.service';
 import { FechaFormatPipe } from '../pipes/fecha-format.pipe';
 import { TipoDesignacionPipe } from '../pipes/tipo-designacion.pipe';
+import { ReporteAnimationService } from './reporte-animation.service';
 
 // ApexCharts
 import {
@@ -39,10 +40,11 @@ export type ChartOptions = {
     templateUrl: './reporte.component.html',
     styleUrl: './reporte.component.css'
 })
-export class ReporteComponent implements OnInit {
+export class ReporteComponent implements OnInit, AfterViewInit {
     reporte: Reporte | null = null;
     dni: number = 0;
     anioSeleccionado: number = new Date().getFullYear();
+    isLoading: boolean = false;
 
     // Propiedades para el selector de años dinámico
     aniosDisponibles: number[] = [];
@@ -63,7 +65,9 @@ export class ReporteComponent implements OnInit {
         private route: ActivatedRoute,
         private router: Router,
         private personaService: PersonaService,
-        private modalService: ModalService
+        private modalService: ModalService,
+        private elementRef: ElementRef,
+        private reporteAnimationService: ReporteAnimationService
     ) {
         // Generar lista de años disponibles
         this.generarAniosDisponibles();
@@ -77,32 +81,75 @@ export class ReporteComponent implements OnInit {
         });
     }
 
+    ngAfterViewInit(): void {
+        // Configurar animaciones iniciales
+        this.reporteAnimationService.animateInitialEntrance(this.elementRef);
+    }
+
     cargarReporte(): void {
         this.reporte = null; // Limpiamos el reporte antes de cargar nuevos datos
+        this.isLoading = true;
 
+        // Si hay datos existentes, animar transición
+        if (this.reporte) {
+            this.reporteAnimationService.animateDataTransition(this.elementRef, () => {
+                this.loadReporteData();
+            });
+        } else {
+            this.loadReporteData();
+        }
+    }
+
+    /**
+     * Método privado para cargar los datos del reporte
+     */
+    private loadReporteData(): void {
         this.personaService.obtenerReporte(this.dni, this.anioSeleccionado).subscribe({
             next: (response: any) => {
+                this.isLoading = false;
                 if (response.status === HttpStatusCode.Ok) {
                     this.reporte = response.data;
-                    // Inicializar el gráfico cuando los datos estén disponibles
+
+                    // Animar carga de datos con secuencia completa
                     setTimeout(() => {
-                        this.inicializarGraficoMeses();
-                        this.inicializarGraficoArticulos();
-                    }, 100);
+                        this.reporteAnimationService.animateDataLoad(
+                            this.elementRef,
+                            () => {
+                                // Configurar hover effects después de cargar
+                                this.reporteAnimationService.setupHoverEffects(this.elementRef);
+
+                                // Animar contadores
+                                this.reporteAnimationService.animateCounters(this.elementRef);
+
+                                // Inicializar gráficos inmediatamente (ApexCharts maneja sus propias animaciones)
+                                this.inicializarGraficoMeses();
+                                this.inicializarGraficoArticulos();
+                            }
+                        );
+                    }, 50);
                 } else {
                     this.modalService.error(
                         "Error al cargar reporte",
                         response.message || "No se pudo cargar el reporte",
                         ""
                     );
+                    // Animar error
+                    setTimeout(() => {
+                        this.reporteAnimationService.animateError(this.elementRef);
+                    }, 50);
                 }
             },
             error: (error: any) => {
+                this.isLoading = false;
                 this.modalService.error(
                     "Error al cargar reporte",
                     "No se pudo cargar el reporte. Verifique que el DNI y año sean correctos.",
                     ""
                 );
+                // Animar error
+                setTimeout(() => {
+                    this.reporteAnimationService.animateError(this.elementRef);
+                }, 50);
             }
         });
     }
@@ -303,15 +350,18 @@ export class ReporteComponent implements OnInit {
     }
 
     onAnioChange(): void {
-        // Limpiar datos antes de navegar
-        this.reporte = null;
-        this.chartOptions = {};
-        this.chartOptionsArticulos = {};
-        this.showMonthlyChart = false;
-        this.showArticleChart = false;
+        // Animar transición de cambio de año
+        this.reporteAnimationService.animateYearChange(this.elementRef, () => {
+            // Limpiar datos antes de navegar
+            this.reporte = null;
+            this.chartOptions = {};
+            this.chartOptionsArticulos = {};
+            this.showMonthlyChart = false;
+            this.showArticleChart = false;
 
-        // Navegar a la nueva URL con el año seleccionado
-        this.router.navigate(['/personas', 'dni', this.dni, 'reporte', this.anioSeleccionado]);
+            // Navegar a la nueva URL con el año seleccionado
+            this.router.navigate(['/personas', 'dni', this.dni, 'reporte', this.anioSeleccionado]);
+        });
     }
 
     volver(): void {

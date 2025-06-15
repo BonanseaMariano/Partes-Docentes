@@ -144,8 +144,10 @@ export class ReporteConceptoComponent implements OnInit, AfterViewInit {
                                 // Animar contadores
                                 this.reporteAnimationService.animateCounters(this.elementRef);
 
-                                // Inicializar gráficos con delay para animaciones
-                                this.initializeChartsWithAnimation();
+                                // Inicializar gráficos inmediatamente (ApexCharts maneja sus propias animaciones)
+                                this.inicializarGraficoMensual();
+                                this.inicializarGraficoArticulosLicencias();
+                                this.inicializarGraficoArticulosDias();
                             }
                         );
                     }, 50);
@@ -162,18 +164,6 @@ export class ReporteConceptoComponent implements OnInit, AfterViewInit {
                 }, 50);
             }
         });
-    }
-
-    /**
-     * Inicializa gráficos con animaciones
-     */
-    private initializeChartsWithAnimation(): void {
-        // Delay para permitir que las animaciones anteriores terminen
-        setTimeout(() => {
-            this.inicializarGraficoMensual();
-            this.inicializarGraficoArticulosLicencias();
-            this.inicializarGraficoArticulosDias();
-        }, 300);
     }
 
     inicializarGraficoMensual(): void {
