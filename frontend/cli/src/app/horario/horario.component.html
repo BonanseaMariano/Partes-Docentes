@@ -82,9 +82,10 @@
                         {{ espacio.espacio_curricular }}
                       </div>
                       <div class="espacio-division">
-                        <i class="fa fa-list me-1"></i>{{ espacio.division }}
+                        <i class="fa fa-layer-group me-1"></i>{{ espacio.division }}
                       </div>
-                      <div class="espacio-docente">
+                      <div class="espacio-docente" [class.docente-licencia]="espacio.docente_de_licencia"
+                        [title]="espacio.docente_de_licencia ? 'Docente de licencia' : ''">
                         <i class="fa fa-user me-1"></i>{{ espacio.docente }}
                       </div>
                     </div>

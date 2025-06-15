@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import unpsjb.labprog.backend.business.repository.CargoRepository;
 import unpsjb.labprog.backend.business.repository.DesignacionRepository;
+import unpsjb.labprog.backend.business.repository.LicenciaRepository;
 import unpsjb.labprog.backend.dto.HorarioDTO;
 import unpsjb.labprog.backend.dto.HorarioDTO.HoraEspacioCurricular;
 import unpsjb.labprog.backend.model.Cargo;
@@ -27,10 +28,12 @@ public class HorarioService {
 
     private final CargoRepository cargoRepository;
     private final DesignacionRepository designacionRepository;
+    private final LicenciaRepository licenciaRepository;
 
-    public HorarioService(CargoRepository cargoRepository, DesignacionRepository designacionRepository) {
+    public HorarioService(CargoRepository cargoRepository, DesignacionRepository designacionRepository, LicenciaRepository licenciaRepository) {
         this.cargoRepository = cargoRepository;
         this.designacionRepository = designacionRepository;
+        this.licenciaRepository = licenciaRepository;
     }
 
     /**
@@ -62,12 +65,17 @@ public class HorarioService {
                 for (Horario horario : cargo.getHorarios()) {
                     String nombreDocente = obtenerNombreCompleto(designacionActiva.getPersona());
                     String nombreDivision = obtenerNombreDivision(cargo);
+                    
+                    // Verificar si el docente tiene licencia activa en esta fecha
+                    boolean docenteDeLicencia = licenciaRepository.tienePersonaLicenciaActivaEnFecha(
+                        designacionActiva.getPersona(), fecha);
 
                     HoraEspacioCurricular horaEspacio = new HoraEspacioCurricular(
                             horario.getHora(),
                             cargo.getNombre(),
                             nombreDivision,
-                            nombreDocente
+                            nombreDocente,
+                            docenteDeLicencia
                     );
 
                     // Agregar a la grilla en el día y hora correspondiente
@@ -116,12 +124,17 @@ public class HorarioService {
                 for (Horario horario : cargo.getHorarios()) {
                     String nombreDocente = obtenerNombreCompleto(designacionActiva.getPersona());
                     String nombreDivision = obtenerNombreDivision(cargo);
+                    
+                    // Verificar si el docente tiene licencia activa en esta fecha
+                    boolean docenteDeLicencia = licenciaRepository.tienePersonaLicenciaActivaEnFecha(
+                        designacionActiva.getPersona(), fecha);
 
                     HoraEspacioCurricular horaEspacio = new HoraEspacioCurricular(
                             horario.getHora(),
                             cargo.getNombre(),
                             nombreDivision,
-                            nombreDocente
+                            nombreDocente,
+                            docenteDeLicencia
                     );
 
                     // Agregar a la grilla en el día y hora correspondiente
@@ -177,12 +190,17 @@ public class HorarioService {
                 for (Horario horario : cargo.getHorarios()) {
                     String nombreDocente = obtenerNombreCompleto(designacionActiva.getPersona());
                     String nombreDivision = obtenerNombreDivision(cargo);
+                    
+                    // Verificar si el docente tiene licencia activa en esta fecha
+                    boolean docenteDeLicencia = licenciaRepository.tienePersonaLicenciaActivaEnFecha(
+                        designacionActiva.getPersona(), fecha);
 
                     HoraEspacioCurricular horaEspacio = new HoraEspacioCurricular(
                             horario.getHora(),
                             cargo.getNombre(),
                             nombreDivision,
-                            nombreDocente
+                            nombreDocente,
+                            docenteDeLicencia
                     );
 
                     // Agregar a la grilla en el día y hora correspondiente

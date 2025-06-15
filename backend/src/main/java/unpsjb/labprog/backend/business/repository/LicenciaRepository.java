@@ -121,8 +121,9 @@ public interface LicenciaRepository extends JpaRepository<Licencia, Integer> {
             @Param("fecha") LocalDate fecha);
 
     /**
-     * Verifica si existen licencias que cubran completamente un período específico.
-     * Busca licencias ordenadas por fecha y verifica si forman una cobertura continua.
+     * Verifica si existen licencias que cubran completamente un período
+     * específico. Busca licencias ordenadas por fecha y verifica si forman una
+     * cobertura continua.
      *
      * @param personaDni El DNI de la persona a verificar
      * @param fechaInicio Fecha de inicio del período a cubrir
@@ -154,4 +155,20 @@ public interface LicenciaRepository extends JpaRepository<Licencia, Integer> {
     List<Licencia> findLicenciasPorPersonaYAño(
             @Param("persona") Persona persona,
             @Param("anio") Integer anio);
+
+    /**
+     * Verifica si una persona tiene licencias activas en una fecha específica
+     *
+     * @param persona La persona a verificar
+     * @param fecha La fecha para verificar licencias activas
+     * @return true si la persona tiene licencias activas en esa fecha
+     */
+    @Query("SELECT CASE WHEN COUNT(l) > 0 THEN true ELSE false END FROM Licencia l "
+            + "WHERE l.persona = :persona "
+            + "AND l.pedidoDesde <= :fecha "
+            + "AND l.pedidoHasta >= :fecha "
+            + "AND l.estado = unpsjb.labprog.backend.model.enums.Estado.VALIDO")
+    boolean tienePersonaLicenciaActivaEnFecha(
+            @Param("persona") Persona persona,
+            @Param("fecha") LocalDate fecha);
 }
