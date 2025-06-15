@@ -1,21 +1,20 @@
 <!-- Menú y navegación principal -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm fixed-top">
-
-    <!-- Logo y nombre del sistema -->
-    <a class="navbar-brand d-flex align-items-center ps-3" href="">
-        <img src="Logo.ico" alt="Logo Partes Docentes" class="me-2"
-            style="height: 40px; width: auto; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.3));">
-        <span>Partes Docentes</span>
-    </a>
-
-    <!-- Botón hamburguesa para móviles usando ngbCollapse -->
-    <button class="navbar-toggler me-3" type="button" (click)="isMenuCollapsed = !isMenuCollapsed"
-        aria-controls="navbarSupportedContent" [attr.aria-expanded]="!isMenuCollapsed" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm fixed-top" 
+     [class.scrolled]="isNavbarScrolled">
 
     <div class="container">
+        <!-- Logo y nombre del sistema -->
+        <a class="navbar-brand d-flex align-items-center" href="" (click)="closeNavbar()">
+            <img src="Logo.ico" alt="Logo Partes Docentes" class="me-2">
+            <span>Partes Docentes</span>
+        </a>
+
+        <!-- Botón hamburguesa para móviles usando ngbCollapse -->
+        <button class="navbar-toggler" type="button" (click)="isMenuCollapsed = !isMenuCollapsed"
+            aria-controls="navbarSupportedContent" [attr.aria-expanded]="!isMenuCollapsed" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
         <!-- Contenido del menú que se colapsará en móviles -->
         <div class="collapse navbar-collapse" [ngbCollapse]="isMenuCollapsed" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
@@ -27,9 +26,9 @@
                         <i class="fa fa-users me-1"></i> Personas
                     </button>
                     <ul ngbDropdownMenu aria-labelledby="personasDropdown">
-                        <li><a ngbDropdownItem href="personas"><i class="fa fa-list me-1"></i> Listar</a></li>
-                        <li><a ngbDropdownItem href="personas/new"><i class="fa fa-plus me-1"></i> Nueva</a></li>
-                        <li><a ngbDropdownItem [routerLink]="['/personas/reporte-concepto/', getAnioActual()]"><i
+                        <li><a ngbDropdownItem href="personas" (click)="closeNavbar()"><i class="fa fa-list me-1"></i> Listar</a></li>
+                        <li><a ngbDropdownItem href="personas/new" (click)="closeNavbar()"><i class="fa fa-plus me-1"></i> Nueva</a></li>
+                        <li><a ngbDropdownItem [routerLink]="['/personas/reporte-concepto/', getAnioActual()]" (click)="closeNavbar()"><i
                                     class="fa fa-file-text-o me-1"></i> Reporte Concepto</a>
                     </ul>
                 </li>
@@ -41,8 +40,8 @@
                         <i class="fa fa-layer-group me-1"></i> Divisiones
                     </button>
                     <ul ngbDropdownMenu aria-labelledby="divisionesDropdown">
-                        <li><a ngbDropdownItem href="divisiones"><i class="fa fa-list me-1"></i> Listar</a></li>
-                        <li><a ngbDropdownItem href="divisiones/new"><i class="fa fa-plus me-1"></i> Nueva</a></li>
+                        <li><a ngbDropdownItem href="divisiones" (click)="closeNavbar()"><i class="fa fa-list me-1"></i> Listar</a></li>
+                        <li><a ngbDropdownItem href="divisiones/new" (click)="closeNavbar()"><i class="fa fa-plus me-1"></i> Nueva</a></li>
                     </ul>
                 </li>
 
@@ -53,10 +52,10 @@
                         <i class="fa fa-briefcase me-1"></i> Cargos
                     </button>
                     <ul ngbDropdownMenu aria-labelledby="cargosDropdown">
-                        <li><a ngbDropdownItem href="cargos"><i class="fa fa-list me-1"></i> Listar</a></li>
-                        <li><a ngbDropdownItem href="javascript:void(0)" (click)="crearNuevoCargo()"><i
+                        <li><a ngbDropdownItem href="cargos" (click)="closeNavbar()"><i class="fa fa-list me-1"></i> Listar</a></li>
+                        <li><a ngbDropdownItem href="javascript:void(0)" (click)="crearNuevoCargo(); closeNavbar()"><i
                                     class="fa fa-plus me-1"></i> Nuevo</a></li>
-                        <li><a ngbDropdownItem [routerLink]="['/cargos/horarios', 'MANIANA', getFechaHoy()]"><i
+                        <li><a ngbDropdownItem [routerLink]="['/cargos/horarios', 'MANIANA', getFechaHoy()]" (click)="closeNavbar()"><i
                                     class="fa fa-clock me-1"></i> Horarios</a></li>
                     </ul>
                 </li>
@@ -68,8 +67,8 @@
                         <i class="fa fa-user-tie me-2"></i> Designaciones
                     </button>
                     <ul ngbDropdownMenu aria-labelledby="designacionesDropdown">
-                        <li><a ngbDropdownItem href="designaciones"><i class="fa fa-list me-1"></i> Listar</a></li>
-                        <li><a ngbDropdownItem href="javascript:void(0)" (click)="crearNuevaDesignacion()"><i
+                        <li><a ngbDropdownItem href="designaciones" (click)="closeNavbar()"><i class="fa fa-list me-1"></i> Listar</a></li>
+                        <li><a ngbDropdownItem href="javascript:void(0)" (click)="crearNuevaDesignacion(); closeNavbar()"><i
                                     class="fa fa-plus me-1"></i> Nueva</a></li>
                     </ul>
                 </li>
@@ -81,9 +80,9 @@
                         <i class="fa-solid fa fa-calendar-check me-2"></i> Licencias
                     </button>
                     <ul ngbDropdownMenu aria-labelledby="licenciasDropdown">
-                        <li><a ngbDropdownItem href="licencias"><i class="fa fa-list me-1"></i> Listar</a></li>
-                        <li><a ngbDropdownItem href="licencias/new"><i class="fa fa-plus me-1"></i> Nueva</a></li>
-                        <li><a ngbDropdownItem [routerLink]="['/licencias/parte-diario', getFechaHoy()]"><i
+                        <li><a ngbDropdownItem href="licencias" (click)="closeNavbar()"><i class="fa fa-list me-1"></i> Listar</a></li>
+                        <li><a ngbDropdownItem href="licencias/new" (click)="closeNavbar()"><i class="fa fa-plus me-1"></i> Nueva</a></li>
+                        <li><a ngbDropdownItem [routerLink]="['/licencias/parte-diario', getFechaHoy()]" (click)="closeNavbar()"><i
                                     class="fa-solid fa-clipboard-list me-1"></i> Parte Diario</a>
                         </li>
                     </ul>

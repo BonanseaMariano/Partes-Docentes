@@ -1,11 +1,11 @@
-/* You can add global styles to this file, and also import other style files */
+/* ======= ESTILOS GLOBALES Y IMPORTS ======= */
 @import "bootstrap/dist/css/bootstrap.min.css";
 @import "font-awesome/css/font-awesome.css";
 @import "animate.css/animate.min.css";
 @import "aos/dist/aos.css";
 @import "./variables.css";
 
-/* Estilos globales personalizados */
+/* ======= ESTILOS BASE ======= */
 html {
   font-size: var(--font-size-root);
 }
@@ -22,7 +22,7 @@ body {
   color: var(--color-text);
 }
 
-/* Estilo para los encabezados */
+/* ======= TIPOGRAFÍA ======= */
 h1,
 h2,
 h3,
@@ -60,6 +60,7 @@ h6 {
   font-size: var(--font-size-h6);
 }
 
+/* ======= CONTENEDORES Y TARJETAS ======= */
 /* Mejoras para los contenedores */
 .container {
   padding-top: 10px;
@@ -405,7 +406,6 @@ h6 {
   background-color: var(--color-primary-light);
   padding: 1rem 0.75rem;
   text-align: center;
-  /* Centrar el texto horizontalmente */
 }
 
 .table thead th:first-child {
@@ -422,17 +422,14 @@ h6 {
   vertical-align: middle;
   border-top: 1px solid var(--color-border);
   border-right: 1px solid rgba(233, 236, 239, 0.7);
-  /* Separador de columna más visible */
   font-size: var(--font-size-sm);
   color: var(--color-text);
   transition: all 0.2s ease;
   text-align: center;
-  /* Centrar el texto horizontalmente */
 }
 
 .table tbody td:last-child {
   border-right: none;
-  /* Eliminar borde en la última columna */
 }
 
 /* Estilo para filas alternadas - ayuda a diferenciar visualmente sin depender solo de separadores */
@@ -457,7 +454,6 @@ h6 {
 .table tbody tr.no-results td {
   padding: 3rem 1rem;
   text-align: center;
-  /* Ya estaba centrado pero lo mantenemos explícito */
   color: var(--color-text-muted);
   font-style: italic;
   background-color: rgba(248, 249, 250, 0.7);
@@ -556,7 +552,6 @@ h6 {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   }
 
-  /* Mantener alineación a la derecha para columnas de acciones */
   .table td.text-end,
   .table th.text-end {
     text-align: right !important;
@@ -695,14 +690,12 @@ figcaption {
 }
 
 .btn-popup-empty {
-  background-color: #6c757d;
-  /* gris */
+  background-color: var(--color-text-muted);
   color: white;
 }
 
 .btn-popup-empty:hover {
   background-color: #5a6268;
-  /* gris oscuro al pasar el mouse */
   color: white;
 }
 
@@ -732,25 +725,21 @@ figcaption {
   top: 50%;
   transform: translateY(-50%);
   font-size: 0.7em;
-  /* Reducido de 0.8em a 0.7em */
 }
 
 /* Estilos para los iconos de ordenamiento */
 .fa-sort {
   opacity: 0.4;
-  /* Reducido de 0.5 a 0.4 para ser más sutil */
 }
 
 .fa-sort-up,
 .fa-sort-down {
   opacity: 0.8;
-  /* Reducido de 1 a 0.8 para ser menos prominente */
 }
 
 /* Mejorar la apariencia visual cuando se hoverea */
 .sortable-header:hover i.fa-sort {
   opacity: 0.7;
-  /* Reducido de 0.8 a 0.7 */
 }
 
 /* Estilos para el estado activo de ordenamiento */
@@ -771,15 +760,12 @@ figcaption {
     top: 50%;
     transform: translateY(-50%);
     opacity: 0.4;
-    /* Reducido de 0.5 a 0.4 */
     font-size: 0.8em;
-    /* Reducido de 0.9em a 0.8em */
   }
 
   .sortable-header.active::after {
     content: "↑";
     opacity: 0.8;
-    /* Reducido de 1 a 0.8 */
     color: #007bff;
   }
 
