@@ -1,4 +1,5 @@
-<div class="card shadow-sm mb-4">
+<div class="licencias-container" [ngClass]="{'loading': isLoading}">
+    <div class="card shadow-sm mb-4">
     <div class="card-header bg-light d-flex justify-content-between align-items-center">
         <h2 class="mb-0"><i class="fa fa-calendar-check me-2"></i>Licencias</h2>
         <a routerLink="/licencias/new" class="btn-nuevo">
@@ -64,7 +65,7 @@
                             {{ licencia.articuloLicencia?.articulo || '' }}
                         </td>
                         <td class="text-center">
-                            <button (click)="openDesignacionesPopup(licencia)" class="btn-popup"
+                            <button (click)="openDesignacionesPopup(licencia, $event)" class="btn-popup"
                                 [ngClass]="{'btn-popup-empty': getDesignacionCount(licencia) === 0}"
                                 title="Ver designaciones">
                                 <i class="fa fa-user-tie"></i>
@@ -78,7 +79,8 @@
                                 title="Inválida"></i>
                         </td>
                         <td class="text-center">
-                            <button (click)="openLogsPopup(licencia)" class="btn-logs" title="Ver logs">
+                            <button (click)="openLogsPopup(licencia, $event)" class="btn-logs" 
+                                [ngClass]="getLogCount(licencia) === 0 ? 'btn-logs-empty' : ''" title="Ver logs">
                                 <i class="fa fa-history"></i>
                                 <span class="ms-1">{{ getLogCount(licencia) }}</span>
                             </button>
@@ -88,7 +90,7 @@
                                 title="Editar">
                                 <i class="fa fa-pencil"></i>
                             </a>
-                            <a (click)="remove(licencia.id)" [routerLink]="" class="btn btn-sm btn-outline-danger"
+                            <a (click)="remove(licencia.id, $event)" [routerLink]="" class="btn btn-sm btn-outline-danger"
                                 title="Eliminar">
                                 <i class="fa fa-trash"></i>
                             </a>
@@ -109,6 +111,7 @@
             (pageChangeRequested)="onPageChangeRequested($event)" [number]="resultsPage.number">
         </app-pagination>
     </div>
+</div>
 </div>
 
 <!-- Template para el popup de designaciones -->
@@ -158,21 +161,15 @@
 
 <!-- Template para el popup de logs -->
 <ng-template #logsTemplate let-licencia>
-    <div *ngIf="licencia.logs && licencia.logs.length > 0" class="table-responsive">
-        <table class="table table-hover">
-            <thead class="table-light">
-                <tr>
-                    <th scope="col">Fecha y Hora</th>
-                    <th scope="col">Descripción</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let log of licencia.logs">
-                    <td>{{ log.fechaHora | date:'dd/MM/yyyy HH:mm:ss' }}</td>
-                    <td>{{ log.descripcion }}</td>
-                </tr>
-            </tbody>
-        </table>
+    <div *ngIf="licencia.logs && licencia.logs.length > 0" class="logs-container">
+        <div *ngFor="let log of licencia.logs" class="log-item">
+            <div class="log-fecha">
+                <i class="fa fa-calendar me-2"></i>{{ log.fechaHora | date:'dd/MM/yyyy HH:mm:ss' }}
+            </div>
+            <div class="log-estado">
+                {{ log.descripcion }}
+            </div>
+        </div>
     </div>
     <div *ngIf="!licencia.logs || licencia.logs.length === 0" class="empty-state-message">
         <i class="fa fa-info-circle me-2"></i>

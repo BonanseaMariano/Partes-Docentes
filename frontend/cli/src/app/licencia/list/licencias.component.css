@@ -1,38 +1,341 @@
-/* Estilos específicos para el componente licencias */
+/* Estilos específicos para el componente Licencias */
+/* Los estilos base de botones y tabla vienen de styles.css */
 
-/* Estilo específico para botón de logs */
+/* ========== EFECTOS ESPECÍFICOS PARA LICENCIAS ========== */
+
+/* Efecto de pulso para botones de designaciones (azul) */
+.btn-popup:hover {
+    animation: pulse-btn-designaciones 1s infinite;
+}
+
+@keyframes pulse-btn-designaciones {
+    0% {
+        box-shadow: 0 0 0 0 rgba(13, 110, 253, 0.7);
+    }
+
+    70% {
+        box-shadow: 0 0 0 10px rgba(13, 110, 253, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(13, 110, 253, 0);
+    }
+}
+
+/* Efecto de pulso para botones de logs (info/turquesa) */
+.btn-logs:hover:not(.btn-logs-empty) {
+    animation: pulse-btn-logs 1s infinite;
+}
+
+@keyframes pulse-btn-logs {
+    0% {
+        box-shadow: 0 0 0 0 rgba(23, 162, 184, 0.7);
+    }
+
+    70% {
+        box-shadow: 0 0 0 10px rgba(23, 162, 184, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(23, 162, 184, 0);
+    }
+}
+
+/* Estilos originales para botones de logs */
 .btn-logs {
-    background-color: var(--color-info);
+    background-color: #17a2b8;
     color: white;
     border: none;
     border-radius: 4px;
     padding: 4px 12px;
-    font-size: var(--font-size-sm);
+    font-size: 0.875rem;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: all 0.2s ease;
     display: inline-flex;
     align-items: center;
     gap: 6px;
 }
 
 .btn-logs:hover {
-    background-color: #0aa8cc;
+    background-color: #138496;
 }
 
 .btn-logs-empty {
-    background-color: #6c757d;
+    background-color: #6c757d !important;
     color: white;
 }
 
 .btn-logs-empty:hover {
-    background-color: #5a6268;
+    background-color: #5a6268 !important;
 }
 
-/* Estilos para los popups específicos de licencias */
-.licencias-popup-table {
-    margin-bottom: 0;
+/* Los botones vacíos no tienen efecto de pulso */
+.btn-popup-empty:hover,
+.btn-logs-empty:hover {
+    animation: none !important;
 }
 
-.licencias-popup-table .table {
-    margin-bottom: 0;
+/* ========== ANIMACIONES GSAP COMPLEMENTARIAS ========== */
+
+/* Preparación para animaciones de entrada */
+.card-header,
+.table-responsive,
+.card-footer {
+    transform-origin: center;
+}
+
+/* Preparación para hover en filas */
+.table tbody tr {
+    transition: all 0.3s ease;
+    transform-origin: left center;
+}
+
+/* Preparación para animaciones de botones */
+.btn-sm,
+.btn-nuevo {
+    transition: all 0.2s ease;
+    transform-origin: center;
+}
+
+/* Estado de carga */
+.licencias-container.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+/* Optimización para animaciones */
+.licencias-container {
+    will-change: opacity, transform;
+}
+
+.table tbody tr,
+.btn-popup,
+.btn-logs,
+.btn-sm,
+.btn-nuevo,
+.badge {
+    will-change: transform, opacity;
+}
+
+/* Efectos para headers de ordenamiento */
+.sortable-header {
+    transition: all 0.3s ease;
+    transform-origin: center;
+}
+
+.sortable-header.active {
+    transform-origin: center;
+}
+
+/* Efectos para popups */
+.popup-container {
+    transform-origin: center;
+}
+
+.popup-container .table-responsive,
+.popup-container .logs-container {
+    transform-origin: center;
+}
+
+/* ========== EFECTOS HOVER MEJORADOS ========== */
+
+/* Mejorar el hover del botón nuevo con efecto de brillo */
+.btn-nuevo {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-nuevo::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s ease;
+}
+
+.btn-nuevo:hover::before {
+    left: 100%;
+}
+
+/* Efectos para botones de acción */
+.btn-sm {
+    position: relative;
+    overflow: hidden;
+}
+
+/* Mejorar indicador visual de loading */
+.licencias-container.loading .table tbody tr {
+    opacity: 0.6;
+    transform: translateX(-5px);
+}
+
+/* ========== ESTILOS ESPECÍFICOS PARA POPUPS ========== */
+
+/* Contenedor de logs en popup */
+.logs-container {
+    padding: 1rem 0;
+}
+
+.log-item {
+    background: #fff3cd;
+    border-radius: 6px;
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+    border-left: 3px solid #ffc107;
+    transform-origin: center;
+    transition: all 0.2s ease;
+}
+
+.log-item:hover {
+    background: #ffeaa7;
+    border-left-color: #f39c12;
+    transform: scale(1.02);
+}
+
+.log-item .log-fecha {
+    font-weight: 600;
+    color: #856404;
+    font-size: 0.85rem;
+    margin-bottom: 0.25rem;
+}
+
+.log-item .log-estado {
+    font-size: 0.9rem;
+    color: #495057;
+}
+
+/* ========== EFECTOS ESPECIALES PARA BADGES ========== */
+
+/* Efectos especiales para badges de estado */
+.badge {
+    transition: all 0.2s ease;
+    transform-origin: center;
+}
+
+.badge-estado {
+    position: relative;
+    transition: all 0.2s ease;
+    transform-origin: center;
+}
+
+.badge-estado.pendiente {
+    background-color: #ffc107 !important;
+    color: #212529 !important;
+    box-shadow: 0 2px 4px rgba(255, 193, 7, 0.4);
+}
+
+.badge-estado.aprobada {
+    background-color: #28a745 !important;
+    box-shadow: 0 2px 4px rgba(40, 167, 69, 0.4);
+}
+
+.badge-estado.rechazada {
+    background-color: #dc3545 !important;
+    box-shadow: 0 2px 4px rgba(220, 53, 69, 0.4);
+}
+
+/* Efecto de brillo en badges */
+.badge:hover,
+.badge-estado:hover {
+    filter: brightness(1.1);
+    transform: scale(1.05);
+}
+
+/* ========== RESPONSIVE ANIMATIONS ========== */
+
+/* En móviles, reducir la intensidad de las animaciones */
+@media (max-width: 768px) {
+    .btn-popup:hover,
+    .btn-logs:hover {
+        animation-duration: 0.8s;
+    }
+    
+    .table tbody tr,
+    .btn-sm,
+    .btn-nuevo,
+    .badge {
+        transition-duration: 0.2s;
+    }
+    
+    .btn-nuevo::before {
+        transition-duration: 0.3s;
+    }
+    
+    @keyframes pulse-btn-designaciones {
+        0% {
+            box-shadow: 0 0 0 0 rgba(13, 110, 253, 0.5);
+        }
+
+        70% {
+            box-shadow: 0 0 0 6px rgba(13, 110, 253, 0);
+        }
+
+        100% {
+            box-shadow: 0 0 0 0 rgba(13, 110, 253, 0);
+        }
+    }
+    
+    @keyframes pulse-btn-logs {
+        0% {
+            box-shadow: 0 0 0 0 rgba(23, 162, 184, 0.5);
+        }
+
+        70% {
+            box-shadow: 0 0 0 6px rgba(23, 162, 184, 0);
+        }
+
+        100% {
+            box-shadow: 0 0 0 0 rgba(23, 162, 184, 0);
+        }
+    }
+}
+
+/* Reducir animaciones si el usuario prefiere menos movimiento */
+@media (prefers-reduced-motion: reduce) {
+    .btn-popup:hover,
+    .btn-logs:hover {
+        animation: none;
+    }
+    
+    .table tbody tr,
+    .btn-sm,
+    .btn-nuevo,
+    .badge,
+    .sortable-header {
+        transition: none;
+    }
+    
+    .btn-nuevo::before {
+        display: none;
+    }
+}
+
+/* ========== MEJORAS VISUALES ========== */
+
+/* Mejorar la apariencia de números de fila */
+.table tbody td:first-child {
+    font-weight: 600;
+    color: var(--color-primary, #007bff);
+}
+
+/* Destacar headers activos de ordenamiento */
+.sortable-header.active {
+    background-color: rgba(13, 110, 253, 0.08);
+    color: var(--color-primary-darker, #0056b3);
+}
+
+/* Preparación para animaciones de eliminación */
+.table tbody tr.deleting {
+    background-color: rgba(220, 53, 69, 0.1);
+}
+
+/* Mejorar el aspecto de los popups */
+.popup-container .empty-state-message {
+    text-align: center;
+    padding: 2rem;
+    color: #6c757d;
+    font-style: italic;
 }
