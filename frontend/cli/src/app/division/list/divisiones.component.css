@@ -1,33 +1,7 @@
-/* Estilos específicos para el componente Personas */
+/* Estilos específicos para el componente Divisiones */
 /* Los estilos base de botones y tabla vienen de styles.css */
 
-/* ========== EFECTOS ESPECÍFICOS PARA PERSONAS ========== */
-
-/* Efecto de pulso EXACTO del reporte-concepto para botones de designaciones */
-.btn-popup:hover {
-    animation: pulse-btn-personas 1s infinite;
-}
-
-@keyframes pulse-btn-personas {
-    0% {
-        box-shadow: 0 0 0 0 rgba(13, 110, 253, 0.7);
-    }
-
-    70% {
-        box-shadow: 0 0 0 10px rgba(13, 110, 253, 0);
-    }
-
-    100% {
-        box-shadow: 0 0 0 0 rgba(13, 110, 253, 0);
-    }
-}
-
-/* Los botones vacíos no tienen efecto de pulso */
-.btn-popup-empty:hover {
-    animation: none !important;
-}
-
-/* ========== ANIMACIONES GSAP COMPLEMENTARIAS ========== */
+/* ========== ANIMACIONES ESPECÍFICAS PARA DIVISIONES ========== */
 
 /* Preparación para animaciones de entrada */
 .card-header,
@@ -50,19 +24,20 @@
 }
 
 /* Estado de carga */
-.personas-container.loading {
+.divisiones-container.loading {
     opacity: 0.7;
     pointer-events: none;
 }
 
 /* Optimización para animaciones */
-.personas-container {
+.divisiones-container {
     will-change: opacity, transform;
 }
 
 .table tbody tr,
-.btn-popup,
-.btn-sm {
+.btn-sm,
+.btn-nuevo,
+.badge {
     will-change: transform, opacity;
 }
 
@@ -76,18 +51,20 @@
     transform-origin: center;
 }
 
-/* Efectos para popup de designaciones */
-.popup-container {
+/* Efectos especiales para badges de turno */
+.badge {
+    transition: all 0.2s ease;
     transform-origin: center;
 }
 
-.popup-container .table-responsive {
+/* Animación de entrada para filas vacías */
+.empty-state-cell {
     transform-origin: center;
 }
 
 /* ========== EFECTOS HOVER MEJORADOS ========== */
 
-/* Mejorar el hover del botón nuevo con efecto de brillo */
+/* Mejorar el hover del botón nuevo */
 .btn-nuevo {
     position: relative;
     overflow: hidden;
@@ -114,34 +91,23 @@
     overflow: hidden;
 }
 
+/* Mejorar indicador visual de loading */
+.divisiones-container.loading .table tbody tr {
+    opacity: 0.6;
+    transform: translateX(-5px);
+}
+
 /* ========== RESPONSIVE ANIMATIONS ========== */
 
 /* En móviles, reducir la intensidad de las animaciones */
 @media (max-width: 768px) {
-    .btn-popup:hover {
-        animation-duration: 0.8s;
-    }
-
-    @keyframes pulse-btn-personas {
-        0% {
-            box-shadow: 0 0 0 0 rgba(13, 110, 253, 0.5);
-        }
-
-        70% {
-            box-shadow: 0 0 0 6px rgba(13, 110, 253, 0);
-        }
-
-        100% {
-            box-shadow: 0 0 0 0 rgba(13, 110, 253, 0);
-        }
-    }
 
     .table tbody tr,
     .btn-sm,
-    .btn-nuevo {
+    .badge {
         transition-duration: 0.2s;
     }
-    
+
     .btn-nuevo::before {
         transition-duration: 0.3s;
     }
@@ -149,17 +115,60 @@
 
 /* Reducir animaciones si el usuario prefiere menos movimiento */
 @media (prefers-reduced-motion: reduce) {
-    .btn-popup:hover {
-        animation: none;
-    }
 
     .table tbody tr,
     .btn-sm,
+    .btn-nuevo,
+    .badge,
     .sortable-header {
         transition: none;
     }
-    
+
     .btn-nuevo::before {
         display: none;
     }
+}
+
+/* ========== EFECTOS ESPECIALES PARA DIVISIONES ========== */
+
+/* Destacar diferentes turnos con colores sutiles */
+.badge-mañana {
+    box-shadow: 0 2px 4px rgba(255, 193, 7, 0.3);
+}
+
+.badge-tarde {
+    box-shadow: 0 2px 4px rgba(13, 202, 240, 0.3);
+}
+
+.badge-noche {
+    box-shadow: 0 2px 4px rgba(108, 117, 125, 0.3);
+}
+
+/* Efecto de brillo en badges */
+.badge:hover {
+    filter: brightness(1.1);
+}
+
+/* Preparación para animaciones de eliminación */
+.table tbody tr.deleting {
+    background-color: rgba(220, 53, 69, 0.1);
+}
+
+/* ========== MEJORAS VISUALES ========== */
+
+/* Mejorar la apariencia de números de fila */
+.table tbody td:first-child {
+    font-weight: 600;
+    color: var(--color-primary, #007bff);
+}
+
+/* Destacar headers activos de ordenamiento */
+.sortable-header.active {
+    background-color: rgba(13, 110, 253, 0.08);
+    color: var(--color-primary-darker, #0056b3);
+}
+
+/* Suavizar transiciones de paginación */
+.pagination .page-link {
+    transition: all 0.3s ease;
 }

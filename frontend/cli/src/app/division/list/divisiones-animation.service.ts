@@ -1,12 +1,12 @@
 import { Injectable, ElementRef } from '@angular/core';
 import { gsap } from 'gsap';
 import { AnimationService } from '../../core/services/animation.service';
-import { PersonasAnimations } from './personas-animations.config';
+import { DivisionesAnimations } from './divisiones-animations.config';
 
 @Injectable({
     providedIn: 'root'
 })
-export class PersonasAnimationService {
+export class DivisionesAnimationService {
 
     constructor(private animationService: AnimationService) { }
 
@@ -14,10 +14,7 @@ export class PersonasAnimationService {
      * Anima la entrada inicial del componente
      */
     animateInitialEntrance(container: ElementRef): void {
-        const config = PersonasAnimations.INITIAL_ENTRANCE;
-
-        // Crear timeline principal
-        const mainTimeline = this.animationService.createTimeline();
+        const config = DivisionesAnimations.INITIAL_ENTRANCE;
 
         // Animar header
         const headerElement = container.nativeElement.querySelector(config.header.selector);
@@ -79,7 +76,7 @@ export class PersonasAnimationService {
      * Anima la carga de datos
      */
     animateDataLoad(container: ElementRef, onComplete?: () => void): void {
-        const config = PersonasAnimations.DATA_LOADING;
+        const config = DivisionesAnimations.DATA_LOADING;
 
         const rowElements = container.nativeElement.querySelectorAll(config.newRows.selector);
         if (rowElements.length > 0) {
@@ -101,7 +98,7 @@ export class PersonasAnimationService {
      * Anima la transición cuando cambia el ordenamiento
      */
     animateSortTransition(container: ElementRef, onComplete?: () => void): void {
-        const config = PersonasAnimations.SORT_TRANSITION;
+        const config = DivisionesAnimations.SORT_TRANSITION;
         const tableBody = container.nativeElement.querySelector(config.tableUpdate.selector);
 
         if (tableBody) {
@@ -122,7 +119,7 @@ export class PersonasAnimationService {
      * Anima el fade in después de que los datos se hayan actualizado
      */
     animateSortTransitionIn(container: ElementRef): void {
-        const config = PersonasAnimations.SORT_TRANSITION;
+        const config = DivisionesAnimations.SORT_TRANSITION;
         const tableBody = container.nativeElement.querySelector(config.tableUpdate.selector);
 
         if (tableBody) {
@@ -134,7 +131,7 @@ export class PersonasAnimationService {
      * Anima el estado de carga con efecto de "respiración"
      */
     animateLoadingBreath(container: ElementRef): void {
-        const config = PersonasAnimations.DATA_LOADING;
+        const config = DivisionesAnimations.DATA_LOADING;
         const tableContainer = container.nativeElement.querySelector(config.breathingTable.selector);
 
         if (tableContainer) {
@@ -166,25 +163,7 @@ export class PersonasAnimationService {
      * Configura todos los efectos de hover
      */
     setupHoverEffects(container: ElementRef): void {
-        const hoverConfigs = PersonasAnimations.HOVER_EFFECTS;
-
-        // Configurar hover para botones de designaciones con datos
-        this.animationService.setupHoverEffects(
-            container,
-            hoverConfigs.designationButtons.selector,
-            hoverConfigs.designationButtons.hoverIn,
-            hoverConfigs.designationButtons.hoverOut,
-            hoverConfigs.designationButtons.config
-        );
-
-        // Configurar hover para botones de designaciones vacíos
-        this.animationService.setupHoverEffects(
-            container,
-            hoverConfigs.designationButtonsEmpty.selector,
-            hoverConfigs.designationButtonsEmpty.hoverIn,
-            hoverConfigs.designationButtonsEmpty.hoverOut,
-            hoverConfigs.designationButtonsEmpty.config
-        );
+        const hoverConfigs = DivisionesAnimations.HOVER_EFFECTS;
 
         // Configurar hover para filas de tabla
         this.animationService.setupHoverEffects(
@@ -215,10 +194,10 @@ export class PersonasAnimationService {
     }
 
     /**
-     * Animación especial para cuando se hace clic en un botón de designaciones
+     * Animación especial para cuando se hace clic en un botón
      */
-    animateDesignationButtonClick(button: HTMLElement): void {
-        const config = PersonasAnimations.BUTTON_CLICK;
+    animateButtonClick(button: HTMLElement): void {
+        const config = DivisionesAnimations.BUTTON_CLICK;
 
         // Efecto de "press"
         gsap.to(button, {
@@ -231,54 +210,66 @@ export class PersonasAnimationService {
     }
 
     /**
-     * Animación de entrada del popup de designaciones
+     * Anima la eliminación de una fila
      */
-    animatePopupEntrance(container: ElementRef): void {
-        const config = PersonasAnimations.POPUP_ENTRANCE;
+    animateRowDelete(row: HTMLElement, onComplete?: () => void): void {
+        const config = DivisionesAnimations.MODAL_EFFECTS;
 
-        // Animar contenedor del popup
-        const popupContainer = container.nativeElement;
-        if (popupContainer) {
-            gsap.fromTo(popupContainer,
-                config.container.animation,
-                {
-                    scale: 1,
-                    opacity: 1,
-                    duration: config.container.animation.duration,
-                    ease: config.container.animation.ease
-                }
-            );
-        }
+        gsap.to(row, {
+            ...config.deleteRow.animation,
+            onComplete: onComplete
+        });
+    }
 
-        // Animar contenido interno
-        const contentElement = container.nativeElement.querySelector(config.content.selector);
-        if (contentElement) {
-            gsap.fromTo(contentElement,
-                config.content.animation,
-                {
-                    y: 0,
-                    opacity: 1,
-                    duration: config.content.animation.duration,
-                    delay: config.content.animation.delay,
-                    ease: config.content.animation.ease
-                }
-            );
+    /**
+     * Anima badges y elementos especiales
+     */
+    animateBadges(container: ElementRef): void {
+        const config = DivisionesAnimations.BADGE_ANIMATION;
+        const badgeElements = container.nativeElement.querySelectorAll(config.turnoBadges.selector);
+
+        if (badgeElements.length > 0) {
+            badgeElements.forEach((element: Element, index: number) => {
+                setTimeout(() => {
+                    gsap.to(element, config.turnoBadges.animation);
+                }, index * 50);
+            });
         }
     }
 
     /**
-     * Anima los contadores/números
+     * Anima números y estadísticas
      */
-    animateCounters(container: ElementRef): void {
-        const config = PersonasAnimations.COUNTER_ANIMATION;
-        const counterElements = container.nativeElement.querySelectorAll(config.numbers.selector);
+    animateNumbers(container: ElementRef): void {
+        const config = DivisionesAnimations.DATA_INDICATORS;
+        const numberElements = container.nativeElement.querySelectorAll(config.numbers.selector);
 
-        if (counterElements.length > 0) {
-            counterElements.forEach((element: Element, index: number) => {
+        if (numberElements.length > 0) {
+            numberElements.forEach((element: Element, index: number) => {
                 setTimeout(() => {
                     gsap.to(element, config.numbers.animation);
-                }, index * 100);
+                }, index * 80);
             });
+        }
+    }
+
+    /**
+     * Anima el estado vacío
+     */
+    animateEmptyState(container: ElementRef): void {
+        const config = DivisionesAnimations.DATA_INDICATORS;
+        const emptyElement = container.nativeElement.querySelector(config.emptyState.selector);
+
+        if (emptyElement) {
+            gsap.fromTo(emptyElement,
+                config.emptyState.animation,
+                {
+                    y: 0,
+                    opacity: 1,
+                    duration: config.emptyState.animation.duration,
+                    ease: config.emptyState.animation.ease
+                }
+            );
         }
     }
 

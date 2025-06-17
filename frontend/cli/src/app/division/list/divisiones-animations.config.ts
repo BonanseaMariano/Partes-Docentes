@@ -1,8 +1,8 @@
 /**
- * Configuración de animaciones GSAP para el componente Personas
- * Basado en el patrón establecido en parte-diario
+ * Configuración de animaciones GSAP para el componente Divisiones
+ * Basado en el patrón establecido en personas y parte-diario
  */
-export class PersonasAnimations {
+export class DivisionesAnimations {
 
     /**
      * Configuración para la animación inicial del componente
@@ -90,36 +90,6 @@ export class PersonasAnimations {
      * Efectos de hover para elementos interactivos
      */
     static readonly HOVER_EFFECTS = {
-        // Efecto para botones de designaciones (azules por defecto, gris si están vacíos)
-        designationButtons: {
-            selector: '.btn-popup:not(.btn-popup-empty)',
-            hoverIn: {
-                scale: 1.05
-            },
-            hoverOut: {
-                scale: 1
-            },
-            config: {
-                duration: 0.2,
-                ease: "power2.out"
-            }
-        },
-
-        // Efecto para botones vacíos de designaciones
-        designationButtonsEmpty: {
-            selector: '.btn-popup-empty',
-            hoverIn: {
-                scale: 1.02
-            },
-            hoverOut: {
-                scale: 1
-            },
-            config: {
-                duration: 0.2,
-                ease: "power2.out"
-            }
-        },
-
         // Efecto para filas de la tabla
         tableRows: {
             selector: '.table tbody tr:not(.no-results)',
@@ -154,7 +124,7 @@ export class PersonasAnimations {
             }
         },
 
-        // Efecto para botón de nueva persona (igual que divisiones)
+        // Efecto para botón de nueva división
         newButton: {
             selector: '.btn-nuevo',
             hoverIn: {
@@ -169,32 +139,6 @@ export class PersonasAnimations {
             },
             config: {
                 duration: 0.3,
-                ease: "power2.out"
-            }
-        }
-    };
-
-    /**
-     * Animación de entrada del popup de designaciones
-     */
-    static readonly POPUP_ENTRANCE = {
-        container: {
-            selector: '.popup-container',
-            animation: {
-                scale: 0.9,
-                opacity: 0,
-                duration: 0.4,
-                ease: "back.out(1.7)"
-            }
-        },
-
-        content: {
-            selector: '.popup-container .table-responsive',
-            animation: {
-                y: 20,
-                opacity: 0,
-                duration: 0.5,
-                delay: 0.1,
                 ease: "power2.out"
             }
         }
@@ -218,13 +162,14 @@ export class PersonasAnimations {
     };
 
     /**
-     * Animación para contadores/números
+     * Animación para elementos con badges/indicadores
      */
-    static readonly COUNTER_ANIMATION = {
-        numbers: {
-            selector: '.btn-popup span, .pagination .page-link',
+    static readonly BADGE_ANIMATION = {
+        // Animación para badges de turno
+        turnoBadges: {
+            selector: '.badge',
             animation: {
-                scale: 1.2,
+                scale: 1.1,
                 duration: 0.3,
                 yoyo: true,
                 ease: "power2.inOut"
@@ -257,6 +202,49 @@ export class PersonasAnimations {
             animation: {
                 backgroundColor: 'rgba(13, 110, 253, 0.15)',
                 duration: 0.3,
+                ease: "power2.out"
+            }
+        }
+    };
+
+    /**
+     * Animaciones para modales de confirmación
+     */
+    static readonly MODAL_EFFECTS = {
+        // Preparación para animación de eliminación
+        deleteRow: {
+            selector: 'tr',
+            animation: {
+                x: -100,
+                opacity: 0,
+                duration: 0.4,
+                ease: "power2.in"
+            }
+        }
+    };
+
+    /**
+     * Efectos especiales para indicadores de datos
+     */
+    static readonly DATA_INDICATORS = {
+        // Animación para números y estadísticas
+        numbers: {
+            selector: '.table td:first-child, .pagination .page-link',
+            animation: {
+                scale: 1.15,
+                duration: 0.2,
+                yoyo: true,
+                ease: "power2.inOut"
+            }
+        },
+
+        // Efecto para estado vacío
+        emptyState: {
+            selector: '.empty-state-cell',
+            animation: {
+                y: 20,
+                opacity: 0,
+                duration: 0.6,
                 ease: "power2.out"
             }
         }

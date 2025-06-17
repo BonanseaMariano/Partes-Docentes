@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpStatusCode } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, ElementRef, AfterViewInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { PaginationConfig } from '../../core/constants/pagination.constants';
 import { ModalService } from '../../modal/modal.service';
@@ -8,19 +8,21 @@ import { ResultsPage } from '../../models/results-page';
 import { Turno } from '../../models/turno';
 import { PaginationComponent } from '../../pagination/pagination.component';
 import { DivisionService } from '../service/division.service';
+import { DivisionesAnimationService } from './divisiones-animation.service';
 
 
 @Component({
     selector: 'app-divisiones',
     imports: [CommonModule, RouterModule, PaginationComponent],
     templateUrl: './divisiones.component.html',
-    styles: ``
+    styleUrl: './divisiones.component.css'
 })
-export class DivisionesComponent {
+export class DivisionesComponent implements AfterViewInit, OnDestroy {
     resultsPage: ResultsPage = <ResultsPage>{};
     currentPage: number = PaginationConfig.INITIAL_PAGE;
     pageSize: number = PaginationConfig.PAGE_SIZE;
     turnoEnum = Turno;
+    isLoading: boolean = false;
 
     // Propiedades para el ordenamiento
     sortField: string = 'id';
@@ -28,16 +30,65 @@ export class DivisionesComponent {
 
     constructor(
         private divisionService: DivisionService,
-        private modalService: ModalService
+        private modalService: ModalService,
+        private elementRef: ElementRef,
+        private divisionesAnimationService: DivisionesAnimationService,
+        private cdr: ChangeDetectorRef
     ) { }
 
-    getDivisiones(): void {
+    getDivisiones(fromSort: boolean = false): void {
+        this.isLoading = true;
+
+        // Solo animar estado de carga si no viene de ordenamiento
+        if (!fromSort) {
+            this.divisionesAnimationService.animateLoadingBreath(this.elementRef);
+        }
+
         this.divisionService.byPage(this.currentPage, this.pageSize, this.sortField, this.sortDirection).subscribe((dataPackage) => {
+            this.isLoading = false;
+            this.divisionesAnimationService.stopLoadingAnimation(this.elementRef);
             this.resultsPage = <ResultsPage>dataPackage.data;
+
+            if (fromSort) {
+                // Si viene de ordenamiento, forzar detección de cambios y animar fade in
+                this.cdr.detectChanges();
+
+                setTimeout(() => {
+                    this.divisionesAnimationService.animateSortTransitionIn(this.elementRef);
+
+                    // Configurar efectos después de la transición
+                    setTimeout(() => {
+                        this.divisionesAnimationService.setupHoverEffects(this.elementRef);
+                        this.divisionesAnimationService.animateBadges(this.elementRef);
+                        this.divisionesAnimationService.animateNumbers(this.elementRef);
+                    }, 300);
+                }, 100);
+            } else {
+                // Animación normal para carga inicial/paginación
+                setTimeout(() => {
+                    this.divisionesAnimationService.animateDataLoad(this.elementRef, () => {
+                        // Configurar efectos después de cargar los datos
+                        this.divisionesAnimationService.setupHoverEffects(this.elementRef);
+                        this.divisionesAnimationService.animateBadges(this.elementRef);
+                        this.divisionesAnimationService.animateNumbers(this.elementRef);
+
+                        // Si no hay datos, animar estado vacío
+                        if (!this.resultsPage.content || this.resultsPage.content.length === 0) {
+                            this.divisionesAnimationService.animateEmptyState(this.elementRef);
+                        }
+                    });
+                }, 100);
+            }
         });
     }
 
-    remove(id: number): void {
+    remove(id: number, event?: Event): void {
+        // Animar botón si se pasó el evento
+        if (event && event.target) {
+            const buttonElement = event.target as HTMLElement;
+            this.divisionesAnimationService.animateButtonClick(buttonElement);
+        }
+
         let that = this;
         this.modalService
             .confirm(
@@ -65,6 +116,19 @@ export class DivisionesComponent {
         this.getDivisiones();
     }
 
+    ngAfterViewInit(): void {
+        // Configurar animaciones iniciales
+        this.divisionesAnimationService.animateInitialEntrance(this.elementRef);
+
+        // Configurar efectos de hover
+        this.divisionesAnimationService.setupHoverEffects(this.elementRef);
+    }
+
+    ngOnDestroy(): void {
+        // Limpiar animaciones al destruir el componente
+        this.divisionesAnimationService.clearAnimations();
+    }
+
     onPageChangeRequested(page: number): void {
         this.currentPage = page;
         this.getDivisiones();
@@ -85,7 +149,11 @@ export class DivisionesComponent {
 
         // Volver a la primera página cuando se cambia el ordenamiento
         this.currentPage = 1;
-        this.getDivisiones();
+
+        // Animar transición de ordenamiento
+        this.divisionesAnimationService.animateSortTransition(this.elementRef, () => {
+            this.getDivisiones(true); // Pasar true para indicar que viene de ordenamiento
+        });
     }
 
     /**
