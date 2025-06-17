@@ -1,0 +1,121 @@
+/* Estilos específicos para el componente Personas */
+/* Los estilos base de botones y tabla vienen de styles.css */
+
+/* ========== EFECTOS ESPECÍFICOS PARA PERSONAS ========== */
+
+/* Efecto de pulso EXACTO del reporte-concepto para botones de designaciones */
+.btn-popup:hover {
+    animation: pulse-btn-personas 1s infinite;
+}
+
+@keyframes pulse-btn-personas {
+    0% {
+        box-shadow: 0 0 0 0 rgba(13, 110, 253, 0.7);
+    }
+
+    70% {
+        box-shadow: 0 0 0 10px rgba(13, 110, 253, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(13, 110, 253, 0);
+    }
+}
+
+/* Los botones vacíos no tienen efecto de pulso */
+.btn-popup-empty:hover {
+    animation: none !important;
+}
+
+/* ========== ANIMACIONES GSAP COMPLEMENTARIAS ========== */
+
+/* Preparación para animaciones de entrada */
+.card-header,
+.table-responsive,
+.card-footer {
+    transform-origin: center;
+}
+
+/* Preparación para hover en filas */
+.table tbody tr {
+    transition: all 0.3s ease;
+    transform-origin: left center;
+}
+
+/* Preparación para animaciones de botones */
+.btn-sm {
+    transition: all 0.2s ease;
+    transform-origin: center;
+}
+
+/* Estado de carga */
+.personas-container.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+/* Optimización para animaciones */
+.personas-container {
+    will-change: opacity, transform;
+}
+
+.table tbody tr,
+.btn-popup,
+.btn-sm {
+    will-change: transform, opacity;
+}
+
+/* Efectos para headers de ordenamiento */
+.sortable-header {
+    transition: all 0.3s ease;
+    transform-origin: center;
+}
+
+.sortable-header.active {
+    transform-origin: center;
+}
+
+/* Efectos para popup de designaciones */
+.popup-container {
+    transform-origin: center;
+}
+
+.popup-container .table-responsive {
+    transform-origin: center;
+}
+
+/* ========== RESPONSIVE ANIMATIONS ========== */
+
+/* En móviles, reducir la intensidad de las animaciones */
+@media (max-width: 768px) {
+    .btn-popup:hover {
+        animation-duration: 0.8s;
+    }
+
+    @keyframes pulse-btn-personas {
+        0% {
+            box-shadow: 0 0 0 0 rgba(13, 110, 253, 0.5);
+        }
+
+        70% {
+            box-shadow: 0 0 0 6px rgba(13, 110, 253, 0);
+        }
+
+        100% {
+            box-shadow: 0 0 0 0 rgba(13, 110, 253, 0);
+        }
+    }
+}
+
+/* Reducir animaciones si el usuario prefiere menos movimiento */
+@media (prefers-reduced-motion: reduce) {
+    .btn-popup:hover {
+        animation: none;
+    }
+
+    .table tbody tr,
+    .btn-sm,
+    .sortable-header {
+        transition: none;
+    }
+}

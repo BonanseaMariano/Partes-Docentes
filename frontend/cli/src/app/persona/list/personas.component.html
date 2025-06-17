@@ -1,116 +1,117 @@
-<div class="card shadow-sm mb-4">
-    <div class="card-header bg-light d-flex justify-content-between align-items-center">
-        <h2 class="mb-0"><i class="fa fa-users me-2"></i>Personas</h2>
-        <a routerLink="/personas/new" class="btn-nuevo">
-            <i class="fa fa-plus"></i>Nueva persona
-        </a>
-    </div>
+<div class="personas-container" [ngClass]="{'loading': isLoading}">
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+            <h2 class="mb-0"><i class="fa fa-users me-2"></i>Personas</h2>
+            <a routerLink="/personas/new" class="btn-nuevo">
+                <i class="fa fa-plus"></i>Nueva persona
+            </a>
+        </div>
 
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-hover">
-                <thead class="table-light">
-                    <tr>
-                        <th scope="col"></th>
-                        <th scope="col" class="sortable-header" (click)="onSort('dni')"
-                            [ngClass]="{'active': isSortActive('dni')}"
-                            [attr.data-direction]="isSortActive('dni') ? sortDirection : null">
-                            DNI <i [ngClass]="getSortIcon('dni')"></i>
-                        </th>
-                        <th scope="col" class="sortable-header" (click)="onSort('nombre')"
-                            [ngClass]="{'active': isSortActive('nombre')}"
-                            [attr.data-direction]="isSortActive('nombre') ? sortDirection : null">
-                            Nombre <i [ngClass]="getSortIcon('nombre')"></i>
-                        </th>
-                        <th scope="col" class="sortable-header" (click)="onSort('apellido')"
-                            [ngClass]="{'active': isSortActive('apellido')}"
-                            [attr.data-direction]="isSortActive('apellido') ? sortDirection : null">
-                            Apellido <i [ngClass]="getSortIcon('apellido')"></i>
-                        </th>
-                        <th scope="col" class="sortable-header" (click)="onSort('cuil')"
-                            [ngClass]="{'active': isSortActive('cuil')}"
-                            [attr.data-direction]="isSortActive('cuil') ? sortDirection : null">
-                            CUIL <i [ngClass]="getSortIcon('cuil')"></i>
-                        </th>
-                        <th scope="col" class="sortable-header" (click)="onSort('titulo')"
-                            [ngClass]="{'active': isSortActive('titulo')}"
-                            [attr.data-direction]="isSortActive('titulo') ? sortDirection : null">
-                            Título <i [ngClass]="getSortIcon('titulo')"></i>
-                        </th>
-                        <th scope="col" class="sortable-header" (click)="onSort('sexo')"
-                            [ngClass]="{'active': isSortActive('sexo')}"
-                            [attr.data-direction]="isSortActive('sexo') ? sortDirection : null">
-                            Sexo <i [ngClass]="getSortIcon('sexo')"></i>
-                        </th>
-                        <th scope="col" class="sortable-header" (click)="onSort('domicilio')"
-                            [ngClass]="{'active': isSortActive('domicilio')}"
-                            [attr.data-direction]="isSortActive('domicilio') ? sortDirection : null">
-                            Domicilio <i [ngClass]="getSortIcon('domicilio')"></i>
-                        </th>
-                        <th scope="col" class="sortable-header" (click)="onSort('telefono')"
-                            [ngClass]="{'active': isSortActive('telefono')}"
-                            [attr.data-direction]="isSortActive('telefono') ? sortDirection : null">
-                            Teléfono <i [ngClass]="getSortIcon('telefono')"></i>
-                        </th>
-                        <th scope="col">Designaciones</th>
-                        <th scope="col" class="text-end">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let persona of resultsPage.content; index as i">
-                        <td>{{ (resultsPage.number * resultsPage.size) + i + 1 }}</td>
-                        <td>{{ persona.dni | dniFormat }}</td>
-                        <td>{{ persona.nombre }}</td>
-                        <td>{{ persona.apellido }}</td>
-                        <td>{{ persona.cuil | cuilFormat }}</td>
-                        <td>{{ persona.titulo }}</td>
-                        <td>
-                            <i class="fa fa-lg" [ngClass]="{
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col"></th>
+                            <th scope="col" class="sortable-header" (click)="onSort('dni')"
+                                [ngClass]="{'active': isSortActive('dni')}"
+                                [attr.data-direction]="isSortActive('dni') ? sortDirection : null">
+                                DNI <i [ngClass]="getSortIcon('dni')"></i>
+                            </th>
+                            <th scope="col" class="sortable-header" (click)="onSort('nombre')"
+                                [ngClass]="{'active': isSortActive('nombre')}"
+                                [attr.data-direction]="isSortActive('nombre') ? sortDirection : null">
+                                Nombre <i [ngClass]="getSortIcon('nombre')"></i>
+                            </th>
+                            <th scope="col" class="sortable-header" (click)="onSort('apellido')"
+                                [ngClass]="{'active': isSortActive('apellido')}"
+                                [attr.data-direction]="isSortActive('apellido') ? sortDirection : null">
+                                Apellido <i [ngClass]="getSortIcon('apellido')"></i>
+                            </th>
+                            <th scope="col" class="sortable-header" (click)="onSort('cuil')"
+                                [ngClass]="{'active': isSortActive('cuil')}"
+                                [attr.data-direction]="isSortActive('cuil') ? sortDirection : null">
+                                CUIL <i [ngClass]="getSortIcon('cuil')"></i>
+                            </th>
+                            <th scope="col" class="sortable-header" (click)="onSort('titulo')"
+                                [ngClass]="{'active': isSortActive('titulo')}"
+                                [attr.data-direction]="isSortActive('titulo') ? sortDirection : null">
+                                Título <i [ngClass]="getSortIcon('titulo')"></i>
+                            </th>
+                            <th scope="col" class="sortable-header" (click)="onSort('sexo')"
+                                [ngClass]="{'active': isSortActive('sexo')}"
+                                [attr.data-direction]="isSortActive('sexo') ? sortDirection : null">
+                                Sexo <i [ngClass]="getSortIcon('sexo')"></i>
+                            </th>
+                            <th scope="col" class="sortable-header" (click)="onSort('domicilio')"
+                                [ngClass]="{'active': isSortActive('domicilio')}"
+                                [attr.data-direction]="isSortActive('domicilio') ? sortDirection : null">
+                                Domicilio <i [ngClass]="getSortIcon('domicilio')"></i>
+                            </th>
+                            <th scope="col" class="sortable-header" (click)="onSort('telefono')"
+                                [ngClass]="{'active': isSortActive('telefono')}"
+                                [attr.data-direction]="isSortActive('telefono') ? sortDirection : null">
+                                Teléfono <i [ngClass]="getSortIcon('telefono')"></i>
+                            </th>
+                            <th scope="col">Designaciones</th>
+                            <th scope="col" class="text-end">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let persona of resultsPage.content; index as i">
+                            <td>{{ (resultsPage.number * resultsPage.size) + i + 1 }}</td>
+                            <td>{{ persona.dni | dniFormat }}</td>
+                            <td>{{ persona.nombre }}</td>
+                            <td>{{ persona.apellido }}</td>
+                            <td>{{ persona.cuil | cuilFormat }}</td>
+                            <td>{{ persona.titulo }}</td>
+                            <td>
+                                <i class="fa fa-lg" [ngClass]="{
                                 'fa-female text-danger': persona.sexo === 'F',
                                 'fa-male text-primary': persona.sexo === 'M',
                                 'fa-genderless text-secondary': !persona.sexo || persona.sexo === 'O'
-                            }"
-                                title="{{ persona.sexo === 'F' ? 'Femenino' : (persona.sexo === 'M' ? 'Masculino' : 'Otro/No especificado') }}"></i>
-                        </td>
-                        <td>{{ persona.domicilio || '-' }}</td>
-                        <td>{{ persona.telefono || '-' }}</td>
-                        <td>
-                            <button class="btn-popup"
-                                [ngClass]="{'btn-popup-empty': getDesignacionCount(persona) === 0}"
-                                (click)="openDesignacionesPopup(persona)" title="Mostrar designaciones">
-                                <i class="fa fa-user-tie"></i>
-                                <span class="ms-1">{{ getDesignacionCount(persona) }}</span>
-                            </button>
-                        </td>
-                        <td class="text-end">
-                            <a [routerLink]="['/personas', 'dni', persona.dni, 'reporte', currentYear]"
-                                class="btn btn-sm btn-outline-info me-1" title="Reporte">
-                                <i class="fa fa-file-text-o"></i>
-                            </a>
-                            <a routerLink="/personas/{{ persona.id }}" class="btn btn-sm btn-outline-primary me-1"
-                                title="Editar">
-                                <i class="fa fa-pencil"></i>
-                            </a>
-                            <a (click)="remove(persona.id)" [routerLink]="" class="btn btn-sm btn-outline-danger"
-                                title="Eliminar">
-                                <i class="fa fa-trash"></i>
-                            </a>
-                        </td>
-                    </tr>
-                    <tr *ngIf="!resultsPage.content || resultsPage.content.length === 0">
-                        <td colspan="11" class="empty-state-cell">
-                            <i class="fa fa-info-circle me-2"></i>No hay personas registradas
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                            }" title="{{ persona.sexo === 'F' ? 'Femenino' : (persona.sexo === 'M' ? 'Masculino' : 'Otro/No especificado') }}"></i>
+                            </td>
+                            <td>{{ persona.domicilio || '-' }}</td>
+                            <td>{{ persona.telefono || '-' }}</td>
+                            <td>
+                                <button class="btn-popup"
+                                    [ngClass]="{'btn-popup-empty': getDesignacionCount(persona) === 0}"
+                                    (click)="openDesignacionesPopup(persona, $event)" title="Mostrar designaciones">
+                                    <i class="fa fa-user-tie"></i>
+                                    <span class="ms-1">{{ getDesignacionCount(persona) }}</span>
+                                </button>
+                            </td>
+                            <td class="text-end">
+                                <a [routerLink]="['/personas', 'dni', persona.dni, 'reporte', currentYear]"
+                                    class="btn btn-sm btn-outline-info me-1" title="Reporte">
+                                    <i class="fa fa-file-text-o"></i>
+                                </a>
+                                <a routerLink="/personas/{{ persona.id }}" class="btn btn-sm btn-outline-primary me-1"
+                                    title="Editar">
+                                    <i class="fa fa-pencil"></i>
+                                </a>
+                                <a (click)="remove(persona.id)" [routerLink]="" class="btn btn-sm btn-outline-danger"
+                                    title="Eliminar">
+                                    <i class="fa fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        <tr *ngIf="!resultsPage.content || resultsPage.content.length === 0">
+                            <td colspan="11" class="empty-state-cell">
+                                <i class="fa fa-info-circle me-2"></i>No hay personas registradas
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
 
-    <div class="card-footer bg-light" *ngIf="resultsPage.numberOfElements > 0">
-        <app-pagination [totalPages]="resultsPage.totalPages" [currentPage]="currentPage"
-            (pageChangeRequested)="onPageChangeRequested($event)" [number]="resultsPage.number">
-        </app-pagination>
+        <div class="card-footer bg-light" *ngIf="resultsPage.numberOfElements > 0">
+            <app-pagination [totalPages]="resultsPage.totalPages" [currentPage]="currentPage"
+                (pageChangeRequested)="onPageChangeRequested($event)" [number]="resultsPage.number">
+            </app-pagination>
+        </div>
     </div>
 </div>
 
