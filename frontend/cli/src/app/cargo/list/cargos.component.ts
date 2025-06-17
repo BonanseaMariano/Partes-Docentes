@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpStatusCode } from '@angular/common/http';
-import { Component, TemplateRef, ViewChild } from '@angular/core';
+import { Component, TemplateRef, ViewChild, ElementRef, AfterViewInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { PaginationConfig } from '../../core/constants/pagination.constants';
 import { ValidationService } from '../../core/services/validation.service';
@@ -14,15 +14,16 @@ import { FechaFormatPipe } from '../../pipes/fecha-format.pipe';
 import { TipoDesignacionPipe } from '../../pipes/tipo-designacion.pipe';
 import { PopupService } from '../../popup/popup.service';
 import { CargoService } from '../service/cargo.service';
+import { CargosAnimationService } from './cargos-animation.service';
 
 
 @Component({
-    selector: 'app-divisiones',
+    selector: 'app-cargos',
     imports: [CommonModule, RouterModule, PaginationComponent, TipoDesignacionPipe, FechaFormatPipe],
     templateUrl: './cargos.component.html',
-    styles: ``
+    styleUrl: './cargos.component.css'
 })
-export class CargosComponent {
+export class CargosComponent implements AfterViewInit, OnDestroy {
     resultsPage: ResultsPage = <ResultsPage>{};
     currentPage: number = PaginationConfig.INITIAL_PAGE;
     pageSize: number = PaginationConfig.PAGE_SIZE;
@@ -30,6 +31,7 @@ export class CargosComponent {
     diaEnum = Dia;
     selectedCargo: Cargo | null = null;
     Object = Object; // Para poder usar Object.keys en la plantilla
+    isLoading: boolean = false;
 
     // Propiedades para el ordenamiento
     sortField: string = 'id';
@@ -42,13 +44,22 @@ export class CargosComponent {
         private modalService: ModalService,
         private validationService: ValidationService,
         private popupService: PopupService,
-        private router: Router
+        private router: Router,
+        private elementRef: ElementRef,
+        private cargosAnimationService: CargosAnimationService,
+        private cdr: ChangeDetectorRef
     ) { }
 
     /**
      * Método para crear un nuevo cargo con validación previa
      */
-    crearNuevo(): void {
+    crearNuevo(event?: Event): void {
+        // Animar botón si se pasó el evento
+        if (event && event.target) {
+            const buttonElement = event.target as HTMLElement;
+            this.cargosAnimationService.animateButtonClick(buttonElement);
+        }
+
         this.validationService.checkDivisiones().subscribe(result => {
             const hayDivisiones = result.isValid;
 
@@ -72,13 +83,59 @@ export class CargosComponent {
         });
     }
 
-    getCargos(): void {
+    getCargos(fromSort: boolean = false): void {
+        this.isLoading = true;
+
+        // Solo animar estado de carga si no viene de ordenamiento
+        if (!fromSort) {
+            this.cargosAnimationService.animateLoadingBreath(this.elementRef);
+        }
+
         this.cargoService.byPage(this.currentPage, this.pageSize, this.sortField, this.sortDirection).subscribe((dataPackage) => {
+            this.isLoading = false;
+            this.cargosAnimationService.stopLoadingAnimation(this.elementRef);
             this.resultsPage = <ResultsPage>dataPackage.data;
+
+            if (fromSort) {
+                // Si viene de ordenamiento, forzar detección de cambios y animar fade in
+                this.cdr.detectChanges();
+
+                setTimeout(() => {
+                    this.cargosAnimationService.animateSortTransitionIn(this.elementRef);
+
+                    // Configurar efectos después de la transición
+                    setTimeout(() => {
+                        this.cargosAnimationService.setupHoverEffects(this.elementRef);
+                        this.cargosAnimationService.animateBadges(this.elementRef);
+                        this.cargosAnimationService.animateNumbers(this.elementRef);
+                    }, 300);
+                }, 100);
+            } else {
+                // Animación normal para carga inicial/paginación
+                setTimeout(() => {
+                    this.cargosAnimationService.animateDataLoad(this.elementRef, () => {
+                        // Configurar efectos después de cargar los datos
+                        this.cargosAnimationService.setupHoverEffects(this.elementRef);
+                        this.cargosAnimationService.animateBadges(this.elementRef);
+                        this.cargosAnimationService.animateNumbers(this.elementRef);
+
+                        // Si no hay datos, animar estado vacío
+                        if (!this.resultsPage.content || this.resultsPage.content.length === 0) {
+                            this.cargosAnimationService.animateEmptyState(this.elementRef);
+                        }
+                    });
+                }, 100);
+            }
         });
     }
 
-    remove(id: number): void {
+    remove(id: number, event?: Event): void {
+        // Animar botón si se pasó el evento
+        if (event && event.target) {
+            const buttonElement = event.target as HTMLElement;
+            this.cargosAnimationService.animateButtonClick(buttonElement);
+        }
+
         let that = this;
         this.modalService
             .confirm(
@@ -102,13 +159,33 @@ export class CargosComponent {
             });
     }
 
-    openHorariosPopup(cargo: Cargo): void {
+    openHorariosPopup(cargo: Cargo, event?: Event): void {
+        // Animar botón si se pasó el evento
+        if (event && event.target) {
+            const buttonElement = event.target as HTMLElement;
+            this.cargosAnimationService.animateHorariosButtonClick(buttonElement);
+        }
+
         this.selectedCargo = cargo;
         this.popupService.show(this.horariosTemplate, {
             title: `Horarios de ${cargo.nombre}`,
             icon: 'fa-clock-o', // Icono de reloj
             data: cargo
         });
+
+        // Animar entrada del popup después de un pequeño delay
+        setTimeout(() => {
+            const popupContainer = document.querySelector('.popup-container');
+            if (popupContainer) {
+                const elementRef = { nativeElement: popupContainer };
+                this.cargosAnimationService.animatePopupEntrance(elementRef as ElementRef);
+
+                // Animar contenido de horarios específicamente
+                setTimeout(() => {
+                    this.cargosAnimationService.animateHorariosPopup(elementRef as ElementRef);
+                }, 200);
+            }
+        }, 50);
     }
 
     getHorarioCount(cargo: Cargo): number {
@@ -126,6 +203,19 @@ export class CargosComponent {
 
     ngOnInit(): void {
         this.getCargos();
+    }
+
+    ngAfterViewInit(): void {
+        // Configurar animaciones iniciales
+        this.cargosAnimationService.animateInitialEntrance(this.elementRef);
+
+        // Configurar efectos de hover
+        this.cargosAnimationService.setupHoverEffects(this.elementRef);
+    }
+
+    ngOnDestroy(): void {
+        // Limpiar animaciones al destruir el componente
+        this.cargosAnimationService.clearAnimations();
     }
 
     onPageChangeRequested(page: number): void {
@@ -148,7 +238,11 @@ export class CargosComponent {
 
         // Volver a la primera página cuando se cambia el ordenamiento
         this.currentPage = 1;
-        this.getCargos();
+
+        // Animar transición de ordenamiento
+        this.cargosAnimationService.animateSortTransition(this.elementRef, () => {
+            this.getCargos(true); // Pasar true para indicar que viene de ordenamiento
+        });
     }
 
     /**

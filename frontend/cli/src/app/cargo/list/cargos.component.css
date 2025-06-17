@@ -1,0 +1,286 @@
+/* Estilos específicos para el componente Cargos */
+/* Los estilos base de botones y tabla vienen de styles.css */
+
+/* ========== EFECTOS ESPECÍFICOS PARA CARGOS ========== */
+
+/* Efecto de pulso EXACTO del reporte-concepto para botones de horarios */
+.btn-popup:hover {
+    animation: pulse-btn-cargos 1s infinite;
+}
+
+@keyframes pulse-btn-cargos {
+    0% {
+        box-shadow: 0 0 0 0 rgba(13, 110, 253, 0.7);
+    }
+
+    70% {
+        box-shadow: 0 0 0 10px rgba(13, 110, 253, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(13, 110, 253, 0);
+    }
+}
+
+/* Los botones vacíos no tienen efecto de pulso */
+.btn-popup-empty:hover {
+    animation: none !important;
+}
+
+/* ========== ANIMACIONES GSAP COMPLEMENTARIAS ========== */
+
+/* Preparación para animaciones de entrada */
+.card-header,
+.table-responsive,
+.card-footer {
+    transform-origin: center;
+}
+
+/* Preparación para hover en filas */
+.table tbody tr {
+    transition: all 0.3s ease;
+    transform-origin: left center;
+}
+
+/* Preparación para animaciones de botones */
+.btn-sm,
+.btn-nuevo {
+    transition: all 0.2s ease;
+    transform-origin: center;
+}
+
+/* Estado de carga */
+.cargos-container.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+/* Optimización para animaciones */
+.cargos-container {
+    will-change: opacity, transform;
+}
+
+.table tbody tr,
+.btn-popup,
+.btn-sm,
+.btn-nuevo,
+.badge {
+    will-change: transform, opacity;
+}
+
+/* Efectos para headers de ordenamiento */
+.sortable-header {
+    transition: all 0.3s ease;
+    transform-origin: center;
+}
+
+.sortable-header.active {
+    transform-origin: center;
+}
+
+/* Efectos para popup de horarios */
+.popup-container {
+    transform-origin: center;
+}
+
+.popup-container .horarios-container {
+    transform-origin: center;
+}
+
+/* ========== EFECTOS HOVER MEJORADOS ========== */
+
+/* Mejorar el hover del botón nuevo con efecto de brillo */
+.btn-nuevo {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-nuevo::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s ease;
+}
+
+.btn-nuevo:hover::before {
+    left: 100%;
+}
+
+/* Efectos para botones de acción */
+.btn-sm {
+    position: relative;
+    overflow: hidden;
+}
+
+/* Mejorar indicador visual de loading */
+.cargos-container.loading .table tbody tr {
+    opacity: 0.6;
+    transform: translateX(-5px);
+}
+
+/* ========== ESTILOS ESPECÍFICOS PARA HORARIOS POPUP ========== */
+
+/* Contenedor principal de horarios */
+.horarios-container {
+    padding: 1rem 0;
+}
+
+.dias-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.dia-grupo {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1rem;
+    border-left: 4px solid #007bff;
+    transform-origin: center;
+}
+
+.dia-header {
+    font-weight: 600;
+    color: #007bff;
+    margin-bottom: 0.75rem;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+}
+
+.horarios-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.horario-item {
+    background: white;
+    padding: 0.5rem 0.75rem;
+    border-radius: 4px;
+    border: 1px solid #e9ecef;
+    font-size: 0.875rem;
+    transform-origin: left center;
+    transition: all 0.2s ease;
+    color: #495057;
+    font-weight: 500;
+}
+
+.horario-item:hover {
+    background: #e7f3ff;
+    border-color: #007bff;
+    transform: translateX(3px);
+    color: #007bff;
+}
+
+/* ========== EFECTOS ESPECIALES PARA BADGES ========== */
+
+/* Efectos especiales para badges de tipo designación */
+.badge {
+    transition: all 0.2s ease;
+    transform-origin: center;
+}
+
+/* Destacar diferentes tipos con colores sutiles */
+.badge.bg-primary {
+    box-shadow: 0 2px 4px rgba(13, 110, 253, 0.3);
+}
+
+.badge.bg-success {
+    box-shadow: 0 2px 4px rgba(25, 135, 84, 0.3);
+}
+
+/* Efecto de brillo en badges */
+.badge:hover {
+    filter: brightness(1.1);
+    transform: scale(1.05);
+}
+
+/* ========== RESPONSIVE ANIMATIONS ========== */
+
+/* En móviles, reducir la intensidad de las animaciones */
+@media (max-width: 768px) {
+    .btn-popup:hover {
+        animation-duration: 0.8s;
+    }
+
+    .table tbody tr,
+    .btn-sm,
+    .btn-nuevo,
+    .badge {
+        transition-duration: 0.2s;
+    }
+
+    .btn-nuevo::before {
+        transition-duration: 0.3s;
+    }
+
+    .horarios-list {
+        flex-direction: column;
+    }
+
+    @keyframes pulse-btn-cargos {
+        0% {
+            box-shadow: 0 0 0 0 rgba(13, 110, 253, 0.5);
+        }
+
+        70% {
+            box-shadow: 0 0 0 6px rgba(13, 110, 253, 0);
+        }
+
+        100% {
+            box-shadow: 0 0 0 0 rgba(13, 110, 253, 0);
+        }
+    }
+}
+
+/* Reducir animaciones si el usuario prefiere menos movimiento */
+@media (prefers-reduced-motion: reduce) {
+    .btn-popup:hover {
+        animation: none;
+    }
+
+    .table tbody tr,
+    .btn-sm,
+    .btn-nuevo,
+    .badge,
+    .sortable-header,
+    .horario-item {
+        transition: none;
+    }
+
+    .btn-nuevo::before {
+        display: none;
+    }
+}
+
+/* ========== MEJORAS VISUALES ========== */
+
+/* Mejorar la apariencia de números de fila */
+.table tbody td:first-child {
+    font-weight: 600;
+    color: var(--color-primary, #007bff);
+}
+
+/* Destacar headers activos de ordenamiento */
+.sortable-header.active {
+    background-color: rgba(13, 110, 253, 0.08);
+    color: var(--color-primary-darker, #0056b3);
+}
+
+/* Preparación para animaciones de eliminación */
+.table tbody tr.deleting {
+    background-color: rgba(220, 53, 69, 0.1);
+}
+
+/* Mejorar el aspecto del popup de horarios */
+.popup-container .empty-state-message {
+    text-align: center;
+    padding: 2rem;
+    color: #6c757d;
+    font-style: italic;
+}
