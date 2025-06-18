@@ -21,11 +21,9 @@
                     </div>
                 </div>
                 <div class="action-buttons-group ms-2">
-                    <button type="button" 
-                            class="btn btn-sm btn-primary btn-reporte me-1" 
-                            (click)="descargarPDF()"
-                            [disabled]="!reporteConcepto || isLoading || isGeneratingPDF"
-                            title="Descargar reporte como PDF">
+                    <button type="button" class="btn btn-sm btn-primary btn-reporte me-1" (click)="descargarPDF()"
+                        [disabled]="!reporteConcepto || isLoading || isGeneratingPDF"
+                        title="Descargar reporte como PDF">
                         <i class="fa fa-file-pdf-o" *ngIf="!isGeneratingPDF"></i>
                         <i class="fa fa-spinner fa-spin" *ngIf="isGeneratingPDF"></i>
                     </button>
