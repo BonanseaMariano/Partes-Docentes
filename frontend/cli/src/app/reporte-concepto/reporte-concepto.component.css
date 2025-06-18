@@ -1,5 +1,38 @@
 /* Estilos específicos para el componente de reporte de concepto */
 
+/* Estilos para el botón de descarga PDF */
+.btn-reporte.btn-primary {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: white;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-reporte.btn-primary:hover:not(:disabled) {
+    background: var(--color-primary-dark);
+    border-color: var(--color-primary-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(13, 110, 253, 0.3);
+}
+
+.btn-reporte.btn-primary:disabled {
+    background: #6c757d;
+    border-color: #6c757d;
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.btn-reporte.btn-primary .fa-spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
 /* Estilos para las tarjetas de estadísticas */
 .stats-card {
     transition: transform 0.2s, box-shadow 0.2s;
