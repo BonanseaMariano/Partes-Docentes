@@ -16,15 +16,29 @@ import org.springframework.stereotype.Component;
 import unpsjb.labprog.backend.business.validator.base.GenericFechaValidator;
 import unpsjb.labprog.backend.business.validator.base.ValidationChain;
 import unpsjb.labprog.backend.business.validator.base.Validator;
+import unpsjb.labprog.backend.business.validator.factory.CargoValidatorFactory;
+import unpsjb.labprog.backend.business.validator.factory.DesignacionValidatorFactory;
 import unpsjb.labprog.backend.business.validator.factory.LicenciaValidatorFactory;
 import unpsjb.labprog.backend.exception.BusinessLogicException;
+import unpsjb.labprog.backend.model.Cargo;
+import unpsjb.labprog.backend.model.Designacion;
 import unpsjb.labprog.backend.model.Licencia;
 
 /**
  * Cargador de configuración para cadenas de validación. Permite configurar el
  * orden y tipos de validaciones desde archivos de propiedades. Usa directamente
- * los Validators sin capa intermedia de Commands. SIMPLIFICADO: Elimina la capa
- * innecesaria de ValidationCommands.
+ * los Validators sin capa intermedia de Commands.
+ *
+ * REQUERIMIENTO: El archivo validation-config.properties DEBE existir en
+ * src/main/resources/ y contener TODA la configuración necesaria. No hay
+ * configuración por defecto.
+ *
+ * Configuración requerida: - licencia.validation.order -
+ * designacion.validation.order - cargo.validation.order
+ *
+ * Configuración opcional (por defecto "true"): -
+ * licencia.validation.stopOnFirstError -
+ * designacion.validation.stopOnFirstError - cargo.validation.stopOnFirstError
  */
 @Component
 public class ValidationConfigLoader {
@@ -32,12 +46,18 @@ public class ValidationConfigLoader {
     private static final Logger logger = LoggerFactory.getLogger(ValidationConfigLoader.class);
 
     private static final String CONFIG_FILE = "validation-config.properties";
+
+    // Claves de configuración para LICENCIAS
     private static final String LICENCIA_VALIDATION_ORDER_KEY = "licencia.validation.order";
     private static final String LICENCIA_STOP_ON_ERROR_KEY = "licencia.validation.stopOnFirstError";
 
-    // Configuración por defecto si no existe archivo de configuración
-    private static final String DEFAULT_VALIDATION_ORDER = "fecha,designaciones,solapamiento,articulo";
-    private static final boolean DEFAULT_STOP_ON_ERROR = true;
+    // Claves de configuración para DESIGNACIONES
+    private static final String DESIGNACION_VALIDATION_ORDER_KEY = "designacion.validation.order";
+    private static final String DESIGNACION_STOP_ON_ERROR_KEY = "designacion.validation.stopOnFirstError";
+
+    // Claves de configuración para CARGOS
+    private static final String CARGO_VALIDATION_ORDER_KEY = "cargo.validation.order";
+    private static final String CARGO_STOP_ON_ERROR_KEY = "cargo.validation.stopOnFirstError";
 
     // Cache de validadores para evitar recrearlos
     private final Map<String, Validator<Licencia>> validatorCache;
@@ -52,6 +72,8 @@ public class ValidationConfigLoader {
 
     /**
      * Carga la configuración de validaciones desde el archivo de propiedades.
+     * REQUERIDO: El archivo validation-config.properties debe existir y
+     * contener toda la configuración.
      */
     private void loadConfiguration() {
         validationConfig = new Properties();
@@ -65,22 +87,13 @@ public class ValidationConfigLoader {
                     logger.info("Configuración de validaciones cargada desde: {}", CONFIG_FILE);
                 }
             } else {
-                // Usar configuración por defecto
-                setDefaultConfiguration();
-                logger.info("Usando configuración de validaciones por defecto");
+                logger.error("ARCHIVO REQUERIDO NO ENCONTRADO: {}. Las validaciones no funcionarán.", CONFIG_FILE);
+                throw new IllegalStateException("Archivo de configuración requerido no encontrado: " + CONFIG_FILE);
             }
         } catch (IOException e) {
             logger.error("Error cargando configuración de validaciones: {}", e.getMessage());
-            setDefaultConfiguration();
+            throw new IllegalStateException("Error cargando configuración de validaciones", e);
         }
-    }
-
-    /**
-     * Establece la configuración por defecto.
-     */
-    private void setDefaultConfiguration() {
-        validationConfig.setProperty(LICENCIA_VALIDATION_ORDER_KEY, DEFAULT_VALIDATION_ORDER);
-        validationConfig.setProperty(LICENCIA_STOP_ON_ERROR_KEY, String.valueOf(DEFAULT_STOP_ON_ERROR));
     }
 
     /**
@@ -111,10 +124,12 @@ public class ValidationConfigLoader {
     public ValidationChain<Licencia> buildLicenciaValidationChain() {
         reloadIfNeeded(); // Recargar configuración si es necesario
 
-        String orderConfig = validationConfig.getProperty(LICENCIA_VALIDATION_ORDER_KEY, DEFAULT_VALIDATION_ORDER);
-        boolean stopOnError = "true".equals(
-                validationConfig.getProperty(LICENCIA_STOP_ON_ERROR_KEY, String.valueOf(DEFAULT_STOP_ON_ERROR))
-        );
+        String orderConfig = validationConfig.getProperty(LICENCIA_VALIDATION_ORDER_KEY);
+        if (orderConfig == null || orderConfig.trim().isEmpty()) {
+            throw new IllegalStateException("Configuración requerida no encontrada: " + LICENCIA_VALIDATION_ORDER_KEY);
+        }
+
+        boolean stopOnError = "true".equals(validationConfig.getProperty(LICENCIA_STOP_ON_ERROR_KEY, "true"));
 
         ValidationChain<Licencia> chain = new ValidationChain<>(stopOnError);
 
@@ -124,7 +139,7 @@ public class ValidationConfigLoader {
         for (String validationName : validationOrder) {
             String trimmedName = validationName.trim();
             if (!trimmedName.isEmpty()) {
-                Validator<Licencia> validator = createValidator(trimmedName);
+                Validator<Licencia> validator = createLicenciaValidator(trimmedName);
                 if (validator != null) {
                     chain.addValidator(validator, trimmedName);
                 } else {
@@ -137,7 +152,7 @@ public class ValidationConfigLoader {
     }
 
     /**
-     * Crea un validador por nombre usando el factory existente y
+     * Crea un validador de licencias por nombre usando el factory existente y
      * GenericFechaValidator. SIMPLIFICADO: Usa directamente los Validators sin
      * reflexión compleja.
      *
@@ -145,7 +160,7 @@ public class ValidationConfigLoader {
      * "designaciones", "limitedias")
      * @return Instancia del validador o null si no se encuentra
      */
-    private Validator<Licencia> createValidator(String validatorName) {
+    private Validator<Licencia> createLicenciaValidator(String validatorName) {
         if (validatorName == null || validatorName.trim().isEmpty()) {
             return null;
         }
@@ -238,5 +253,131 @@ public class ValidationConfigLoader {
      */
     public List<String> getAvailableValidations() {
         return Arrays.asList(validatorCache.keySet().toArray(String[]::new));
+    }
+
+    /**
+     * Construye una cadena de validación para designaciones basada en la
+     * configuración. NUEVO: Soporte para validaciones configurables de
+     * designaciones.
+     *
+     * @return Cadena de validación configurada para designaciones
+     */
+    public ValidationChain<Designacion> buildDesignacionValidationChain() {
+        reloadIfNeeded(); // Recargar configuración si es necesario
+
+        String orderConfig = validationConfig.getProperty(DESIGNACION_VALIDATION_ORDER_KEY);
+        if (orderConfig == null || orderConfig.trim().isEmpty()) {
+            throw new IllegalStateException("Configuración requerida no encontrada: " + DESIGNACION_VALIDATION_ORDER_KEY);
+        }
+
+        boolean stopOnError = "true".equals(validationConfig.getProperty(DESIGNACION_STOP_ON_ERROR_KEY, "true"));
+
+        ValidationChain<Designacion> chain = new ValidationChain<>(stopOnError);
+
+        // Parsear orden de validaciones
+        List<String> validationOrder = Arrays.asList(orderConfig.split(","));
+
+        for (String validationName : validationOrder) {
+            String trimmedName = validationName.trim();
+            if (!trimmedName.isEmpty()) {
+                Validator<Designacion> validator = createDesignacionValidator(trimmedName);
+                if (validator != null) {
+                    chain.addValidator(validator, trimmedName);
+                } else {
+                    logger.warn("No se pudo crear el validador de designación: {}", trimmedName);
+                }
+            }
+        }
+
+        return chain;
+    }
+
+    /**
+     * Crea un validador de designaciones por nombre usando el
+     * DesignacionValidatorFactory.
+     *
+     * @param validatorName Nombre del validador a crear (ej: "solapamiento",
+     * "cargo")
+     * @return Instancia del validador o null si no se encuentra
+     */
+    private Validator<Designacion> createDesignacionValidator(String validatorName) {
+        if (validatorName == null || validatorName.trim().isEmpty()) {
+            return null;
+        }
+
+        String normalizedName = validatorName.toLowerCase().trim();
+
+        // Usar DesignacionValidatorFactory para todos los casos
+        Validator<Designacion> validator = DesignacionValidatorFactory.getInstance().getValidator(normalizedName);
+
+        if (validator != null) {
+            logger.debug("Validador de designación cargado: '{}' → {}", normalizedName, validator.getClass().getSimpleName());
+        } else {
+            logger.warn("No se encontró validador de designación para: {}", normalizedName);
+        }
+
+        return validator;
+    }
+
+    /**
+     * Construye una cadena de validación para cargos basada en la
+     * configuración. NUEVO: Soporte para validaciones configurables de cargos.
+     *
+     * @return Cadena de validación configurada para cargos
+     */
+    public ValidationChain<Cargo> buildCargoValidationChain() {
+        reloadIfNeeded(); // Recargar configuración si es necesario
+
+        String orderConfig = validationConfig.getProperty(CARGO_VALIDATION_ORDER_KEY);
+        if (orderConfig == null || orderConfig.trim().isEmpty()) {
+            throw new IllegalStateException("Configuración requerida no encontrada: " + CARGO_VALIDATION_ORDER_KEY);
+        }
+
+        boolean stopOnError = "true".equals(validationConfig.getProperty(CARGO_STOP_ON_ERROR_KEY, "true"));
+
+        ValidationChain<Cargo> chain = new ValidationChain<>(stopOnError);
+
+        // Parsear orden de validaciones
+        List<String> validationOrder = Arrays.asList(orderConfig.split(","));
+
+        for (String validationName : validationOrder) {
+            String trimmedName = validationName.trim();
+            if (!trimmedName.isEmpty()) {
+                Validator<Cargo> validator = createCargoValidator(trimmedName);
+                if (validator != null) {
+                    chain.addValidator(validator, trimmedName);
+                } else {
+                    logger.warn("No se pudo crear el validador de cargo: {}", trimmedName);
+                }
+            }
+        }
+
+        return chain;
+    }
+
+    /**
+     * Crea un validador de cargos por nombre usando el CargoValidatorFactory.
+     *
+     * @param validatorName Nombre del validador a crear (ej: "nombre",
+     * "division")
+     * @return Instancia del validador o null si no se encuentra
+     */
+    private Validator<Cargo> createCargoValidator(String validatorName) {
+        if (validatorName == null || validatorName.trim().isEmpty()) {
+            return null;
+        }
+
+        String normalizedName = validatorName.toLowerCase().trim();
+
+        // Usar CargoValidatorFactory para todos los casos
+        Validator<Cargo> validator = CargoValidatorFactory.getInstance().getValidator(normalizedName);
+
+        if (validator != null) {
+            logger.debug("Validador de cargo cargado: '{}' → {}", normalizedName, validator.getClass().getSimpleName());
+        } else {
+            logger.warn("No se encontró validador de cargo para: {}", normalizedName);
+        }
+
+        return validator;
     }
 }
