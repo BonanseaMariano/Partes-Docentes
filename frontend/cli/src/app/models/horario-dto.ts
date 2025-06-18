@@ -44,4 +44,9 @@ export interface HoraEspacioCurricular {
      * Nombre completo del docente asignado
      */
     docente: string;
+
+    /**
+     * Indica si el docente está de licencia (sin reemplazo)
+     */
+    docente_de_licencia?: boolean;
 }

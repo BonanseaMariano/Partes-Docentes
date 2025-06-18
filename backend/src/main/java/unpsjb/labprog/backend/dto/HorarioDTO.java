@@ -79,6 +79,9 @@ public class HorarioDTO {
         @JsonProperty("docente")
         private String docente;
 
+        @JsonProperty("docente_de_licencia")
+        private boolean docenteDeLicencia = false;
+
         // Constructores
         public HoraEspacioCurricular() {
         }
@@ -88,6 +91,15 @@ public class HorarioDTO {
             this.espacioCurricular = espacioCurricular;
             this.division = division;
             this.docente = docente;
+            this.docenteDeLicencia = false;
+        }
+
+        public HoraEspacioCurricular(int hora, String espacioCurricular, String division, String docente, boolean docenteDeLicencia) {
+            this.hora = hora;
+            this.espacioCurricular = espacioCurricular;
+            this.division = division;
+            this.docente = docente;
+            this.docenteDeLicencia = docenteDeLicencia;
         }
 
         // Getters y Setters
@@ -121,6 +133,14 @@ public class HorarioDTO {
 
         public void setDocente(String docente) {
             this.docente = docente;
+        }
+
+        public boolean isDocenteDeLicencia() {
+            return docenteDeLicencia;
+        }
+
+        public void setDocenteDeLicencia(boolean docenteDeLicencia) {
+            this.docenteDeLicencia = docenteDeLicencia;
         }
     }
 }

@@ -141,8 +141,8 @@ public class ReporteConceptoService {
                     // Calcular días totales de licencias para este docente
                     for (Licencia licencia : licenciasDelDocente) {
                         int diasLicencia = (int) java.time.temporal.ChronoUnit.DAYS.between(
-                                licencia.getPedidoDesde().toLocalDate(),
-                                licencia.getPedidoHasta().toLocalDate()) + 1;
+                                licencia.getPedidoDesde(),
+                                licencia.getPedidoHasta()) + 1;
                         totalDiasLicencias += diasLicencia;
 
                         // Verificar si la licencia tiene suplentes
@@ -209,8 +209,8 @@ public class ReporteConceptoService {
                 // Calcular distribución por mes para este docente implementando la lógica directamente
                 for (Licencia licencia : licenciasDelDocente) {
                     // Determinar el rango de fechas de la licencia dentro del año
-                    java.time.LocalDate inicioLicencia = licencia.getPedidoDesde().toLocalDate();
-                    java.time.LocalDate finLicencia = licencia.getPedidoHasta().toLocalDate();
+                    java.time.LocalDate inicioLicencia = licencia.getPedidoDesde();
+                    java.time.LocalDate finLicencia = licencia.getPedidoHasta();
                     
                     java.time.LocalDate inicioAño = java.time.LocalDate.of(año, 1, 1);
                     java.time.LocalDate finAño = java.time.LocalDate.of(año, 12, 31);
@@ -302,9 +302,9 @@ public class ReporteConceptoService {
         java.time.LocalDate inicioAño = java.time.LocalDate.of(año, 1, 1);
         java.time.LocalDate finAño = java.time.LocalDate.of(año, 12, 31);
         
-        java.time.LocalDate inicioDesignacion = designacion.getFechaInicio().toLocalDate();
+        java.time.LocalDate inicioDesignacion = designacion.getFechaInicio();
         java.time.LocalDate finDesignacion = designacion.getFechaFin() != null 
-            ? designacion.getFechaFin().toLocalDate() 
+            ? designacion.getFechaFin() 
             : java.time.LocalDate.now();
         
         // La designación aplica si se superpone con el año

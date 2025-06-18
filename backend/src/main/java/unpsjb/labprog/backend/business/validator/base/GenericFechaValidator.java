@@ -1,6 +1,6 @@
 package unpsjb.labprog.backend.business.validator.base;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import unpsjb.labprog.backend.exception.BusinessLogicException;
 import unpsjb.labprog.backend.model.Cargo;
@@ -34,8 +34,8 @@ public class GenericFechaValidator<T> implements Validator<T> {
             throw new BusinessLogicException("La entidad no puede ser null");
         }
 
-        LocalDateTime fechaInicio = null;
-        LocalDateTime fechaFin = null;
+        LocalDate fechaInicio = null;
+        LocalDate fechaFin = null;
 
         // Extraer fechas según el tipo de entidad
         if (entity instanceof Licencia licencia) {

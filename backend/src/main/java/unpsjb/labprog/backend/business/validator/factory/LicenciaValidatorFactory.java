@@ -3,6 +3,9 @@ package unpsjb.labprog.backend.business.validator.factory;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import unpsjb.labprog.backend.business.validator.base.Validator;
 
 /**
@@ -18,6 +21,8 @@ import unpsjb.labprog.backend.business.validator.base.Validator;
  * unpsjb.labprog.backend.business.validator.licencia.validators.Articulo5aValidator
  */
 public class LicenciaValidatorFactory {
+
+    private static final Logger log = LoggerFactory.getLogger(LicenciaValidatorFactory.class);
 
     // Cache de instancias de validadores para evitar recrearlos
     private Map<String, Validator<?>> validatorMap;
@@ -59,14 +64,16 @@ public class LicenciaValidatorFactory {
                 Validator<T> validatorInstance = (Validator<T>) validatorClass.getMethod("getInstance").invoke(null);
                 validatorMap.put(validatorName, validatorInstance);
 
+                log.debug("Validador cargado exitosamente: {} -> {}", validatorName, name);
+
             } catch (ClassNotFoundException cnfe) {
-                System.err.println("No se encontró la clase: " + name);
+                log.warn("No se encontró la clase validador: {}", name);
                 return null;
             } catch (NoSuchMethodException nsme) {
-                System.err.println("La clase " + name + " no implementa el método getInstance.");
+                log.error("La clase {} no implementa el método getInstance", name);
                 return null;
             } catch (Exception e) {
-                System.err.println("Ocurrió un error invocando el método getInstance de la clase " + name + ": " + e.getMessage());
+                log.error("Error invocando el método getInstance de la clase {}: {}", name, e.getMessage());
                 return null;
             }
         }
@@ -88,6 +95,7 @@ public class LicenciaValidatorFactory {
      * Limpia el cache de validadores (útil para testing)
      */
     public void clearCache() {
+        log.debug("Limpiando cache de validadores");
         validatorMap.clear();
     }
 }

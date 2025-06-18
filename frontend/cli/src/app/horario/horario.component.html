@@ -1,10 +1,14 @@
 <div class="container-fluid mt-4">
   <!-- Encabezado principal similar al de parte diario -->
-  <div class="card shadow-sm mb-4">
+  <div class="card shadow-sm mb-4 animated-header">
     <div class="card-header bg-light d-flex justify-content-between align-items-center">
       <h2 class="mb-0">
-        <i class="fa fa-clock me-2"></i> Horarios {{ horarioData ? (getNombreTurno(horarioData.turno) + ' - '
-        + horarioData.fecha) : (getNombreTurnoFromString(turnoSeleccionado) + formatearFecha(fechaSeleccionada))
+        <i class="fa fa-clock me-2"></i>
+        <span *ngIf="isLoading" class="loading-spinner me-2"></span>
+        Horarios {{ horarioData ? (getNombreTurno(horarioData.turno) +
+        (anioSeleccionado !== null ? ' - ' + anioSeleccionado + '°' : '') + ' - ' + horarioData.fecha) :
+        (getNombreTurnoFromString(turnoSeleccionado) +
+        (anioSeleccionado !== null ? ' - ' + anioSeleccionado + '°' : '') + ' - ' + formatearFecha(fechaSeleccionada))
         }}
       </h2>
       <div class="header-controls d-flex align-items-center">
@@ -18,6 +22,14 @@
                 <option value="TARDE">Tarde</option>
                 <option value="VESPERTINO">Vespertino</option>
                 <option value="NOCHE">Noche</option>
+              </select>
+            </div>
+            <div class="filtro-item me-3" *ngIf="aniosDisponibles.length > 0">
+              <label for="anio-header" class="form-label-inline me-2">Año:</label>
+              <select id="anio-header" class="form-select form-select-sm anio-selector" [(ngModel)]="anioSeleccionado"
+                (change)="onAnioChange()">
+                <option [ngValue]="null">Todos</option>
+                <option *ngFor="let anio of aniosDisponibles" [ngValue]="anio">{{ anio }}°</option>
               </select>
             </div>
             <div class="input-group input-group-sm">
@@ -41,7 +53,7 @@
   </div>
 
   <!-- Grilla de Horarios -->
-  <div *ngIf="horarioData" class="row">
+  <div *ngIf="horarioData && !isLoading" class="row horario-container">
     <div class="col-12">
       <div class="card horario-card">
         <div class="card-body p-0">
@@ -49,7 +61,7 @@
             <table class="table table-bordered horario-table mb-0">
               <!-- Encabezado -->
               <thead class="horario-header">
-                <tr>
+                <tr class="animated-header-row">
                   <th class="text-center hora-column">Hora</th>
                   <th class="text-center dia-column" *ngFor="let dia of dias">
                     {{ getNombreDia(dia) }}
@@ -58,7 +70,7 @@
               </thead>
               <!-- Cuerpo de la tabla -->
               <tbody>
-                <tr *ngFor="let hora of horas" class="horario-row">
+                <tr *ngFor="let hora of horas" class="horario-row animated-row">
                   <!-- Columna de hora -->
                   <td class="text-center align-middle hora-cell">
                     <div class="hora-badge">
@@ -67,14 +79,16 @@
                   </td>
                   <!-- Columnas de días -->
                   <td *ngFor="let dia of dias" class="dia-cell">
-                    <div *ngFor="let espacio of getEspaciosParaDiaYHora(dia, hora)" class="espacio-curricular mb-2">
+                    <div *ngFor="let espacio of getEspaciosParaDiaYHora(dia, hora)"
+                      class="espacio-curricular mb-2 animated-space">
                       <div class="espacio-nombre">
                         {{ espacio.espacio_curricular }}
                       </div>
                       <div class="espacio-division">
-                        <i class="fa fa-list me-1"></i>{{ espacio.division }}
+                        <i class="fa fa-layer-group me-1"></i>{{ espacio.division }}
                       </div>
-                      <div class="espacio-docente">
+                      <div class="espacio-docente" [class.docente-licencia]="espacio.docente_de_licencia"
+                        [title]="espacio.docente_de_licencia ? 'Docente de licencia' : ''">
                         <i class="fa fa-user me-1"></i>{{ espacio.docente }}
                       </div>
                     </div>
@@ -92,8 +106,19 @@
     </div>
   </div>
 
+  <!-- Indicador de carga -->
+  <div *ngIf="isLoading && !error" class="text-center p-4">
+    <div class="card">
+      <div class="card-body">
+        <div class="loading-spinner mx-auto mb-3" style="width: 40px; height: 40px;"></div>
+        <h5 class="text-muted">Cargando horarios...</h5>
+        <p class="text-muted small">Obteniendo datos del servidor</p>
+      </div>
+    </div>
+  </div>
+
   <!-- Mensaje cuando no hay datos -->
-  <div *ngIf="!horarioData && !error" class="text-center p-4">
+  <div *ngIf="!horarioData && !error && !isLoading" class="text-center p-4 initial-filters">
     <div class="card">
       <div class="card-body">
         <i class="fa fa-filter fa-3x text-muted mb-3"></i>
@@ -101,7 +126,7 @@
         <div class="row justify-content-center">
           <div class="col-md-6">
             <div class="row mb-3">
-              <div class="col-md-6">
+              <div class="col-md-4">
                 <label for="turno-inicial" class="form-label">Turno:</label>
                 <select id="turno-inicial" class="form-select" [(ngModel)]="turnoSeleccionado"
                   (change)="onFiltrosChange()">
@@ -111,7 +136,15 @@
                   <option value="NOCHE">Noche</option>
                 </select>
               </div>
-              <div class="col-md-6">
+              <div class="col-md-4" *ngIf="aniosDisponibles.length > 0">
+                <label for="anio-inicial" class="form-label">Año:</label>
+                <select id="anio-inicial" class="form-select anio-selector" [(ngModel)]="anioSeleccionado"
+                  (change)="onAnioChange()">
+                  <option [ngValue]="null">Todos</option>
+                  <option *ngFor="let anio of aniosDisponibles" [ngValue]="anio">{{ anio }}°</option>
+                </select>
+              </div>
+              <div class="col-md-4">
                 <label for="fecha-inicial" class="form-label">Fecha:</label>
                 <div class="input-group">
                   <input id="fecha-inicial" class="form-control" placeholder="dd/mm/yyyy" name="dpInicial"
@@ -123,7 +156,8 @@
                 </div>
               </div>
             </div>
-            <p class="text-muted small">Selecciona un turno y fecha para ver los horarios</p>
+            <p class="text-muted small">Selecciona un turno{{ aniosDisponibles.length > 0 ? ', año (opcional)' : '' }} y
+              fecha para ver los horarios</p>
           </div>
         </div>
       </div>

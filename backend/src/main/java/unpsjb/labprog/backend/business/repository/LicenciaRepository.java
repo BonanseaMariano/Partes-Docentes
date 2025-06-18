@@ -1,6 +1,6 @@
 package unpsjb.labprog.backend.business.repository;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -34,8 +34,8 @@ public interface LicenciaRepository extends JpaRepository<Licencia, Integer> {
             + "AND l.estado = unpsjb.labprog.backend.model.enums.Estado.VALIDO")
     List<Licencia> findLicenciasSuperPuestas(
             @Param("personaDni") Long personaDni,
-            @Param("pedidoDesde") LocalDateTime pedidoDesde,
-            @Param("pedidoHasta") LocalDateTime pedidoHasta,
+            @Param("pedidoDesde") LocalDate pedidoDesde,
+            @Param("pedidoHasta") LocalDate pedidoHasta,
             @Param("licenciaId") Integer licenciaId);
 
     /**
@@ -96,35 +96,34 @@ public interface LicenciaRepository extends JpaRepository<Licencia, Integer> {
             + "AND l.estado = unpsjb.labprog.backend.model.enums.Estado.VALIDO")
     List<Licencia> findValidLicenciasByPersonaAndPeriod(
             @Param("persona") Persona persona,
-            @Param("pedidoDesde") LocalDateTime pedidoDesde,
-            @Param("pedidoHasta") LocalDateTime pedidoHasta);
+            @Param("pedidoDesde") LocalDate pedidoDesde,
+            @Param("pedidoHasta") LocalDate pedidoHasta);
 
     /**
      * Método original mantenido para compatibilidad
      */
     List<Licencia> findByPersonaAndPedidoDesdeGreaterThanEqualAndPedidoHastaLessThanEqual(
             Persona persona,
-            LocalDateTime pedidoDesde,
-            LocalDateTime pedidoHasta);
+            LocalDate pedidoDesde,
+            LocalDate pedidoHasta);
 
     /**
      * Busca licencias VÁLIDAS que estén activas en una fecha específica
      *
-     * @param fecha La fecha a consultar (inicio del día)
-     * @param fechaFin La fecha a consultar (fin del día)
+     * @param fecha La fecha a consultar
      * @return Lista de licencias válidas activas en esa fecha
      */
     @Query("SELECT l FROM Licencia l WHERE l.estado = unpsjb.labprog.backend.model.enums.Estado.VALIDO "
-            + "AND l.pedidoDesde <= :fechaFin "
+            + "AND l.pedidoDesde <= :fecha "
             + "AND l.pedidoHasta >= :fecha "
             + "ORDER BY l.persona.apellido, l.persona.nombre")
     List<Licencia> findLicenciasValidasEnFecha(
-            @Param("fecha") LocalDateTime fecha,
-            @Param("fechaFin") LocalDateTime fechaFin);
+            @Param("fecha") LocalDate fecha);
 
     /**
-     * Verifica si existen licencias que cubran completamente un período específico.
-     * Busca licencias ordenadas por fecha y verifica si forman una cobertura continua.
+     * Verifica si existen licencias que cubran completamente un período
+     * específico. Busca licencias ordenadas por fecha y verifica si forman una
+     * cobertura continua.
      *
      * @param personaDni El DNI de la persona a verificar
      * @param fechaInicio Fecha de inicio del período a cubrir
@@ -138,8 +137,8 @@ public interface LicenciaRepository extends JpaRepository<Licencia, Integer> {
             + "ORDER BY l.pedidoDesde")
     List<Licencia> findLicenciasParaCoberturaContinua(
             @Param("personaDni") Long personaDni,
-            @Param("fechaInicio") LocalDateTime fechaInicio,
-            @Param("fechaFin") LocalDateTime fechaFin);
+            @Param("fechaInicio") LocalDate fechaInicio,
+            @Param("fechaFin") LocalDate fechaFin);
 
     /**
      * Busca licencias VÁLIDAS para una persona en un año específico para
@@ -156,4 +155,20 @@ public interface LicenciaRepository extends JpaRepository<Licencia, Integer> {
     List<Licencia> findLicenciasPorPersonaYAño(
             @Param("persona") Persona persona,
             @Param("anio") Integer anio);
+
+    /**
+     * Verifica si una persona tiene licencias activas en una fecha específica
+     *
+     * @param persona La persona a verificar
+     * @param fecha La fecha para verificar licencias activas
+     * @return true si la persona tiene licencias activas en esa fecha
+     */
+    @Query("SELECT CASE WHEN COUNT(l) > 0 THEN true ELSE false END FROM Licencia l "
+            + "WHERE l.persona = :persona "
+            + "AND l.pedidoDesde <= :fecha "
+            + "AND l.pedidoHasta >= :fecha "
+            + "AND l.estado = unpsjb.labprog.backend.model.enums.Estado.VALIDO")
+    boolean tienePersonaLicenciaActivaEnFecha(
+            @Param("persona") Persona persona,
+            @Param("fecha") LocalDate fecha);
 }

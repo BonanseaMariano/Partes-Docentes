@@ -40,8 +40,8 @@ Given('que se otorgan las siguientes nuevas licencias', function (dataTable) {
         const licencia = {
             persona: persona,
             articuloLicencia: articuloLicencia,
-            pedidoDesde: licenciaData.Desde + "T03:00:00",
-            pedidoHasta: licenciaData.Hasta + "T03:00:00",
+            pedidoDesde: licenciaData.Desde,
+            pedidoHasta: licenciaData.Hasta,
             certificadoMedico: licenciaData.Artículo !== "36A", // 36A no requiere certificado médico
             domicilio: null,
             designaciones: []

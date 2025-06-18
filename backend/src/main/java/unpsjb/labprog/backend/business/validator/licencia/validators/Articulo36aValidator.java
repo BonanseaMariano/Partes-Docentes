@@ -1,6 +1,6 @@
 package unpsjb.labprog.backend.business.validator.licencia.validators;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
 import unpsjb.labprog.backend.business.validator.base.Validator;
@@ -40,11 +40,11 @@ public class Articulo36aValidator implements Validator<Licencia> {
             return; // No aplica para este artículo
         }
 
-        LocalDateTime inicio = licencia.getPedidoDesde();
-        LocalDateTime fin = licencia.getPedidoHasta();
+        LocalDate inicio = licencia.getPedidoDesde();
+        LocalDate fin = licencia.getPedidoHasta();
 
         // Calcular días solicitados en esta licencia
-        long diasSolicitados = ChronoUnit.DAYS.between(inicio.toLocalDate(), fin.toLocalDate()) + 1;
+        long diasSolicitados = ChronoUnit.DAYS.between(inicio, fin) + 1;
 
         // Verificar días por mes
         validarDiasPorMes(licencia, diasSolicitados);
@@ -54,7 +54,7 @@ public class Articulo36aValidator implements Validator<Licencia> {
     }
 
     private void validarDiasPorMes(Licencia licencia, long diasSolicitados) throws BusinessLogicException {
-        LocalDateTime inicio = licencia.getPedidoDesde();
+        LocalDate inicio = licencia.getPedidoDesde();
 
         // Calcular días ya utilizados en el mes usando la clase utilitaria
         long diasDelMes = DiasCalculadorUtil.calcularDiasMes(
@@ -73,7 +73,7 @@ public class Articulo36aValidator implements Validator<Licencia> {
     }
 
     private void validarDiasPorAnio(Licencia licencia, long diasSolicitados) throws BusinessLogicException {
-        LocalDateTime inicio = licencia.getPedidoDesde();
+        LocalDate inicio = licencia.getPedidoDesde();
 
         // Calcular días ya utilizados en el año usando la clase utilitaria
         long diasYaUtilizados = DiasCalculadorUtil.calcularDiasAnio(

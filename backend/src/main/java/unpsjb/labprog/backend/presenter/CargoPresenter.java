@@ -257,31 +257,95 @@ public class CargoPresenter {
 
     /**
      * Obtiene los horarios de espacios curriculares para un turno y fecha
-     * específicos
+     * específicos, con filtro opcional por año
      *
      * @param turno Turno para filtrar las divisiones (Mañana, Tarde,
      * Vespertino, Noche)
      * @param fecha Fecha para verificar la vigencia de cargos y designaciones
      * (formato: yyyy-MM-dd)
+     * @param anio Año de la división para filtrar (opcional, null para todos
+     * los años)
      * @return ResponseEntity con la grilla de horarios organizada por día y
      * hora
      */
     @GetMapping("/horarios/{turno}/{fecha}")
     public ResponseEntity<Object> obtenerHorarios(
             @PathVariable Turno turno,
+            @PathVariable String fecha,
+            @RequestParam(required = false) Integer anio) {
+        try {
+            // Parsear la fecha
+            LocalDate fechaParsed = LocalDate.parse(fecha);
+
+            // Obtener los horarios usando el servicio unificado
+            HorarioDTO horarios = horarioService.obtenerHorarios(turno, anio, fechaParsed);
+
+            return Response.ok(horarios);
+        } catch (Exception e) {
+            logger.log(Level.SEVERE,
+                    "Error al obtener horarios para turno " + turno + " y fecha " + fecha
+                    + (anio != null ? " (año: " + anio + ")" : " (todos los años)"), e);
+            return Response.internalServerError("Error al obtener los horarios: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Obtiene los horarios de espacios curriculares para un turno, año y fecha
+     * específicos
+     *
+     * @param turno Turno para filtrar las divisiones (Mañana, Tarde,
+     * Vespertino, Noche)
+     * @param anio Año de la división para filtrar
+     * @param fecha Fecha para verificar la vigencia de cargos y designaciones
+     * (formato: yyyy-MM-dd)
+     * @return ResponseEntity con la grilla de horarios organizada por día y
+     * hora
+     */
+    @GetMapping("/horarios/{turno}/{anio}/{fecha}")
+    public ResponseEntity<Object> obtenerHorariosConAnio(
+            @PathVariable Turno turno,
+            @PathVariable Integer anio,
             @PathVariable String fecha) {
         try {
             // Parsear la fecha
             LocalDate fechaParsed = LocalDate.parse(fecha);
 
-            // Obtener los horarios usando el servicio
-            HorarioDTO horarios = horarioService.obtenerHorariosPorTurnoYFecha(turno, fechaParsed);
+            // Obtener los horarios usando el servicio con filtro de año
+            HorarioDTO horarios = horarioService.obtenerHorariosPorTurnoAnioYFecha(turno, anio, fechaParsed);
 
             return Response.ok(horarios);
         } catch (Exception e) {
             logger.log(Level.SEVERE,
-                    "Error al obtener horarios para turno " + turno + " y fecha " + fecha, e);
+                    "Error al obtener horarios para turno " + turno + ", año " + anio + " y fecha " + fecha, e);
             return Response.internalServerError("Error al obtener los horarios: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Obtiene los años disponibles para un turno y fecha específicos
+     *
+     * @param turno Turno para filtrar las divisiones (Mañana, Tarde,
+     * Vespertino, Noche)
+     * @param fecha Fecha para verificar la vigencia de cargos y designaciones
+     * (formato: yyyy-MM-dd)
+     * @return ResponseEntity con la lista de años disponibles
+     */
+    @GetMapping("/horarios/anios/{turno}/{fecha}")
+    public ResponseEntity<Object> obtenerAniosDisponibles(
+            @PathVariable Turno turno,
+            @PathVariable String fecha) {
+        try {
+            // Parsear la fecha
+            LocalDate fechaParsed = LocalDate.parse(fecha);
+
+            // Obtener los años disponibles usando el servicio
+            var aniosDisponibles = horarioService.obtenerAniosDisponibles(turno, fechaParsed);
+
+            return Response.ok(aniosDisponibles);
+        } catch (Exception e) {
+            logger.log(Level.SEVERE,
+                    "Error al obtener años disponibles para turno " + turno + " y fecha " + fecha, e);
+            return Response.internalServerError("Error al obtener los años disponibles: " + e.getMessage());
         }
     }
 

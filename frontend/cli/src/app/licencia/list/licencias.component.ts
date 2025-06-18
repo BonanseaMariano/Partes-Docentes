@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpStatusCode } from '@angular/common/http';
-import { Component, TemplateRef, ViewChild } from '@angular/core';
+import { Component, TemplateRef, ViewChild, ElementRef, AfterViewInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { PaginationConfig } from '../../core/constants/pagination.constants';
 import { DesignacionService } from '../../designacion/service/designacion.service';
@@ -14,6 +14,7 @@ import { DniFormatPipe } from '../../pipes/dni-format.pipe';
 import { FechaFormatPipe } from '../../pipes/fecha-format.pipe';
 import { PopupService } from '../../popup/popup.service';
 import { LicenciaService } from '../service/licencia.service';
+import { LicenciasAnimationService } from './licencias-animation.service';
 
 
 @Component({
@@ -23,10 +24,11 @@ import { LicenciaService } from '../service/licencia.service';
     templateUrl: './licencias.component.html',
     styleUrls: ['./licencias.component.css']
 })
-export class LicenciasComponent {
+export class LicenciasComponent implements AfterViewInit, OnDestroy {
     resultsPage: ResultsPage = <ResultsPage>{};
     currentPage: number = PaginationConfig.INITIAL_PAGE;
     pageSize: number = PaginationConfig.PAGE_SIZE;
+    isLoading: boolean = false;
 
     // Exponemos el enum para usarlo en el template
     Estado = Estado;
@@ -44,16 +46,65 @@ export class LicenciasComponent {
         private licenciaService: LicenciaService,
         private modalService: ModalService,
         private popupService: PopupService,
-        private designacionService: DesignacionService
+        private designacionService: DesignacionService,
+        private elementRef: ElementRef,
+        private licenciasAnimationService: LicenciasAnimationService,
+        private cdr: ChangeDetectorRef
     ) { }
 
-    getLicencias(): void {
+    getLicencias(fromSort: boolean = false): void {
+        this.isLoading = true;
+
+        // Solo animar estado de carga si no viene de ordenamiento
+        if (!fromSort) {
+            this.licenciasAnimationService.animateLoadingBreath(this.elementRef);
+        }
+
         this.licenciaService.byPage(this.currentPage, this.pageSize, this.sortField, this.sortDirection).subscribe((dataPackage) => {
+            this.isLoading = false;
+            this.licenciasAnimationService.stopLoadingAnimation(this.elementRef);
             this.resultsPage = <ResultsPage>dataPackage.data;
+
+            if (fromSort) {
+                // Si viene de ordenamiento, forzar detección de cambios y animar fade in
+                this.cdr.detectChanges();
+                
+                setTimeout(() => {
+                    this.licenciasAnimationService.animateSortTransitionIn(this.elementRef);
+                    
+                    // Configurar efectos después de la transición
+                    setTimeout(() => {
+                        this.licenciasAnimationService.setupHoverEffects(this.elementRef);
+                        this.licenciasAnimationService.animateBadges(this.elementRef);
+                        this.licenciasAnimationService.animateNumbers(this.elementRef);
+                    }, 300);
+                }, 100);
+            } else {
+                // Animación normal para carga inicial/paginación
+                setTimeout(() => {
+                    this.licenciasAnimationService.animateDataLoad(this.elementRef, () => {
+                        // Configurar efectos después de cargar los datos
+                        this.licenciasAnimationService.setupHoverEffects(this.elementRef);
+                        this.licenciasAnimationService.animateBadges(this.elementRef);
+                        this.licenciasAnimationService.animateNumbers(this.elementRef);
+                        
+                        // Si no hay datos, animar estado vacío
+                        if (!this.resultsPage.content || this.resultsPage.content.length === 0) {
+                            this.licenciasAnimationService.animateEmptyState(this.elementRef);
+                        }
+                    });
+                }, 100);
+            }
         });
     }
 
-    remove(id: number): void {
+    remove(id: number, event?: Event): void {
+        // Animar botón si se pasó el evento
+        if (event && event.target) {
+            const buttonElement = event.target as HTMLElement;
+            this.licenciasAnimationService.animateButtonClick(buttonElement);
+        }
+
         let that = this;
         this.modalService
             .confirm(
@@ -77,16 +128,42 @@ export class LicenciasComponent {
             });
     }
 
-    openDesignacionesPopup(licencia: Licencia): void {
+    openDesignacionesPopup(licencia: Licencia, event?: Event): void {
+        // Animar botón si se pasó el evento
+        if (event && event.target) {
+            const buttonElement = event.target as HTMLElement;
+            this.licenciasAnimationService.animateDesignacionesButtonClick(buttonElement);
+        }
+
         this.selectedLicencia = licencia;
         this.popupService.show(this.designacionesTemplate, {
             title: `Designaciones de la licencia`,
             icon: 'fa-user-tie',
             data: licencia
         });
+
+        // Animar entrada del popup después de un pequeño delay
+        setTimeout(() => {
+            const popupContainer = document.querySelector('.popup-container');
+            if (popupContainer) {
+                const elementRef = { nativeElement: popupContainer };
+                this.licenciasAnimationService.animatePopupEntrance(elementRef as ElementRef);
+                
+                // Animar contenido de designaciones específicamente
+                setTimeout(() => {
+                    this.licenciasAnimationService.animatePopupContent(elementRef as ElementRef, 'designaciones');
+                }, 200);
+            }
+        }, 50);
     }
 
-    openLogsPopup(licencia: Licencia): void {
+    openLogsPopup(licencia: Licencia, event?: Event): void {
+        // Animar botón si se pasó el evento
+        if (event && event.target) {
+            const buttonElement = event.target as HTMLElement;
+            this.licenciasAnimationService.animateLogsButtonClick(buttonElement);
+        }
+
         this.selectedLicencia = licencia;
         // Si la licencia tiene logs, los ordenamos por fecha y hora, más recientes primero
         if (licencia.logs && licencia.logs.length > 0) {
@@ -101,6 +178,20 @@ export class LicenciasComponent {
             icon: 'fa-history',
             data: licencia
         });
+
+        // Animar entrada del popup después de un pequeño delay
+        setTimeout(() => {
+            const popupContainer = document.querySelector('.popup-container');
+            if (popupContainer) {
+                const elementRef = { nativeElement: popupContainer };
+                this.licenciasAnimationService.animatePopupEntrance(elementRef as ElementRef);
+                
+                // Animar contenido de logs específicamente
+                setTimeout(() => {
+                    this.licenciasAnimationService.animatePopupContent(elementRef as ElementRef, 'logs');
+                }, 200);
+            }
+        }, 50);
     }
 
     getDesignacionCount(licencia: Licencia): number {
@@ -117,6 +208,19 @@ export class LicenciasComponent {
 
     ngOnInit(): void {
         this.getLicencias();
+    }
+
+    ngAfterViewInit(): void {
+        // Configurar animaciones iniciales
+        this.licenciasAnimationService.animateInitialEntrance(this.elementRef);
+        
+        // Configurar efectos de hover
+        this.licenciasAnimationService.setupHoverEffects(this.elementRef);
+    }
+
+    ngOnDestroy(): void {
+        // Limpiar animaciones al destruir el componente
+        this.licenciasAnimationService.clearAnimations();
     }
 
     onPageChangeRequested(page: number): void {
@@ -139,7 +243,11 @@ export class LicenciasComponent {
 
         // Volver a la primera página cuando se cambia el ordenamiento
         this.currentPage = 1;
-        this.getLicencias();
+        
+        // Animar transición de ordenamiento
+        this.licenciasAnimationService.animateSortTransition(this.elementRef, () => {
+            this.getLicencias(true); // Pasar true para indicar que viene de ordenamiento
+        });
     }
 
     /**

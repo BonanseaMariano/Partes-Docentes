@@ -1,7 +1,6 @@
 package unpsjb.labprog.backend.dto;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -137,11 +136,11 @@ public class ReporteDTO {
 
         @JsonProperty("FechaInicio")
         @JsonFormat(pattern = "yyyy-MM-dd")
-        private LocalDateTime fechaInicio;
+        private LocalDate fechaInicio;
 
         @JsonProperty("FechaFin")
         @JsonFormat(pattern = "yyyy-MM-dd")
-        private LocalDateTime fechaFin;
+        private LocalDate fechaFin;
 
         @JsonProperty("Cargo")
         private CargoInfo cargo;
@@ -149,8 +148,8 @@ public class ReporteDTO {
         public DesignacionInfo() {
         }
 
-        public DesignacionInfo(String situacionRevista, LocalDateTime fechaInicio,
-                LocalDateTime fechaFin, CargoInfo cargo) {
+        public DesignacionInfo(String situacionRevista, LocalDate fechaInicio,
+                LocalDate fechaFin, CargoInfo cargo) {
             this.situacionRevista = situacionRevista;
             this.fechaInicio = fechaInicio;
             this.fechaFin = fechaFin;
@@ -166,19 +165,19 @@ public class ReporteDTO {
             this.situacionRevista = situacionRevista;
         }
 
-        public LocalDateTime getFechaInicio() {
+        public LocalDate getFechaInicio() {
             return fechaInicio;
         }
 
-        public void setFechaInicio(LocalDateTime fechaInicio) {
+        public void setFechaInicio(LocalDate fechaInicio) {
             this.fechaInicio = fechaInicio;
         }
 
-        public LocalDateTime getFechaFin() {
+        public LocalDate getFechaFin() {
             return fechaFin;
         }
 
-        public void setFechaFin(LocalDateTime fechaFin) {
+        public void setFechaFin(LocalDate fechaFin) {
             this.fechaFin = fechaFin;
         }
 
@@ -200,11 +199,11 @@ public class ReporteDTO {
 
             @JsonProperty("FechaInicio")
             @JsonFormat(pattern = "yyyy-MM-dd")
-            private LocalDateTime fechaInicio;
+            private LocalDate fechaInicio;
 
             @JsonProperty("FechaFin")
             @JsonFormat(pattern = "yyyy-MM-dd")
-            private LocalDateTime fechaFin;
+            private LocalDate fechaFin;
 
             @JsonProperty("TipoDesignacion")
             private TipoDesignacion tipoDesignacion;
@@ -215,8 +214,8 @@ public class ReporteDTO {
             public CargoInfo() {
             }
 
-            public CargoInfo(String nombre, Integer cargaHoraria, LocalDateTime fechaInicio,
-                    LocalDateTime fechaFin, TipoDesignacion tipoDesignacion, DivisionInfo division) {
+            public CargoInfo(String nombre, Integer cargaHoraria, LocalDate fechaInicio,
+                    LocalDate fechaFin, TipoDesignacion tipoDesignacion, DivisionInfo division) {
                 this.nombre = nombre;
                 this.cargaHoraria = cargaHoraria;
                 this.fechaInicio = fechaInicio;
@@ -242,19 +241,19 @@ public class ReporteDTO {
                 this.cargaHoraria = cargaHoraria;
             }
 
-            public LocalDateTime getFechaInicio() {
+            public LocalDate getFechaInicio() {
                 return fechaInicio;
             }
 
-            public void setFechaInicio(LocalDateTime fechaInicio) {
+            public void setFechaInicio(LocalDate fechaInicio) {
                 this.fechaInicio = fechaInicio;
             }
 
-            public LocalDateTime getFechaFin() {
+            public LocalDate getFechaFin() {
                 return fechaFin;
             }
 
-            public void setFechaFin(LocalDateTime fechaFin) {
+            public void setFechaFin(LocalDate fechaFin) {
                 this.fechaFin = fechaFin;
             }
 

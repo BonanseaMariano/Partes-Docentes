@@ -1,6 +1,6 @@
 package unpsjb.labprog.backend.business.validator.util;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
@@ -39,8 +39,8 @@ public class DesignacionSolapamientoUtil {
      * @return Lista de designaciones que se solapan con el período especificado
      */
     public static List<Designacion> buscarDesignacionesSuperpuestas(Integer cargoId,
-            LocalDateTime fechaInicio,
-            LocalDateTime fechaFin,
+            LocalDate fechaInicio,
+            LocalDate fechaFin,
             Integer designacionId) {
         if (designacionRepository == null) {
             throw new IllegalStateException("DesignacionSolapamientoUtil no ha sido inicializado correctamente");
@@ -60,8 +60,8 @@ public class DesignacionSolapamientoUtil {
      * @return Lista de licencias ordenadas que se solapan con el período
      */
     public static List<Licencia> buscarLicenciasParaCoberturaContinua(Long personaDni,
-            LocalDateTime fechaInicio,
-            LocalDateTime fechaFin) {
+            LocalDate fechaInicio,
+            LocalDate fechaFin) {
         if (licenciaRepository == null) {
             throw new IllegalStateException("DesignacionSolapamientoUtil no ha sido inicializado correctamente");
         }
@@ -82,7 +82,7 @@ public class DesignacionSolapamientoUtil {
      * caso contrario
      */
     public static boolean verificarCoberturaContinua(List<Licencia> licencias,
-            LocalDateTime fechaInicio, LocalDateTime fechaFin) {
+            LocalDate fechaInicio, LocalDate fechaFin) {
 
         if (licencias == null || licencias.isEmpty()) {
             return false;
@@ -93,7 +93,7 @@ public class DesignacionSolapamientoUtil {
             return false;
         }
 
-        LocalDateTime cobertura = licencias.get(0).getPedidoHasta();
+        LocalDate cobertura = licencias.get(0).getPedidoHasta();
 
         // Verificar continuidad entre licencias
         for (int i = 1; i < licencias.size(); i++) {
@@ -126,8 +126,8 @@ public class DesignacionSolapamientoUtil {
      * contrario
      */
     public static boolean existenDesignacionesSuperpuestas(Integer cargoId,
-            LocalDateTime fechaInicio,
-            LocalDateTime fechaFin,
+            LocalDate fechaInicio,
+            LocalDate fechaFin,
             Integer designacionId) {
         List<Designacion> designacionesSuperpuestas = buscarDesignacionesSuperpuestas(
                 cargoId, fechaInicio, fechaFin, designacionId);
@@ -138,8 +138,8 @@ public class DesignacionSolapamientoUtil {
      * Versión simplificada sin designacionId (para designaciones nuevas)
      */
     public static boolean existenDesignacionesSuperpuestas(Integer cargoId,
-            LocalDateTime fechaInicio,
-            LocalDateTime fechaFin) {
+            LocalDate fechaInicio,
+            LocalDate fechaFin) {
         return existenDesignacionesSuperpuestas(cargoId, fechaInicio, fechaFin, null);
     }
 }

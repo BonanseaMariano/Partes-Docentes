@@ -48,9 +48,9 @@ When('solicita una licencia artículo {string} con certificado médico {string} 
     // Asumimos que el artículo siempre existe en la base de datos
     this.currentLicencia.articuloLicencia = JSON.parse(request('GET', encodeURI(`http://pd-backend:8080/articulos-licencias/articulo/${articulo}`)).getBody('utf8')).data;
 
-    // Asignamos las fechas en formato ISO
-    this.currentLicencia.pedidoDesde = desde ? desde + "T03:00:00" : null;
-    this.currentLicencia.pedidoHasta = hasta ? hasta + "T03:00:00" : null;
+    // Asignamos las fechas - ahora solo fecha sin hora
+    this.currentLicencia.pedidoDesde = desde ? desde : null;
+    this.currentLicencia.pedidoHasta = hasta ? hasta : null;
 
     // Asignamos el valor del certificado médico en función de si es "SI" o "NO"
     this.currentLicencia.certificadoMedico = certificado === "SI";
@@ -92,8 +92,8 @@ Given('que la instancia de designación está asignada a la persona con licencia
         dni: personaConLicencia.DNI,
         nombre: personaConLicencia.Nombre,
         apellido: personaConLicencia.Apellido,
-        designacionDesde: personaConLicencia.Desde + "T03:00:00",
-        designacionHasta: personaConLicencia.Hasta + "T03:00:00"
+        designacionDesde: personaConLicencia.Desde,
+        designacionHasta: personaConLicencia.Hasta
     };
 
 

@@ -1,38 +1,49 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ElementRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NgbDatepickerModule, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDateParserFormatter, NgbDatepickerModule, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
+import { firstValueFrom } from 'rxjs';
 import { CargoService } from '../cargo/service/cargo.service';
-import { HorarioDTO, HoraEspacioCurricular } from '../models/horario-dto';
-import { Turno } from '../models/turno';
 import { DiaSemana } from '../models/horario';
+import { HoraEspacioCurricular, HorarioDTO } from '../models/horario-dto';
+import { Turno } from '../models/turno';
+import { ArgentinaDateParserFormatter } from '../utils/argentina-date-formatter';
+import { HorarioAnimationService } from './horario-animation.service';
 
 @Component({
   selector: 'app-horario',
   standalone: true,
   imports: [CommonModule, FormsModule, NgbDatepickerModule],
+  providers: [
+    { provide: NgbDateParserFormatter, useClass: ArgentinaDateParserFormatter }
+  ],
   templateUrl: './horario.component.html',
   styleUrl: './horario.component.css'
 })
-export class HorarioComponent implements OnInit {
+export class HorarioComponent implements OnInit, AfterViewInit {
 
   horarioData: HorarioDTO | null = null;
   error: string | null = null;
+  isLoading: boolean = false;
 
   // Filtros
   turnoSeleccionado: string = 'MANIANA'; // Usar la clave del enum, no el valor
   fechaSeleccionada: NgbDateStruct = this.getFechaActual();
+  anioSeleccionado: number | null = null; // null significa "todos los años", cualquier número es un año específico
 
   // Opciones para los selectores
   turnos = Object.values(Turno);
+  aniosDisponibles: number[] = []; // Lista de años disponibles
   dias = [DiaSemana.LUNES, DiaSemana.MARTES, DiaSemana.MIERCOLES, DiaSemana.JUEVES, DiaSemana.VIERNES];
   horas = Array.from({ length: 8 }, (_, i) => i + 1);
 
   constructor(
     private cargoService: CargoService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private elementRef: ElementRef,
+    private horarioAnimationService: HorarioAnimationService
   ) {
     // Inicializar con la fecha actual
     this.fechaSeleccionada = this.getFechaActual();
@@ -41,15 +52,72 @@ export class HorarioComponent implements OnInit {
   ngOnInit(): void {
     // Obtener parámetros de la ruta
     this.route.params.subscribe(params => {
-      if (params['turno'] && params['fecha']) {
+      if (params['turno']) {
         this.turnoSeleccionado = params['turno'];
-        this.fechaSeleccionada = this.stringAFecha(params['fecha']);
-        this.cargarHorarios();
+
+        // Verificar si tenemos año y fecha en la URL
+        if (params['anio'] && params['fecha'] && !isNaN(params['anio'])) {
+          // Estructura: /horarios/:turno/:anio/:fecha
+          this.anioSeleccionado = parseInt(params['anio']);
+          this.fechaSeleccionada = this.stringAFecha(params['fecha']);
+        } else if (params['fecha']) {
+          // Estructura antigua: /horarios/:turno/:fecha (sin año específico)
+          // En este caso, cargar años disponibles primero y seleccionar el primero
+          this.anioSeleccionado = null;
+          this.fechaSeleccionada = this.stringAFecha(params['fecha']);
+        }
+
+        this.cargarAniosDisponibles().then(() => {
+          this.cargarHorarios();
+        });
       } else {
-        // Si no hay parámetros, usar valores por defecto y cargar
-        this.cargarHorarios();
+        // Si no hay parámetros, usar valores por defecto y cargar años disponibles primero
+        this.cargarAniosDisponibles().then(() => {
+          this.cargarHorarios();
+        });
       }
     });
+  }
+
+  ngAfterViewInit(): void {
+    // Configurar animaciones iniciales usando el servicio
+    this.horarioAnimationService.animateInitialEntrance(this.elementRef);
+  }
+
+  /**
+   * Carga los años disponibles según los filtros de turno y fecha seleccionados
+   */
+  async cargarAniosDisponibles(): Promise<void> {
+    if (!this.turnoSeleccionado || !this.fechaSeleccionada) {
+      return;
+    }
+
+    try {
+      // Convertir el string (clave del enum) al valor del enum
+      const turnoEnum = Turno[this.turnoSeleccionado as keyof typeof Turno];
+      const fechaFormateada = this.formatearFecha(this.fechaSeleccionada);
+
+      const response = await firstValueFrom(this.cargoService.obtenerAniosDisponibles(turnoEnum, fechaFormateada));
+
+      if (response && response.status === 200) {
+        this.aniosDisponibles = response.data as number[];
+
+        // Si no hay año seleccionado y hay años disponibles, mantener null para "todos los años"
+        if (this.anioSeleccionado === null) {
+          // Mantener null (todos los años) como opción por defecto
+        } else if (this.anioSeleccionado && !this.aniosDisponibles.includes(this.anioSeleccionado)) {
+          // Si el año seleccionado no está en la lista disponible, volver a "todos los años"
+          this.anioSeleccionado = null;
+        }
+      } else {
+        this.aniosDisponibles = [];
+        this.anioSeleccionado = null;
+      }
+    } catch (err: any) {
+      console.error('Error al cargar años disponibles:', err);
+      this.aniosDisponibles = [];
+      this.anioSeleccionado = null;
+    }
   }
 
   /**
@@ -61,21 +129,58 @@ export class HorarioComponent implements OnInit {
     }
 
     this.error = null;
+    this.isLoading = true;
 
+    // Si hay datos existentes, animar transición
+    if (this.horarioData) {
+      this.horarioAnimationService.animateDataTransition(this.elementRef, () => {
+        this.loadHorarioData();
+      });
+    } else {
+      this.loadHorarioData();
+    }
+  }
+
+  /**
+   * Método privado para cargar los datos del horario
+   */
+  private loadHorarioData(): void {
     // Convertir el string (clave del enum) al valor del enum
     const turnoEnum = Turno[this.turnoSeleccionado as keyof typeof Turno];
     const fechaFormateada = this.formatearFecha(this.fechaSeleccionada);
 
-    this.cargoService.obtenerHorarios(turnoEnum, fechaFormateada).subscribe({
+    // Usar el método apropiado según si hay filtro de año o no
+    const serviceCall = (this.anioSeleccionado !== null)
+      ? this.cargoService.obtenerHorariosConAnio(turnoEnum, this.anioSeleccionado, fechaFormateada)
+      : this.cargoService.obtenerHorarios(turnoEnum, fechaFormateada);
+
+    serviceCall.subscribe({
       next: (response) => {
+        this.isLoading = false;
         if (response.status === 200) {
           this.horarioData = response.data as HorarioDTO;
+
+          // Animar entrada de la grilla con callback para configurar hover effects
+          setTimeout(() => {
+            if (!this.horarioData) return;
+            this.horarioAnimationService.animateScheduleGrid(
+              this.elementRef,
+              () => this.horarioAnimationService.setupHoverEffects(this.elementRef)
+            );
+          }, 50);
         } else {
           this.error = 'Error al cargar los horarios: ' + (response.message || 'Error desconocido');
+          setTimeout(() => {
+            this.horarioAnimationService.animateError(this.elementRef);
+          }, 50);
         }
       },
       error: (err) => {
+        this.isLoading = false;
         this.error = 'Error de conexión: ' + err.message;
+        setTimeout(() => {
+          this.horarioAnimationService.animateError(this.elementRef);
+        }, 50);
       }
     });
   }
@@ -84,11 +189,38 @@ export class HorarioComponent implements OnInit {
    * Se ejecuta cuando cambian los filtros
    */
   onFiltrosChange(): void {
-    // Cargar horarios con los nuevos filtros
+    // Cargar años disponibles primero si cambió el turno o la fecha
+    this.cargarAniosDisponibles().then(() => {
+      // Después cargar horarios con los nuevos filtros
+      this.cargarHorarios();
+      // Navegar a la nueva ruta con los parámetros actualizados
+      this.navegarConParametros();
+    });
+  }
+
+  /**
+   * Se ejecuta cuando cambia el filtro de año
+   */
+  onAnioChange(): void {
+    // Solo cargar horarios, no necesitamos recargar años disponibles
     this.cargarHorarios();
     // Navegar a la nueva ruta con los parámetros actualizados
+    this.navegarConParametros();
+  }
+
+  /**
+   * Navega a la ruta correcta según los parámetros seleccionados
+   */
+  private navegarConParametros(): void {
     const fechaFormateada = this.formatearFecha(this.fechaSeleccionada);
-    this.router.navigate(['/cargos/horarios', this.turnoSeleccionado, fechaFormateada]);
+
+    // Si hay año seleccionado (y no es null), usar la ruta con año
+    if (this.anioSeleccionado !== null) {
+      this.router.navigate(['/cargos/horarios', this.turnoSeleccionado, this.anioSeleccionado, fechaFormateada]);
+    } else {
+      // Si no hay año seleccionado (null = todos los años), usar la ruta sin año
+      this.router.navigate(['/cargos/horarios', this.turnoSeleccionado, fechaFormateada]);
+    }
   }
 
   /**

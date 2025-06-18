@@ -1,26 +1,31 @@
 import { CommonModule, Location } from '@angular/common';
-import { AfterViewChecked, ChangeDetectorRef, Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
+import { AfterViewChecked, ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { NgbCalendar, NgbDatepickerModule, NgbDateStruct, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbCalendar, NgbDateParserFormatter, NgbDatepickerModule, NgbDateStruct, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 import { Observable, of } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators';
 import { TypeaheadConfig } from '../../core/constants/typeahead.constants';
 import { ModalService } from '../../modal/modal.service';
 import { ArticuloLicencia } from '../../models/articulo-licencia';
+import { Estado } from '../../models/estado';
 import { Licencia } from '../../models/licencia';
 import { Persona } from '../../models/persona';
 import { PersonaService } from '../../persona/service/persona.service';
 import { DniFormatPipe } from '../../pipes/dni-format.pipe';
+import { PopupComponent } from '../../popup/popup.component';
+import { ArgentinaDateParserFormatter } from '../../utils/argentina-date-formatter';
+import { DateUtils } from '../../utils/date-utils';
 import { ArticuloLicenciaService } from '../service/articulo-licencia.service';
 import { LicenciaService } from '../service/licencia.service';
-import { Estado } from '../../models/estado';
-import { PopupComponent } from '../../popup/popup.component';
 
 @Component({
     selector: 'app-licencia-detail',
     standalone: true,
     imports: [CommonModule, FormsModule, NgbDatepickerModule, NgbTypeaheadModule, DniFormatPipe, PopupComponent],
+    providers: [
+        { provide: NgbDateParserFormatter, useClass: ArgentinaDateParserFormatter }
+    ],
     templateUrl: './licencia-detail.component.html',
     styles: `
     .input-group-text {
@@ -119,23 +124,13 @@ export class LicenciaDetailComponent implements OnInit, AfterViewChecked {
     }
 
     save(): void {
-        // Convertir las fechas de NgbDateStruct a objetos Date para el backend
+        // Convertir las fechas de NgbDateStruct a strings en formato YYYY-MM-DD para el backend
         if (this.fechaDesdeDate) {
-            const fechaDesde = new Date(
-                this.fechaDesdeDate.year,
-                this.fechaDesdeDate.month - 1,
-                this.fechaDesdeDate.day
-            );
-            this.licencia.pedidoDesde = fechaDesde;
+            this.licencia.pedidoDesde = DateUtils.ngbDateToString(this.fechaDesdeDate) as any;
         }
 
         if (this.fechaHastaDate) {
-            const fechaHasta = new Date(
-                this.fechaHastaDate.year,
-                this.fechaHastaDate.month - 1,
-                this.fechaHastaDate.day
-            );
-            this.licencia.pedidoHasta = fechaHasta;
+            this.licencia.pedidoHasta = DateUtils.ngbDateToString(this.fechaHastaDate) as any;
         }
 
         this.licenciaService.save(this.licencia, this.isNewLicencia).subscribe({
@@ -167,7 +162,6 @@ export class LicenciaDetailComponent implements OnInit, AfterViewChecked {
                 }
             },
             error: (error) => {
-                console.error('Error al guardar la licencia', error);
                 this.modalService.error(
                     "Error al guardar",
                     "Error al guardar la licencia",
@@ -191,21 +185,11 @@ export class LicenciaDetailComponent implements OnInit, AfterViewChecked {
 
                     // Configurar los datepickers con las fechas recibidas
                     if (this.licencia.pedidoDesde) {
-                        const fechaDesde = new Date(this.licencia.pedidoDesde);
-                        this.fechaDesdeDate = {
-                            year: fechaDesde.getFullYear(),
-                            month: fechaDesde.getMonth() + 1,
-                            day: fechaDesde.getDate()
-                        };
+                        this.fechaDesdeDate = DateUtils.dateToNgbDate(this.licencia.pedidoDesde);
                     }
 
                     if (this.licencia.pedidoHasta) {
-                        const fechaHasta = new Date(this.licencia.pedidoHasta);
-                        this.fechaHastaDate = {
-                            year: fechaHasta.getFullYear(),
-                            month: fechaHasta.getMonth() + 1,
-                            day: fechaHasta.getDate()
-                        };
+                        this.fechaHastaDate = DateUtils.dateToNgbDate(this.licencia.pedidoHasta);
                     }
 
                     // Establecer los valores seleccionados para los typeahead
@@ -218,7 +202,6 @@ export class LicenciaDetailComponent implements OnInit, AfterViewChecked {
                     }
                 },
                 error: (error) => {
-                    console.error('Error al cargar la licencia', error);
                     this.modalService.error(
                         "Error al cargar",
                         "Error al cargar la licencia",

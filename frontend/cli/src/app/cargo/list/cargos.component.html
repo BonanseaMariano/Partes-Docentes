@@ -1,101 +1,103 @@
-<div class="card shadow-sm mb-4">
-    <div class="card-header bg-light d-flex justify-content-between align-items-center">
-        <h2 class="mb-0"><i class="fa fa-briefcase me-2"></i>Cargos</h2>
-        <a (click)="crearNuevo()" class="btn-nuevo" style="cursor: pointer;">
-            <i class="fa fa-plus"></i>Nuevo cargo
-        </a>
-    </div>
+<div class="cargos-container" [ngClass]="{'loading': isLoading}">
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+            <h2 class="mb-0"><i class="fa fa-briefcase me-2"></i>Cargos</h2>
+            <a (click)="crearNuevo($event)" class="btn-nuevo" style="cursor: pointer;">
+                <i class="fa fa-plus"></i>Nuevo cargo
+            </a>
+        </div>
 
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-hover">
-                <thead class="table-light">
-                    <tr>
-                        <th scope="col"></th>
-                        <th scope="col" class="sortable-header" (click)="onSort('nombre')"
-                            [ngClass]="{'active': isSortActive('nombre')}"
-                            [attr.data-direction]="isSortActive('nombre') ? sortDirection : null">
-                            Nombre <i [ngClass]="getSortIcon('nombre')"></i>
-                        </th>
-                        <th scope="col" class="sortable-header" (click)="onSort('cargaHoraria')"
-                            [ngClass]="{'active': isSortActive('cargaHoraria')}"
-                            [attr.data-direction]="isSortActive('cargaHoraria') ? sortDirection : null">
-                            Carga Horaria <i [ngClass]="getSortIcon('cargaHoraria')"></i>
-                        </th>
-                        <th scope="col" class="sortable-header" (click)="onSort('tipoDesignacion')"
-                            [ngClass]="{'active': isSortActive('tipoDesignacion')}"
-                            [attr.data-direction]="isSortActive('tipoDesignacion') ? sortDirection : null">
-                            Tipo Designación <i [ngClass]="getSortIcon('tipoDesignacion')"></i>
-                        </th>
-                        <th scope="col" class="sortable-header" (click)="onSort('division.orientacion')"
-                            [ngClass]="{'active': isSortActive('division.orientacion')}"
-                            [attr.data-direction]="isSortActive('division.orientacion') ? sortDirection : null">
-                            División <i [ngClass]="getSortIcon('division.orientacion')"></i>
-                        </th>
-                        <th scope="col" class="sortable-header" (click)="onSort('fechaInicio')"
-                            [ngClass]="{'active': isSortActive('fechaInicio')}"
-                            [attr.data-direction]="isSortActive('fechaInicio') ? sortDirection : null">
-                            Vigencia Desde <i [ngClass]="getSortIcon('fechaInicio')"></i>
-                        </th>
-                        <th scope="col" class="sortable-header" (click)="onSort('fechaFin')"
-                            [ngClass]="{'active': isSortActive('fechaFin')}"
-                            [attr.data-direction]="isSortActive('fechaFin') ? sortDirection : null">
-                            Vigencia Hasta <i [ngClass]="getSortIcon('fechaFin')"></i>
-                        </th>
-                        <th scope="col">Horarios</th>
-                        <th scope="col" class="text-end">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let cargo of resultsPage.content; index as i">
-                        <td>{{ (resultsPage.number * resultsPage.size) + i + 1 }}</td>
-                        <td>{{ cargo.nombre }}</td>
-                        <td>{{ cargo.cargaHoraria }} hs</td>
-                        <td>
-                            <span class="badge fs-6 px-3 py-2" [ngClass]="{
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col"></th>
+                            <th scope="col" class="sortable-header" (click)="onSort('nombre')"
+                                [ngClass]="{'active': isSortActive('nombre')}"
+                                [attr.data-direction]="isSortActive('nombre') ? sortDirection : null">
+                                Nombre <i [ngClass]="getSortIcon('nombre')"></i>
+                            </th>
+                            <th scope="col" class="sortable-header" (click)="onSort('cargaHoraria')"
+                                [ngClass]="{'active': isSortActive('cargaHoraria')}"
+                                [attr.data-direction]="isSortActive('cargaHoraria') ? sortDirection : null">
+                                Carga Horaria <i [ngClass]="getSortIcon('cargaHoraria')"></i>
+                            </th>
+                            <th scope="col" class="sortable-header" (click)="onSort('tipoDesignacion')"
+                                [ngClass]="{'active': isSortActive('tipoDesignacion')}"
+                                [attr.data-direction]="isSortActive('tipoDesignacion') ? sortDirection : null">
+                                Tipo Designación <i [ngClass]="getSortIcon('tipoDesignacion')"></i>
+                            </th>
+                            <th scope="col" class="sortable-header" (click)="onSort('division.orientacion')"
+                                [ngClass]="{'active': isSortActive('division.orientacion')}"
+                                [attr.data-direction]="isSortActive('division.orientacion') ? sortDirection : null">
+                                División <i [ngClass]="getSortIcon('division.orientacion')"></i>
+                            </th>
+                            <th scope="col" class="sortable-header" (click)="onSort('fechaInicio')"
+                                [ngClass]="{'active': isSortActive('fechaInicio')}"
+                                [attr.data-direction]="isSortActive('fechaInicio') ? sortDirection : null">
+                                Vigencia Desde <i [ngClass]="getSortIcon('fechaInicio')"></i>
+                            </th>
+                            <th scope="col" class="sortable-header" (click)="onSort('fechaFin')"
+                                [ngClass]="{'active': isSortActive('fechaFin')}"
+                                [attr.data-direction]="isSortActive('fechaFin') ? sortDirection : null">
+                                Vigencia Hasta <i [ngClass]="getSortIcon('fechaFin')"></i>
+                            </th>
+                            <th scope="col">Horarios</th>
+                            <th scope="col" class="text-end">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let cargo of resultsPage.content; index as i">
+                            <td>{{ (resultsPage.number * resultsPage.size) + i + 1 }}</td>
+                            <td>{{ cargo.nombre }}</td>
+                            <td>{{ cargo.cargaHoraria }} hs</td>
+                            <td>
+                                <span class="badge fs-6 px-3 py-2" [ngClass]="{
                                     'bg-primary text-white': cargo.tipoDesignacion === tipoDesignacionEnum.CARGO,
                                     'bg-success text-white': cargo.tipoDesignacion === tipoDesignacionEnum.ESPACIO_CURRICULAR
                                   }">
-                                {{ cargo.tipoDesignacion | tipoDesignacionFormat }}
-                            </span>
-                        </td>
-                        <td>
-                            {{ cargo.division ? cargo.division.anio + '° ' + cargo.division.numDivision + '° ' +
-                            cargo.division.orientacion + ' - ' + cargo.division.turno : '' }}
-                        </td>
-                        <td>{{ cargo.fechaInicio | fechaFormat }}</td>
-                        <td>{{ cargo.fechaFin ? (cargo.fechaFin | fechaFormat) : '' }}</td>
-                        <td>
-                            <button class="btn-popup" [ngClass]="{'btn-popup-empty': getHorarioCount(cargo) === 0}"
-                                (click)="openHorariosPopup(cargo)" title="Mostrar horarios">
-                                <i class="fa fa-clock-o"></i> {{ getHorarioCount(cargo) }}
-                            </button>
-                        </td>
-                        <td class="text-end">
-                            <a routerLink="/cargos/{{ cargo.id }}" class="btn btn-sm btn-outline-primary me-1"
-                                title="Editar">
-                                <i class="fa fa-pencil"></i>
-                            </a>
-                            <a (click)="remove(cargo.id)" [routerLink]="" class="btn btn-sm btn-outline-danger"
-                                title="Eliminar">
-                                <i class="fa fa-trash"></i>
-                            </a>
-                        </td>
-                    </tr>
-                    <tr *ngIf="!resultsPage.content || resultsPage.content.length === 0">
-                        <td colspan="9" class="empty-state-cell">
-                            <i class="fa fa-info-circle me-2"></i>No hay cargos registrados
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                                    {{ cargo.tipoDesignacion | tipoDesignacionFormat }}
+                                </span>
+                            </td>
+                            <td>
+                                {{ cargo.division ? cargo.division.anio + '° ' + cargo.division.numDivision + '° ' +
+                                cargo.division.orientacion + ' - ' + cargo.division.turno : '' }}
+                            </td>
+                            <td>{{ cargo.fechaInicio | fechaFormat }}</td>
+                            <td>{{ cargo.fechaFin ? (cargo.fechaFin | fechaFormat) : '' }}</td>
+                            <td>
+                                <button class="btn-popup" [ngClass]="{'btn-popup-empty': getHorarioCount(cargo) === 0}"
+                                    (click)="openHorariosPopup(cargo, $event)" title="Mostrar horarios">
+                                    <i class="fa fa-clock-o"></i> {{ getHorarioCount(cargo) }}
+                                </button>
+                            </td>
+                            <td class="text-end">
+                                <a routerLink="/cargos/{{ cargo.id }}" class="btn btn-sm btn-outline-primary me-1"
+                                    title="Editar">
+                                    <i class="fa fa-pencil"></i>
+                                </a>
+                                <a (click)="remove(cargo.id, $event)" [routerLink]=""
+                                    class="btn btn-sm btn-outline-danger" title="Eliminar">
+                                    <i class="fa fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        <tr *ngIf="!resultsPage.content || resultsPage.content.length === 0">
+                            <td colspan="9" class="empty-state-cell">
+                                <i class="fa fa-info-circle me-2"></i>No hay cargos registrados
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
 
-    <div class="card-footer bg-light" *ngIf="resultsPage.numberOfElements > 0">
-        <app-pagination [totalPages]="resultsPage.totalPages" [currentPage]="currentPage"
-            (pageChangeRequested)="onPageChangeRequested($event)" [number]="resultsPage.number">
-        </app-pagination>
+        <div class="card-footer bg-light" *ngIf="resultsPage.numberOfElements > 0">
+            <app-pagination [totalPages]="resultsPage.totalPages" [currentPage]="currentPage"
+                (pageChangeRequested)="onPageChangeRequested($event)" [number]="resultsPage.number">
+            </app-pagination>
+        </div>
     </div>
 </div>
 

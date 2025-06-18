@@ -1,6 +1,6 @@
 package unpsjb.labprog.backend.business.repository;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -32,12 +32,12 @@ public interface DesignacionRepository extends JpaRepository<Designacion, Intege
             + "AND ("
             + "  (d.fechaInicio <= COALESCE(:fechaFin, d.fechaInicio) "
             + "   AND COALESCE(d.fechaFin, :fechaFin) >= :fechaInicio)"
-            + "  OR (d.fechaFin IS NULL AND CAST(:fechaFin AS java.time.LocalDateTime) IS NULL)"
+            + "  OR (d.fechaFin IS NULL AND CAST(:fechaFin AS java.time.LocalDate) IS NULL)"
             + ")")
     List<Designacion> findDesignacionesSuperpuestas(
             @Param("cargo") Integer cargoId,
-            @Param("fechaInicio") LocalDateTime fechaInicio,
-            @Param("fechaFin") LocalDateTime fechaFin,
+            @Param("fechaInicio") LocalDate fechaInicio,
+            @Param("fechaFin") LocalDate fechaFin,
             @Param("designacionId") Integer designacionId);
 
     /**
@@ -61,8 +61,8 @@ public interface DesignacionRepository extends JpaRepository<Designacion, Intege
             + "AND (d.fechaFin IS NULL OR d.fechaFin >= :fechaFin)")
     List<Designacion> findDesignacionesActivasPorPersonaYPeriodo(
             @Param("personaDni") Long personaDni,
-            @Param("fechaInicio") LocalDateTime fechaInicio,
-            @Param("fechaFin") LocalDateTime fechaFin);
+            @Param("fechaInicio") LocalDate fechaInicio,
+            @Param("fechaFin") LocalDate fechaFin);
 
     /**
      * Verifica si una persona tiene al menos una designación (cargo) en la
@@ -82,11 +82,11 @@ public interface DesignacionRepository extends JpaRepository<Designacion, Intege
     @Query(value = "SELECT d FROM Designacion d WHERE d.cargo.id = :cargo "
             + "AND (:designacionId IS NULL OR d.id != :designacionId) "
             + "AND d.fechaInicio <= :fechaInicio "
-            + "AND (d.fechaFin IS NULL OR (CAST(:fechaFin AS java.time.LocalDateTime) IS NOT NULL AND d.fechaFin >= :fechaFin))")
+            + "AND (d.fechaFin IS NULL OR (CAST(:fechaFin AS java.time.LocalDate) IS NOT NULL AND d.fechaFin >= :fechaFin))")
     List<Designacion> findDesignacionesContenedoras(
             @Param("cargo") Integer cargoId,
-            @Param("fechaInicio") LocalDateTime fechaInicio,
-            @Param("fechaFin") LocalDateTime fechaFin,
+            @Param("fechaInicio") LocalDate fechaInicio,
+            @Param("fechaFin") LocalDate fechaFin,
             @Param("designacionId") Integer designacionId);
 
     /**
@@ -102,5 +102,5 @@ public interface DesignacionRepository extends JpaRepository<Designacion, Intege
             + "AND (d.fechaFin IS NULL OR d.fechaFin >= :fecha)")
     List<Designacion> findDesignacionActivaPorCargoYFecha(
             @Param("cargoId") Integer cargoId,
-            @Param("fecha") LocalDateTime fecha);
+            @Param("fecha") LocalDate fecha);
 }

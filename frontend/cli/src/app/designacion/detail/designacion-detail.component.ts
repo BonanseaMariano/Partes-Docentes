@@ -2,7 +2,7 @@ import { CommonModule, Location } from '@angular/common';
 import { AfterViewChecked, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { NgbCalendar, NgbDatepickerModule, NgbDateStruct, NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbCalendar, NgbDateParserFormatter, NgbDatepickerModule, NgbDateStruct, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { Observable, of } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators';
 import { CargoService } from '../../cargo/service/cargo.service';
@@ -16,6 +16,8 @@ import { TipoDesignacion } from '../../models/tipo-designacion';
 import { PersonaService } from '../../persona/service/persona.service';
 import { DniFormatPipe } from '../../pipes/dni-format.pipe';
 import { TipoDesignacionPipe } from '../../pipes/tipo-designacion.pipe';
+import { ArgentinaDateParserFormatter } from '../../utils/argentina-date-formatter';
+import { DateUtils } from '../../utils/date-utils';
 import { DesignacionService } from '../service/designacion.service';
 
 @Component({
@@ -29,6 +31,9 @@ import { DesignacionService } from '../service/designacion.service';
         NgbDatepickerModule,
         TipoDesignacionPipe,
         DniFormatPipe
+    ],
+    providers: [
+        { provide: NgbDateParserFormatter, useClass: ArgentinaDateParserFormatter }
     ],
     templateUrl: './designacion-detail.component.html',
     styles: `
@@ -116,23 +121,13 @@ export class DesignacionDetailComponent implements OnInit, AfterViewChecked {
     }
 
     save(): void {
-        // Convertir las fechas de NgbDateStruct a objetos Date para el backend
+        // Convertir las fechas de NgbDateStruct a strings en formato YYYY-MM-DD para el backend
         if (this.fechaInicioDate) {
-            const fechaInicio = new Date(
-                this.fechaInicioDate.year,
-                this.fechaInicioDate.month - 1,
-                this.fechaInicioDate.day
-            );
-            this.designacion.fechaInicio = fechaInicio;
+            this.designacion.fechaInicio = DateUtils.ngbDateToString(this.fechaInicioDate) as any;
         }
 
         if (this.fechaFinDate) {
-            const fechaFin = new Date(
-                this.fechaFinDate.year,
-                this.fechaFinDate.month - 1,
-                this.fechaFinDate.day
-            );
-            this.designacion.fechaFin = fechaFin;
+            this.designacion.fechaFin = DateUtils.ngbDateToString(this.fechaFinDate) as any;
         } else {
             // Si no hay fecha fin, establecer a undefined (en lugar de null)
             this.designacion.fechaFin = undefined;
@@ -188,21 +183,11 @@ export class DesignacionDetailComponent implements OnInit, AfterViewChecked {
 
                     // Convertir fechas de la designación a objetos NgbDateStruct
                     if (this.designacion.fechaInicio) {
-                        const fechaInicio = new Date(this.designacion.fechaInicio);
-                        this.fechaInicioDate = {
-                            year: fechaInicio.getFullYear(),
-                            month: fechaInicio.getMonth() + 1,
-                            day: fechaInicio.getDate()
-                        };
+                        this.fechaInicioDate = DateUtils.dateToNgbDate(this.designacion.fechaInicio);
                     }
 
                     if (this.designacion.fechaFin) {
-                        const fechaFin = new Date(this.designacion.fechaFin);
-                        this.fechaFinDate = {
-                            year: fechaFin.getFullYear(),
-                            month: fechaFin.getMonth() + 1,
-                            day: fechaFin.getDate()
-                        };
+                        this.fechaFinDate = DateUtils.dateToNgbDate(this.designacion.fechaFin);
                     }
 
                     // Verificar el estado inicial del formulario

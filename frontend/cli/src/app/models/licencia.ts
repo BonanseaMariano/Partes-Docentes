@@ -11,14 +11,14 @@ export interface Licencia {
     id?: number;
 
     /**
-     * Fecha y hora de la solicitud de la licencia
+     * Fecha de inicio de la solicitud de la licencia (formato: YYYY-MM-DD)
      */
-    pedidoDesde: Date;
+    pedidoDesde: Date | string;
 
     /**
-     * Fecha y hora de la finalización de la licencia
+     * Fecha de finalización de la licencia (formato: YYYY-MM-DD)
      */
-    pedidoHasta: Date;
+    pedidoHasta: Date | string;
 
     /**
      * Si la licencia cuenta con certificado médico

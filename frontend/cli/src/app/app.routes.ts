@@ -30,5 +30,6 @@ export const routes: Routes = [
     { path: "licencias/:id", component: LicenciaDetailComponent },
     { path: "personas/dni/:dni/reporte/:anio", component: ReporteComponent },
     { path: "personas/reporte-concepto/:anio", component: ReporteConceptoComponent },
+    { path: "cargos/horarios/:turno/:anio/:fecha", component: HorarioComponent },
     { path: "cargos/horarios/:turno/:fecha", component: HorarioComponent },
 ];

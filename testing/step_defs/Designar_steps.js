@@ -57,10 +57,10 @@ Given('si es espacio curricular asignada a la división {string} {string} {strin
 
 // Paso: Y se designa por el período "<fechaDesdeDesignacion>" "<fechaHastaDesignacion>"
 Given('se designa por el período {string} {string}', function (fechaDesdeDesignacion, fechaHastaDesignacion) {
-    // Cargamos las fechas
-    this.currentDesignacion.fechaInicio = fechaDesdeDesignacion ? fechaDesdeDesignacion + "T03:00:00" : null;
+    // Cargamos las fechas - ahora solo fecha sin hora
+    this.currentDesignacion.fechaInicio = fechaDesdeDesignacion ? fechaDesdeDesignacion : null;
     this.currentDesignacion.fechaFin = fechaHastaDesignacion && fechaHastaDesignacion !== '' ?
-        fechaHastaDesignacion + "T03:00:00" : null;
+        fechaHastaDesignacion : null;
 
 });
 

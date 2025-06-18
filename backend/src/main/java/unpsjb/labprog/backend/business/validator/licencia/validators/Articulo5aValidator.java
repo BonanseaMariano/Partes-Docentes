@@ -1,6 +1,6 @@
 package unpsjb.labprog.backend.business.validator.licencia.validators;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
 import unpsjb.labprog.backend.business.validator.base.Validator;
@@ -48,11 +48,11 @@ public class Articulo5aValidator implements Validator<Licencia> {
         }
 
         // 2. Verificar límite de días por año
-        LocalDateTime inicio = licencia.getPedidoDesde();
-        LocalDateTime fin = licencia.getPedidoHasta();
+        LocalDate inicio = licencia.getPedidoDesde();
+        LocalDate fin = licencia.getPedidoHasta();
 
         // Calcular días solicitados en esta licencia
-        long diasSolicitados = ChronoUnit.DAYS.between(inicio.toLocalDate(), fin.toLocalDate()) + 1;
+        long diasSolicitados = ChronoUnit.DAYS.between(inicio, fin) + 1;
 
         // Calcular días ya utilizados en el año usando la clase utilitaria
         long diasYaUtilizados = DiasCalculadorUtil.calcularDiasAnio(
