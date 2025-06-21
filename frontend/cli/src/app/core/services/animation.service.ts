@@ -1,29 +1,87 @@
 import { Injectable, ElementRef } from '@angular/core';
 import { gsap } from 'gsap';
 
+/**
+ * Configuración base para animaciones con GSAP.
+ * 
+ * @interface AnimationConfig
+ * @author Mariano Bonansea
+ * @version 1.0
+ */
 export interface AnimationConfig {
+    /** Duración de la animación en segundos */
     duration?: number;
+    /** Retardo antes de iniciar la animación en segundos */
     delay?: number;
+    /** Función de easing para la animación */
     ease?: string;
+    /** Configuración de escalonamiento para múltiples elementos */
     stagger?: number | object;
+    /** Callback ejecutado al completar la animación */
     onComplete?: () => void;
 }
 
+/**
+ * Configuración extendida para animaciones de elementos específicos.
+ * 
+ * @interface ElementAnimationConfig
+ * @extends AnimationConfig
+ * @author Mariano Bonansea
+ * @version 1.0
+ */
 export interface ElementAnimationConfig extends AnimationConfig {
+    /** Selector CSS del elemento a animar */
     selector: string;
+    /** Propiedades iniciales de la animación */
     from?: gsap.TweenVars;
+    /** Propiedades finales de la animación */
     to?: gsap.TweenVars;
 }
 
+/**
+ * Servicio central para gestión de animaciones con GSAP en el sistema.
+ * 
+ * Proporciona una interfaz unificada para crear y gestionar animaciones complejas
+ * utilizando la biblioteca GSAP (GreenSock Animation Platform). Centraliza toda
+ * la lógica de animaciones del frontend, ofreciendo métodos para animaciones
+ * básicas, avanzadas, timeline y efectos especiales para mejorar la experiencia
+ * de usuario en la aplicación de gestión de partes docente.
+ * 
+ * @author Mariano Bonansea
+ * @version 1.0
+ */
 @Injectable({
     providedIn: 'root'
 })
 export class AnimationService {
 
+    /**
+     * Constructor del servicio AnimationService.
+     * 
+     * Inicializa el servicio de animaciones sin dependencias externas.
+     */
     constructor() { }
 
     /**
-     * Anima elementos con configuración desde/hacia
+     * Anima elementos con transición desde un estado inicial hacia un estado final.
+     * 
+     * Crea una animación GSAP que define tanto el estado inicial como el final
+     * del elemento, proporcionando control completo sobre la transición.
+     * 
+     * @param element - Elemento a animar (selector CSS, Element o ElementRef)
+     * @param from - Propiedades iniciales de la animación
+     * @param to - Propiedades finales de la animación
+     * @param config - Configuración opcional de la animación
+     * @returns Instancia del tween GSAP para control adicional
+     * @example
+     * ```typescript
+     * this.animationService.animateFromTo(
+     *   '.card',
+     *   { opacity: 0, y: 50 },
+     *   { opacity: 1, y: 0 },
+     *   { duration: 0.8, ease: 'power2.out' }
+     * );
+     * ```
      */
     animateFromTo(
         element: string | Element | ElementRef,
@@ -47,7 +105,23 @@ export class AnimationService {
     }
 
     /**
-     * Anima elementos hacia un estado específico
+     * Anima elementos hacia un estado específico desde su estado actual.
+     * 
+     * Crea una animación que transiciona el elemento desde su estado actual
+     * hacia las propiedades definidas en el parámetro 'to'.
+     * 
+     * @param element - Elemento a animar (selector CSS, Element o ElementRef)
+     * @param to - Propiedades finales de la animación
+     * @param config - Configuración opcional de la animación
+     * @returns Instancia del tween GSAP para control adicional
+     * @example
+     * ```typescript
+     * this.animationService.animateTo(
+     *   '#sidebar',
+     *   { x: -250, opacity: 0.5 },
+     *   { duration: 0.6, ease: 'power1.inOut' }
+     * );
+     * ```
      */
     animateTo(
         element: string | Element | ElementRef,
@@ -70,7 +144,23 @@ export class AnimationService {
     }
 
     /**
-     * Anima elementos desde un estado específico
+     * Anima elementos desde un estado específico hacia su estado actual.
+     * 
+     * Establece temporalmente las propiedades del elemento según 'from'
+     * y luego anima hacia el estado actual del elemento.
+     * 
+     * @param element - Elemento a animar (selector CSS, Element o ElementRef)
+     * @param from - Propiedades iniciales de la animación
+     * @param config - Configuración opcional de la animación
+     * @returns Instancia del tween GSAP para control adicional
+     * @example
+     * ```typescript
+     * this.animationService.animateFrom(
+     *   '.notification',
+     *   { scale: 0, rotation: 180 },
+     *   { duration: 0.4, ease: 'back.out(1.7)' }
+     * );
+     * ```
      */
     animateFrom(
         element: string | Element | ElementRef,

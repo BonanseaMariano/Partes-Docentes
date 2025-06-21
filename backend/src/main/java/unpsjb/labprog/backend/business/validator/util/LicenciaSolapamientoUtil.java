@@ -33,7 +33,6 @@ import unpsjb.labprog.backend.model.Licencia;
  *
  * @author Mariano Bonansea
  * @version 1.0
- * @since 1.0
  */
 @Component
 public class LicenciaSolapamientoUtil {

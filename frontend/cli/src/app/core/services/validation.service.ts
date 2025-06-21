@@ -6,18 +6,49 @@ import { ModalService } from '../../modal/modal.service';
 import { Router } from '@angular/router';
 import { DivisionService } from '../../division/service/division.service';
 
+/**
+ * Interfaz para resultado de validación del sistema.
+ * 
+ * Define la estructura estándar para los resultados de validaciones,
+ * incluyendo estado, mensajes de error y opciones de redirección.
+ */
 export interface ValidationResult {
+    /** Indica si la validación fue exitosa */
     isValid: boolean;
+    /** Mensaje de error principal */
     errorMessage?: string;
+    /** Título del error para modales */
     errorTitle?: string;
+    /** Descripción detallada del error */
     errorDescription?: string;
+    /** URL de redirección en caso de error */
     redirectTo?: string;
 }
 
+/**
+ * Servicio para validaciones de integridad y prerrequisitos del sistema.
+ * 
+ * Proporciona validaciones de reglas de negocio que deben cumplirse antes
+ * de realizar ciertas operaciones, como verificar la existencia de entidades
+ * dependientes antes de crear nuevos registros. Incluye manejo automático
+ * de feedback al usuario y redirecciones inteligentes.
+ * 
+ * @author Mariano Bonansea
+ * @version 1.0
+ */
 @Injectable({
     providedIn: 'root'
 })
 export class ValidationService {
+    /**
+     * Constructor del servicio.
+     * 
+     * @param cargoService Servicio para gestión de cargos
+     * @param personaService Servicio para gestión de personas
+     * @param divisionService Servicio para gestión de divisiones
+     * @param modalService Servicio para mostrar modales de usuario
+     * @param router Router de Angular para navegación
+     */
     constructor(
         private cargoService: CargoService,
         private personaService: PersonaService,

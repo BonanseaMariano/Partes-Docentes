@@ -24,7 +24,6 @@ package unpsjb.labprog.backend.exception;
  *
  * @author Mariano Bonansea
  * @version 1.0
- * @since 1.0
  */
 public class NotModifiableException extends Exception {
 

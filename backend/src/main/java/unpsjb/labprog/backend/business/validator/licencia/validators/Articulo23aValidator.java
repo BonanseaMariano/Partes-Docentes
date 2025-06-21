@@ -29,7 +29,6 @@ import unpsjb.labprog.backend.model.Licencia;
  *
  * @author Mariano Bonansea
  * @version 1.0
- * @since 1.0
  */
 public class Articulo23aValidator implements Validator<Licencia> {
 

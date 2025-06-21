@@ -1,3 +1,16 @@
+/**
+ * @fileoverview Componente principal para la generación y visualización de reportes académicos.
+ * Proporciona funcionalidades avanzadas de análisis y visualización de datos del personal docente.
+ * 
+ * @description Este componente maneja la funcionalidad central para generar reportes personalizados
+ * de docentes, incluyendo información de designaciones, licencias, estadísticas y análisis visual
+ * mediante gráficos interactivos. Utiliza ApexCharts para la visualización de datos y proporciona
+ * filtros por año académico y docente específico.
+ * 
+ * @author Mariano Bonansea
+ * @version 1.0
+ */
+
 import { CommonModule } from '@angular/common';
 import { HttpStatusCode } from '@angular/common/http';
 import { Component, OnInit, ViewChild, AfterViewInit, ElementRef } from '@angular/core';
@@ -16,8 +29,31 @@ import {
     ApexChart, ApexDataLabels, ApexFill, ApexLegend, ApexPlotOptions, ApexResponsive, ApexStroke, ApexTitleSubtitle, ApexTooltip, ApexXAxis, ApexYAxis, ChartComponent, NgApexchartsModule
 } from "ng-apexcharts";
 
+/**
+ * Tipo de configuración para gráficos ApexCharts utilizados en el componente.
+ * 
+ * Define la estructura de opciones disponibles para la configuración de gráficos
+ * de barras, torta y otros tipos soportados por ApexCharts. Permite flexibilidad
+ * en la visualización de datos estadísticos del sistema académico.
+ * 
+ * @typedef {Object} ChartOptions
+ * @property {ApexAxisChartSeries | number[]} series - Datos de las series del gráfico
+ * @property {ApexChart} chart - Configuración general del gráfico
+ * @property {ApexXAxis} xaxis - Configuración del eje X
+ * @property {ApexYAxis} yaxis - Configuración del eje Y
+ * @property {ApexStroke} stroke - Configuración de bordes y líneas
+ * @property {ApexDataLabels} dataLabels - Configuración de etiquetas de datos
+ * @property {ApexPlotOptions} plotOptions - Opciones específicas del tipo de gráfico
+ * @property {ApexFill} fill - Configuración de relleno
+ * @property {ApexTooltip} tooltip - Configuración de tooltips
+ * @property {ApexLegend} legend - Configuración de la leyenda
+ * @property {string[]} colors - Paleta de colores del gráfico
+ * @property {ApexTitleSubtitle} title - Configuración del título
+ * @property {string[]} [labels] - Etiquetas opcionales para gráficos de torta
+ * @property {ApexResponsive[]} [responsive] - Configuración responsiva opcional
+ */
 export type ChartOptions = {
-    series: ApexAxisChartSeries | number[]; // Permite tanto series de barras como de torta
+    series: ApexAxisChartSeries | number[];
     chart: ApexChart;
     xaxis: ApexXAxis;
     yaxis: ApexYAxis;
@@ -33,6 +69,27 @@ export type ChartOptions = {
     responsive?: ApexResponsive[];
 };
 
+/**
+ * Componente principal para la generación y visualización de reportes académicos.
+ * 
+ * Este componente proporciona una interfaz completa para generar reportes detallados
+ * del personal docente, incluyendo análisis de designaciones, licencias, estadísticas
+ * anuales y visualizaciones gráficas interactivas. Utiliza ApexCharts para crear
+ * gráficos dinámicos y filtros avanzados por año académico y docente específico.
+ * 
+ * Características principales:
+ * - Generación de reportes personalizados por docente
+ * - Filtrado por año académico
+ * - Visualizaciones gráficas interactivas
+ * - Análisis de designaciones y licencias
+ * - Estadísticas de actividad académica
+ * - Exportación y visualización de datos
+ * - Integración con servicios de animación
+ * - Navegación por URL con parámetros
+ * 
+ * @class ReporteComponent
+ * @implements {OnInit, AfterViewInit}
+ */
 @Component({
     selector: 'app-reporte',
     standalone: true,
@@ -41,12 +98,39 @@ export type ChartOptions = {
     styleUrl: './reporte.component.css'
 })
 export class ReporteComponent implements OnInit, AfterViewInit {
+    /**
+     * Datos del reporte académico obtenidos del backend.
+     * Contiene información completa del docente incluyendo designaciones, licencias y estadísticas.
+     * @type {Reporte | null}
+     */
     reporte: Reporte | null = null;
+
+    /**
+     * DNI del docente para el cual generar el reporte.
+     * Se utiliza como filtro principal para la consulta de datos.
+     * @type {number}
+     */
     dni: number = 0;
+
+    /**
+     * Año académico seleccionado para el reporte.
+     * Por defecto se establece en el año actual.
+     * @type {number}
+     */
     anioSeleccionado: number = new Date().getFullYear();
+
+    /**
+     * Indicador del estado de carga de datos.
+     * Se utiliza para mostrar spinners y deshabilitar controles durante las consultas.
+     * @type {boolean}
+     */
     isLoading: boolean = false;
 
-    // Propiedades para el selector de años dinámico
+    /**
+     * Lista de años académicos disponibles obtenidos dinámicamente.
+     * Se poblará con los años que tienen datos en el sistema.
+     * @type {number[]}
+     */
     aniosDisponibles: number[] = [];
     anioMinimo: number = 2020;
     anioMaximo: number = new Date().getFullYear();

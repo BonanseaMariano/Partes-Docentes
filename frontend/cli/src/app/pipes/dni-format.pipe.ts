@@ -1,10 +1,38 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
+/**
+ * Pipe para formateo estándar de números de DNI argentinos.
+ * 
+ * Transforma números de DNI aplicando el formato estándar argentino
+ * con puntos separadores (XX.XXX.XXX). Maneja diferentes longitudes
+ * de DNI y limpia caracteres no numéricos automáticamente.
+ * 
+ * @author Mariano Bonansea
+ * @version 1.0
+ */
 @Pipe({
     name: 'dniFormat',
     standalone: true
 })
 export class DniFormatPipe implements PipeTransform {
+
+    /**
+     * Transforma un valor de DNI al formato estándar argentino.
+     * 
+     * Aplica formato con puntos separadores según la longitud del DNI.
+     * Limpia automáticamente caracteres no numéricos y maneja valores
+     * nulos o indefinidos de manera segura.
+     * 
+     * @param value - Número de DNI a formatear (number, string, null o undefined)
+     * @returns String con el DNI formateado o cadena vacía si el valor es inválido
+     * @example
+     * ```typescript
+     * // En template: {{ persona.dni | dniFormat }}
+     * // 12345678 → "12.345.678"
+     * // "98765432" → "98.765.432"
+     * // null → ""
+     * ```
+     */
     transform(value: number | string | null | undefined): string {
         if (value === null || value === undefined) return '';
 

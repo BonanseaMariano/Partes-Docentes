@@ -2,10 +2,25 @@ import { Injectable } from "@angular/core";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { ModalComponent } from "./modal.component";
 
+/**
+ * Servicio para gestión de modales de interfaz de usuario.
+ * 
+ * Proporciona métodos convenientes para mostrar diferentes tipos de diálogos modales
+ * (confirmación, error, éxito) con manejo robusto de promesas y prevención de errores
+ * no controlados en la consola del navegador.
+ * 
+ * @author Mariano Bonansea
+ * @version 1.0
+ */
 @Injectable({
   providedIn: "root",
 })
 export class ModalService {
+  /**
+   * Constructor del servicio.
+   * 
+   * @param modalService Servicio de NgBootstrap para gestión de modales
+   */
   constructor(private modalService: NgbModal) { }
 
   /**

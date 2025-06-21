@@ -7,22 +7,58 @@ import { DiaSemana, DiaSemanaLabels, Horario } from '../../models/horario';
 import { HorarioDTO } from '../../models/horario-dto';
 import { Turno } from '../../models/turno';
 
+/**
+ * Servicio para gestión de cargos y horarios del sistema.
+ * 
+ * Proporciona operaciones CRUD completas para cargos, gestión avanzada de horarios,
+ * y funcionalidades especializadas para consulta de disponibilidad académica.
+ * Este servicio centraliza toda la lógica de comunicación con el backend para
+ * la gestión de cargos docentes y espacios curriculares.
+ * 
+ * @author Mariano Bonansea
+ * @version 1.0
+ */
 @Injectable({
     providedIn: 'root'
 })
 export class CargoService {
     private cargosUrl = "/rest/cargos";
 
+    /**
+     * Constructor del servicio.
+     * 
+     * @param http Cliente HTTP de Angular para realizar peticiones al backend
+     */
     constructor(private http: HttpClient) { }
 
+    /**
+     * Obtiene todos los cargos del sistema.
+     * 
+     * @returns Observable con el paquete de datos conteniendo la lista completa de cargos
+     */
     all(): Observable<DataPackage> {
         return this.http.get<DataPackage>(encodeURI(this.cargosUrl));
     }
 
+    /**
+     * Obtiene un cargo específico por su ID.
+     * 
+     * @param id Identificador único del cargo
+     * @returns Observable con el paquete de datos conteniendo el cargo solicitado
+     */
     get(id: number): Observable<DataPackage> {
         return this.http.get<DataPackage>(encodeURI(`${this.cargosUrl}/${id}`));
     }
 
+    /**
+     * Guarda un cargo en el sistema (creación o actualización).
+     * 
+     * Garantiza que el cargo tenga un array de horarios válido antes del envío.
+     * 
+     * @param cargo Objeto cargo a guardar
+     * @param isNew Indica si es una creación (true) o actualización (false)
+     * @returns Observable con el resultado de la operación
+     */
     save(cargo: Cargo, isNew: boolean = false): Observable<DataPackage> {
         // Asegurarnos que el cargo tiene un array de horarios antes de enviarlo al backend
         if (!cargo.horarios) {
@@ -34,16 +70,37 @@ export class CargoService {
             : this.http.put<DataPackage>(encodeURI(this.cargosUrl), cargo);
     }
 
+    /**
+     * Elimina un cargo del sistema.
+     * 
+     * @param id Identificador único del cargo a eliminar
+     * @returns Observable con el resultado de la operación de eliminación
+     */
     remove(id: number): Observable<DataPackage> {
         return this.http.delete<DataPackage>(encodeURI(`${this.cargosUrl}/${id}`));
     }
 
+    /**
+     * Obtiene cargos paginados con ordenamiento personalizable.
+     * 
+     * @param page Número de página (base 1)
+     * @param size Cantidad de elementos por página
+     * @param sortField Campo por el cual ordenar (por defecto 'id')
+     * @param sortDirection Dirección del ordenamiento ('asc' o 'desc')
+     * @returns Observable con la página de cargos solicitada
+     */
     byPage(page: number, size: number, sortField: string = 'id', sortDirection: string = 'desc'): Observable<DataPackage> {
         return this.http.get<DataPackage>(
             encodeURI(`${this.cargosUrl}/page?page=${page - 1}&size=${size}&sortField=${sortField}&sortDirection=${sortDirection}`)
         );
     }
 
+    /**
+     * Busca cargos que coincidan con el término de búsqueda.
+     * 
+     * @param searchTerm Término de búsqueda para filtrar cargos
+     * @returns Observable con los cargos que coinciden con la búsqueda
+     */
     search(searchTerm: string): Observable<DataPackage> {
         return this.http.get<DataPackage>(encodeURI(`${this.cargosUrl}/search/${searchTerm}`));
     }

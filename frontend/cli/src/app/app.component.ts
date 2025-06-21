@@ -6,6 +6,18 @@ import { ValidationService } from './core/services/validation.service';
 import { ModalService } from './modal/modal.service';
 import { NavbarAnimationService } from './navbar-animation.service';
 
+/**
+ * Componente raíz de la aplicación de gestión de partes docente.
+ * 
+ * Componente principal que contiene la estructura base de la aplicación,
+ * incluyendo el navbar de navegación, outlet para el router y manejo
+ * de eventos globales. Gestiona el estado de la navegación, efectos
+ * de scroll y animaciones iniciales para crear una experiencia de
+ * usuario cohesiva y profesional en todo el sistema.
+ * 
+ * @author Mariano Bonansea
+ * @version 1.0
+ */
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -14,13 +26,27 @@ import { NavbarAnimationService } from './navbar-animation.service';
   styleUrl: './app.component.css',
 })
 export class AppComponent implements OnInit, AfterViewInit {
+  /** Título principal de la aplicación */
   title = 'Sistema de Gestión de Novedades Docentes';
+
+  /** Estado del menú de navegación colapsable */
   isMenuCollapsed = true;
+
+  /** Indica si el navbar está en estado scrolleado */
   isNavbarScrolled = false;
 
-  // Fecha actual para el enlace del parte diario
+  /** Fecha actual para funcionalidades de parte diario */
   fechaHoy = new Date();
 
+  /**
+   * Constructor del componente AppComponent.
+   * 
+   * @param validationService - Servicio de validaciones global
+   * @param modalService - Servicio para gestión de modales
+   * @param router - Router de Angular para navegación
+   * @param elementRef - Referencia al elemento DOM del componente
+   * @param navbarAnimationService - Servicio de animaciones del navbar
+   */
   constructor(
     private validationService: ValidationService,
     private modalService: ModalService,
@@ -29,10 +55,21 @@ export class AppComponent implements OnInit, AfterViewInit {
     private navbarAnimationService: NavbarAnimationService
   ) { }
 
+  /**
+   * Inicialización del componente.
+   * 
+   * Punto de entrada para configuración inicial del componente raíz.
+   */
   ngOnInit(): void {
     // Inicialización del componente
   }
 
+  /**
+   * Post-inicialización con acceso al DOM.
+   * 
+   * Configura animaciones iniciales del navbar y efectos interactivos
+   * una vez que la vista está completamente renderizada.
+   */
   ngAfterViewInit(): void {
     // Configurar animaciones iniciales del navbar
     this.navbarAnimationService.animateInitialEntrance(this.elementRef);
@@ -47,7 +84,12 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * Detecta el scroll para aplicar efectos al navbar
+   * Detecta el scroll de ventana para aplicar efectos dinámicos al navbar.
+   * 
+   * Listener global que monitorea el scroll para cambiar la apariencia
+   * del navbar (transparencia, sombra, etc.) mejorando la UX.
+   * 
+   * @param event - Evento de scroll de la ventana
    */
   @HostListener('window:scroll', ['$event'])
   onWindowScroll(): void {
