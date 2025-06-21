@@ -14,9 +14,11 @@ import unpsjb.labprog.backend.model.Division;
 import unpsjb.labprog.backend.model.enums.Turno;
 
 /**
- * Servicio que implementa la lógica de negocio para la entidad Division
+ * Servicio para la gestión de entidades Division. Implementa la lógica de
+ * negocio para operaciones con divisiones.
  *
- * @see Division
+ * @author Mariano Bonansea
+ * @version 1.0
  */
 @Service
 public class DivisionService {
@@ -25,9 +27,9 @@ public class DivisionService {
     private DivisionRepository repository;
 
     /**
-     * Busca una división por su ID
+     * Busca una división por su ID.
      *
-     * @param id ID de la división a buscar
+     * @param id ID de la división
      * @return División encontrada o null si no existe
      */
     public Division findById(int id) {
@@ -35,7 +37,7 @@ public class DivisionService {
     }
 
     /**
-     * Busca todas las divisiones registradas
+     * Obtiene todas las divisiones registradas.
      *
      * @return Lista de todas las divisiones
      */
@@ -44,7 +46,7 @@ public class DivisionService {
     }
 
     /**
-     * Guarda una nueva división o actualiza una existente
+     * Guarda una nueva división o actualiza una existente.
      *
      * @param division División a guardar
      * @return División guardada
@@ -55,7 +57,7 @@ public class DivisionService {
     }
 
     /**
-     * Elimina una división por su ID
+     * Elimina una división por su ID.
      *
      * @param id ID de la división a eliminar
      */
@@ -65,27 +67,19 @@ public class DivisionService {
     }
 
     /**
-     * Obtiene una página de entidades División.
+     * Obtiene una página de divisiones con ordenamiento personalizado. Valida
+     * los campos de ordenamiento por seguridad y usa valores por defecto para
+     * campos inválidos.
      *
-     * @param page el índice de página basado en cero
-     * @param size el tamaño de la página a devolver
-     * @return un objeto Page que contiene las entidades División solicitadas
-     */
-    public Page<Division> findByPage(int page, int size) {
-        return repository.findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id")));
-    }
-
-    /**
-     * Obtiene una página de entidades División con ordenamiento personalizado.
-     *
-     * @param page el índice de página basado en cero
-     * @param size el tamaño de la página a devolver
-     * @param sortField el campo por el cual ordenar
-     * @param sortDirection la dirección del ordenamiento (asc o desc)
-     * @return un objeto Page que contiene las entidades División solicitadas
+     * @param page Índice de página (basado en cero)
+     * @param size Tamaño de la página
+     * @param sortField Campo por el cual ordenar (validado contra lista
+     * permitida)
+     * @param sortDirection Dirección del ordenamiento (asc o desc, por defecto
+     * desc)
+     * @return Página con las divisiones solicitadas
      */
     public Page<Division> findByPage(int page, int size, String sortField, String sortDirection) {
-        // Validar campos permitidos para ordenamiento por seguridad
         String[] allowedFields = {"id", "anio", "numDivision", "orientacion", "turno"};
         boolean isValidField = false;
         for (String field : allowedFields) {
@@ -95,12 +89,10 @@ public class DivisionService {
             }
         }
 
-        // Si el campo no es válido, usar "id" por defecto
         if (!isValidField) {
             sortField = "id";
         }
 
-        // Validar dirección de ordenamiento
         Sort.Direction direction;
         if ("asc".equalsIgnoreCase(sortDirection)) {
             direction = Sort.Direction.ASC;
@@ -112,10 +104,10 @@ public class DivisionService {
     }
 
     /**
-     * Busca divisiones por un término de búsqueda.
+     * Busca divisiones por un término de búsqueda general.
      *
-     * @param term el término de búsqueda
-     * @return una lista de divisiones que coinciden con el término de búsqueda
+     * @param term Término de búsqueda
+     * @return Lista de divisiones que coinciden con el término
      */
     public List<Division> search(String term) {
         return repository.search("%" + term.toUpperCase() + "%");
@@ -130,7 +122,7 @@ public class DivisionService {
      * @param turno Turno de la división
      * @return La división encontrada o null si no existe
      */
-    public Division findByAnioNumTruno(Integer anio, Integer numDivision, Turno turno) {
+    public Division findByAnioNumTurno(Integer anio, Integer numDivision, Turno turno) {
         return repository.findByAnioAndNumDivisionAndTurno(anio, numDivision, turno)
                 .orElse(null);
     }

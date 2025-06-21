@@ -21,7 +21,12 @@ import unpsjb.labprog.backend.model.Persona;
 import unpsjb.labprog.backend.model.enums.Estado;
 
 /**
- * Servicio que implementa la lógica de negocio para la entidad Licencia
+ * Servicio para la gestión de licencias de personal docente. Proporciona
+ * operaciones para crear, validar, consultar y administrar licencias,
+ * incluyendo la validación de reglas de negocio y gestión de estados.
+ *
+ * @author Mariano Bonansea
+ * @version 1.0
  */
 @Service
 public class LicenciaService {
@@ -36,27 +41,34 @@ public class LicenciaService {
     private DesignacionService designacionService;
 
     /**
-     * Busca todas las licencias registradas
+     * Obtiene todas las licencias registradas en el sistema.
      *
-     * @return Lista de todas las licencias
+     * @return lista de todas las licencias
      */
     public List<Licencia> findAll() {
         return repository.findAll();
     }
 
     /**
-     * Busca una licencia por su id
+     * Busca una licencia por su identificador único.
      *
-     * @param id ID de la licencia a buscar
-     * @return Licencia encontrada o null si no existe
+     * @param id identificador de la licencia
+     * @return licencia encontrada o null si no existe
      */
     public Licencia findById(int id) {
         return repository.findById(id).orElse(null);
     }
 
     /**
-     * Guarda una licencia aplicando la validación de reglas de negocio El
-     * estado de la licencia se establece según el resultado de la validación
+     * Guarda una licencia aplicando validaciones de reglas de negocio. El
+     * estado de la licencia se establece automáticamente según el resultado de
+     * la validación. También se vinculan las designaciones afectadas por el
+     * período de la licencia.
+     *
+     * @param licencia licencia a guardar
+     * @return licencia guardada con estado actualizado
+     * @throws NotModifiableException si se intenta modificar una licencia ya
+     * validada
      */
     public Licencia save(Licencia licencia) throws NotModifiableException {
         if (licencia.getEstado() != null && licencia.getEstado() == Estado.VALIDO) {
@@ -64,46 +76,37 @@ public class LicenciaService {
         }
 
         try {
-            // Validar reglas de negocio
             validator.validar(licencia);
 
-            // Si llega aquí, es válida
             licencia.setEstado(Estado.VALIDO);
 
-            // Buscar las designaciones afectadas por esta licencia
-            // (aquellas activas durante el período de la licencia)
             List<Designacion> designacionesAfectadas = designacionService.findDesignacionesActivasPorPersonaYPeriodo(
                     licencia.getPersona().getDni(),
                     licencia.getPedidoDesde(),
                     licencia.getPedidoHasta());
 
-            // Crear log de éxito
             Log logExito = new Log();
             logExito.setFechaHora(LocalDateTime.now());
             logExito.setDescripcion("Licencia validada correctamente");
             licencia.getLogs().add(logExito);
 
-            // Asignar las designaciones afectadas a la licencia
             licencia.setDesignaciones(designacionesAfectadas);
         } catch (BusinessLogicException e) {
-            // Si hay error de validación, marcarla como inválida
             licencia.setEstado(Estado.INVALIDO);
 
-            // Crear log de error
             Log logError = new Log();
             logError.setFechaHora(LocalDateTime.now());
             logError.setDescripcion(e.getMessage());
             licencia.getLogs().add(logError);
         }
 
-        // Guardar la licencia con su estado correspondiente
         return repository.save(licencia);
     }
 
     /**
-     * Elimina una licencia por su id
+     * Elimina una licencia del sistema.
      *
-     * @param id id de la licencia a eliminar
+     * @param id identificador de la licencia a eliminar
      */
     @Transactional
     public void delete(int id) {
@@ -111,27 +114,17 @@ public class LicenciaService {
     }
 
     /**
-     * Obtiene una página de entidades Licencia.
+     * Obtiene una página de licencias con paginación y ordenamiento
+     * personalizado. Valida que el campo de ordenamiento sea permitido por
+     * seguridad.
      *
-     * @param page el índice de página basado en cero
-     * @param size el tamaño de la página a devolver
-     * @return un objeto Page que contiene las entidades Licencia solicitadas
-     */
-    public Page<Licencia> findByPage(int page, int size) {
-        return repository.findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id")));
-    }
-
-    /**
-     * Obtiene una página de entidades Licencia con ordenamiento personalizado.
-     *
-     * @param page el índice de página basado en cero
-     * @param size el tamaño de la página a devolver
-     * @param sortField el campo por el cual ordenar
-     * @param sortDirection la dirección del ordenamiento (asc o desc)
-     * @return un objeto Page que contiene las entidades Licencia solicitadas
+     * @param page índice de página (basado en cero)
+     * @param size tamaño de la página
+     * @param sortField campo por el cual ordenar
+     * @param sortDirection dirección del ordenamiento (asc o desc)
+     * @return página de licencias con el ordenamiento especificado
      */
     public Page<Licencia> findByPage(int page, int size, String sortField, String sortDirection) {
-        // Validar campos permitidos para ordenamiento por seguridad
         String[] allowedFields = {"id", "persona.dni", "pedidoDesde", "pedidoHasta", "certificadoMedico",
             "articuloLicencia.articulo", "estado"};
         boolean isValidField = false;
@@ -142,12 +135,10 @@ public class LicenciaService {
             }
         }
 
-        // Si el campo no es válido, usar "id" por defecto
         if (!isValidField) {
             sortField = "id";
         }
 
-        // Validar dirección de ordenamiento
         Sort.Direction direction;
         if ("asc".equalsIgnoreCase(sortDirection)) {
             direction = Sort.Direction.ASC;
@@ -159,12 +150,12 @@ public class LicenciaService {
     }
 
     /**
-     * Busca licencias válidas para una persona en un año específico para el
-     * reporte
+     * Busca licencias válidas de una persona en un año específico. Utilizado
+     * principalmente para generar reportes.
      *
-     * @param persona La persona asociada a las licencias
-     * @param anio El año a consultar
-     * @return Lista de licencias válidas de la persona en el año especificado
+     * @param persona persona asociada a las licencias
+     * @param anio año a consultar
+     * @return lista de licencias válidas de la persona en el año especificado
      */
     public List<Licencia> findLicenciasPorPersonaYAño(Persona persona, Integer anio) {
         return repository.findLicenciasPorPersonaYAño(persona, anio);

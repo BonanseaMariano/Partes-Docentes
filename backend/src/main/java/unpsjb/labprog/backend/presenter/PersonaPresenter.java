@@ -26,23 +26,24 @@ import unpsjb.labprog.backend.model.Persona;
 import unpsjb.labprog.backend.utils.constants.AppConstants;
 
 /**
- * Controlador REST para la gestión de personas en el sistema. Proporciona
- * endpoints para crear, consultar, actualizar y eliminar registros de personas.
- * Permite buscar personas por su DNI o CUIL y manejar la paginación de
- * resultados.
+ * Controlador REST para la gestión de personas del sistema. Proporciona
+ * endpoints para operaciones CRUD sobre personas, búsquedas específicas y
+ * generación de reportes individuales e institucionales.
+ *
+ * @author Mariano Bonansea
+ * @version 1.0
  */
 @RestController
 @RequestMapping("personas")
 public class PersonaPresenter {
 
     /**
-     * Logger de la clase para registrar eventos y mensajes.
+     * Logger para registrar eventos de la clase.
      */
-    private Logger logger = Logger.getLogger(getClass().getSimpleName());
+    private static final Logger logger = Logger.getLogger(PersonaPresenter.class.getSimpleName());
 
     /**
-     * Servicio que implementa la lógica de negocio para las operaciones con
-     * personas.
+     * Servicio de lógica de negocio para personas.
      */
     @Autowired
     private PersonaService service;

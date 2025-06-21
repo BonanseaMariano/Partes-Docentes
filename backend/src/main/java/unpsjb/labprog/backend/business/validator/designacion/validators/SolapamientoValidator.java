@@ -13,18 +13,43 @@ import unpsjb.labprog.backend.model.Persona;
 import unpsjb.labprog.backend.model.enums.TipoDesignacion;
 
 /**
- * Validador para verificar solapamiento de designaciones. Implementa el patrón
- * Singleton requerido por el DesignacionValidatorFactory.
+ * Validador específico para verificar solapamiento de designaciones. Verifica
+ * que no existan designaciones superpuestas para el mismo cargo que no estén
+ * justificadas por licencias que permitan reemplazos. Implementa el patrón
+ * Singleton requerido por DesignacionValidatorFactory.
+ *
+ * <p>
+ * Reglas de validación:</p>
+ * <ul>
+ * <li>No pueden existir dos designaciones para el mismo cargo en fechas
+ * superpuestas</li>
+ * <li>Se permite solapamiento si existe licencia que justifique el
+ * reemplazo</li>
+ * <li>Las licencias deben cubrir completamente el período de solapamiento</li>
+ * </ul>
+ *
+ * @author Mariano Bonansea
+ * @version 1.0
  */
 public class SolapamientoValidator implements Validator<Designacion> {
 
-    // Singleton
+    /**
+     * Instancia única del validador (patrón Singleton)
+     */
     private static SolapamientoValidator instance = null;
 
+    /**
+     * Constructor privado para implementar el patrón Singleton.
+     */
     private SolapamientoValidator() {
         // Constructor privado para Singleton
     }
 
+    /**
+     * Obtiene la instancia única del validador.
+     *
+     * @return la instancia única del validador
+     */
     public static SolapamientoValidator getInstance() {
         if (instance == null) {
             instance = new SolapamientoValidator();
@@ -32,6 +57,14 @@ public class SolapamientoValidator implements Validator<Designacion> {
         return instance;
     }
 
+    /**
+     * Valida que no existan solapamientos de designaciones no justificados.
+     * Utiliza utilidades especializadas para verificar solapamientos y
+     * cobertura de licencias.
+     *
+     * @param nuevaDesignacion la designación a validar
+     * @throws BusinessLogicException si existe solapamiento no justificado
+     */
     @Override
     public void validate(Designacion nuevaDesignacion) throws BusinessLogicException {
         Integer designacionIdOriginal = (nuevaDesignacion.getId() > 0) ? nuevaDesignacion.getId() : null;

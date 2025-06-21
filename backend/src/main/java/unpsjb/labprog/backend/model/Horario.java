@@ -18,12 +18,16 @@ import lombok.Setter;
 import unpsjb.labprog.backend.model.enums.DiaSemana;
 
 /**
- * Clase que representa un Horario asignado a un Cargo
+ * Entidad que representa un horario asignado a un cargo específico. Define el
+ * día de la semana y hora en que se debe cumplir el cargo.
+ *
+ * @author Mariano Bonansea
+ * @version 1.0
  */
 @Entity
-@Table(name = "horarios", uniqueConstraints = @UniqueConstraint(name = "uk_horario", columnNames = { "dia",
-        "hora",
-        "cargo" }))
+@Table(name = "horarios", uniqueConstraints = @UniqueConstraint(name = "uk_horario", columnNames = {"dia",
+    "hora",
+    "cargo"}))
 @Getter
 @Setter
 @NoArgsConstructor

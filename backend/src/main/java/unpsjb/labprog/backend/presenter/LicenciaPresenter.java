@@ -31,21 +31,21 @@ import unpsjb.labprog.backend.model.enums.Estado;
 import unpsjb.labprog.backend.utils.constants.AppConstants;
 
 /**
- * Controlador REST para la gestión de licencias en el sistema educativo.
- * Proporciona endpoints para crear, consultar, actualizar y eliminar licencias.
- * Las licencias representan permisos o ausencias de personal dentro de la
- * institución educativa.
+ * Controlador REST para la gestión de licencias del sistema. Proporciona
+ * endpoints para operaciones CRUD sobre licencias, validación de reglas de
+ * negocio y generación de partes diarios.
  *
- * @see Licencia
+ * @author Mariano Bonansea
+ * @version 1.0
  */
 @RestController
 @RequestMapping("licencias")
 public class LicenciaPresenter {
 
     /**
-     * Logger de la clase para registrar eventos y mensajes.
+     * Logger para registrar eventos de la clase.
      */
-    private Logger logger = Logger.getLogger(getClass().getSimpleName());
+    private static final Logger logger = Logger.getLogger(LicenciaPresenter.class.getSimpleName());
 
     /**
      * Servicio que implementa la lógica de negocio para las operaciones con

@@ -1,7 +1,11 @@
 package unpsjb.labprog.backend.model.enums;
 
 /**
- * Enum que representa los estados posibles de una licencia
+ * Enumeración que representa los estados de validación de una licencia. Define
+ * si una licencia cumple o no con las reglas de negocio establecidas.
+ *
+ * @author Mariano Bonansea
+ * @version 1.0
  */
 public enum Estado {
     VALIDO("Válido"),
@@ -14,9 +18,9 @@ public enum Estado {
     }
 
     /**
-     * Método para obtener el valor del estado
+     * Obtiene la representación textual del estado.
      *
-     * @return valor del estado
+     * @return valor del estado para mostrar en la interfaz
      */
     public String getValor() {
         return valor;

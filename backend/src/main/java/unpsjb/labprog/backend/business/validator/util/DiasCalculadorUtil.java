@@ -10,15 +10,39 @@ import unpsjb.labprog.backend.business.repository.LicenciaRepository;
 import unpsjb.labprog.backend.model.Licencia;
 
 /**
- * Clase utilitaria para cálculos de días de licencia. Esta clase encapsula la
- * lógica de acceso al repositorio y proporciona métodos estáticos para que los
- * validadores no necesiten inyección de dependencias.
+ * Utilidad para cálculos especializados de días de licencia según diferentes
+ * artículos.
+ *
+ * <p>
+ * Esta clase proporciona métodos estáticos para calcular días de licencia
+ * utilizados en períodos específicos (mensual y anual), facilitando la
+ * validación de límites establecidos por diferentes artículos de licencia.</p>
+ *
+ * <p>
+ * Características principales:</p>
+ * <ul>
+ * <li>Encapsula la lógica de acceso al repositorio de licencias</li>
+ * <li>Proporciona métodos estáticos para evitar inyección de dependencias en
+ * validadores</li>
+ * <li>Soporta cálculos tanto mensuales como anuales</li>
+ * <li>Excluye automáticamente la licencia actual en modificaciones</li>
+ * </ul>
+ *
+ * @author Mariano Bonansea
+ * @version 1.0
+ * @since 1.0
  */
 @Component
 public class DiasCalculadorUtil {
 
     private static LicenciaRepository licenciaRepository;
 
+    /**
+     * Constructor que inicializa la referencia estática al repositorio de
+     * licencias.
+     *
+     * @param licenciaRepository el repositorio de licencias a utilizar
+     */
     public DiasCalculadorUtil(LicenciaRepository licenciaRepository) {
         DiasCalculadorUtil.licenciaRepository = licenciaRepository;
     }

@@ -7,26 +7,45 @@ import unpsjb.labprog.backend.business.validator.base.Validator;
 
 /**
  * Fábrica de validadores específica para cargos que utiliza reflexión
- * automática. Implementa el patrón Singleton y cache de instancias para
- * optimizar rendimiento.
+ * automática para cargar validadores dinámicamente. Implementa el patrón
+ * Singleton y cache de instancias para optimizar rendimiento.
  *
- * Convenciones de nomenclatura: - Para validador "fecha" busca clase:
- * unpsjb.labprog.backend.business.validator.cargo.validators.FechaValidator -
- * Para validador "tipodesignaciondivision" busca clase:
- * unpsjb.labprog.backend.business.validator.cargo.validators.TipodesignaciondivisionValidator
+ * <p>
+ * Convenciones de nomenclatura:</p>
+ * <ul>
+ * <li>Para validador "fecha" busca clase:
+ * {@code unpsjb.labprog.backend.business.validator.cargo.validators.FechaValidator}</li>
+ * <li>Para validador "tipodesignaciondivision" busca clase:
+ * {@code unpsjb.labprog.backend.business.validator.cargo.validators.TipodesignaciondivisionValidator}</li>
+ * </ul>
+ *
+ * @author Mariano Bonansea
+ * @version 1.0
  */
 public class CargoValidatorFactory {
 
-    // Cache de instancias de validadores para evitar recrearlos
+    /**
+     * Cache de instancias de validadores para evitar recrearlos
+     */
     private final Map<String, Validator<?>> validatorMap;
 
-    // Singleton
+    /**
+     * Instancia única de la fábrica (patrón Singleton)
+     */
     private static CargoValidatorFactory instance = null;
 
+    /**
+     * Constructor privado para implementar el patrón Singleton.
+     */
     private CargoValidatorFactory() {
         this.validatorMap = new HashMap<>();
     }
 
+    /**
+     * Obtiene la instancia única de la fábrica de validadores de cargo.
+     *
+     * @return la instancia única de la fábrica
+     */
     public static CargoValidatorFactory getInstance() {
         if (instance == null) {
             instance = new CargoValidatorFactory();
@@ -36,11 +55,12 @@ public class CargoValidatorFactory {
 
     /**
      * Obtiene un validador por nombre. Si no está en cache, lo carga usando
-     * reflexión.
+     * reflexión siguiendo las convenciones de nomenclatura.
      *
-     * @param validatorName Nombre del validador (ej: "fecha",
+     * @param <T> el tipo de entidad que validará el validador
+     * @param validatorName el nombre del validador (ej: "fecha",
      * "tipodesignaciondivision")
-     * @return Instancia del validador o null si no se encuentra
+     * @return la instancia del validador o null si no se encuentra
      */
     @SuppressWarnings("unchecked")
     public <T> Validator<T> getValidator(String validatorName) {
@@ -68,7 +88,10 @@ public class CargoValidatorFactory {
     }
 
     /**
-     * Capitaliza la primera letra de una cadena
+     * Capitaliza la primera letra de una cadena.
+     *
+     * @param str la cadena a capitalizar
+     * @return la cadena con la primera letra en mayúscula
      */
     private String capitalizeFirst(String str) {
         if (str == null || str.isEmpty()) {
@@ -78,7 +101,8 @@ public class CargoValidatorFactory {
     }
 
     /**
-     * Limpia el cache de validadores (útil para testing)
+     * Limpia el cache de validadores. Útil para testing y reinicios del
+     * sistema.
      */
     public void clearCache() {
         validatorMap.clear();

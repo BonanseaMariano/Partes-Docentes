@@ -11,9 +11,32 @@ import unpsjb.labprog.backend.model.Designacion;
 import unpsjb.labprog.backend.model.Licencia;
 
 /**
- * Clase utilitaria para validaciones de solapamiento de designaciones. Esta
- * clase encapsula la lógica de acceso al repositorio y proporciona métodos
- * estáticos para que los validadores no necesiten inyección de dependencias.
+ * Utilidad especializada para detección de solapamientos en designaciones y
+ * análisis de cobertura por licencias.
+ *
+ * <p>
+ * Esta clase maneja la lógica compleja de verificación de solapamientos entre
+ * designaciones para un mismo cargo, así como el análisis de cobertura continua
+ * de períodos mediante licencias. Es fundamental para mantener la integridad de
+ * las designaciones y validar su coherencia temporal.</p>
+ *
+ * <p>
+ * Funcionalidades principales:</p>
+ * <ul>
+ * <li>Detección de designaciones superpuestas para un mismo cargo</li>
+ * <li>Análisis de cobertura continua de períodos por licencias</li>
+ * <li>Verificación de continuidad temporal entre licencias</li>
+ * <li>Exclusión automática de designaciones en modificación</li>
+ * </ul>
+ *
+ * <p>
+ * Los algoritmos implementados consideran las reglas de negocio específicas
+ * para determinar cuándo las licencias proporcionan cobertura válida y
+ * continua.</p>
+ *
+ * @author Mariano Bonansea
+ * @version 1.0
+ * @since 1.0
  */
 @Component
 public class DesignacionSolapamientoUtil {
@@ -21,6 +44,13 @@ public class DesignacionSolapamientoUtil {
     private static DesignacionRepository designacionRepository;
     private static LicenciaRepository licenciaRepository;
 
+    /**
+     * Constructor que inicializa las referencias estáticas a los repositorios
+     * necesarios.
+     *
+     * @param designacionRepository el repositorio de designaciones a utilizar
+     * @param licenciaRepository el repositorio de licencias a utilizar
+     */
     public DesignacionSolapamientoUtil(DesignacionRepository designacionRepository,
             LicenciaRepository licenciaRepository) {
         DesignacionSolapamientoUtil.designacionRepository = designacionRepository;
@@ -28,15 +58,22 @@ public class DesignacionSolapamientoUtil {
     }
 
     /**
-     * Busca designaciones que se solapen con el período especificado para el
-     * mismo cargo
+     * Busca designaciones que se superpongan temporalmente para un mismo cargo.
+     *
+     * <p>
+     * Permite excluir una designación específica del análisis, útil para
+     * modificaciones donde se debe verificar solapamiento con otras
+     * designaciones pero no consigo misma.</p>
      *
      * @param cargoId ID del cargo a verificar
-     * @param fechaInicio Fecha de inicio del período a verificar
-     * @param fechaFin Fecha de fin del período a verificar
-     * @param designacionId ID de la designación a excluir (útil para
-     * actualizaciones, puede ser null para nuevas)
-     * @return Lista de designaciones que se solapan con el período especificado
+     * @param fechaInicio fecha de inicio del período a verificar
+     * @param fechaFin fecha de fin del período a verificar
+     * @param designacionId ID de la designación a excluir (null para
+     * designaciones nuevas)
+     * @return lista de designaciones que se superponen con el período
+     * especificado
+     * @throws IllegalStateException si el util no ha sido inicializado
+     * correctamente
      */
     public static List<Designacion> buscarDesignacionesSuperpuestas(Integer cargoId,
             LocalDate fechaInicio,
@@ -51,13 +88,19 @@ public class DesignacionSolapamientoUtil {
     }
 
     /**
-     * Busca licencias que se solapen con el período especificado para una
-     * persona
+     * Busca licencias que puedan proporcionar cobertura continua para un
+     * período específico.
+     *
+     * <p>
+     * Retorna las licencias ordenadas que podrían cubrir total o parcialmente
+     * el período especificado, facilitando el análisis de continuidad.</p>
      *
      * @param personaDni DNI de la persona a verificar
-     * @param fechaInicio Fecha de inicio del período a verificar
-     * @param fechaFin Fecha de fin del período a verificar
-     * @return Lista de licencias ordenadas que se solapan con el período
+     * @param fechaInicio fecha de inicio del período a verificar
+     * @param fechaFin fecha de fin del período a verificar
+     * @return lista ordenada de licencias que se superponen con el período
+     * @throws IllegalStateException si el util no ha sido inicializado
+     * correctamente
      */
     public static List<Licencia> buscarLicenciasParaCoberturaContinua(Long personaDni,
             LocalDate fechaInicio,
@@ -72,12 +115,24 @@ public class DesignacionSolapamientoUtil {
 
     /**
      * Verifica si las licencias proporcionadas cubren de forma continua el
-     * período especificado. Las licencias deben estar ordenadas por fecha de
-     * inicio.
+     * período especificado.
      *
-     * @param licencias Lista de licencias ordenadas por fecha de inicio
-     * @param fechaInicio Fecha de inicio del período a verificar
-     * @param fechaFin Fecha de fin del período a verificar
+     * <p>
+     * Implementa el algoritmo de verificación de cobertura continua,
+     * considerando:</p>
+     * <ul>
+     * <li>La primera licencia debe cubrir el inicio del período</li>
+     * <li>No debe haber gaps mayores a 1 día entre licencias consecutivas</li>
+     * <li>La cobertura debe extenderse hasta el final del período</li>
+     * </ul>
+     *
+     * <p>
+     * <strong>Precondición:</strong> Las licencias deben estar ordenadas por
+     * fecha de inicio.</p>
+     *
+     * @param licencias lista de licencias ordenadas por fecha de inicio
+     * @param fechaInicio fecha de inicio del período a verificar
+     * @param fechaFin fecha de fin del período a verificar
      * @return true si las licencias cubren completamente el período, false en
      * caso contrario
      */
@@ -115,13 +170,14 @@ public class DesignacionSolapamientoUtil {
     }
 
     /**
-     * Verifica si existen designaciones superpuestas para un cargo específico
+     * Verifica de forma eficiente si existen designaciones superpuestas para un
+     * cargo específico.
      *
      * @param cargoId ID del cargo a verificar
-     * @param fechaInicio Fecha de inicio del período a verificar
-     * @param fechaFin Fecha de fin del período a verificar
-     * @param designacionId ID de la designación a excluir (opcional, puede ser
-     * null)
+     * @param fechaInicio fecha de inicio del período a verificar
+     * @param fechaFin fecha de fin del período a verificar
+     * @param designacionId ID de la designación a excluir (null para
+     * designaciones nuevas)
      * @return true si existen designaciones superpuestas, false en caso
      * contrario
      */
@@ -135,7 +191,13 @@ public class DesignacionSolapamientoUtil {
     }
 
     /**
-     * Versión simplificada sin designacionId (para designaciones nuevas)
+     * Método simplificado para verificar solapamientos en designaciones nuevas.
+     *
+     * @param cargoId ID del cargo a verificar
+     * @param fechaInicio fecha de inicio del período a verificar
+     * @param fechaFin fecha de fin del período a verificar
+     * @return true si existen designaciones superpuestas, false en caso
+     * contrario
      */
     public static boolean existenDesignacionesSuperpuestas(Integer cargoId,
             LocalDate fechaInicio,

@@ -6,10 +6,35 @@ import java.util.List;
 import unpsjb.labprog.backend.exception.BusinessLogicException;
 
 /**
- * Cadena de validadores que ejecuta múltiples validaciones en el orden
- * especificado. Implementa el patrón Chain of Responsibility usando
- * directamente los Validators. Simplificado para eliminar la capa innecesaria
- * de ValidationCommands.
+ * Implementación del patrón Chain of Responsibility para validaciones
+ * secuenciales.
+ *
+ * <p>
+ * Esta clase permite ejecutar múltiples validadores en un orden específico,
+ * proporcionando flexibilidad en el manejo de errores y configuración dinámica
+ * de cadenas de validación.</p>
+ *
+ * <p>
+ * Características principales:</p>
+ * <ul>
+ * <li>Ejecución secuencial de validadores con control de flujo</li>
+ * <li>Opción de parar en el primer error o acumular todos los errores</li>
+ * <li>Interfaz fluida para construcción de cadenas</li>
+ * <li>Identificación de validadores para logging y debugging</li>
+ * </ul>
+ *
+ * <p>
+ * Modos de operación:</p>
+ * <ul>
+ * <li><strong>Fail-fast:</strong> Detiene la ejecución en el primer error</li>
+ * <li><strong>Acumulativo:</strong> Ejecuta todos los validadores y reporta
+ * todos los errores</li>
+ * </ul>
+ *
+ * @param <T> tipo de entidad a validar
+ * @author Mariano Bonansea
+ * @version 1.0
+ * @since 1.0
  */
 public class ValidationChain<T> {
 
@@ -17,12 +42,21 @@ public class ValidationChain<T> {
     private final List<String> validatorNames;
     private boolean stopOnFirstError;
 
+    /**
+     * Constructor por defecto que inicializa la cadena en modo fail-fast.
+     */
     public ValidationChain() {
         this.validators = new ArrayList<>();
         this.validatorNames = new ArrayList<>();
         this.stopOnFirstError = true; // Por defecto para en el primer error
     }
 
+    /**
+     * Constructor que permite especificar el comportamiento ante errores.
+     *
+     * @param stopOnFirstError true para modo fail-fast, false para modo
+     * acumulativo
+     */
     public ValidationChain(boolean stopOnFirstError) {
         this.validators = new ArrayList<>();
         this.validatorNames = new ArrayList<>();
@@ -30,11 +64,16 @@ public class ValidationChain<T> {
     }
 
     /**
-     * Añade un validador a la cadena con su nombre para identificación.
+     * Añade un validador a la cadena con identificación para logging.
      *
-     * @param validator Validador a añadir
-     * @param validatorName Nombre del validador para logging
-     * @return La misma instancia para permitir fluent interface
+     * <p>
+     * Permite construir la cadena usando interfaz fluida y proporciona
+     * identificación del validador para facilitar el debugging.</p>
+     *
+     * @param validator validador a añadir a la cadena
+     * @param validatorName nombre identificativo del validador
+     * @return la misma instancia para permitir método encadenado (fluent
+     * interface)
      */
     public ValidationChain<T> addValidator(Validator<T> validator, String validatorName) {
         if (validator != null) {
@@ -45,9 +84,18 @@ public class ValidationChain<T> {
     }
 
     /**
-     * Ejecuta todos los validadores en orden.
+     * Ejecuta todos los validadores de la cadena en el orden configurado.
      *
-     * @param entity Entidad a validar
+     * <p>
+     * El comportamiento depende de la configuración de
+     * {@code stopOnFirstError}:</p>
+     * <ul>
+     * <li><strong>Modo fail-fast:</strong> Se detiene en el primer error</li>
+     * <li><strong>Modo acumulativo:</strong> Ejecuta todos y reporta errores
+     * agrupados</li>
+     * </ul>
+     *
+     * @param entity entidad a validar
      * @throws BusinessLogicException si alguna validación falla
      */
     public void execute(T entity) throws BusinessLogicException {
@@ -75,25 +123,26 @@ public class ValidationChain<T> {
     }
 
     /**
-     * Obtiene la lista de validadores en la cadena.
+     * Obtiene una copia de la lista de validadores en la cadena.
      *
-     * @return Lista de validadores
+     * @return copia inmutable de la lista de validadores
      */
     public List<Validator<T>> getValidators() {
         return new ArrayList<>(validators);
     }
 
     /**
-     * Obtiene la lista de nombres de validadores.
+     * Obtiene una copia de la lista de nombres de validadores.
      *
-     * @return Lista de nombres
+     * @return copia inmutable de la lista de nombres
      */
     public List<String> getValidatorNames() {
         return new ArrayList<>(validatorNames);
     }
 
     /**
-     * Limpia todos los validadores de la cadena.
+     * Elimina todos los validadores de la cadena, restaurando el estado
+     * inicial.
      */
     public void clear() {
         validators.clear();
@@ -101,19 +150,19 @@ public class ValidationChain<T> {
     }
 
     /**
-     * Obtiene el número de validadores en la cadena.
+     * Obtiene el número de validadores configurados en la cadena.
      *
-     * @return Número de validadores
+     * @return cantidad de validadores en la cadena
      */
     public int size() {
         return validators.size();
     }
 
     /**
-     * Configura si debe parar en el primer error o acumular todos los errores.
+     * Configura el comportamiento de la cadena ante errores de validación.
      *
-     * @param stopOnFirstError true para parar en el primer error, false para
-     * acumular
+     * @param stopOnFirstError true para modo fail-fast, false para modo
+     * acumulativo
      */
     public void setStopOnFirstError(boolean stopOnFirstError) {
         this.stopOnFirstError = stopOnFirstError;

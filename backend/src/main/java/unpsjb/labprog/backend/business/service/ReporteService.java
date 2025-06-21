@@ -19,39 +19,38 @@ import unpsjb.labprog.backend.model.Persona;
 import unpsjb.labprog.backend.model.enums.Estado;
 
 /**
- * Servicio especializado en la generación de reportes para docentes. Se encarga
- * de analizar las licencias y designaciones para generar estadísticas y
- * evaluaciones de desempeño.
+ * Servicio para la generación de reportes individuales de docentes. Analiza
+ * licencias y designaciones para generar estadísticas de desempeño y
+ * evaluaciones cualitativas basadas en indicadores específicos.
+ *
+ * @author Mariano Bonansea
+ * @version 1.0
  */
 @Service
 public class ReporteService {
 
-    // ===============================================
-    // CONSTANTES DE CONFIGURACIÓN
-    // ===============================================
-    // Umbrales de porcentajes para calificaciones de docentes
     /**
-     * Porcentaje máximo de licencias para calificación "Excelente"
+     * Porcentaje máximo de licencias para calificación "Excelente".
      */
     private static final double UMBRAL_EXCELENTE = 2.0;
 
     /**
-     * Porcentaje máximo de licencias para calificación "Muy Bueno"
+     * Porcentaje máximo de licencias para calificación "Muy Bueno".
      */
     private static final double UMBRAL_MUY_BUENO = 5.0;
 
     /**
-     * Porcentaje máximo de licencias para calificación "Bueno"
+     * Porcentaje máximo de licencias para calificación "Bueno".
      */
     private static final double UMBRAL_BUENO = 8.0;
 
     /**
-     * Porcentaje máximo de licencias para calificación "Regular"
+     * Porcentaje máximo de licencias para calificación "Regular".
      */
     private static final double UMBRAL_REGULAR = 12.0;
 
     /**
-     * Array con los nombres de los meses del año
+     * Nombres de los meses del año para reportes.
      */
     private static final String[] NOMBRES_MESES = {
         "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
@@ -65,12 +64,13 @@ public class ReporteService {
     private LicenciaService licenciaService;
 
     /**
-     * Genera el reporte para una persona específica en un año determinado.
-     * Incluye análisis estadístico de licencias y calificación del desempeño.
+     * Genera el reporte individual para una persona específica en un año
+     * determinado. Incluye análisis estadístico de licencias, designaciones y
+     * calificación de desempeño.
      *
      * @param dni DNI de la persona
-     * @param año Año para el cual generar el reporte
-     * @return ReporteDTO con estadísticas y análisis de licencias
+     * @param año año para el cual generar el reporte
+     * @return reporte con estadísticas y análisis de licencias
      * @throws IllegalArgumentException si no se encuentra la persona con el DNI
      * especificado
      */

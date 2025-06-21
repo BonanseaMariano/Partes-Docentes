@@ -17,31 +17,16 @@ import lombok.Setter;
 import unpsjb.labprog.backend.model.enums.Turno;
 
 /**
- * Representa una División en el sistema educativo, que corresponde a un grupo
- * académico
- * específico dentro de la institución.
- * <p>
- * Una división se conforma por la combinación de diferentes atributos que en
- * conjunto
- * la identifican de manera única:
- * <ul>
- * <li>Año académico (por ejemplo: 1°, 2°, etc.)</li>
- * <li>Número de división (por ejemplo: 1, 2, 3, etc.)</li>
- * <li>Turno (Mañana, Tarde, Vespertino, Noche)</li>
- * </ul>
- * <p>
- * Las divisiones son fundamentales para la organización académica, ya que a
- * ellas
- * se asocian cargos específicos como materias o espacios curriculares que serán
- * impartidos a los estudiantes de dicha división.
- * 
- * @see Cargo Cargos que pueden estar asociados a esta división
- * @see Turno Turnos posibles para una división
+ * Entidad que representa una división académica del sistema educativo. Define
+ * grupos de estudiantes organizados por año, número y turno.
+ *
+ * @author Mariano Bonansea
+ * @version 1.0
  */
 @Entity
-@Table(name = "divisiones", uniqueConstraints = @UniqueConstraint(name = "uk_division", columnNames = { "anio",
-        "numDivision",
-        "turno" }))
+@Table(name = "divisiones", uniqueConstraints = @UniqueConstraint(name = "uk_division", columnNames = {"anio",
+    "numDivision",
+    "turno"}))
 @Getter
 @Setter
 @NoArgsConstructor

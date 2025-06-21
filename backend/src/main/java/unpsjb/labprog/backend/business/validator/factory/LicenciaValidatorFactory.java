@@ -9,31 +9,53 @@ import org.slf4j.LoggerFactory;
 import unpsjb.labprog.backend.business.validator.base.Validator;
 
 /**
- * Fábrica de validadores que utiliza reflexión automática para cargar
- * validadores bajo demanda. Implementa el patrón Singleton y cache de
- * instancias para optimizar rendimiento.
+ * Fábrica de validadores específica para licencias que utiliza reflexión
+ * automática para cargar validadores dinámicamente. Implementa el patrón
+ * Singleton y cache de instancias para optimizar rendimiento.
  *
- * Convenciones de nomenclatura: - Para validador "solapamiento" busca clase:
- * unpsjb.labprog.backend.business.validator.licencia.validators.SolapamientoValidator
- * - Para validador "designaciones" busca clase:
- * unpsjb.labprog.backend.business.validator.licencia.validators.DesignacionesValidator
- * - Para validador "articulo5a" busca clase:
- * unpsjb.labprog.backend.business.validator.licencia.validators.Articulo5aValidator
+ * <p>
+ * Convenciones de nomenclatura:</p>
+ * <ul>
+ * <li>Para validador "solapamiento" busca clase:
+ * {@code unpsjb.labprog.backend.business.validator.licencia.validators.SolapamientoValidator}</li>
+ * <li>Para validador "designaciones" busca clase:
+ * {@code unpsjb.labprog.backend.business.validator.licencia.validators.DesignacionesValidator}</li>
+ * <li>Para validador "articulo5a" busca clase:
+ * {@code unpsjb.labprog.backend.business.validator.licencia.validators.Articulo5aValidator}</li>
+ * </ul>
+ *
+ * @author Mariano Bonansea
+ * @version 1.0
  */
 public class LicenciaValidatorFactory {
 
+    /**
+     * Logger para seguimiento de operaciones
+     */
     private static final Logger log = LoggerFactory.getLogger(LicenciaValidatorFactory.class);
 
-    // Cache de instancias de validadores para evitar recrearlos
-    private Map<String, Validator<?>> validatorMap;
+    /**
+     * Cache de instancias de validadores para evitar recrearlos
+     */
+    private final Map<String, Validator<?>> validatorMap;
 
-    // Singleton
+    /**
+     * Instancia única de la fábrica (patrón Singleton)
+     */
     private static LicenciaValidatorFactory instance = null;
 
+    /**
+     * Constructor privado para implementar el patrón Singleton.
+     */
     private LicenciaValidatorFactory() {
         validatorMap = new HashMap<>();
     }
 
+    /**
+     * Obtiene la instancia única de la fábrica de validadores de licencia.
+     *
+     * @return la instancia única de la fábrica
+     */
     public static LicenciaValidatorFactory getInstance() {
         if (instance == null) {
             instance = new LicenciaValidatorFactory();
@@ -43,11 +65,12 @@ public class LicenciaValidatorFactory {
 
     /**
      * Obtiene un validador por nombre. Si no está en cache, lo carga usando
-     * reflexión.
+     * reflexión siguiendo las convenciones de nomenclatura.
      *
-     * @param validatorName Nombre del validador (ej: "solapamiento",
+     * @param <T> el tipo de entidad que validará el validador
+     * @param validatorName el nombre del validador (ej: "solapamiento",
      * "designaciones", "articulo5a")
-     * @return Instancia del validador o null si no se encuentra
+     * @return la instancia del validador o null si no se encuentra
      */
     @SuppressWarnings("unchecked")
     public <T> Validator<T> getValidator(String validatorName) {
@@ -72,7 +95,7 @@ public class LicenciaValidatorFactory {
             } catch (NoSuchMethodException nsme) {
                 log.error("La clase {} no implementa el método getInstance", name);
                 return null;
-            } catch (Exception e) {
+            } catch (IllegalAccessException | java.lang.reflect.InvocationTargetException e) {
                 log.error("Error invocando el método getInstance de la clase {}: {}", name, e.getMessage());
                 return null;
             }
@@ -82,7 +105,10 @@ public class LicenciaValidatorFactory {
     }
 
     /**
-     * Capitaliza la primera letra de una cadena
+     * Capitaliza la primera letra de una cadena.
+     *
+     * @param str la cadena a capitalizar
+     * @return la cadena con la primera letra en mayúscula
      */
     private String capitalizeFirst(String str) {
         if (str == null || str.isEmpty()) {
@@ -92,7 +118,8 @@ public class LicenciaValidatorFactory {
     }
 
     /**
-     * Limpia el cache de validadores (útil para testing)
+     * Limpia el cache de validadores. Útil para testing y reinicios del
+     * sistema.
      */
     public void clearCache() {
         log.debug("Limpiando cache de validadores");

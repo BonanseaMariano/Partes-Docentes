@@ -26,44 +26,23 @@ import lombok.Setter;
 import unpsjb.labprog.backend.model.enums.TipoDesignacion;
 
 /**
- * Representa un Cargo en el sistema educativo, que puede ser asignado a
- * docentes
- * a través de designaciones.
- * <p>
- * Un cargo puede representar tanto una posición administrativa (como preceptor,
- * director, etc.) como un espacio curricular (materia) asociado a una división
- * específica.
- * Cada cargo tiene una vigencia definida por su fecha de inicio y opcionalmente
- * una
- * fecha de finalización.
- * <p>
- * La unicidad de un cargo está determinada por la combinación de:
- * <ul>
- * <li>Nombre del cargo</li>
- * <li>Tipo de designación</li>
- * <li>División asociada (si existe)</li>
- * </ul>
- * <p>
- * Cada cargo tiene asociado un conjunto de horarios que definen los días y
- * horas
- * en que debe cumplirse.
- * 
- * @see TipoDesignacion Define si el cargo corresponde a un espacio curricular o
- *      a un cargo administrativo
- * @see Division División a la que puede estar asociado el cargo (opcional)
- * @see Horario Detalle de los días y horas asignados al cargo
- * @see Designacion Entidad que vincula este cargo con una persona específica
+ * Entidad que representa un cargo en el sistema educativo. Los cargos pueden
+ * ser administrativos o espacios curriculares asignados a docentes a través de
+ * designaciones.
+ *
+ * @author Mariano Bonansea
+ * @version 1.0
  */
 @Entity
-@Table(name = "cargos", uniqueConstraints = @UniqueConstraint(name = "uk_cargo", columnNames = { "nombre",
-        "tipo_designacion", "division_id" }))
+@Table(name = "cargos", uniqueConstraints = @UniqueConstraint(name = "uk_cargo", columnNames = {"nombre",
+    "tipo_designacion", "division_id"}))
 @Getter
 @Setter
 @NoArgsConstructor
 public class Cargo {
 
     /**
-     * Identificador único del cargo generado automáticamente.
+     * Identificador único del cargo.
      */
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cargos_seq_gen")
@@ -71,7 +50,7 @@ public class Cargo {
     private int id;
 
     /**
-     * Nombre o título del cargo.
+     * Nombre del cargo.
      */
     @NotNull
     @Column(name = "nombre", nullable = false)
@@ -106,20 +85,19 @@ public class Cargo {
     private TipoDesignacion tipoDesignacion;
 
     /**
-     * División a la que pertenece el cargo, si corresponde a un espacio curricular.
-     * Este campo es opcional.
+     * División a la que pertenece el cargo, si corresponde a un espacio
+     * curricular. Este campo es opcional.
      */
     @ManyToOne
     @JoinColumn(name = "division_id")
     private Division division;
 
     /**
-     * Colección de horarios asignados a este cargo.
-     * Representa los días y horas en los que se debe cumplir con las obligaciones
-     * del cargo.
+     * Colección de horarios asignados a este cargo. Representa los días y horas
+     * en los que se debe cumplir con las obligaciones del cargo.
      */
     @NotNull
-    @OneToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE }, orphanRemoval = true)
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, orphanRemoval = true)
     @JoinColumn(name = "cargo_id", nullable = false)
     private List<Horario> horarios = new ArrayList<>();
 }

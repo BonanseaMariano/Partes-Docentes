@@ -25,20 +25,46 @@ import unpsjb.labprog.backend.model.Designacion;
 import unpsjb.labprog.backend.model.Licencia;
 
 /**
- * Cargador de configuración para cadenas de validación. Permite configurar el
- * orden y tipos de validaciones desde archivos de propiedades. Usa directamente
- * los Validators sin capa intermedia de Commands.
+ * Cargador de configuración para cadenas de validación del sistema.
  *
- * REQUERIMIENTO: El archivo validation-config.properties DEBE existir en
- * src/main/resources/ y contener TODA la configuración necesaria. No hay
- * configuración por defecto.
+ * <p>
+ * Esta clase permite configurar dinámicamente el orden y tipos de validaciones
+ * aplicables a diferentes entidades (Licencia, Designación, Cargo) mediante
+ * archivos de propiedades externos, proporcionando flexibilidad en la
+ * configuración de reglas de negocio sin recompilar el código.</p>
  *
- * Configuración requerida: - licencia.validation.order -
- * designacion.validation.order - cargo.validation.order
+ * <p>
+ * <strong>Requerimientos de configuración:</strong></p>
+ * <ul>
+ * <li>El archivo {@code validation-config.properties} DEBE existir en
+ * {@code src/main/resources/}</li>
+ * <li>Debe contener TODA la configuración necesaria (no hay configuración por
+ * defecto)</li>
+ * </ul>
  *
- * Configuración opcional (por defecto "true"): -
- * licencia.validation.stopOnFirstError -
- * designacion.validation.stopOnFirstError - cargo.validation.stopOnFirstError
+ * <p>
+ * <strong>Propiedades requeridas:</strong></p>
+ * <ul>
+ * <li>{@code licencia.validation.order}</li>
+ * <li>{@code designacion.validation.order}</li>
+ * <li>{@code cargo.validation.order}</li>
+ * </ul>
+ *
+ * <p>
+ * <strong>Propiedades opcionales (por defecto "true"):</strong></p>
+ * <ul>
+ * <li>{@code licencia.validation.stopOnFirstError}</li>
+ * <li>{@code designacion.validation.stopOnFirstError}</li>
+ * <li>{@code cargo.validation.stopOnFirstError}</li>
+ * </ul>
+ *
+ * <p>
+ * Utiliza las factories de validadores y implementa un cache interno para
+ * optimizar el rendimiento, evitando recrear validadores innecesariamente.</p>
+ *
+ * @author Mariano Bonansea
+ * @version 1.0
+ * @since 1.0
  */
 @Component
 public class ValidationConfigLoader {
@@ -65,6 +91,10 @@ public class ValidationConfigLoader {
     private Properties validationConfig;
     private long lastModified = 0;
 
+    /**
+     * Constructor que inicializa el cache de validadores y carga la
+     * configuración inicial.
+     */
     public ValidationConfigLoader() {
         this.validatorCache = new HashMap<>();
         loadConfiguration();
@@ -97,7 +127,9 @@ public class ValidationConfigLoader {
     }
 
     /**
-     * Recarga la configuración si el archivo ha sido modificado.
+     * Recarga la configuración automáticamente si el archivo ha sido
+     * modificado. Utiliza la marca de tiempo para detectar cambios y mantener
+     * la configuración actualizada.
      */
     public void reloadIfNeeded() {
         try {
@@ -116,10 +148,17 @@ public class ValidationConfigLoader {
 
     /**
      * Construye una cadena de validación para licencias basada en la
-     * configuración. SIMPLIFICADO: Usa directamente los Validators sin Commands
-     * intermedios.
+     * configuración cargada.
      *
-     * @return Cadena de validación configurada
+     * <p>
+     * Utiliza la configuración definida en {@code licencia.validation.order}
+     * para determinar el orden de los validadores y
+     * {@code licencia.validation.stopOnFirstError} para definir el
+     * comportamiento ante errores.</p>
+     *
+     * @return cadena de validación configurada para licencias
+     * @throws IllegalStateException si la configuración requerida no está
+     * presente
      */
     public ValidationChain<Licencia> buildLicenciaValidationChain() {
         reloadIfNeeded(); // Recargar configuración si es necesario
