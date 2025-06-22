@@ -17,9 +17,11 @@ import unpsjb.labprog.backend.model.enums.TipoDesignacion;
 import unpsjb.labprog.backend.model.enums.Turno;
 
 /**
- * Servicio que implementa la lógica de negocio para la entidad Cargo
+ * Servicio para la gestión de entidades Cargo. Implementa la lógica de negocio
+ * para operaciones con cargos.
  *
- * @see Cargo
+ * @author Mariano Bonansea
+ * @version 1.0
  */
 @Service
 public class CargoService {
@@ -31,9 +33,9 @@ public class CargoService {
     private CargoValidator validator;
 
     /**
-     * Busca un cargo por su ID
+     * Busca un cargo por su ID.
      *
-     * @param id ID del cargo a buscar
+     * @param id ID del cargo
      * @return Cargo encontrado o null si no existe
      */
     public Cargo findById(Integer id) {
@@ -41,7 +43,7 @@ public class CargoService {
     }
 
     /**
-     * Obtiene todos los cargos registrados
+     * Obtiene todos los cargos registrados.
      *
      * @return Lista de todos los cargos
      */
@@ -50,8 +52,8 @@ public class CargoService {
     }
 
     /**
-     * Guarda un nuevo cargo o actualiza uno existente, aplicando las reglas de
-     * negocio
+     * Guarda un nuevo cargo o actualiza uno existente. Aplica validaciones de
+     * reglas de negocio antes de guardar.
      *
      * @param cargo Cargo a guardar
      * @return Cargo guardado
@@ -59,15 +61,12 @@ public class CargoService {
      */
     @Transactional
     public Cargo save(Cargo cargo) throws BusinessLogicException {
-        // Validar reglas de negocio usando el validador específico
         validator.validar(cargo);
-
-        // Si pasa las validaciones, guardar el cargo
         return repository.save(cargo);
     }
 
     /**
-     * Elimina un cargo por su ID
+     * Elimina un cargo por su ID.
      *
      * @param id ID del cargo a eliminar
      */
@@ -77,27 +76,19 @@ public class CargoService {
     }
 
     /**
-     * Obtiene una página de entidades Cargo.
+     * Obtiene una página de cargos con ordenamiento personalizado. Valida los
+     * campos de ordenamiento por seguridad y usa valores por defecto para
+     * campos inválidos.
      *
-     * @param page el índice de página basado en cero
-     * @param size el tamaño de la página a devolver
-     * @return un objeto Page que contiene las entidades Cargo solicitadas
-     */
-    public Page<Cargo> findByPage(int page, int size) {
-        return repository.findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id")));
-    }
-
-    /**
-     * Obtiene una página de entidades Cargo con ordenamiento personalizado.
-     *
-     * @param page el índice de página basado en cero
-     * @param size el tamaño de la página a devolver
-     * @param sortField el campo por el cual ordenar
-     * @param sortDirection la dirección del ordenamiento (asc o desc)
-     * @return un objeto Page que contiene las entidades Cargo solicitadas
+     * @param page Índice de página (basado en cero)
+     * @param size Tamaño de la página
+     * @param sortField Campo por el cual ordenar (validado contra lista
+     * permitida)
+     * @param sortDirection Dirección del ordenamiento (asc o desc, por defecto
+     * desc)
+     * @return Página con los cargos solicitados
      */
     public Page<Cargo> findByPage(int page, int size, String sortField, String sortDirection) {
-        // Validar campos permitidos para ordenamiento por seguridad
         String[] allowedFields = {"id", "nombre", "cargaHoraria", "tipoDesignacion", "fechaInicio", "fechaFin", "division.orientacion"};
         boolean isValidField = false;
         for (String field : allowedFields) {
@@ -107,12 +98,10 @@ public class CargoService {
             }
         }
 
-        // Si el campo no es válido, usar "id" por defecto
         if (!isValidField) {
             sortField = "id";
         }
 
-        // Validar dirección de ordenamiento
         Sort.Direction direction;
         if ("asc".equalsIgnoreCase(sortDirection)) {
             direction = Sort.Direction.ASC;
@@ -124,26 +113,25 @@ public class CargoService {
     }
 
     /**
-     * Busca cargos por un término de búsqueda.
+     * Busca cargos por un término de búsqueda general.
      *
-     * @param term el término de búsqueda
-     * @return una lista de cargos que coinciden con el término de búsqueda
+     * @param term Término de búsqueda
+     * @return Lista de cargos que coinciden con el término
      */
     public List<Cargo> search(String term) {
         return repository.search("%" + term.toUpperCase() + "%");
     }
 
     /**
-     * Busca un cargo por su nombre, tipo de designación y opcionalmente por los
-     * atributos de la división
+     * Busca un cargo específico por nombre, tipo de designación y datos de
+     * división. Los parámetros de división son opcionales.
      *
-     * @param nombre Nombre del cargo a buscar
-     * @param tipoDesignacion Tipo de designación del cargo a buscar
+     * @param nombre Nombre del cargo
+     * @param tipoDesignacion Tipo de designación del cargo
      * @param anio Año de la división (opcional)
      * @param numDivision Número de la división (opcional)
      * @param turno Turno de la división (opcional)
-     * @return Cargo encontrado que coincide con los criterios de búsqueda o
-     * null si no existe
+     * @return Cargo encontrado o null si no existe
      */
     public Cargo findByNombreAndTipoDesignacionAndDivision(
             String nombre,

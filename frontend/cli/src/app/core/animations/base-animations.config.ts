@@ -1,12 +1,25 @@
 import { ElementAnimationConfig } from '../services/animation.service';
 
 /**
- * Configuraciones base de animaciones reutilizables para toda la aplicación
+ * Configuraciones base de animaciones reutilizables para toda la aplicación.
+ * 
+ * Centraliza definiciones de animaciones comunes que pueden ser utilizadas
+ * en múltiples componentes, garantizando consistencia visual y facilitando
+ * el mantenimiento de efectos de animación en todo el sistema. Proporciona
+ * patrones estándar para entradas, salidas y transiciones de elementos UI.
+ * 
+ * @class BaseAnimations
+ * @author Mariano Bonansea
+ * @version 1.0
  */
 export class BaseAnimations {
 
     /**
-     * Animaciones comunes de entrada para tarjetas
+     * Configuraciones de animación para entrada de tarjetas y contenedores.
+     * 
+     * Define efectos de entrada suaves con movimiento vertical y fade-in
+     * escalonado, ideal para listas de tarjetas o elementos de contenido.
+     * Utiliza stagger para crear efecto de cascada visual atractivo.
      */
     static readonly CARD_ENTRANCE: ElementAnimationConfig[] = [
         {
@@ -20,7 +33,11 @@ export class BaseAnimations {
     ];
 
     /**
-     * Animaciones de fade in genéricas
+     * Configuraciones de animación fade-in genéricas.
+     * 
+     * Proporciona efectos de aparición gradual para elementos que necesitan
+     * entrada sutil sin movimiento, ideal para textos, iconos o elementos
+     * de interfaz que requieren transición suave de visibilidad.
      */
     static readonly FADE_IN: ElementAnimationConfig[] = [
         {

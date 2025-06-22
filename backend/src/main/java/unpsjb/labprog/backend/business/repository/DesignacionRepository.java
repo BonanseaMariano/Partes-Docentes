@@ -9,23 +9,26 @@ import org.springframework.data.repository.query.Param;
 
 import unpsjb.labprog.backend.model.Designacion;
 
+/**
+ * Repositorio para la gestión de entidades Designacion. Proporciona métodos
+ * para consultas específicas sobre designaciones.
+ *
+ * @author Mariano Bonansea
+ * @version 1.0
+ */
 public interface DesignacionRepository extends JpaRepository<Designacion, Integer> {
 
     /**
-     * Busca designaciones que se solapen con el periodo especificado para el
-     * mismo cargo.
+     * Busca designaciones que se solapen con el período especificado para el
+     * mismo cargo. Maneja casos donde la fecha de fin puede ser nula (período
+     * indefinido).
      *
-     * La consulta maneja casos donde la fecha de fin puede ser nula, lo que
-     * indica un período indefinido. La función utiliza la lógica de negación de
-     * la no superposición para determinar si dos períodos se solapan.
-     *
-     * @param cargoId El ID del cargo a verificar
-     * @param fechaInicio Fecha de inicio del periodo a verificar
-     * @param fechaFin Fecha de fin del periodo a verificar (puede ser null para
-     * periodos indefinidos)
-     * @param designacionId ID de la designación a excluir (útil para
-     * actualizaciones, puede ser null para nuevas)
-     * @return Lista de designaciones que se solapan con el periodo especificado
+     * @param cargoId ID del cargo a verificar
+     * @param fechaInicio Fecha de inicio del período
+     * @param fechaFin Fecha de fin del período (null para períodos indefinidos)
+     * @param designacionId ID de designación a excluir (null para nuevas
+     * designaciones)
+     * @return Lista de designaciones que se solapan con el período
      */
     @Query(value = "SELECT d FROM Designacion d WHERE d.cargo.id = :cargo "
             + "AND (:designacionId IS NULL OR d.id != :designacionId) "
@@ -41,20 +44,14 @@ public interface DesignacionRepository extends JpaRepository<Designacion, Intege
             @Param("designacionId") Integer designacionId);
 
     /**
-     * Busca designaciones para una persona específica que contienen
-     * completamente el período especificado por las fechas de inicio y fin de
-     * la licencia.
+     * Busca designaciones de una persona que contengan completamente el período
+     * especificado. Útil para validar que una persona tenga cargo activo
+     * durante toda una licencia.
      *
-     * Una designación contiene completamente el período de licencia si: - La
-     * fecha de inicio de la designación es anterior o igual a la fecha de
-     * inicio de la licencia, Y - La fecha de fin de la designación es posterior
-     * o igual a la fecha de fin de la licencia, O es null (vigente)
-     *
-     * @param personaDni El DNI de la persona a buscar
-     * @param fechaInicio Fecha de inicio de la licencia a verificar
-     * @param fechaFin Fecha de fin de la licencia a verificar
-     * @return Lista de designaciones que contienen completamente el período de
-     * licencia especificado
+     * @param personaDni DNI de la persona
+     * @param fechaInicio Fecha de inicio del período a verificar
+     * @param fechaFin Fecha de fin del período a verificar
+     * @return Lista de designaciones que contienen el período completo
      */
     @Query(value = "SELECT d FROM Designacion d WHERE d.persona.dni = :personaDni "
             + "AND d.fechaInicio <= :fechaInicio "
@@ -65,19 +62,24 @@ public interface DesignacionRepository extends JpaRepository<Designacion, Intege
             @Param("fechaFin") LocalDate fechaFin);
 
     /**
-     * Verifica si una persona tiene al menos una designación (cargo) en la
-     * institución.
+     * Verifica si una persona tiene al menos una designación en la institución.
      *
-     * @param personaDni El DNI de la persona a verificar
-     * @return true si la persona tiene al menos una designación, false en caso
-     * contrario
+     * @param personaDni DNI de la persona a verificar
+     * @return true si tiene al menos una designación, false en caso contrario
      */
     @Query(value = "SELECT COUNT(d) > 0 FROM Designacion d WHERE d.persona.dni = :personaDni")
     boolean existsDesignacionesPorPersona(@Param("personaDni") Long personaDni);
 
     /**
-     * Encuentra designaciones que contengan completamente el período
-     * especificado.
+     * Busca designaciones que contengan completamente el período especificado
+     * para un cargo. Útil para verificar cobertura completa de un período.
+     *
+     * @param cargoId ID del cargo
+     * @param fechaInicio Fecha de inicio del período
+     * @param fechaFin Fecha de fin del período
+     * @param designacionId ID de designación a excluir (null para nuevas
+     * designaciones)
+     * @return Lista de designaciones que contienen el período completo
      */
     @Query(value = "SELECT d FROM Designacion d WHERE d.cargo.id = :cargo "
             + "AND (:designacionId IS NULL OR d.id != :designacionId) "
@@ -90,12 +92,11 @@ public interface DesignacionRepository extends JpaRepository<Designacion, Intege
             @Param("designacionId") Integer designacionId);
 
     /**
-     * Busca la designación activa para un cargo específico en una fecha
-     * determinada
+     * Busca designaciones activas para un cargo en una fecha específica.
      *
-     * @param cargoId El ID del cargo
-     * @param fecha La fecha para verificar la designación activa
-     * @return La designación activa si existe
+     * @param cargoId ID del cargo
+     * @param fecha Fecha para verificar la designación activa
+     * @return Lista de designaciones activas en esa fecha
      */
     @Query(value = "SELECT d FROM Designacion d WHERE d.cargo.id = :cargoId "
             + "AND d.fechaInicio <= :fecha "

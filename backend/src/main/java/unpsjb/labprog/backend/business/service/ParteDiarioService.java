@@ -14,9 +14,12 @@ import unpsjb.labprog.backend.model.Designacion;
 import unpsjb.labprog.backend.model.Licencia;
 
 /**
- * Servicio especializado en la generación de partes diarios de licencias. Se
- * encarga de procesar las licencias válidas para una fecha específica y generar
- * el reporte estructurado correspondiente.
+ * Servicio para la generación de partes diarios de licencias. Procesa las
+ * licencias válidas para una fecha específica y genera reportes estructurados
+ * con información de docentes y reemplazos.
+ *
+ * @author Mariano Bonansea
+ * @version 1.0
  */
 @Service
 public class ParteDiarioService {
@@ -28,20 +31,18 @@ public class ParteDiarioService {
     private DesignacionService designacionService;
 
     /**
-     * Genera el parte diario de licencias para una fecha específica
+     * Genera el parte diario de licencias para una fecha específica. Incluye
+     * información de docentes con licencia y sus reemplazos asignados.
      *
-     * @param fecha Fecha para la cual generar el parte diario
-     * @return DTO con el parte diario estructurado
+     * @param fecha fecha para la cual generar el parte diario
+     * @return parte diario estructurado con información de licencias
      */
     public ParteDiarioDTO generarParteDiario(LocalDate fecha) {
-        // Buscar licencias válidas que contengan la fecha solicitada
         List<Licencia> licenciasDelDia = licenciaRepository.findLicenciasValidasEnFecha(fecha);
 
-        // Crear DTO del parte diario
         ParteDiarioDTO parteDiario = new ParteDiarioDTO();
         parteDiario.setFecha(fecha);
 
-        // Mapear licencias a DTOs de docentes
         List<DocenteLicencia> docentes = licenciasDelDia.stream()
                 .map(this::mapearLicenciaADocente)
                 .collect(Collectors.toList());
@@ -52,13 +53,13 @@ public class ParteDiarioService {
     }
 
     /**
-     * Convierte una entidad Licencia en un DTO de DocenteLicencia
+     * Convierte una entidad Licencia en un DTO de DocenteLicencia. Incluye
+     * información del docente, tipo de licencia y reemplazos asignados.
      *
-     * @param licencia La licencia a mapear
-     * @return DocenteLicencia DTO con los datos mapeados
+     * @param licencia licencia a mapear
+     * @return DTO con datos del docente y su licencia
      */
     private DocenteLicencia mapearLicenciaADocente(Licencia licencia) {
-        // Obtener las designaciones de reemplazo para esta licencia
         List<Designacion> reemplazos = designacionService.findDesignacionesReemplazoPorLicencia(licencia);
 
         DocenteLicencia docente = new DocenteLicencia();

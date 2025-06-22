@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import unpsjb.labprog.backend.Response;
-import unpsjb.labprog.backend.business.repository.DesignacionRepository;
 import unpsjb.labprog.backend.business.service.DesignacionService;
 import unpsjb.labprog.backend.exception.BusinessLogicException;
 import unpsjb.labprog.backend.model.Designacion;
@@ -26,27 +25,24 @@ import unpsjb.labprog.backend.model.enums.TipoDesignacion;
 import unpsjb.labprog.backend.utils.constants.AppConstants;
 
 /**
- * Controlador REST para la gestión de designaciones en el sistema educativo.
- * Proporciona endpoints para crear, consultar, actualizar y eliminar
- * designaciones. Las designaciones representan asignaciones de cargos a
- * personas dentro de la institución educativa.
+ * Controlador REST para la gestión de designaciones del sistema. Proporciona
+ * endpoints para operaciones CRUD sobre designaciones, que representan
+ * asignaciones de cargos a personas específicas.
  *
- * @see Designacion
- * @see DesignacionService
- * @see DesignacionRepository
+ * @author Mariano Bonansea
+ * @version 1.0
  */
 @RestController
 @RequestMapping("designaciones")
 public class DesignacionPresenter {
 
     /**
-     * Logger de la clase para registrar eventos y mensajes.
+     * Logger para registrar eventos de la clase.
      */
-    private Logger logger = Logger.getLogger(getClass().getSimpleName());
+    private static final Logger logger = Logger.getLogger(DesignacionPresenter.class.getSimpleName());
 
     /**
-     * Servicio que implementa la lógica de negocio para las operaciones con
-     * designaciones.
+     * Servicio de lógica de negocio para designaciones.
      */
     @Autowired
     private DesignacionService service;

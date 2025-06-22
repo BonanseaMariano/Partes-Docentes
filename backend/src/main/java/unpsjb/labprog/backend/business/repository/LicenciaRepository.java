@@ -10,23 +10,24 @@ import org.springframework.data.repository.query.Param;
 import unpsjb.labprog.backend.model.Licencia;
 import unpsjb.labprog.backend.model.Persona;
 
+/**
+ * Repositorio para la gestión de entidades Licencia. Proporciona métodos para
+ * consultas específicas sobre licencias.
+ *
+ * @author Mariano Bonansea
+ * @version 1.0
+ */
 public interface LicenciaRepository extends JpaRepository<Licencia, Integer> {
 
     /**
-     * Busca licencias VÁLIDAS que se solapen con el periodo especificado para
-     * la misma persona.
+     * Busca licencias válidas que se solapen con el período especificado. Útil
+     * para detectar conflictos de fechas entre licencias de la misma persona.
      *
-     * La consulta verifica si hay solapamiento entre dos períodos, es decir, si
-     * la fecha de inicio de una licencia es menor o igual a la fecha de fin de
-     * otra, y la fecha de fin de una licencia es mayor o igual a la fecha de
-     * inicio de otra.
-     *
-     * @param personaDni El DNI de la persona a verificar
-     * @param pedidoDesde Fecha de inicio del periodo a verificar
-     * @param pedidoHasta Fecha de fin del periodo a verificar
-     * @param licenciaId ID de la licencia a excluir (útil para actualizaciones,
-     * puede ser null para nuevas)
-     * @return Lista de licencias que se solapan con el periodo especificado
+     * @param personaDni DNI de la persona
+     * @param pedidoDesde Fecha de inicio del período
+     * @param pedidoHasta Fecha de fin del período
+     * @param licenciaId ID de licencia a excluir (null para nuevas licencias)
+     * @return Lista de licencias que se solapan con el período
      */
     @Query(value = "SELECT l FROM Licencia l WHERE l.persona.dni = :personaDni "
             + "AND (:licenciaId IS NULL OR l.id != :licenciaId) "
@@ -39,13 +40,14 @@ public interface LicenciaRepository extends JpaRepository<Licencia, Integer> {
             @Param("licenciaId") Integer licenciaId);
 
     /**
-     * Busca licencias VÁLIDAS para una persona por artículo y año
+     * Busca licencias válidas para una persona por artículo y año. Útil para
+     * verificar límites anuales de ciertos tipos de licencias.
      *
-     * @param personaDni El DNI de la persona
-     * @param articuloCode El código del artículo de licencia
-     * @param anio El año a consultar
-     * @param licenciaId ID de licencia a excluir (para actualizaciones)
-     * @return Lista de licencias que cumplen con los criterios
+     * @param personaDni DNI de la persona
+     * @param articuloCode Código del artículo de licencia
+     * @param anio Año a consultar
+     * @param licenciaId ID de licencia a excluir (null para nuevas licencias)
+     * @return Lista de licencias que cumplen los criterios
      */
     @Query("SELECT l FROM Licencia l WHERE l.persona.dni = :personaDni "
             + "AND l.articuloLicencia.articulo = :articuloCode "
@@ -59,14 +61,15 @@ public interface LicenciaRepository extends JpaRepository<Licencia, Integer> {
             @Param("licenciaId") Integer licenciaId);
 
     /**
-     * Busca licencias VÁLIDAS para una persona por artículo, año y mes
+     * Busca licencias válidas para una persona por artículo, año y mes. Útil
+     * para verificar límites mensuales de ciertos tipos de licencias.
      *
-     * @param personaDni El DNI de la persona
-     * @param articuloCode El código del artículo de licencia
-     * @param anio El año a consultar
-     * @param mes El mes a consultar (1-12)
-     * @param licenciaId ID de licencia a excluir (para actualizaciones)
-     * @return Lista de licencias que cumplen con los criterios
+     * @param personaDni DNI de la persona
+     * @param articuloCode Código del artículo de licencia
+     * @param anio Año a consultar
+     * @param mes Mes a consultar (1-12)
+     * @param licenciaId ID de licencia a excluir (null para nuevas licencias)
+     * @return Lista de licencias que cumplen los criterios
      */
     @Query("SELECT l FROM Licencia l WHERE l.persona.dni = :personaDni "
             + "AND l.articuloLicencia.articulo = :articuloCode "
@@ -82,13 +85,14 @@ public interface LicenciaRepository extends JpaRepository<Licencia, Integer> {
             @Param("licenciaId") Integer licenciaId);
 
     /**
-     * Busca licencias VÁLIDAS para una persona en un periodo específico
+     * Busca licencias válidas de una persona que estén completamente dentro de
+     * un período. La licencia debe comenzar y terminar dentro del rango de
+     * fechas especificado.
      *
      * @param persona La persona asociada a las licencias
      * @param pedidoDesde Fecha desde la cual buscar licencias
      * @param pedidoHasta Fecha hasta la cual buscar licencias
-     * @return Lista de licencias que corresponden a la persona y período
-     * especificado
+     * @return Lista de licencias contenidas en el período
      */
     @Query("SELECT l FROM Licencia l WHERE l.persona = :persona "
             + "AND l.pedidoDesde >= :pedidoDesde "
@@ -100,18 +104,11 @@ public interface LicenciaRepository extends JpaRepository<Licencia, Integer> {
             @Param("pedidoHasta") LocalDate pedidoHasta);
 
     /**
-     * Método original mantenido para compatibilidad
-     */
-    List<Licencia> findByPersonaAndPedidoDesdeGreaterThanEqualAndPedidoHastaLessThanEqual(
-            Persona persona,
-            LocalDate pedidoDesde,
-            LocalDate pedidoHasta);
-
-    /**
-     * Busca licencias VÁLIDAS que estén activas en una fecha específica
+     * Busca todas las licencias válidas que estén activas en una fecha
+     * específica. Ordenadas por apellido y nombre de la persona.
      *
      * @param fecha La fecha a consultar
-     * @return Lista de licencias válidas activas en esa fecha
+     * @return Lista de licencias activas en esa fecha
      */
     @Query("SELECT l FROM Licencia l WHERE l.estado = unpsjb.labprog.backend.model.enums.Estado.VALIDO "
             + "AND l.pedidoDesde <= :fecha "
@@ -121,11 +118,10 @@ public interface LicenciaRepository extends JpaRepository<Licencia, Integer> {
             @Param("fecha") LocalDate fecha);
 
     /**
-     * Verifica si existen licencias que cubran completamente un período
-     * específico. Busca licencias ordenadas por fecha y verifica si forman una
-     * cobertura continua.
+     * Busca licencias que se solapen con un período para verificar cobertura
+     * continua. Retorna las licencias ordenadas por fecha de inicio.
      *
-     * @param personaDni El DNI de la persona a verificar
+     * @param personaDni DNI de la persona
      * @param fechaInicio Fecha de inicio del período a cubrir
      * @param fechaFin Fecha de fin del período a cubrir
      * @return Lista de licencias ordenadas que se solapan con el período
@@ -141,12 +137,12 @@ public interface LicenciaRepository extends JpaRepository<Licencia, Integer> {
             @Param("fechaFin") LocalDate fechaFin);
 
     /**
-     * Busca licencias VÁLIDAS para una persona en un año específico para
-     * reporte
+     * Busca todas las licencias válidas de una persona en un año específico.
+     * Útil para generar reportes anuales. Ordenadas por fecha de inicio.
      *
      * @param persona La persona asociada a las licencias
      * @param anio El año a consultar
-     * @return Lista de licencias válidas de la persona en el año especificado
+     * @return Lista de licencias de la persona en el año especificado
      */
     @Query("SELECT l FROM Licencia l WHERE l.persona = :persona "
             + "AND EXTRACT(YEAR FROM l.pedidoDesde) = :anio "
@@ -157,11 +153,12 @@ public interface LicenciaRepository extends JpaRepository<Licencia, Integer> {
             @Param("anio") Integer anio);
 
     /**
-     * Verifica si una persona tiene licencias activas en una fecha específica
+     * Verifica si una persona tiene al menos una licencia activa en una fecha
+     * específica.
      *
      * @param persona La persona a verificar
      * @param fecha La fecha para verificar licencias activas
-     * @return true si la persona tiene licencias activas en esa fecha
+     * @return true si tiene licencias activas, false en caso contrario
      */
     @Query("SELECT CASE WHEN COUNT(l) > 0 THEN true ELSE false END FROM Licencia l "
             + "WHERE l.persona = :persona "

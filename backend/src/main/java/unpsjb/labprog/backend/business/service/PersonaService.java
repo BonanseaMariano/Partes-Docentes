@@ -13,9 +13,12 @@ import unpsjb.labprog.backend.business.repository.PersonaRepository;
 import unpsjb.labprog.backend.model.Persona;
 
 /**
- * Servicio que implementa la lógica de negocio para la entidad Persona
+ * Servicio para la gestión de personas del sistema. Proporciona operaciones
+ * CRUD y búsqueda para la entidad Persona, incluyendo consultas por DNI, CUIL y
+ * búsqueda por términos.
  *
- * @see Persona
+ * @author Mariano Bonansea
+ * @version 1.0
  */
 @Service
 public class PersonaService {
@@ -24,49 +27,49 @@ public class PersonaService {
     private PersonaRepository repository;
 
     /**
-     * Busca todas las personas registradas
+     * Obtiene todas las personas registradas en el sistema.
      *
-     * @return Lista de todas las personas
+     * @return lista de todas las personas
      */
     public List<Persona> findAll() {
         return repository.findAll();
     }
 
     /**
-     * Busca una persona por su id
+     * Busca una persona por su identificador único.
      *
-     * @param id ID de la persona a buscar
-     * @return Persona encontrada o null si no existe
+     * @param id identificador de la persona
+     * @return persona encontrada o null si no existe
      */
     public Persona findById(int id) {
         return repository.findById(id).orElse(null);
     }
 
     /**
-     * Busca una persona por su dni
+     * Busca una persona por su número de DNI.
      *
-     * @param dni DNI de la persona a buscar
-     * @return Persona encontrada o null si no existe
+     * @param dni número de DNI de la persona
+     * @return persona encontrada o null si no existe
      */
     public Persona findByDni(long dni) {
         return repository.findByDni(dni).orElse(null);
     }
 
     /**
-     * Busca una persona por su cuil
+     * Busca una persona por su CUIL.
      *
-     * @param cuil CUIL de la persona a buscar
-     * @return Persona encontrada o null si no existe
+     * @param cuil código único de identificación laboral
+     * @return persona encontrada o null si no existe
      */
     public Persona findByCuil(String cuil) {
         return repository.findByCuil(cuil).orElse(null);
     }
 
     /**
-     * Guarda una nueva persona o actualiza una existente
+     * Guarda una persona nueva o actualiza una existente.
      *
-     * @param e Persona a guardar
-     * @return Persona guardada
+     * @param e persona a guardar
+     * @return persona guardada
      */
     @Transactional
     public Persona save(Persona e) {
@@ -74,9 +77,9 @@ public class PersonaService {
     }
 
     /**
-     * Elimina una persona por su id
+     * Elimina una persona del sistema.
      *
-     * @param id id de la persona a eliminar
+     * @param id identificador de la persona a eliminar
      */
     @Transactional
     public void delete(int id) {
@@ -84,37 +87,28 @@ public class PersonaService {
     }
 
     /**
-     * Busca personas por un término de búsqueda.
+     * Busca personas que coincidan con un término de búsqueda. La búsqueda es
+     * insensible a mayúsculas y minúsculas.
      *
-     * @param term el término de búsqueda
-     * @return una lista de personas que coinciden con el término de búsqueda
+     * @param term término de búsqueda
+     * @return lista de personas que coinciden con el término
      */
     public List<Persona> search(String term) {
         return repository.search("%" + term.toUpperCase() + "%");
     }
 
     /**
-     * Obtiene una página de entidades Persona.
+     * Obtiene una página de personas con paginación y ordenamiento
+     * personalizado. Valida que el campo de ordenamiento sea permitido por
+     * seguridad.
      *
-     * @param page el índice de página basado en cero
-     * @param size el tamaño de la página a devolver
-     * @return un objeto Page que contiene las entidades Persona solicitadas
-     */
-    public Page<Persona> findByPage(int page, int size) {
-        return repository.findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id")));
-    }
-
-    /**
-     * Obtiene una página de entidades Persona con ordenamiento personalizado.
-     *
-     * @param page el índice de página basado en cero
-     * @param size el tamaño de la página a devolver
-     * @param sortField el campo por el cual ordenar
-     * @param sortDirection la dirección del ordenamiento (asc o desc)
-     * @return un objeto Page que contiene las entidades Persona solicitadas
+     * @param page índice de página (basado en cero)
+     * @param size tamaño de la página
+     * @param sortField campo por el cual ordenar
+     * @param sortDirection dirección del ordenamiento (asc o desc)
+     * @return página de personas con el ordenamiento especificado
      */
     public Page<Persona> findByPage(int page, int size, String sortField, String sortDirection) {
-        // Validar campos permitidos para ordenamiento por seguridad
         String[] allowedFields = {"id", "dni", "nombre", "apellido", "cuil", "titulo", "sexo", "domicilio", "telefono"};
         boolean isValidField = false;
         for (String field : allowedFields) {
@@ -124,12 +118,10 @@ public class PersonaService {
             }
         }
 
-        // Si el campo no es válido, usar "id" por defecto
         if (!isValidField) {
             sortField = "id";
         }
 
-        // Validar dirección de ordenamiento
         Sort.Direction direction;
         if ("asc".equalsIgnoreCase(sortDirection)) {
             direction = Sort.Direction.ASC;

@@ -19,30 +19,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Representa a una Persona en el sistema educativo, típicamente personal
- * docente
- * que puede ser asignado a diferentes cargos mediante designaciones.
- * <p>
- * Una persona se identifica de manera única por su DNI y/o CUIL, y contiene
- * información personal básica como nombre, apellido, domicilio y datos de
- * contacto.
- * <p>
- * Cada persona puede tener múltiples designaciones asignadas a lo largo del
- * tiempo,
- * representando los diferentes cargos y funciones que desempeña en la
- * institución.
- * <p>
- * La información almacenada en esta entidad incluye:
- * <ul>
- * <li>Datos identificatorios (DNI, CUIL)</li>
- * <li>Datos personales (nombre, apellido, sexo)</li>
- * <li>Formación académica (título)</li>
- * <li>Datos de contacto (domicilio, teléfono)</li>
- * </ul>
- * 
- * @see Designacion Entidad que vincula a la persona con cargos específicos
- * @see Cargo Cargos a los que puede ser asignada la persona
- * @see Licencia Licencias o permisos que puede solicitar la persona
+ * Entidad que representa a una persona del sistema educativo. Contiene
+ * información personal y puede tener designaciones y licencias asociadas.
+ *
+ * @author Mariano Bonansea
+ * @version 1.0
  */
 @Entity
 @Table(name = "personas")
@@ -113,7 +94,6 @@ public class Persona {
     private String telefono;
 
     // Relaciones
-
     /**
      * Designaciones asociadas a la persona
      */

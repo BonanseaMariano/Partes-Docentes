@@ -9,23 +9,47 @@ import unpsjb.labprog.backend.exception.BusinessLogicException;
 import unpsjb.labprog.backend.model.Licencia;
 
 /**
- * Validador específico para artículo 36A: Asuntos particulares. Reglas: Máximo
- * 2 días por mes y máximo 6 días por año. Implementa el patrón Singleton
- * requerido por el ValidatorFactory.
+ * Validador específico para licencias del artículo 36A: Asuntos particulares.
+ *
+ * <p>
+ * Aplica las siguientes reglas de negocio específicas del artículo 36A:</p>
+ * <ul>
+ * <li>Máximo 2 días por mes calendario</li>
+ * <li>Máximo 6 días por año calendario</li>
+ * </ul>
+ *
+ * <p>
+ * El validador calcula automáticamente los días ya utilizados por la persona en
+ * el período correspondiente y verifica que la nueva solicitud no supere los
+ * límites.</p>
+ *
+ * <p>
+ * Forma parte del patrón Chain of Responsibility para la validación de
+ * licencias y implementa el patrón Singleton para optimización de memoria.</p>
+ *
+ * @author Mariano Bonansea
+ * @version 1.0
  */
 public class Articulo36aValidator implements Validator<Licencia> {
 
-    // Singleton
     private static Articulo36aValidator instance = null;
 
     private static final int MAX_DIAS_POR_MES = 2;
     private static final int MAX_DIAS_POR_ANIO = 6;
     private static final String ARTICULO_CODE = "36A";
 
+    /**
+     * Constructor privado para implementar el patrón Singleton.
+     */
     private Articulo36aValidator() {
         // Constructor privado para Singleton
     }
 
+    /**
+     * Obtiene la única instancia del validador.
+     *
+     * @return la instancia única de Articulo36aValidator
+     */
     public static Articulo36aValidator getInstance() {
         if (instance == null) {
             instance = new Articulo36aValidator();
@@ -33,6 +57,14 @@ public class Articulo36aValidator implements Validator<Licencia> {
         return instance;
     }
 
+    /**
+     * Valida que la licencia del artículo 36A cumpla con los límites
+     * establecidos.
+     *
+     * @param licencia la licencia a validar
+     * @throws BusinessLogicException si se superan los límites mensuales o
+     * anuales del artículo 36A
+     */
     @Override
     public void validate(Licencia licencia) throws BusinessLogicException {
         // Solo aplica para artículo 36A
@@ -53,6 +85,13 @@ public class Articulo36aValidator implements Validator<Licencia> {
         validarDiasPorAnio(licencia, diasSolicitados);
     }
 
+    /**
+     * Valida que no se supere el límite mensual de días para el artículo 36A.
+     *
+     * @param licencia la licencia a validar
+     * @param diasSolicitados cantidad de días solicitados en esta licencia
+     * @throws BusinessLogicException si se supera el límite de 2 días por mes
+     */
     private void validarDiasPorMes(Licencia licencia, long diasSolicitados) throws BusinessLogicException {
         LocalDate inicio = licencia.getPedidoDesde();
 
@@ -72,6 +111,13 @@ public class Articulo36aValidator implements Validator<Licencia> {
         }
     }
 
+    /**
+     * Valida que no se supere el límite anual de días para el artículo 36A.
+     *
+     * @param licencia la licencia a validar
+     * @param diasSolicitados cantidad de días solicitados en esta licencia
+     * @throws BusinessLogicException si se supera el límite de 6 días por año
+     */
     private void validarDiasPorAnio(Licencia licencia, long diasSolicitados) throws BusinessLogicException {
         LocalDate inicio = licencia.getPedidoDesde();
 

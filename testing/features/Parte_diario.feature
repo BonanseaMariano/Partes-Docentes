@@ -57,3 +57,60 @@ Característica: Emitir el parte diario de licencias de una escuela para un dete
          }
       }
       """
+
+  Escenario: María Rosa Gallo reemplaza a Raúl Orellanos durante su licencia 5A en Educación Física
+    Dado que existe la persona para reemplazo en parte diario
+      | DNI      | Nombre     | Apellido |
+      | 99200000 | María Rosa | Gallo    |
+    Y que existen las siguientes instancias de designación para parte diario
+      | TipoDesignacion    | NombreTipoDesignacion | CargaHoraria | Anio | NumDivision | Turno  |
+      | ESPACIO_CURRICULAR | Educación Física      |           40 |    1 |           2 | Mañana |
+    Y que la designación está asignada a la persona con licencia para parte diario "5A" comprendida en el período desde "2023-05-07" hasta "2023-05-15"
+      | DNI      | Nombre | Apellido  | Desde      | Hasta |
+      | 88100000 | Raúl   | Orellanos | 2023-03-01 |       |
+    Cuando se solicita designación de reemplazo para parte diario en el período desde "2023-05-07" hasta "2023-05-15"
+    Entonces el sistema devuelve el mensaje de confirmación para parte diario
+      """
+      {
+         "status": 200,
+         "message": "María Rosa Gallo ha sido designado/a a la asignatura Educación Física a la división 1º 2º turno Mañana exitosamente, en reemplazo de Raúl Orellanos"
+      }
+      """
+
+  Escenario: Homero Manzi reemplaza a Matías Barto durante su licencia 5A en Matemática
+    Dado que existe la persona para reemplazo en parte diario
+      | DNI      | Nombre | Apellido |
+      | 99300000 | Homero | Manzi    |
+    Y que existen las siguientes instancias de designación para parte diario
+      | TipoDesignacion    | NombreTipoDesignacion | CargaHoraria | Anio | NumDivision | Turno |
+      | ESPACIO_CURRICULAR | Matemática            |           40 |    2 |           1 | Tarde |
+    Y que la designación está asignada a la persona con licencia para parte diario "5A" comprendida en el período desde "2023-05-10" hasta "2023-05-15"
+      | DNI      | Nombre | Apellido | Desde      | Hasta |
+      | 88200000 | Matías | Barto    | 2023-03-01 |       |
+    Cuando se solicita designación de reemplazo para parte diario en el período desde "2023-05-10" hasta "2023-05-15"
+    Entonces el sistema devuelve el mensaje de confirmación para parte diario
+      """
+      {
+         "status": 200,
+         "message": "Homero Manzi ha sido designado/a a la asignatura Matemática a la división 2º 1º turno Tarde exitosamente, en reemplazo de Matías Barto"
+      }
+      """
+
+  Escenario: Marta Ríos reemplaza a Andrea Sosa durante su licencia 5A en Lengua
+    Dado que existe la persona para reemplazo en parte diario
+      | DNI      | Nombre | Apellido |
+      | 88600000 | Marta  | Ríos     |
+    Y que existen las siguientes instancias de designación para parte diario
+      | TipoDesignacion    | NombreTipoDesignacion | CargaHoraria | Anio | NumDivision | Turno  |
+      | ESPACIO_CURRICULAR | Lengua                |           40 |    3 |           2 | Mañana |
+    Y que la designación está asignada a la persona con licencia para parte diario "5A" comprendida en el período desde "2023-05-11" hasta "2023-05-17"
+      | DNI      | Nombre | Apellido | Desde      | Hasta |
+      | 88300000 | Andrea | Sosa     | 2023-03-01 |       |
+    Cuando se solicita designación de reemplazo para parte diario en el período desde "2023-05-11" hasta "2023-05-17"
+    Entonces el sistema devuelve el mensaje de confirmación para parte diario
+      """
+      {
+         "status": 200,
+         "message": "Marta Ríos ha sido designado/a a la asignatura Lengua a la división 3º 2º turno Mañana exitosamente, en reemplazo de Andrea Sosa"
+      }
+      """

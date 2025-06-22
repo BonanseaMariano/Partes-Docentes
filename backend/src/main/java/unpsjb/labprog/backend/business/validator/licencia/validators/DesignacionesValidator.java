@@ -6,18 +6,40 @@ import unpsjb.labprog.backend.exception.BusinessLogicException;
 import unpsjb.labprog.backend.model.Licencia;
 
 /**
- * Validador para verificar designaciones activas durante el período de
- * licencia. Implementa el patrón Singleton requerido por el ValidatorFactory.
+ * Validador específico para verificar que una persona tenga designaciones
+ * activas durante el período solicitado de licencia.
+ *
+ * <p>
+ * Este validador garantiza que:</p>
+ * <ul>
+ * <li>La persona tenga al menos un cargo en la institución</li>
+ * <li>Exista al menos una designación activa que cubra completamente el período
+ * de la licencia</li>
+ * </ul>
+ *
+ * <p>
+ * Forma parte del patrón Chain of Responsibility para la validación de
+ * licencias y implementa el patrón Singleton para optimización de memoria.</p>
+ *
+ * @author Mariano Bonansea
+ * @version 1.0
  */
 public class DesignacionesValidator implements Validator<Licencia> {
 
-    // Singleton
     private static DesignacionesValidator instance = null;
 
+    /**
+     * Constructor privado para implementar el patrón Singleton.
+     */
     private DesignacionesValidator() {
         // Constructor privado para Singleton
     }
 
+    /**
+     * Obtiene la única instancia del validador.
+     *
+     * @return la instancia única de DesignacionesValidator
+     */
     public static DesignacionesValidator getInstance() {
         if (instance == null) {
             instance = new DesignacionesValidator();
@@ -25,6 +47,14 @@ public class DesignacionesValidator implements Validator<Licencia> {
         return instance;
     }
 
+    /**
+     * Valida que la persona tenga designaciones activas durante el período de
+     * licencia.
+     *
+     * @param licencia la licencia a validar
+     * @throws BusinessLogicException si la persona no tiene cargos en la
+     * institución o no tiene designaciones activas en el período solicitado
+     */
     @Override
     public void validate(Licencia licencia) throws BusinessLogicException {
         // Primero verificamos si la persona tiene algún cargo en la institución

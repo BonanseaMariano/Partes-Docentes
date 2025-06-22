@@ -10,23 +10,29 @@ import unpsjb.labprog.backend.model.Licencia;
 
 /**
  * Validador principal para licencias que utiliza el patrón Command combinado
- * con Chain of Responsibility para ejecutar validaciones configurables.
+ * con Chain of Responsibility para ejecutar validaciones configurables. Permite
+ * configurar el orden de validaciones dinámicamente sin recompilar, usando
+ * archivos de configuración externos.
  *
- * Permite configurar el orden de validaciones en caliente sin recompilar,
- * usando archivos de configuración externos.
+ * @author Mariano Bonansea
+ * @version 1.0
  */
 @Component
 public class LicenciaValidator {
 
+    /**
+     * Cargador de configuraciones de validación
+     */
     @Autowired
     private ValidationConfigLoader configLoader;
 
     /**
      * Valida todas las reglas de negocio específicas para las licencias usando
-     * el patrón Command con configuración dinámica
+     * el patrón Command con configuración dinámica. La cadena de validaciones
+     * se construye basándose en la configuración externa.
      *
-     * @param licencia Licencia a validar
-     * @throws BusinessLogicException si no se cumplen las reglas
+     * @param licencia la licencia a validar
+     * @throws BusinessLogicException si no se cumplen las reglas de negocio
      */
     public void validar(Licencia licencia) throws BusinessLogicException {
         // Construir cadena de validación basada en configuración
@@ -37,20 +43,21 @@ public class LicenciaValidator {
     }
 
     /**
-     * Permite actualizar la configuración de validaciones en caliente.
+     * Permite actualizar la configuración de validaciones en caliente sin
+     * necesidad de reiniciar la aplicación.
      *
-     * @param newOrderConfig Nueva configuración del orden (ej:
+     * @param newOrderConfig nueva configuración del orden (ej:
      * "fecha,solapamiento,articulo")
-     * @param stopOnFirstError Si debe parar en el primer error
+     * @param stopOnFirstError si debe parar en el primer error encontrado
      */
     public void updateValidationConfiguration(String newOrderConfig, boolean stopOnFirstError) {
         configLoader.updateConfiguration(newOrderConfig, stopOnFirstError);
     }
 
     /**
-     * Obtiene las validaciones disponibles.
+     * Obtiene la lista de validaciones disponibles en el sistema.
      *
-     * @return Lista de nombres de validaciones disponibles
+     * @return lista de nombres de validaciones disponibles
      */
     public java.util.List<String> getAvailableValidations() {
         return configLoader.getAvailableValidations();

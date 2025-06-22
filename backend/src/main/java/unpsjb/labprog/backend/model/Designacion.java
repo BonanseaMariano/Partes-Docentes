@@ -20,14 +20,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Clase que representa una Designación de un docente a un cargo
- * 
- * @see Cargo
- * @see Persona
+ * Entidad que representa la designación de una persona a un cargo específico.
+ * Establece la relación entre docentes y los cargos que desempeñan.
+ *
+ * @author Mariano Bonansea
+ * @version 1.0
  */
 @Entity
 @Table(name = "designaciones", uniqueConstraints = @UniqueConstraint(name = "uk_designacion", columnNames = {
-        "persona_dni", "cargo_id", "situacion_revista" }))
+    "persona_dni", "cargo_id", "situacion_revista"}))
 @Getter
 @Setter
 @NoArgsConstructor

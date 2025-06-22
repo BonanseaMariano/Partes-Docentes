@@ -26,11 +26,11 @@ import lombok.Setter;
 import unpsjb.labprog.backend.model.enums.Estado;
 
 /**
- * Clase que representa una Licencia solicitada por un docente
+ * Entidad que representa una licencia solicitada por un docente. Incluye el
+ * período de licencia, motivo y estado de validación.
  *
- * @see Persona
- * @see Designacion
- * @see ArticuloLicencia
+ * @author Mariano Bonansea
+ * @version 1.0
  */
 @Entity
 @Table(name = "licencias")

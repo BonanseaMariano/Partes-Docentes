@@ -6,19 +6,39 @@ import unpsjb.labprog.backend.model.Cargo;
 import unpsjb.labprog.backend.model.enums.TipoDesignacion;
 
 /**
- * Validador para verificar la relación entre tipo de designación y división
- * asignada. Implementa el patrón Singleton requerido por el
- * CargoValidatorFactory.
+ * Validador específico para verificar la correcta relación entre tipo de
+ * designación y división asignada en los cargos. Implementa el patrón Singleton
+ * requerido por CargoValidatorFactory.
+ *
+ * <p>
+ * Reglas de validación:</p>
+ * <ul>
+ * <li>ESPACIO_CURRICULAR debe tener división asignada</li>
+ * <li>CARGO no debe tener división asignada</li>
+ * </ul>
+ *
+ * @author Mariano Bonansea
+ * @version 1.0
  */
 public class TipodesignaciondivisionValidator implements Validator<Cargo> {
 
-    // Singleton
+    /**
+     * Instancia única del validador (patrón Singleton)
+     */
     private static TipodesignaciondivisionValidator instance = null;
 
+    /**
+     * Constructor privado para implementar el patrón Singleton.
+     */
     private TipodesignaciondivisionValidator() {
         // Constructor privado para Singleton
     }
 
+    /**
+     * Obtiene la instancia única del validador.
+     *
+     * @return la instancia única del validador
+     */
     public static TipodesignaciondivisionValidator getInstance() {
         if (instance == null) {
             instance = new TipodesignaciondivisionValidator();
@@ -26,6 +46,12 @@ public class TipodesignaciondivisionValidator implements Validator<Cargo> {
         return instance;
     }
 
+    /**
+     * Valida la relación entre tipo de designación y división asignada.
+     *
+     * @param cargo el cargo a validar
+     * @throws BusinessLogicException si la relación tipo-división es incorrecta
+     */
     @Override
     public void validate(Cargo cargo) throws BusinessLogicException {
         // Validaciones para ESPACIO_CURRICULAR

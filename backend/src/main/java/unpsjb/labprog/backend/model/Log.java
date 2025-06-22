@@ -14,9 +14,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Clase que representa un Log de licencia del sistema
+ * Entidad que representa un registro de log del sistema. Almacena información
+ * sobre eventos y validaciones de licencias.
  *
- * @see Licencia
+ * @author Mariano Bonansea
+ * @version 1.0
  */
 @Entity
 @Table(name = "logs")

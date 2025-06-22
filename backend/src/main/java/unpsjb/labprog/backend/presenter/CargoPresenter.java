@@ -28,39 +28,38 @@ import unpsjb.labprog.backend.model.enums.Turno;
 import unpsjb.labprog.backend.utils.constants.AppConstants;
 
 /**
- * Controlador REST para la gestión de cargos en el sistema educativo.
- * Proporciona endpoints para crear, consultar, actualizar y eliminar cargos.
- * Los cargos representan posiciones o roles dentro de la institución educativa.
+ * Controlador REST para la gestión de cargos del sistema. Proporciona endpoints
+ * para operaciones CRUD sobre cargos y consulta de horarios, incluyendo
+ * espacios curriculares y puestos administrativos.
  *
- * @see Cargo
+ * @author Mariano Bonansea
+ * @version 1.0
  */
 @RestController
 @RequestMapping("cargos")
 public class CargoPresenter {
 
     /**
-     * Logger de la clase para registrar eventos y mensajes.
+     * Logger para registrar eventos de la clase.
      */
     private static final Logger logger = Logger.getLogger(CargoPresenter.class.getSimpleName());
 
     /**
-     * Servicio que implementa la lógica de negocio para las operaciones con
-     * cargos.
+     * Servicio de lógica de negocio para cargos.
      */
     @Autowired
     private CargoService service;
 
     /**
-     * Servicio que implementa la lógica de negocio para los horarios.
+     * Servicio de lógica de negocio para horarios.
      */
     @Autowired
     private HorarioService horarioService;
 
     /**
-     * Obtiene todos los cargos en el sistema
+     * Obtiene todos los cargos registrados en el sistema.
      *
-     * @return ResponseEntity con la lista completa de cargos si la operación es
-     * exitosa
+     * @return respuesta con la lista completa de cargos
      */
     @GetMapping
     public ResponseEntity<Object> findAll() {
@@ -68,10 +67,10 @@ public class CargoPresenter {
     }
 
     /**
-     * Busca un cargo por su ID
+     * Busca un cargo por su identificador único.
      *
-     * @param id ID del cargo
-     * @return ResponseEntity con el cargo encontrado o mensaje de error
+     * @param id identificador del cargo
+     * @return respuesta con el cargo encontrado o mensaje de error
      */
     @GetMapping("/{id}")
     public ResponseEntity<Object> findById(@PathVariable int id) {
@@ -83,9 +82,8 @@ public class CargoPresenter {
     /**
      * Crea un nuevo cargo en el sistema.
      *
-     * @param aCargo Objeto Cargo con los datos a registrar
-     * @return ResponseEntity con un mensaje de éxito si la operación es
-     * correcta o error en caso contrario
+     * @param aCargo datos del cargo a crear
+     * @return respuesta con mensaje de éxito o error
      */
     @PostMapping
     public ResponseEntity<Object> create(@RequestBody Cargo aCargo) {

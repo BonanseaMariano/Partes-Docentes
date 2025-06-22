@@ -17,32 +17,27 @@ import unpsjb.labprog.backend.business.service.ArticuloLicenciaService;
 import unpsjb.labprog.backend.model.ArticuloLicencia;
 
 /**
- * Controlador REST para la gestión de artículos de licencia en el sistema
- * educativo.
- * Proporciona endpoints para crear, consultar, actualizar y eliminar artículos
- * de
- * licencia.
- * Los artículos de licencia representan permisos o ausencias de personal dentro
- * de la institución educativa.
- * 
- * @see ArticuloLicencia
+ * Controlador REST para la gestión de artículos de licencia. Proporciona
+ * endpoints para operaciones CRUD sobre artículos de licencia, que definen los
+ * tipos de permisos y ausencias disponibles en el sistema.
+ *
+ * @author Mariano Bonansea
+ * @version 1.0
  */
 @RestController
 @RequestMapping("articulos-licencias")
 public class ArticuloLicenciaPresenter {
 
     /**
-     * Servicio que implementa la lógica de negocio para las operaciones con
-     * articulos-licencias.
+     * Servicio de lógica de negocio para artículos de licencia.
      */
     @Autowired
     private ArticuloLicenciaService service;
 
     /**
-     * Obtiene todas las licencias registradas en el sistema.
-     * 
-     * @return ResponseEntity con la lista completa de licencias si la operación
-     *         es exitosa
+     * Obtiene todos los artículos de licencia registrados en el sistema.
+     *
+     * @return respuesta con la lista completa de artículos de licencia
      */
     @GetMapping
     public ResponseEntity<Object> findAll() {
@@ -50,11 +45,10 @@ public class ArticuloLicenciaPresenter {
     }
 
     /**
-     * Busca un articuloLicencia específica por su identificador único.
-     * 
-     * @param id Identificador único de la licencia a buscar
-     * @return ResponseEntity con la licencia encontrada o un mensaje de error si
-     *         no existe
+     * Busca un artículo de licencia por su identificador único.
+     *
+     * @param id identificador del artículo de licencia
+     * @return respuesta con el artículo encontrado o mensaje de error
      */
     @GetMapping("/{id}")
     public ResponseEntity<Object> findById(@PathVariable int id) {
@@ -64,11 +58,10 @@ public class ArticuloLicenciaPresenter {
     }
 
     /**
-     * Busca un articulo de licencia específico por su código.
-     * 
-     * @param articulo Código del artículo (ej: "5A")
-     * @return ResponseEntity con la licencia encontrada o un mensaje de error si
-     *         no existe
+     * Busca un artículo de licencia por su código específico.
+     *
+     * @param articulo código del artículo (ej: "5A")
+     * @return respuesta con el artículo encontrado o mensaje de error
      */
     @GetMapping("/articulo/{articulo}")
     public ResponseEntity<Object> findByArticulo(@PathVariable String articulo) {
@@ -78,19 +71,16 @@ public class ArticuloLicenciaPresenter {
     }
 
     /**
-     * Crea una nuevo articulo de licencia en el sistema.
-     * 
-     * @param aArticuloLicencia Objeto articulo de licencia con los datos a
-     *                          registrar
-     * @return ResponseEntity con un mensaje de éxito si la operación es correcta o
-     *         error en caso contrario
+     * Crea un nuevo artículo de licencia en el sistema.
+     *
+     * @param aArticuloLicencia datos del artículo de licencia a crear
+     * @return respuesta con mensaje de éxito o error
      */
     @PostMapping
     public ResponseEntity<Object> create(@RequestBody ArticuloLicencia aArticuloLicencia) {
         try {
             ArticuloLicencia createdArticuloLicencia = service.save(aArticuloLicencia);
 
-            // Formatear el mensaje
             String mensaje = String.format(
                     "Artículo de licencia %s creado correctamente",
                     createdArticuloLicencia.getArticulo());
@@ -102,16 +92,13 @@ public class ArticuloLicenciaPresenter {
     }
 
     /**
-     * Actualiza un articulo de licencia existente en el sistema.
-     * 
-     * @param aArticuloLicencia Objeto Articulo de licencia con los datos
-     *                          actualizados
-     * @return ResponseEntity con un mensaje de éxito si la operación es correcta o
-     *         error en caso contrario
+     * Actualiza un artículo de licencia existente en el sistema.
+     *
+     * @param aArticuloLicencia datos actualizados del artículo de licencia
+     * @return respuesta con mensaje de éxito o error
      */
     @PutMapping
     public ResponseEntity<Object> update(@RequestBody ArticuloLicencia aArticuloLicencia) {
-        // Verificar si la el articulo de licencia existe
         ArticuloLicencia existingArticuloLicencia = service.findById(aArticuloLicencia.getId());
         if (existingArticuloLicencia == null) {
             return Response.notFound(
@@ -121,7 +108,6 @@ public class ArticuloLicenciaPresenter {
         try {
             ArticuloLicencia updatedArticuloLicencia = service.save(aArticuloLicencia);
 
-            // Formatear el mensaje
             String mensaje = String.format(
                     "Artículo de licencia %s creado correctamente",
                     updatedArticuloLicencia.getArticulo());
@@ -134,11 +120,10 @@ public class ArticuloLicenciaPresenter {
     }
 
     /**
-     * Elimina una artículo de licencia existente según su ID.
-     * 
-     * @param id Identificador único de la artículo de licencia a eliminar
-     * @return ResponseEntity con un mensaje de éxito si la operación es correcta o
-     *         error en caso contrario
+     * Elimina un artículo de licencia del sistema.
+     *
+     * @param id identificador del artículo de licencia a eliminar
+     * @return respuesta con mensaje de éxito o error
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> delete(@PathVariable int id) {
@@ -160,11 +145,10 @@ public class ArticuloLicenciaPresenter {
     }
 
     /**
-     * Busca articulos de licencia por un término de búsqueda.
-     * 
-     * @param term el término de búsqueda
-     * @return una lista de articulos de licencia que coinciden con el término de
-     *         búsqueda
+     * Busca artículos de licencia que coincidan con un término de búsqueda.
+     *
+     * @param term término de búsqueda
+     * @return respuesta con la lista de artículos que coinciden con el término
      */
     @GetMapping("/search/{term}")
     public ResponseEntity<Object> search(@PathVariable String term) {

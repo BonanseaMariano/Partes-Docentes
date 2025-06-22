@@ -2,17 +2,46 @@ import { Injectable, ElementRef } from '@angular/core';
 import { AnimationService } from './core/services/animation.service';
 import { NavbarAnimations } from './navbar-animations.config';
 
+/**
+ * Servicio especializado para animaciones del navbar principal del sistema.
+ * 
+ * Gestiona todas las animaciones relacionadas con la barra de navegación,
+ * incluyendo efectos de entrada inicial, transiciones de scroll, animaciones
+ * de dropdowns y estados hover. Utiliza configuraciones predefinidas y
+ * el AnimationService central para crear una experiencia de navegación
+ * fluida y profesional en la aplicación de gestión de partes docente.
+ * 
+ * @author Mariano Bonansea
+ * @version 1.0
+ */
 @Injectable({
     providedIn: 'root'
 })
 export class NavbarAnimationService {
 
+    /** Map para rastrear estados de dropdowns abiertos/cerrados */
     private dropdownStates = new Map<string, boolean>();
 
+    /**
+     * Constructor del servicio NavbarAnimationService.
+     * 
+     * @param animationService - Servicio central de animaciones para delegación de efectos complejos
+     */
     constructor(private animationService: AnimationService) { }
 
     /**
-     * Ejecuta las animaciones de entrada inicial del navbar
+     * Ejecuta las animaciones de entrada inicial del navbar.
+     * 
+     * Aplica secuencia de animaciones predefinida para la carga inicial
+     * del navbar, creando una entrada suave y profesional.
+     * 
+     * @param container - Referencia al contenedor del navbar para aplicar animaciones
+     * @example
+     * ```typescript
+     * ngAfterViewInit() {
+     *   this.navbarAnimationService.animateInitialEntrance(this.containerRef);
+     * }
+     * ```
      */
     animateInitialEntrance(container: ElementRef): void {
         this.animationService.executeAnimationSequence(
@@ -22,7 +51,21 @@ export class NavbarAnimationService {
     }
 
     /**
-     * Anima el efecto de scroll del navbar
+     * Anima el efecto de scroll del navbar con transición de estado.
+     * 
+     * Aplica animaciones de cambio de apariencia cuando el usuario
+     * hace scroll, típicamente cambiando opacidad, color o sombra.
+     * 
+     * @param container - Referencia al contenedor del navbar
+     * @param isScrolled - Indica si la página ha sido scrolleada
+     * @example
+     * ```typescript
+     * @HostListener('window:scroll')
+     * onScroll() {
+     *   const scrolled = window.pageYOffset > 50;
+     *   this.navbarAnimationService.animateScrollEffect(this.containerRef, scrolled);
+     * }
+     * ```
      */
     animateScrollEffect(container: ElementRef, isScrolled: boolean): void {
         const navbar = container.nativeElement.querySelector('.navbar');

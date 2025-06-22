@@ -13,19 +13,22 @@ import unpsjb.labprog.backend.model.enums.TipoDesignacion;
 import unpsjb.labprog.backend.model.enums.Turno;
 
 /**
- * Repositorio para la entidad Cargo Proporciona métodos para acceder y
- * manipular los datos de los cargos
+ * Repositorio para la gestión de entidades Cargo. Proporciona métodos para
+ * consultas específicas sobre cargos.
+ *
+ * @author Mariano Bonansea
+ * @version 1.0
  */
 @Repository
 public interface CargoRepository extends JpaRepository<Cargo, Integer> {
 
     /**
-     * Busca un cargo por cualquiera de sus campos o por los campos de la
-     * División asociada
+     * Realiza una búsqueda general por campos del cargo y de su división
+     * asociada. Busca en nombre, carga horaria, tipo de designación y datos de
+     * la división.
      *
-     * @param term Cadena a buscar en los campos del cargo o de su división
-     * asociada
-     * @return Cargos que coinciden con la búsqueda
+     * @param term Término a buscar en los campos del cargo o división
+     * @return Lista de cargos que coinciden con la búsqueda
      */
     @Query("SELECT c FROM Cargo c LEFT JOIN c.division d WHERE "
             + "UPPER(c.nombre) LIKE CONCAT('%', UPPER(?1), '%') OR "
@@ -39,16 +42,15 @@ public interface CargoRepository extends JpaRepository<Cargo, Integer> {
     List<Cargo> search(String term);
 
     /**
-     * Busca un cargo por nombre, tipo designación y, opcionalmente, por los
-     * atributos de la división (año, número y turno).
+     * Busca un cargo específico por nombre, tipo de designación y datos de
+     * división. Los parámetros de división son opcionales (pueden ser null).
      *
-     * @param nombre Nombre del cargo a buscar
-     * @param tipoDesignacion Tipo de designación del cargo a buscar
+     * @param nombre Nombre del cargo
+     * @param tipoDesignacion Tipo de designación del cargo
      * @param anio Año de la división (opcional)
      * @param numDivision Número de la división (opcional)
      * @param turno Turno de la división (opcional)
-     * @return Un cargo que coincida con los criterios de búsqueda o vacío si no
-     * se encuentra
+     * @return Optional con el cargo encontrado, vacío si no existe
      */
     @Query("SELECT c FROM Cargo c LEFT JOIN c.division d "
             + "WHERE c.nombre = :nombre AND c.tipoDesignacion = :tipoDesignacion "
@@ -63,12 +65,12 @@ public interface CargoRepository extends JpaRepository<Cargo, Integer> {
             @Param("turno") Turno turno);
 
     /**
-     * Busca cargos de tipo ESPACIO_CURRICULAR con división de un turno
-     * específico que estén vigentes en una fecha determinada
+     * Busca espacios curriculares de un turno específico que estén vigentes en
+     * una fecha.
      *
      * @param turno Turno de la división
-     * @param fecha Fecha para verificar vigencia del cargo
-     * @return Lista de cargos que cumplen los criterios
+     * @param fecha Fecha para verificar vigencia
+     * @return Lista de espacios curriculares vigentes
      */
     @Query("SELECT c FROM Cargo c JOIN c.division d "
             + "WHERE c.tipoDesignacion = 'ESPACIO_CURRICULAR' "
@@ -80,13 +82,13 @@ public interface CargoRepository extends JpaRepository<Cargo, Integer> {
             @Param("fecha") java.time.LocalDate fecha);
 
     /**
-     * Busca cargos de tipo ESPACIO_CURRICULAR con división de un turno y año
-     * específicos que estén vigentes en una fecha determinada
+     * Busca espacios curriculares de un turno y año específicos que estén
+     * vigentes en una fecha.
      *
      * @param turno Turno de la división
      * @param anio Año de la división
-     * @param fecha Fecha para verificar vigencia del cargo
-     * @return Lista de cargos que cumplen los criterios
+     * @param fecha Fecha para verificar vigencia
+     * @return Lista de espacios curriculares vigentes
      */
     @Query("SELECT c FROM Cargo c JOIN c.division d "
             + "WHERE c.tipoDesignacion = 'ESPACIO_CURRICULAR' "
@@ -100,11 +102,12 @@ public interface CargoRepository extends JpaRepository<Cargo, Integer> {
             @Param("fecha") java.time.LocalDate fecha);
 
     /**
-     * Obtiene los años únicos de divisiones que tienen cargos de tipo
-     * ESPACIO_CURRICULAR vigentes para un turno específico
+     * Obtiene los años únicos de divisiones con espacios curriculares vigentes
+     * para un turno. Útil para filtrar años disponibles en interfaces de
+     * usuario.
      *
      * @param turno Turno de la división
-     * @param fecha Fecha para verificar vigencia del cargo
+     * @param fecha Fecha para verificar vigencia
      * @return Lista de años únicos ordenados
      */
     @Query("SELECT DISTINCT d.anio FROM Cargo c JOIN c.division d "

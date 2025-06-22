@@ -15,6 +15,18 @@ import { ReporteComponent } from './reporte/reporte.component';
 import { ReporteConceptoComponent } from './reporte-concepto/reporte-concepto.component';
 import { HorarioComponent } from './horario/horario.component';
 
+/**
+ * Configuración de rutas principales del sistema de gestión de partes docente.
+ * 
+ * Define el mapeado completo entre URLs y componentes de la aplicación,
+ * incluyendo rutas para gestión de personas, divisiones, cargos, designaciones,
+ * licencias, reportes y funcionalidades especializadas como parte diario
+ * y visualización de horarios. Establece la navegación y estructura
+ * organizacional de toda la aplicación Angular.
+ * 
+ * @author Mariano Bonansea
+ * @version 1.0
+ */
 export const routes: Routes = [
     { path: "", component: HomeComponent },
     { path: "personas", component: PersonasComponent },

@@ -87,9 +87,16 @@
                       <div class="espacio-division">
                         <i class="fa fa-layer-group me-1"></i>{{ espacio.division }}
                       </div>
-                      <div class="espacio-docente" [class.docente-licencia]="espacio.docente_de_licencia"
+                      <!-- Mostrar docente solo si está asignado -->
+                      <div *ngIf="espacio.tiene_docente_asignado && espacio.docente" class="espacio-docente"
+                        [class.docente-licencia]="espacio.docente_de_licencia"
                         [title]="espacio.docente_de_licencia ? 'Docente de licencia' : ''">
                         <i class="fa fa-user me-1"></i>{{ espacio.docente }}
+                      </div>
+                      <!-- Mostrar indicador cuando no hay docente asignado -->
+                      <div *ngIf="!espacio.tiene_docente_asignado || !espacio.docente" class="espacio-sin-docente"
+                        title="Sin docente asignado">
+                        <i class="fa fa-exclamation-triangle me-1"></i>Sin docente
                       </div>
                     </div>
                     <!-- Mensaje cuando no hay espacios curriculares -->

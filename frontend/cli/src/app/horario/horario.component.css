@@ -240,6 +240,34 @@
     opacity: 0.5;
 }
 
+/* Estilo para espacios curriculares sin docente asignado */
+.espacio-sin-docente {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-xs);
+    color: var(--color-warning, #ffc107);
+    font-weight: var(--font-weight-medium);
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-style: italic;
+    opacity: 0.9;
+}
+
+.espacio-sin-docente i {
+    color: var(--color-warning, #ffc107);
+    opacity: 0.8;
+    font-size: 0.8em;
+}
+
+/* Hover effect para espacios sin docente */
+.espacio-sin-docente:hover {
+    color: var(--color-danger, #dc3545);
+}
+
+.espacio-sin-docente:hover i {
+    color: var(--color-danger, #dc3545);
+}
+
 /* Celda vacía */
 .celda-vacia {
     display: flex;

@@ -13,7 +13,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Clase que representa un Artículo de Licencia del reglamento docente
+ * Entidad que representa un artículo de licencia del reglamento docente. Define
+ * los tipos de licencias disponibles con su código y descripción.
+ *
+ * @author Mariano Bonansea
+ * @version 1.0
  */
 @Entity
 @Table(name = "articulos_licencia")
@@ -23,7 +27,7 @@ import lombok.Setter;
 public class ArticuloLicencia {
 
     /**
-     * ID del artículo de licencia, generado automáticamente
+     * Identificador único del artículo de licencia.
      */
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "articulosLicencia_seq_gen")
@@ -31,14 +35,14 @@ public class ArticuloLicencia {
     private int id;
 
     /**
-     * Artículo de licencia, es unico y no nulo
+     * Código del artículo de licencia (ej: "5A", "7B").
      */
     @NotNull
     @Column(length = 10, nullable = false, unique = true)
     private String articulo;
 
     /**
-     * Descripción del artículo de licencia
+     * Descripción detallada del tipo de licencia.
      */
     @Column(length = 90)
     private String descripcion;

@@ -1,7 +1,11 @@
 package unpsjb.labprog.backend.model.enums;
 
 /**
- * Enumeration que representa los días de la semana.
+ * Enumeración que representa los días de la semana. Proporciona valores para
+ * cada día con nombres legibles para mostrar en la interfaz.
+ *
+ * @author Mariano Bonansea
+ * @version 1.0
  */
 public enum DiaSemana {
     LUNES("Lunes"),
@@ -19,9 +23,9 @@ public enum DiaSemana {
     }
 
     /**
-     * Obtiene el nombre para mostrar del día de la semana.
-     * 
-     * @return Nombre del día para mostrar
+     * Obtiene el nombre legible del día de la semana.
+     *
+     * @return nombre del día para mostrar en la interfaz
      */
     public String getDisplayName() {
         return displayName;

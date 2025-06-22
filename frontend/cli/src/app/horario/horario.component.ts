@@ -1,3 +1,16 @@
+/**
+ * @fileoverview Componente para la gestión y visualización de horarios académicos.
+ * Permite consultar los horarios de espacios curriculares por fecha, turno y año.
+ * 
+ * @description Este componente maneja la funcionalidad central para visualizar
+ * los horarios académicos de la institución. Proporciona filtros por turno, fecha
+ * y año académico, mostrando una grilla interactiva con los espacios curriculares
+ * distribuidos por días de la semana y horas académicas.
+ * 
+ * @author Mariano Bonansea
+ * @version 1.0
+ */
+
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, AfterViewInit, ElementRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -11,6 +24,26 @@ import { Turno } from '../models/turno';
 import { ArgentinaDateParserFormatter } from '../utils/argentina-date-formatter';
 import { HorarioAnimationService } from './horario-animation.service';
 
+/**
+ * Componente principal para la gestión de horarios académicos.
+ * 
+ * Este componente proporciona una interfaz completa para consultar y visualizar
+ * los horarios de espacios curriculares. Incluye filtros por turno (mañana, tarde, noche),
+ * fecha específica y año académico. Presenta los datos en una grilla organizada
+ * por días de la semana y horas académicas, facilitando la planificación educativa.
+ * 
+ * Características principales:
+ * - Filtrado por turno académico (mañana, tarde, noche)
+ * - Selección de fecha específica mediante datepicker
+ * - Filtro por año académico
+ * - Visualización en grilla de días x horas
+ * - Integración con servicios de animación
+ * - Navegación por URL con parámetros
+ * - Carga asíncrona de datos
+ * 
+ * @class HorarioComponent
+ * @implements {OnInit, AfterViewInit}
+ */
 @Component({
   selector: 'app-horario',
   standalone: true,
@@ -23,21 +56,87 @@ import { HorarioAnimationService } from './horario-animation.service';
 })
 export class HorarioComponent implements OnInit, AfterViewInit {
 
+  /**
+   * Datos del horario académico obtenidos del backend.
+   * Contiene la información completa de espacios curriculares organizados por día y hora.
+   * @type {HorarioDTO | null}
+   */
   horarioData: HorarioDTO | null = null;
+
+  /**
+   * Mensaje de error en caso de fallo en la carga de datos.
+   * @type {string | null}
+   */
   error: string | null = null;
+
+  /**
+   * Indicador del estado de carga de datos.
+   * Se utiliza para mostrar spinners y deshabilitar controles durante las consultas.
+   * @type {boolean}
+   */
   isLoading: boolean = false;
 
-  // Filtros
-  turnoSeleccionado: string = 'MANIANA'; // Usar la clave del enum, no el valor
-  fechaSeleccionada: NgbDateStruct = this.getFechaActual();
-  anioSeleccionado: number | null = null; // null significa "todos los años", cualquier número es un año específico
+  /**
+   * Turno académico seleccionado para el filtro.
+   * Por defecto se establece en 'MANIANA' (mañana).
+   * @type {string}
+   */
+  turnoSeleccionado: string = 'MANIANA';
 
-  // Opciones para los selectores
+  /**
+   * Fecha seleccionada para consultar el horario.
+   * Se inicializa con la fecha actual del sistema.
+   * @type {NgbDateStruct}
+   */
+  fechaSeleccionada: NgbDateStruct = this.getFechaActual();
+
+  /**
+   * Año académico seleccionado para el filtro.
+   * null significa "todos los años", cualquier número es un año específico.
+   * @type {number | null}
+   */
+  anioSeleccionado: number | null = null;
+
+  /**
+   * Lista de turnos académicos disponibles para el filtro.
+   * @readonly
+   * @type {Turno[]}
+   */
   turnos = Object.values(Turno);
-  aniosDisponibles: number[] = []; // Lista de años disponibles
+
+  /**
+   * Lista de años académicos disponibles obtenidos dinámicamente.
+   * @type {number[]}
+   */
+  aniosDisponibles: number[] = [];
+
+  /**
+   * Días de la semana laborables para la grilla de horarios.
+   * @readonly
+   * @type {DiaSemana[]}
+   */
   dias = [DiaSemana.LUNES, DiaSemana.MARTES, DiaSemana.MIERCOLES, DiaSemana.JUEVES, DiaSemana.VIERNES];
+
+  /**
+   * Horas académicas disponibles (1 a 8).
+   * @readonly
+   * @type {number[]}
+   */
   horas = Array.from({ length: 8 }, (_, i) => i + 1);
 
+  /**
+   * Constructor del componente de horarios.
+   * 
+   * Inicializa las dependencias necesarias para el funcionamiento del componente,
+   * incluyendo servicios de datos, navegación y animaciones.
+   * 
+   * @constructor
+   * @param {CargoService} cargoService - Servicio para consultas de cargos y horarios
+   * @param {ActivatedRoute} route - Servicio para acceder a parámetros de ruta
+   * @param {Router} router - Servicio de navegación
+   * @param {ElementRef} elementRef - Referencia al elemento DOM del componente
+   * @param {HorarioAnimationService} horarioAnimationService - Servicio de animaciones específicas
+   */
   constructor(
     private cargoService: CargoService,
     private route: ActivatedRoute,

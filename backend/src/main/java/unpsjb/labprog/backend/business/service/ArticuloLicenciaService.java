@@ -10,9 +10,11 @@ import unpsjb.labprog.backend.business.repository.ArticuloLicenciaRepository;
 import unpsjb.labprog.backend.model.ArticuloLicencia;
 
 /**
- * Servicio que implementa la lógica de negocio para la entidad ArticuloLicencia
- * 
- * @see ArticuloLicencia
+ * Servicio para la gestión de entidades ArticuloLicencia. Implementa la lógica
+ * de negocio para operaciones con artículos de licencia.
+ *
+ * @author Mariano Bonansea
+ * @version 1.0
  */
 @Service
 public class ArticuloLicenciaService {
@@ -21,17 +23,17 @@ public class ArticuloLicenciaService {
     private ArticuloLicenciaRepository repository;
 
     /**
-     * Busca todas las licencias registradas
-     * 
-     * @return Lista de todas las licencias
+     * Obtiene todos los artículos de licencia registrados.
+     *
+     * @return Lista de todos los artículos de licencia
      */
     public List<ArticuloLicencia> findAll() {
         return repository.findAll();
     }
 
     /**
-     * Busca un artículo de licencia por su ID
-     * 
+     * Busca un artículo de licencia por su ID.
+     *
      * @param id ID del artículo de licencia
      * @return Artículo de licencia encontrado o null si no existe
      */
@@ -40,9 +42,9 @@ public class ArticuloLicenciaService {
     }
 
     /**
-     * Busca un artículo de licencia por su código
-     * 
-     * @param articulo Código del artículo (ej: "5A")
+     * Busca un artículo de licencia por su código específico.
+     *
+     * @param articulo Código del artículo (ej: "5A", "10B")
      * @return Artículo de licencia encontrado o null si no existe
      */
     public ArticuloLicencia findByArticulo(String articulo) {
@@ -50,8 +52,8 @@ public class ArticuloLicenciaService {
     }
 
     /**
-     * Guarda un artículo de licencia
-     * 
+     * Guarda un nuevo artículo de licencia o actualiza uno existente.
+     *
      * @param articuloLicencia Artículo de licencia a guardar
      * @return Artículo de licencia guardado
      */
@@ -61,9 +63,9 @@ public class ArticuloLicenciaService {
     }
 
     /**
-     * Elimina un artículo de licencia por su id
-     * 
-     * @param id id del artículo de licencia a eliminar
+     * Elimina un artículo de licencia por su ID.
+     *
+     * @param id ID del artículo de licencia a eliminar
      */
     @Transactional
     public void delete(int id) {
@@ -71,11 +73,10 @@ public class ArticuloLicenciaService {
     }
 
     /**
-     * Busca articulos de licencia por un término de búsqueda.
-     * 
-     * @param term el término de búsqueda
-     * @return una lista de articulos de licencia que coinciden con el término de
-     *         búsqueda
+     * Busca artículos de licencia por un término de búsqueda general.
+     *
+     * @param term Término de búsqueda
+     * @return Lista de artículos de licencia que coinciden con el término
      */
     public List<ArticuloLicencia> search(String term) {
         return repository.search("%" + term.toUpperCase() + "%");

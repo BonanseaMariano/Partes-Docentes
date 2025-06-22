@@ -4,15 +4,59 @@ import html2canvas from 'html2canvas';
 import { ReporteConcepto } from '../../models/reporte-concepto';
 import { Reporte } from '../../models/reporte';
 
+/**
+ * Servicio especializado para generación de reportes PDF de conceptos de licencia.
+ * 
+ * Proporciona funcionalidades avanzadas para la creación de documentos PDF
+ * estructurados que incluyen estadísticas, gráficos y tablas detalladas
+ * sobre conceptos de licencias docentes. Utiliza jsPDF para la generación
+ * del documento y html2canvas para la captura de elementos gráficos complejos,
+ * asegurando reportes profesionales y visualmente atractivos para la gestión
+ * académica y administrativa.
+ * 
+ * @author Mariano Bonansea
+ * @version 1.0
+ */
 @Injectable({
     providedIn: 'root'
 })
 export class ReporteConceptoPdfService {
 
+    /**
+     * Constructor del servicio ReporteConceptoPdfService.
+     * 
+     * Inicializa el servicio de generación de PDFs sin dependencias externas.
+     */
     constructor() { }
 
     /**
-     * Genera y descarga el reporte en formato PDF
+     * Genera y descarga un reporte completo en formato PDF.
+     * 
+     * Crea un documento PDF estructurado que incluye encabezado institucional,
+     * estadísticas generales, gráficos interactivos capturados como imágenes,
+     * y tablas detalladas de información docente. El proceso es asíncrono debido
+     * a la captura de elementos gráficos del DOM.
+     * 
+     * @param reporteConcepto - Datos del reporte de concepto a incluir en el PDF
+     * @param showMonthlyChart - Indica si incluir el gráfico de distribución mensual
+     * @param showArticleLicenciasChart - Indica si incluir el gráfico de artículos de licencias
+     * @param showArticleDiasChart - Indica si incluir el gráfico de días por artículo
+     * @param getTotalLicenciasDocente - Función para calcular total de licencias por docente
+     * @param getDesignacionCount - Función para obtener cantidad de designaciones por docente
+     * @returns Promise que resuelve con el nombre del archivo PDF generado
+     * @throws Error si falla la generación del PDF o la captura de gráficos
+     * @example
+     * ```typescript
+     * const nombreArchivo = await this.pdfService.generarPDF(
+     *   reporte,
+     *   true,
+     *   true,
+     *   false,
+     *   (r) => r.licencias.length,
+     *   (r) => r.designaciones.length
+     * );
+     * console.log('PDF generado:', nombreArchivo);
+     * ```
      */
     async generarPDF(
         reporteConcepto: ReporteConcepto,

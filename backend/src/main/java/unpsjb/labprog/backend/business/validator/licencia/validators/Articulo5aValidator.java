@@ -9,22 +9,49 @@ import unpsjb.labprog.backend.exception.BusinessLogicException;
 import unpsjb.labprog.backend.model.Licencia;
 
 /**
- * Validador específico para artículo 5A: Enfermedad de corta evolución. Reglas:
- * Máximo 30 días por año y debe tener certificado médico. Implementa el patrón
- * Singleton requerido por el ValidatorFactory.
+ * Validador específico para licencias de artículo 5A: Enfermedad de corta
+ * evolución. Implementa el patrón Singleton requerido por
+ * LicenciaValidatorFactory.
+ *
+ * <p>
+ * Reglas de validación aplicadas:</p>
+ * <ul>
+ * <li>Máximo 30 días por año calendario</li>
+ * <li>Debe presentar certificado médico obligatorio</li>
+ * </ul>
+ *
+ * @author Mariano Bonansea
+ * @version 1.0
  */
 public class Articulo5aValidator implements Validator<Licencia> {
 
-    // Singleton
+    /**
+     * Instancia única del validador (patrón Singleton)
+     */
     private static Articulo5aValidator instance = null;
 
+    /**
+     * Máximo de días permitidos por año para artículo 5A
+     */
     private static final int MAX_DIAS_POR_ANIO = 30;
+
+    /**
+     * Código del artículo que valida este validador
+     */
     private static final String ARTICULO_CODE = "5A";
 
+    /**
+     * Constructor privado para implementar el patrón Singleton.
+     */
     private Articulo5aValidator() {
         // Constructor privado para Singleton
     }
 
+    /**
+     * Obtiene la instancia única del validador.
+     *
+     * @return la instancia única del validador
+     */
     public static Articulo5aValidator getInstance() {
         if (instance == null) {
             instance = new Articulo5aValidator();
@@ -32,6 +59,13 @@ public class Articulo5aValidator implements Validator<Licencia> {
         return instance;
     }
 
+    /**
+     * Valida las reglas específicas del artículo 5A. Solo aplica para licencias
+     * con artículo 5A.
+     *
+     * @param licencia la licencia a validar
+     * @throws BusinessLogicException si no cumple las reglas del artículo 5A
+     */
     @Override
     public void validate(Licencia licencia) throws BusinessLogicException {
         // Solo aplica para artículo 5A

@@ -23,23 +23,24 @@ import unpsjb.labprog.backend.model.enums.Turno;
 import unpsjb.labprog.backend.utils.constants.AppConstants;
 
 /**
- * Controlador REST para la gestión de divisiones escolares. Proporciona
- * endpoints para crear, consultar, actualizar y eliminar divisiones. Las
- * divisiones representan cursos o grupos de estudiantes dentro de una
- * institución educativa.
+ * Controlador REST para la gestión de divisiones académicas. Proporciona
+ * endpoints para operaciones CRUD sobre divisiones escolares, incluyendo
+ * consultas por año, turno y número de división.
+ *
+ * @author Mariano Bonansea
+ * @version 1.0
  */
 @RestController
 @RequestMapping("divisiones")
 public class DivisionPresenter {
 
     /**
-     * Logger de la clase para registrar eventos y mensajes.
+     * Logger para registrar eventos de la clase.
      */
-    private Logger logger = Logger.getLogger(getClass().getSimpleName());
+    private static final Logger logger = Logger.getLogger(DivisionPresenter.class.getSimpleName());
 
     /**
-     * Servicio que implementa la lógica de negocio para las operaciones con
-     * divisiones.
+     * Servicio de lógica de negocio para divisiones.
      */
     @Autowired
     private DivisionService service;
@@ -192,7 +193,7 @@ public class DivisionPresenter {
             @RequestParam(required = true) Integer numDivision,
             @RequestParam(required = true) Turno turno) {
 
-        Division division = service.findByAnioNumTruno(anio, numDivision, turno);
+        Division division = service.findByAnioNumTurno(anio, numDivision, turno);
 
         return division != null ? Response.ok(division)
                 : Response.notFound(String.format("No se encontró división con año: %d, número: %d, turno: %s", anio,
