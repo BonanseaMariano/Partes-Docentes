@@ -63,12 +63,14 @@ public class HorarioService {
             List<Designacion> designacionesActivas = designacionRepository
                     .findDesignacionActivaPorCargoYFecha(cargo.getId(), fecha);
 
+            String nombreDivision = obtenerNombreDivision(cargo);
+
             if (!designacionesActivas.isEmpty()) {
+                // Caso: Espacio curricular CON docente asignado
                 Designacion designacionActiva = designacionesActivas.get(designacionesActivas.size() - 1);
 
                 for (Horario horario : cargo.getHorarios()) {
                     String nombreDocente = obtenerNombreCompleto(designacionActiva.getPersona());
-                    String nombreDivision = obtenerNombreDivision(cargo);
 
                     boolean docenteDeLicencia = licenciaRepository.tienePersonaLicenciaActivaEnFecha(
                             designacionActiva.getPersona(), fecha);
@@ -79,6 +81,19 @@ public class HorarioService {
                             nombreDivision,
                             nombreDocente,
                             docenteDeLicencia
+                    );
+
+                    grilla.get(horario.getDia()).add(horaEspacio);
+                }
+            } else {
+                // Caso: Espacio curricular SIN docente asignado
+                for (Horario horario : cargo.getHorarios()) {
+                    HoraEspacioCurricular horaEspacio = new HoraEspacioCurricular(
+                            horario.getHora(),
+                            cargo.getNombre(),
+                            nombreDivision,
+                            null, // Sin docente asignado
+                            false // No puede estar de licencia si no hay docente
                     );
 
                     grilla.get(horario.getDia()).add(horaEspacio);
@@ -113,12 +128,14 @@ public class HorarioService {
             List<Designacion> designacionesActivas = designacionRepository
                     .findDesignacionActivaPorCargoYFecha(cargo.getId(), fecha);
 
+            String nombreDivision = obtenerNombreDivision(cargo);
+
             if (!designacionesActivas.isEmpty()) {
+                // Caso: Espacio curricular CON docente asignado
                 Designacion designacionActiva = designacionesActivas.get(designacionesActivas.size() - 1);
 
                 for (Horario horario : cargo.getHorarios()) {
                     String nombreDocente = obtenerNombreCompleto(designacionActiva.getPersona());
-                    String nombreDivision = obtenerNombreDivision(cargo);
 
                     boolean docenteDeLicencia = licenciaRepository.tienePersonaLicenciaActivaEnFecha(
                             designacionActiva.getPersona(), fecha);
@@ -129,6 +146,19 @@ public class HorarioService {
                             nombreDivision,
                             nombreDocente,
                             docenteDeLicencia
+                    );
+
+                    grilla.get(horario.getDia()).add(horaEspacio);
+                }
+            } else {
+                // Caso: Espacio curricular SIN docente asignado
+                for (Horario horario : cargo.getHorarios()) {
+                    HoraEspacioCurricular horaEspacio = new HoraEspacioCurricular(
+                            horario.getHora(),
+                            cargo.getNombre(),
+                            nombreDivision,
+                            null, // Sin docente asignado
+                            false // No puede estar de licencia si no hay docente
                     );
 
                     grilla.get(horario.getDia()).add(horaEspacio);
@@ -171,12 +201,14 @@ public class HorarioService {
             List<Designacion> designacionesActivas = designacionRepository
                     .findDesignacionActivaPorCargoYFecha(cargo.getId(), fecha);
 
+            String nombreDivision = obtenerNombreDivision(cargo);
+
             if (!designacionesActivas.isEmpty()) {
+                // Caso: Espacio curricular CON docente asignado
                 Designacion designacionActiva = designacionesActivas.get(designacionesActivas.size() - 1);
 
                 for (Horario horario : cargo.getHorarios()) {
                     String nombreDocente = obtenerNombreCompleto(designacionActiva.getPersona());
-                    String nombreDivision = obtenerNombreDivision(cargo);
 
                     boolean docenteDeLicencia = licenciaRepository.tienePersonaLicenciaActivaEnFecha(
                             designacionActiva.getPersona(), fecha);
@@ -187,6 +219,19 @@ public class HorarioService {
                             nombreDivision,
                             nombreDocente,
                             docenteDeLicencia
+                    );
+
+                    grilla.get(horario.getDia()).add(horaEspacio);
+                }
+            } else {
+                // Caso: Espacio curricular SIN docente asignado
+                for (Horario horario : cargo.getHorarios()) {
+                    HoraEspacioCurricular horaEspacio = new HoraEspacioCurricular(
+                            horario.getHora(),
+                            cargo.getNombre(),
+                            nombreDivision,
+                            null, // Sin docente asignado
+                            false // No puede estar de licencia si no hay docente
                     );
 
                     grilla.get(horario.getDia()).add(horaEspacio);

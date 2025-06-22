@@ -20,11 +20,12 @@
 5. [Arquitectura del Sistema](#-arquitectura-del-sistema)
 6. [Modelo de Dominio](#-modelo-de-dominio)
 7. [Criterios de Satisfacción](#-criterios-de-satisfacción)
-8. [Casos de Verificación](#-casos-de-verificación)
-9. [Configuración del Entorno](#-configuración-del-entorno)
-10. [Estructura del Proyecto](#-estructura-del-proyecto)
-11. [Tecnologías Utilizadas](#-tecnologías-utilizadas)
-12. [Sistema de Validaciones Dinámicas](#-sistema-de-validaciones-dinámicas)
+8. [Verificación y Testing Automatizado](#-verificación-y-testing-automatizado)
+9. [Casos de Verificación](#-casos-de-verificación)
+10. [Configuración del Entorno](#-configuración-del-entorno)
+11. [Estructura del Proyecto](#-estructura-del-proyecto)
+12. [Tecnologías Utilizadas](#-tecnologías-utilizadas)
+13. [Sistema de Validaciones Dinámicas](#-sistema-de-validaciones-dinámicas)
 
 ---
 
@@ -465,4 +466,293 @@ licencia.validation.order=fecha,designaciones,articulo,articulo42b,solapamiento
 
 ---
 
-*Este proyecto fue desarrollado como trabajo práctico para la materia Laboratorio de Programación y Lenguajes de la UNPSJB, enfocado en resolver las necesidades reales de gestión administrativa de la Escuela 775 de Puerto Madryn.*
+## ✅ Criterios de Satisfacción
+
+### Cobertura Completa con Pruebas Cucumber (BDD)
+
+El sistema incluye una **suite completa de pruebas automatizadas** usando Cucumber que verifica todos los criterios de satisfacción establecidos. Cada escenario está documentado en archivos `.feature` que pueden ejecutarse con `./lpl test`.
+
+#### **📊 1. Generación de Cargos y Espacios Curriculares**
+
+**✅ Criterio: Generar al menos 6 cargos de tipo "CARGO"**
+
+El sistema incluye **6 cargos institucionales** definidos en [`testing/features/Cargo.feature`](testing/features/Cargo.feature):
+
+| **N°** | **Nombre del Cargo** | **Tipo Designación** | **Carga Horaria** | **Status** |
+|--------|----------------------|----------------------|-------------------|------------|
+| 1      | Vicedirector/a       | CARGO                | 36 horas          | ✅ 200     |
+| 2      | Preceptor/a          | CARGO                | 36 horas          | ✅ 200     |
+| 3      | Auxiliar ADM         | CARGO                | 30 horas          | ✅ 200     |
+| 4      | Auxiliar ACAD        | CARGO                | 30 horas          | ✅ 200     |
+| 5      | Secretario/a         | CARGO                | 36 horas          | ✅ 200     |
+| 6      | Bibliotecario/a      | CARGO                | 30 horas          | ✅ 200     |
+
+**✅ Criterio: Generar al menos 25 espacios curriculares de tipo "ESPACIO_CURRICULAR"**
+
+El sistema incluye **26 espacios curriculares únicos** distribuidos entre las divisiones del establecimiento, definidos en [`testing/features/Cargo.feature`](testing/features/Cargo.feature):
+
+| **N°** | **Espacio Curricular** | **Año** | **División** | **Turno** | **Carga Horaria** | **Status** |
+|--------|------------------------|---------|--------------|-----------|-------------------|------------|
+| 1      | Historia               | 5º      | 2º           | Mañana    | 4 horas           | ✅ 200     |
+| 2      | Geografía              | 3º      | 1º           | Tarde     | 3 horas           | ✅ 200     |
+| 3      | Matemática             | 1º      | 1º           | Tarde     | 6 horas           | ✅ 200     |
+| 4      | Física                 | 2º      | 3º           | Mañana    | 6 horas           | ✅ 200     |
+| 5      | Tecnología             | 4º      | 3º           | Mañana    | 6 horas           | ✅ 200     |
+| 6      | Educación Física       | 1º      | 2º           | Mañana    | 3 horas           | ✅ 200     |
+| 7      | Matemática             | 2º      | 1º           | Tarde     | 4 horas           | ✅ 200     |
+| 8      | Lengua                 | 3º      | 2º           | Mañana    | 5 horas           | ✅ 200     |
+| 9      | Ciencias               | 4º      | 1º           | Tarde     | 4 horas           | ✅ 200     |
+| 10     | Historia               | 2º      | 2º           | Tarde     | 3 horas           | ✅ 200     |
+| 11     | Arte                   | 1º      | 3º           | Mañana    | 2 horas           | ✅ 200     |
+| 12     | Música                 | 5º      | 1º           | Tarde     | 2 horas           | ✅ 200     |
+| 13     | Tecnología             | 3º      | 3º           | Tarde     | 3 horas           | ✅ 200     |
+| 14     | Lengua                 | 1º      | 1º           | Tarde     | 5 horas           | ✅ 200     |
+| 15     | Historia               | 3º      | 1º           | Mañana    | 4 horas           | ✅ 200     |
+| 16     | Matemática             | 3º      | 2º           | Mañana    | 6 horas           | ✅ 200     |
+| 17     | Física                 | 4º      | 1º           | Tarde     | 4 horas           | ✅ 200     |
+| 18     | Geografía              | 2º      | 2º           | Tarde     | 3 horas           | ✅ 200     |
+| 19     | Ciencias               | 2º      | 1º           | Tarde     | 4 horas           | ✅ 200     |
+| 20     | Arte                   | 2º      | 3º           | Mañana    | 2 horas           | ✅ 200     |
+| 21     | Música                 | 1º      | 2º           | Mañana    | 2 horas           | ✅ 200     |
+| 22     | Educación Física       | 5º      | 1º           | Tarde     | 3 horas           | ✅ 200     |
+| 23     | Lengua                 | 4º      | 3º           | Mañana    | 5 horas           | ✅ 200     |
+| 24     | Historia               | 1º      | 3º           | Mañana    | 3 horas           | ✅ 200     |
+| 25     | Geografía              | 5º      | 2º           | Mañana    | 4 horas           | ✅ 200     |
+| 26     | Ciencias               | 3º      | 3º           | Tarde     | 3 horas           | ✅ 200     |
+
+### **📊 Resumen de Espacios Curriculares por Materia**
+
+| **Materia**       | **Cantidad de Espacios** | **Distribución por División** |
+|-------------------|---------------------------|-------------------------------|
+| Matemática        | 3 espacios                | 1º1ºT, 2º1ºT, 3º2ºM         |
+| Historia          | 4 espacios                | 1º3ºM, 2º2ºT, 3º1ºM, 5º2ºM |
+| Geografía         | 3 espacios                | 2º2ºT, 3º1ºT, 5º2ºM         |
+| Física            | 2 espacios                | 2º3ºM, 4º1ºT                |
+| Tecnología        | 2 espacios                | 3º3ºT, 4º3ºM                |
+| Lengua            | 3 espacios                | 1º1ºT, 3º2ºM, 4º3ºM         |
+| Ciencias          | 3 espacios                | 2º1ºT, 3º3ºT, 4º1ºT         |
+| Educación Física  | 2 espacios                | 1º2ºM, 5º1ºT                |
+| Arte              | 2 espacios                | 1º3ºM, 2º3ºM                |
+| Música            | 2 espacios                | 1º2ºM, 5º1ºT                |
+
+**Total**: 26 espacios curriculares únicos distribuidos entre años 1º-5º, divisiones 1º-3º y turnos Mañana/Tarde.
+
+#### **👥 2. Alta de Personal con Validaciones Específicas**
+
+**✅ Criterio: Generar al menos 10 personas nuevas**
+
+*Archivo: [`testing/features/Persona.feature`](testing/features/Persona.feature)*
+```gherkin
+# 22 personas exitosas + casos de error
+| DNI      | nombre      | apellido        | status |
+| 10100100 | Alberto     | Lopez           |    200 |
+| 20200200 | Susana      | Álvarez         |    200 |
+| 30300300 | Pedro       | Benítez         |    200 |
+| 40400400 | Marisa      | Amuchástegui    |    200 |
+| 50500500 | Raúl        | Gómez           |    200 |
+# ... hasta 22 personas más
+```
+
+#### **🎯 3. Designaciones con Validaciones Complejas**
+
+**✅ 2 personas en cargos NO cubiertos**
+
+*Archivo: [`testing/features/Designar.feature`](testing/features/Designar.feature)*
+```gherkin
+| 20000000 | Rosalía     | Fernandez    | CARGO | Auxiliar ACAD |
+| 80800800 | Analía      | Rojas        | CARGO | Auxiliar ADM  |
+# Status: 200 - Designación exitosa
+```
+
+**⚠️ 1 persona en cargo YA cubierto (error esperado)**
+
+*Archivo: [`testing/features/Control_designacion.feature`](testing/features/Control_designacion.feature)*
+```gherkin
+| 30300300 | Pedro | Benítez | CARGO | Preceptor/a |
+# Status: 500 - Error: "cargo solicitado lo ocupa Susana Álvarez"
+```
+
+**✅ 2 personas en espacios curriculares NO cubiertos**
+
+*Archivo: [`testing/features/Designar.feature`](testing/features/Designar.feature)*
+```gherkin
+| 40400400 | Marisa | Amuchástegui | ESPACIO_CURRICULAR | Historia   |
+| 50500500 | Raúl   | Gómez        | ESPACIO_CURRICULAR | Geografía  |
+# Status: 200 - Designación exitosa
+```
+
+**⚠️ 1 persona en espacio curricular YA cubierto (error esperado)**
+
+*Archivo: [`testing/features/Control_designacion.feature`](testing/features/Control_designacion.feature)*
+```gherkin
+| 60600600 | Inés | Torres | ESPACIO_CURRICULAR | Geografía |
+# Status: 500 - Error: "lo ocupa Raúl Gómez para el período"
+```
+
+#### **🔄 4. Reemplazos por Licencias**
+
+**✅ Reemplazo correcto en cargo**
+
+*Archivo: [`testing/features/Control_licencia.feature`](testing/features/Control_licencia.feature)*
+```gherkin
+Escenario: 1 persona en cargo que cubre una licencia correctamente
+Dado que existe la persona
+  | DNI      | Nombre | Apellido |
+  | 70700700 | Jorge  | Dismal   |
+# Resultado: "Jorge Dismal ha sido designado/a como Preceptor/a exitosamente, 
+#            en reemplazo de Susana Álvarez"
+```
+
+**⚠️ Reemplazo con período incorrecto (error esperado)**
+
+*Archivo: [`testing/features/Control_licencia.feature`](testing/features/Control_licencia.feature)*
+```gherkin
+Escenario: 1 persona en cargo con período que NO coincide
+# Status: 500 - "Analía Rojas NO ha sido designado/a como Auxiliar ADM, 
+#               ya cuenta con Rosalía Fernandez asignada"
+```
+
+**✅ Reemplazo correcto en espacio curricular**
+
+*Archivo: [`testing/features/Control_licencia.feature`](testing/features/Control_licencia.feature)*
+```gherkin
+Escenario: 1 persona en espacio curricular que cubre licencia correctamente
+# Status: 200 - Reemplazo exitoso en espacio curricular
+```
+
+**⚠️ Reemplazo en espacio curricular con período incorrecto**
+
+*Archivo: [`testing/features/Control_licencia.feature`](testing/features/Control_licencia.feature)*
+```gherkin
+Escenario: 1 persona en espacio curricular con período NO coincidente
+# Status: 500 - Error de período no coincidente
+```
+
+#### **📜 5. Validación de Licencias por Artículos**
+
+**✅ Artículo 5A - Licencia por Enfermedad (máx 30 días/año + certificado)**
+
+*Archivo: [`testing/features/Control_licencia.feature`](testing/features/Control_licencia.feature)*
+
+**Casos Positivos:**
+```gherkin
+| 99100000 | Ermenegildo | Sabat | 5A | SI | ENFERMEDAD DE CORTA EVOLUCIÓN | 2023-05-07 | 2023-05-17 | 200 |
+| 99100000 | Ermenegildo | Sabat | 5A | SI | ENFERMEDAD DE CORTA EVOLUCIÓN | 2023-05-18 | 2023-05-31 | 200 |
+# Total: 25 días (dentro del límite de 30)
+```
+
+**Casos Negativos (verificación de topes):**
+```gherkin
+| 99100000 | Ermenegildo | Sabat | 5A | SI | ENFERMEDAD DE CORTA EVOLUCIÓN | 2023-06-01 | 2023-06-12 | 500 |
+# Error: "supera el tope de 30 días de licencia"
+
+| 20200200 | Susana | Álvarez | 5A | NO | ENFERMEDAD DE CORTA EVOLUCIÓN | 2023-06-10 | 2023-06-30 | 500 |
+# Error: "no presentó certificado médico"
+```
+
+**✅ Artículo 23A - Atención Familiar (máx 30 días/año)**
+
+**Casos Positivos:**
+```gherkin
+| 99200000 | María Rosa | Gallo | 23A | NO | ATENCIÓN DE UN MIEMBRO DEL GF | 2023-03-01 | 2023-03-15 | 200 |
+# 15 días aprobados
+```
+
+**Casos Negativos:**
+```gherkin
+| 99200000 | María Rosa | Gallo | 23A | NO | ATENCIÓN DE UN MIEMBRO DEL GF | 2023-04-12 | 2023-04-20 | 500 |
+# Error: "ya posee una licencia en el mismo período"
+
+| 11111111 | Susana | Giménez | 23A | NO | ATENCIÓN DE UN MIEMBRO DEL GF | 2024-08-12 | 2024-08-14 | 500 |
+# Error: "supera el tope de 30 días de licencia"
+```
+
+**✅ Artículo 36A - Asuntos Particulares (máx 2 días/mes, 6 días/año)**
+
+**Casos Positivos:**
+```gherkin
+| 99300000 | Homero | Manzi | 36A | NO | ASUNTOS PARTICULARES | 2023-05-08 | 2023-05-08 | 200 |
+| 99300000 | Homero | Manzi | 36A | NO | ASUNTOS PARTICULARES | 2023-05-11 | 2023-05-11 | 200 |
+# 2 días en mayo (dentro del límite mensual)
+```
+
+**Casos Negativos:**
+```gherkin
+| 99300000 | Homero | Manzi | 36A | NO | ASUNTOS PARTICULARES | 2023-05-20 | 2023-05-20 | 500 |
+# Error: "supera el tope de 2 días de licencia por mes"
+
+| 99300000 | Homero | Manzi | 36A | NO | ASUNTOS PARTICULARES | 2023-11-04 | 2023-11-04 | 500 |
+# Error: "supera el tope de 6 días de licencia por año"
+```
+
+#### **🚫 6. Casos de Error Específicos**
+
+**⚠️ Licencia a docente no designado**
+
+*Archivo: [`testing/features/Control_licencia.feature`](testing/features/Control_licencia.feature)*
+```gherkin
+| 99999999 | Raúl | Gutierrez | 36A | NO | ASUNTOS PARTICULARES | 2023-03-04 | 2023-03-04 | 500 |
+# Error: "el agente no posee ningún cargo en la institución"
+```
+
+**⚠️ Licencia sin designación activa en esa fecha**
+
+```gherkin
+| 88888888 | Marisa | Balaguer | 36A | NO | ASUNTOS PARTICULARES | 2023-03-04 | 2023-03-04 | 500 |
+# Error: "el agente no tiene designación ese día en la institución"
+```
+
+**⚠️ Licencia de una licencia ya otorgada (solapamiento)**
+
+```gherkin
+| 99200000 | María Rosa | Gallo | 23A | NO | ATENCIÓN DE UN MIEMBRO DEL GF | 2023-04-12 | 2023-04-20 | 500 |
+# Error: "ya posee una licencia en el mismo período"
+```
+
+#### **📊 7. Parte Diario de Novedades**
+
+**✅ Generación automática del parte diario**
+
+*Archivo: [`testing/features/Parte_diario.feature`](testing/features/Parte_diario.feature)*
+
+**Escenario 1: Verificar múltiples licencias en una fecha**
+```gherkin
+Escenario: Verificar el funcionamiento de licencias para un día
+# Fecha: 2023-05-15
+# Docentes con licencia: 9 personas
+# Artículos involucrados: 5A, 23A, 36A
+```
+
+**Escenario 2: Verificar evolución temporal**
+```gherkin
+Escenario: Verificar el parte diario luego de transcurridos 2 días
+# Fecha: 2023-05-17  
+# Docentes con licencia: 3 personas
+# Verificación de vencimiento automático
+```
+
+#### **📈 8. Resumen de Cobertura de Testing**
+
+| **Criterio de Satisfacción** | **Estado**   | **Cantidad**             | **Archivo Feature**                                                           |
+| ---------------------------- | ------------ | ------------------------ | ----------------------------------------------------------------------------- |
+| Cargos de designación        | ✅ **Cumple** | 6 cargos CARGO           | [`Cargo.feature`](testing/features/Cargo.feature)                             |
+| Espacios curriculares        | ✅ **Cumple** | 26 espacios únicos       | [`Cargo.feature`](testing/features/Cargo.feature)                             |
+| Personas nuevas              | ✅ **Cumple** | 22 personas              | [`Persona.feature`](testing/features/Persona.feature)                         |
+| Designaciones exitosas       | ✅ **Cumple** | 4 casos                  | [`Designar.feature`](testing/features/Designar.feature)                       |
+| Control de solapamientos     | ✅ **Cumple** | 8 errores                | [`Control_designacion.feature`](testing/features/Control_designacion.feature) |
+| Reemplazos por licencia      | ✅ **Cumple** | 4 escenarios             | [`Control_licencia.feature`](testing/features/Control_licencia.feature)       |
+| Validación artículo 5A       | ✅ **Cumple** | 2 positivos, 2 negativos | [`Control_licencia.feature`](testing/features/Control_licencia.feature)       |
+| Validación artículo 23A      | ✅ **Cumple** | 1 positivo, 2 negativos  | [`Control_licencia.feature`](testing/features/Control_licencia.feature)       |
+| Validación artículo 36A      | ✅ **Cumple** | 2 positivos, 2 negativos | [`Control_licencia.feature`](testing/features/Control_licencia.feature)       |
+| Casos de error específicos   | ✅ **Cumple** | 3 tipos de error         | [`Control_licencia.feature`](testing/features/Control_licencia.feature)       |
+| Parte diario                 | ✅ **Cumple** | 2 escenarios             | [`Parte_diario.feature`](testing/features/Parte_diario.feature)               |
+
+### 🚀 Ejecución de las Pruebas
+
+```bash
+# Ejecutar toda la suite de pruebas BDD
+./lpl test
+
+# Ver resultados detallados en logs
+./lpl logs testing
+```

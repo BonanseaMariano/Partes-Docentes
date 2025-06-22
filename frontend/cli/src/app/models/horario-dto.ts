@@ -80,9 +80,10 @@ export interface HoraEspacioCurricular {
      * Nombre completo del docente asignado al espacio curricular.
      * 
      * Identificación del profesional responsable de impartir
-     * la materia en este horario específico.
+     * la materia en este horario específico. Puede ser null
+     * si no hay docente asignado.
      */
-    docente: string;
+    docente: string | null;
 
     /**
      * Indicador de licencia docente sin reemplazo.
@@ -92,4 +93,13 @@ export interface HoraEspacioCurricular {
      * para la continuidad académica.
      */
     docente_de_licencia?: boolean;
+
+    /**
+     * Indicador de asignación docente.
+     * 
+     * Flag que señala si el espacio curricular tiene un docente
+     * asignado. Útil para identificar materias que requieren
+     * designación de personal.
+     */
+    tiene_docente_asignado?: boolean;
 }

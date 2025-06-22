@@ -149,6 +149,12 @@ public class HorarioDTO {
         private boolean docenteDeLicencia = false;
 
         /**
+         * Indica si el espacio curricular tiene docente asignado
+         */
+        @JsonProperty("tiene_docente_asignado")
+        private boolean tieneDocenteAsignado = true;
+
+        /**
          * Constructor por defecto.
          */
         public HoraEspacioCurricular() {
@@ -160,7 +166,7 @@ public class HorarioDTO {
          * @param hora la hora del espacio curricular
          * @param espacioCurricular el nombre del espacio curricular
          * @param division la división asignada
-         * @param docente el docente asignado
+         * @param docente el docente asignado (puede ser null)
          */
         public HoraEspacioCurricular(int hora, String espacioCurricular, String division, String docente) {
             this.hora = hora;
@@ -168,6 +174,7 @@ public class HorarioDTO {
             this.division = division;
             this.docente = docente;
             this.docenteDeLicencia = false;
+            this.tieneDocenteAsignado = (docente != null);
         }
 
         /**
@@ -176,7 +183,7 @@ public class HorarioDTO {
          * @param hora la hora del espacio curricular
          * @param espacioCurricular el nombre del espacio curricular
          * @param division la división asignada
-         * @param docente el docente asignado
+         * @param docente el docente asignado (puede ser null)
          * @param docenteDeLicencia indica si el docente está de licencia
          */
         public HoraEspacioCurricular(int hora, String espacioCurricular, String division, String docente, boolean docenteDeLicencia) {
@@ -185,6 +192,7 @@ public class HorarioDTO {
             this.division = division;
             this.docente = docente;
             this.docenteDeLicencia = docenteDeLicencia;
+            this.tieneDocenteAsignado = (docente != null);
         }
 
         /**
@@ -275,6 +283,24 @@ public class HorarioDTO {
          */
         public void setDocenteDeLicencia(boolean docenteDeLicencia) {
             this.docenteDeLicencia = docenteDeLicencia;
+        }
+
+        /**
+         * Indica si el espacio curricular tiene docente asignado.
+         *
+         * @return true si tiene docente asignado, false en caso contrario
+         */
+        public boolean isTieneDocenteAsignado() {
+            return tieneDocenteAsignado;
+        }
+
+        /**
+         * Establece si el espacio curricular tiene docente asignado.
+         *
+         * @param tieneDocenteAsignado true si tiene docente asignado
+         */
+        public void setTieneDocenteAsignado(boolean tieneDocenteAsignado) {
+            this.tieneDocenteAsignado = tieneDocenteAsignado;
         }
     }
 }
