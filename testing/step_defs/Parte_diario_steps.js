@@ -8,6 +8,10 @@ function ParteDiarioWorld() {
     this.nuevasLicencias = [];
     this.apiResponse = {};
     this.fechaConsulta = null;
+    // Variables para reemplazos
+    this.reemplazante = {};
+    this.cargoDesignacion = {};
+    this.personaConLicencia = {};
 }
 
 // Configuramos el mundo (contexto) para cada escenario
@@ -123,4 +127,78 @@ Then('el sistema responde', function (docString) {
         assert.equal(actualDocente.Hasta, expectedDocente.Hasta);
     });
 
+});
+
+// ----- STEPS PARA REEMPLAZOS DE LICENCIAS ESPECÍFICOS PARA PARTE DIARIO -----
+
+// Paso: Dado que existe la persona para reemplazo en parte diario (específico para parte diario)
+Given('que existe la persona para reemplazo en parte diario', function (dataTable) {
+    // Obtenemos la primera fila de la tabla de datos (sin encabezados)
+    const persona = dataTable.hashes()[0];
+    // Guardamos la información de la persona
+    this.reemplazante = JSON.parse(request('GET', encodeURI(`http://pd-backend:8080/personas/dni/${persona.DNI}`)).getBody('utf8')).data;
+});
+
+// Paso: Y que existen las siguientes instancias de designación para parte diario
+Given('que existen las siguientes instancias de designación para parte diario', function (dataTable) {
+    // Obtenemos los datos de la tabla
+    const designacionData = dataTable.hashes()[0];
+
+    // Construimos la URL para buscar el cargo
+    let cargoUrl = `http://pd-backend:8080/cargos/find?nombre=${designacionData.NombreTipoDesignacion}&tipoDesignacion=${designacionData.TipoDesignacion}`;
+
+    // Si es ESPACIO_CURRICULAR, agregamos los parámetros de división
+    if (designacionData.TipoDesignacion === 'ESPACIO_CURRICULAR') {
+        cargoUrl += `&anio=${designacionData.Anio}&numDivision=${designacionData.NumDivision}&turno=${designacionData.Turno}`;
+    }
+
+    // Buscamos el cargo de la designación usando el endpoint '/find'
+    this.cargoDesignacion = JSON.parse(request('GET', encodeURI(cargoUrl)).getBody('utf8')).data;
+});
+
+// Paso: Y que la designación está asignada a la persona con licencia para parte diario
+Given('que la designación está asignada a la persona con licencia para parte diario {string} comprendida en el período desde {string} hasta {string}', function (articulo, desde, hasta, dataTable) {
+    // Obtenemos los datos de la persona con licencia
+    const personaConLicencia = dataTable.hashes()[0];
+
+    // Guardamos los datos de la persona con licencia
+    this.personaConLicencia = {
+        dni: personaConLicencia.DNI,
+        nombre: personaConLicencia.Nombre,
+        apellido: personaConLicencia.Apellido,
+        designacionDesde: personaConLicencia.Desde,
+        designacionHasta: personaConLicencia.Hasta
+    };
+});
+
+// Paso: Cuando se solicita designación de reemplazo para parte diario
+When('se solicita designación de reemplazo para parte diario en el período desde {string} hasta {string}', function (desde, hasta) {
+    // Creamos una designación para el reemplazante
+    const designacion = {
+        persona: this.reemplazante,
+        cargo: this.cargoDesignacion,
+        fechaInicio: desde,
+        fechaFin: hasta,
+    };
+
+    // Enviamos la solicitud para crear la designación de reemplazo
+    const res = request('POST', 'http://pd-backend:8080/designaciones', {
+        json: designacion
+    });
+
+    this.apiResponse = JSON.parse(res.getBody('utf8'));
+});
+
+// Paso: Entonces el sistema devuelve el mensaje de confirmación para parte diario
+Then('el sistema devuelve el mensaje de confirmación para parte diario', function (docString) {
+    // Convertimos el docString a objeto JSON para su comparación
+    const expectedResponse = JSON.parse(docString);
+
+    // Validamos el status code
+    const actualStatus = this.apiResponse.status || this.apiResponse.StatusCode || this.apiResponse.statusCode;
+    assert.equal(actualStatus, expectedResponse.status);
+
+    // Validamos el mensaje
+    const actualMessage = this.apiResponse.message || this.apiResponse.StatusText || this.apiResponse.data;
+    assert.equal(actualMessage, expectedResponse.message);
 });
