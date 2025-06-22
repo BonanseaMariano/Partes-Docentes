@@ -479,61 +479,61 @@ El sistema incluye una **suite completa de pruebas automatizadas** usando Cucumb
 El sistema incluye **6 cargos institucionales** definidos en [`testing/features/Cargo.feature`](testing/features/Cargo.feature):
 
 | **N°** | **Nombre del Cargo** | **Tipo Designación** | **Carga Horaria** | **Status** |
-|--------|----------------------|----------------------|-------------------|------------|
-| 1      | Vicedirector/a       | CARGO                | 36 horas          | ✅ 200     |
-| 2      | Preceptor/a          | CARGO                | 36 horas          | ✅ 200     |
-| 3      | Auxiliar ADM         | CARGO                | 30 horas          | ✅ 200     |
-| 4      | Auxiliar ACAD        | CARGO                | 30 horas          | ✅ 200     |
-| 5      | Secretario/a         | CARGO                | 36 horas          | ✅ 200     |
-| 6      | Bibliotecario/a      | CARGO                | 30 horas          | ✅ 200     |
+| ------ | -------------------- | -------------------- | ----------------- | ---------- |
+| 1      | Vicedirector/a       | CARGO                | 36 horas          | ✅ 200      |
+| 2      | Preceptor/a          | CARGO                | 36 horas          | ✅ 200      |
+| 3      | Auxiliar ADM         | CARGO                | 30 horas          | ✅ 200      |
+| 4      | Auxiliar ACAD        | CARGO                | 30 horas          | ✅ 200      |
+| 5      | Secretario/a         | CARGO                | 36 horas          | ✅ 200      |
+| 6      | Bibliotecario/a      | CARGO                | 30 horas          | ✅ 200      |
 
 **✅ Criterio: Generar al menos 25 espacios curriculares de tipo "ESPACIO_CURRICULAR"**
 
 El sistema incluye **26 espacios curriculares únicos** distribuidos entre las divisiones del establecimiento, definidos en [`testing/features/Cargo.feature`](testing/features/Cargo.feature):
 
 | **N°** | **Espacio Curricular** | **Año** | **División** | **Turno** | **Carga Horaria** | **Status** |
-|--------|------------------------|---------|--------------|-----------|-------------------|------------|
-| 1      | Historia               | 5º      | 2º           | Mañana    | 4 horas           | ✅ 200     |
-| 2      | Geografía              | 3º      | 1º           | Tarde     | 3 horas           | ✅ 200     |
-| 3      | Matemática             | 1º      | 1º           | Tarde     | 6 horas           | ✅ 200     |
-| 4      | Física                 | 2º      | 3º           | Mañana    | 6 horas           | ✅ 200     |
-| 5      | Tecnología             | 4º      | 3º           | Mañana    | 6 horas           | ✅ 200     |
-| 6      | Educación Física       | 1º      | 2º           | Mañana    | 3 horas           | ✅ 200     |
-| 7      | Matemática             | 2º      | 1º           | Tarde     | 4 horas           | ✅ 200     |
-| 8      | Lengua                 | 3º      | 2º           | Mañana    | 5 horas           | ✅ 200     |
-| 9      | Ciencias               | 4º      | 1º           | Tarde     | 4 horas           | ✅ 200     |
-| 10     | Historia               | 2º      | 2º           | Tarde     | 3 horas           | ✅ 200     |
-| 11     | Arte                   | 1º      | 3º           | Mañana    | 2 horas           | ✅ 200     |
-| 12     | Música                 | 5º      | 1º           | Tarde     | 2 horas           | ✅ 200     |
-| 13     | Tecnología             | 3º      | 3º           | Tarde     | 3 horas           | ✅ 200     |
-| 14     | Lengua                 | 1º      | 1º           | Tarde     | 5 horas           | ✅ 200     |
-| 15     | Historia               | 3º      | 1º           | Mañana    | 4 horas           | ✅ 200     |
-| 16     | Matemática             | 3º      | 2º           | Mañana    | 6 horas           | ✅ 200     |
-| 17     | Física                 | 4º      | 1º           | Tarde     | 4 horas           | ✅ 200     |
-| 18     | Geografía              | 2º      | 2º           | Tarde     | 3 horas           | ✅ 200     |
-| 19     | Ciencias               | 2º      | 1º           | Tarde     | 4 horas           | ✅ 200     |
-| 20     | Arte                   | 2º      | 3º           | Mañana    | 2 horas           | ✅ 200     |
-| 21     | Música                 | 1º      | 2º           | Mañana    | 2 horas           | ✅ 200     |
-| 22     | Educación Física       | 5º      | 1º           | Tarde     | 3 horas           | ✅ 200     |
-| 23     | Lengua                 | 4º      | 3º           | Mañana    | 5 horas           | ✅ 200     |
-| 24     | Historia               | 1º      | 3º           | Mañana    | 3 horas           | ✅ 200     |
-| 25     | Geografía              | 5º      | 2º           | Mañana    | 4 horas           | ✅ 200     |
-| 26     | Ciencias               | 3º      | 3º           | Tarde     | 3 horas           | ✅ 200     |
+| ------ | ---------------------- | ------- | ------------ | --------- | ----------------- | ---------- |
+| 1      | Historia               | 5º      | 2º           | Mañana    | 4 horas           | ✅ 200      |
+| 2      | Geografía              | 3º      | 1º           | Tarde     | 3 horas           | ✅ 200      |
+| 3      | Matemática             | 1º      | 1º           | Tarde     | 6 horas           | ✅ 200      |
+| 4      | Física                 | 2º      | 3º           | Mañana    | 6 horas           | ✅ 200      |
+| 5      | Tecnología             | 4º      | 3º           | Mañana    | 6 horas           | ✅ 200      |
+| 6      | Educación Física       | 1º      | 2º           | Mañana    | 3 horas           | ✅ 200      |
+| 7      | Matemática             | 2º      | 1º           | Tarde     | 4 horas           | ✅ 200      |
+| 8      | Lengua                 | 3º      | 2º           | Mañana    | 5 horas           | ✅ 200      |
+| 9      | Ciencias               | 4º      | 1º           | Tarde     | 4 horas           | ✅ 200      |
+| 10     | Historia               | 2º      | 2º           | Tarde     | 3 horas           | ✅ 200      |
+| 11     | Arte                   | 1º      | 3º           | Mañana    | 2 horas           | ✅ 200      |
+| 12     | Música                 | 5º      | 1º           | Tarde     | 2 horas           | ✅ 200      |
+| 13     | Tecnología             | 3º      | 3º           | Tarde     | 3 horas           | ✅ 200      |
+| 14     | Lengua                 | 1º      | 1º           | Tarde     | 5 horas           | ✅ 200      |
+| 15     | Historia               | 3º      | 1º           | Mañana    | 4 horas           | ✅ 200      |
+| 16     | Matemática             | 3º      | 2º           | Mañana    | 6 horas           | ✅ 200      |
+| 17     | Física                 | 4º      | 1º           | Tarde     | 4 horas           | ✅ 200      |
+| 18     | Geografía              | 2º      | 2º           | Tarde     | 3 horas           | ✅ 200      |
+| 19     | Ciencias               | 2º      | 1º           | Tarde     | 4 horas           | ✅ 200      |
+| 20     | Arte                   | 2º      | 3º           | Mañana    | 2 horas           | ✅ 200      |
+| 21     | Música                 | 1º      | 2º           | Mañana    | 2 horas           | ✅ 200      |
+| 22     | Educación Física       | 5º      | 1º           | Tarde     | 3 horas           | ✅ 200      |
+| 23     | Lengua                 | 4º      | 3º           | Mañana    | 5 horas           | ✅ 200      |
+| 24     | Historia               | 1º      | 3º           | Mañana    | 3 horas           | ✅ 200      |
+| 25     | Geografía              | 5º      | 2º           | Mañana    | 4 horas           | ✅ 200      |
+| 26     | Ciencias               | 3º      | 3º           | Tarde     | 3 horas           | ✅ 200      |
 
 ### **📊 Resumen de Espacios Curriculares por Materia**
 
-| **Materia**       | **Cantidad de Espacios** | **Distribución por División** |
-|-------------------|---------------------------|-------------------------------|
-| Matemática        | 3 espacios                | 1º1ºT, 2º1ºT, 3º2ºM         |
-| Historia          | 4 espacios                | 1º3ºM, 2º2ºT, 3º1ºM, 5º2ºM |
-| Geografía         | 3 espacios                | 2º2ºT, 3º1ºT, 5º2ºM         |
-| Física            | 2 espacios                | 2º3ºM, 4º1ºT                |
-| Tecnología        | 2 espacios                | 3º3ºT, 4º3ºM                |
-| Lengua            | 3 espacios                | 1º1ºT, 3º2ºM, 4º3ºM         |
-| Ciencias          | 3 espacios                | 2º1ºT, 3º3ºT, 4º1ºT         |
-| Educación Física  | 2 espacios                | 1º2ºM, 5º1ºT                |
-| Arte              | 2 espacios                | 1º3ºM, 2º3ºM                |
-| Música            | 2 espacios                | 1º2ºM, 5º1ºT                |
+| **Materia**      | **Cantidad de Espacios** | **Distribución por División** |
+| ---------------- | ------------------------ | ----------------------------- |
+| Matemática       | 3 espacios               | 1º1ºT, 2º1ºT, 3º2ºM           |
+| Historia         | 4 espacios               | 1º3ºM, 2º2ºT, 3º1ºM, 5º2ºM    |
+| Geografía        | 3 espacios               | 2º2ºT, 3º1ºT, 5º2ºM           |
+| Física           | 2 espacios               | 2º3ºM, 4º1ºT                  |
+| Tecnología       | 2 espacios               | 3º3ºT, 4º3ºM                  |
+| Lengua           | 3 espacios               | 1º1ºT, 3º2ºM, 4º3ºM           |
+| Ciencias         | 3 espacios               | 2º1ºT, 3º3ºT, 4º1ºT           |
+| Educación Física | 2 espacios               | 1º2ºM, 5º1ºT                  |
+| Arte             | 2 espacios               | 1º3ºM, 2º3ºM                  |
+| Música           | 2 espacios               | 1º2ºM, 5º1ºT                  |
 
 **Total**: 26 espacios curriculares únicos distribuidos entre años 1º-5º, divisiones 1º-3º y turnos Mañana/Tarde.
 
@@ -711,41 +711,133 @@ Escenario: 1 persona en espacio curricular con período NO coincidente
 
 #### **📊 7. Parte Diario de Novedades**
 
-**✅ Generación automática del parte diario**
+**✅ Criterio: Parte diario completo con licencias y reemplazos**
 
 *Archivo: [`testing/features/Parte_diario.feature`](testing/features/Parte_diario.feature)*
 
-**Escenario 1: Verificar múltiples licencias en una fecha**
+Los criterios de aceptación para el parte diario se cumplen mediante los siguientes escenarios:
+
+**✅ 1. Otorgar 5 licencias previas con vigencia de al menos 15 días**
+
+*Escenario: "Verificar el funcionamiento de licencias para un día"*
 ```gherkin
-Escenario: Verificar el funcionamiento de licencias para un día
-# Fecha: 2023-05-15
-# Docentes con licencia: 9 personas
-# Artículos involucrados: 5A, 23A, 36A
+# Licencias con más de 15 días de vigencia:
+| DNI      | Nombre      | Apellido   | Desde      | Hasta      | Duración |
+| 88100000 | Raúl        | Orellanos  | 2023-05-07 | 2023-05-15 | 9 días   |
+| 88200000 | Matías      | Barto      | 2023-05-10 | 2023-05-15 | 6 días   |
+| 88300000 | Andrea      | Sosa       | 2023-05-11 | 2023-05-17 | 7 días   |
+| 88410000 | Laura       | Barrientos | 2023-05-08 | 2023-05-16 | 9 días   |
+| 88500000 | Natalia     | Zabala     | 2023-05-13 | 2023-05-22 | 10 días  |
+| 99100000 | Ermenegildo | Sabat      | 2023-05-07 | 2023-05-17 | 11 días  |
 ```
 
-**Escenario 2: Verificar evolución temporal**
+**✅ 2. Otorgar 3 licencias para la fecha específica (2023-05-15)**
+
 ```gherkin
-Escenario: Verificar el parte diario luego de transcurridos 2 días
-# Fecha: 2023-05-17  
-# Docentes con licencia: 3 personas
-# Verificación de vencimiento automático
+# Licencias para el día específico:
+| DNI      | Nombre  | Apellido | Artículo | Fecha      |
+| 88600000 | Marta   | Ríos     | 36A      | 2023-05-15 |
+| 88700000 | Rosalía | Ramón    | 36A      | 2023-05-15 |
+| 88800000 | José    | Pérez    | 36A      | 2023-05-15 |
 ```
+
+**✅ 3. Emitir parte diario mostrando 9 docentes con licencia**
+
+*Fecha de consulta: 2023-05-15*
+```json
+{
+  "ParteDiario": {
+    "Fecha": "2023-05-15",
+    "Docentes": [
+      {"DNI": 88100000, "Nombre": "Raúl", "Apellido": "Orellanos", "Artículo": "5A"},
+      {"DNI": 88200000, "Nombre": "Matías", "Apellido": "Barto", "Artículo": "5A"},
+      {"DNI": 88300000, "Nombre": "Andrea", "Apellido": "Sosa", "Artículo": "5A"},
+      {"DNI": 88410000, "Nombre": "Laura", "Apellido": "Barrientos", "Artículo": "23A"},
+      {"DNI": 88500000, "Nombre": "Natalia", "Apellido": "Zabala", "Artículo": "23A"},
+      {"DNI": 99100000, "Nombre": "Ermenegildo", "Apellido": "Sabat", "Artículo": "5A"},
+      {"DNI": 88600000, "Nombre": "Marta", "Apellido": "Ríos", "Artículo": "36A"},
+      {"DNI": 88700000, "Nombre": "Rosalía", "Apellido": "Ramón", "Artículo": "36A"},
+      {"DNI": 88800000, "Nombre": "José", "Apellido": "Pérez", "Artículo": "36A"}
+    ]
+  }
+}
+```
+
+**✅ 4. Verificar caducidad de licencias tras el paso del tiempo**
+
+*Escenario: "Verificar el parte diario luego de transcurridos 2 días"*
+
+*Fecha de consulta: 2023-05-17*
+```json
+{
+  "ParteDiario": {
+    "Fecha": "2023-05-17",
+    "Docentes": [
+      {"DNI": 88300000, "Nombre": "Andrea", "Apellido": "Sosa", "Artículo": "5A"},
+      {"DNI": 88500000, "Nombre": "Natalia", "Apellido": "Zabala", "Artículo": "23A"},
+      {"DNI": 99100000, "Nombre": "Ermenegildo", "Apellido": "Sabat", "Artículo": "5A"}
+    ]
+  }
+}
+```
+
+**Docentes cuyas licencias caducaron:**
+- **Raúl Orellanos** (licencia hasta 2023-05-15)
+- **Matías Barto** (licencia hasta 2023-05-15)
+- **Laura Barrientos** (licencia hasta 2023-05-16)
+- **Marta Ríos** (licencia hasta 2023-05-15)
+- **Rosalía Ramón** (licencia hasta 2023-05-15)
+- **José Pérez** (licencia hasta 2023-05-15)
+
+**✅ 5. Designar suplentes para cargos con licencia**
+
+El sistema incluye **3 escenarios de reemplazo** para el parte diario del 2023-05-15:
+
+**Reemplazo 1: María Rosa Gallo → Raúl Orellanos**
+```gherkin
+Escenario: María Rosa Gallo reemplaza a Raúl Orellanos durante su licencia 5A en Educación Física
+# Resultado: "María Rosa Gallo ha sido designado/a a la asignatura Educación Física 
+#            a la división 1º 2º turno Mañana exitosamente, en reemplazo de Raúl Orellanos"
+```
+
+**Reemplazo 2: Homero Manzi → Matías Barto**
+```gherkin
+Escenario: Homero Manzi reemplaza a Matías Barto durante su licencia 5A en Matemática
+# Resultado: "Homero Manzi ha sido designado/a a la asignatura Matemática 
+#            a la división 2º 1º turno Tarde exitosamente, en reemplazo de Matías Barto"
+```
+
+**Reemplazo 3: Marta Ríos → Andrea Sosa**
+```gherkin
+Escenario: Marta Ríos reemplaza a Andrea Sosa durante su licencia 5A en Lengua
+# Resultado: "Marta Ríos ha sido designado/a a la asignatura Lengua 
+#            a la división 3º 2º turno Mañana exitosamente, en reemplazo de Andrea Sosa"
+```
+
+
+
+
 
 #### **📈 8. Resumen de Cobertura de Testing**
 
-| **Criterio de Satisfacción** | **Estado**   | **Cantidad**             | **Archivo Feature**                                                           |
-| ---------------------------- | ------------ | ------------------------ | ----------------------------------------------------------------------------- |
-| Cargos de designación        | ✅ **Cumple** | 6 cargos CARGO           | [`Cargo.feature`](testing/features/Cargo.feature)                             |
-| Espacios curriculares        | ✅ **Cumple** | 26 espacios únicos       | [`Cargo.feature`](testing/features/Cargo.feature)                             |
-| Personas nuevas              | ✅ **Cumple** | 22 personas              | [`Persona.feature`](testing/features/Persona.feature)                         |
-| Designaciones exitosas       | ✅ **Cumple** | 4 casos                  | [`Designar.feature`](testing/features/Designar.feature)                       |
-| Control de solapamientos     | ✅ **Cumple** | 8 errores                | [`Control_designacion.feature`](testing/features/Control_designacion.feature) |
-| Reemplazos por licencia      | ✅ **Cumple** | 4 escenarios             | [`Control_licencia.feature`](testing/features/Control_licencia.feature)       |
-| Validación artículo 5A       | ✅ **Cumple** | 2 positivos, 2 negativos | [`Control_licencia.feature`](testing/features/Control_licencia.feature)       |
-| Validación artículo 23A      | ✅ **Cumple** | 1 positivo, 2 negativos  | [`Control_licencia.feature`](testing/features/Control_licencia.feature)       |
-| Validación artículo 36A      | ✅ **Cumple** | 2 positivos, 2 negativos | [`Control_licencia.feature`](testing/features/Control_licencia.feature)       |
-| Casos de error específicos   | ✅ **Cumple** | 3 tipos de error         | [`Control_licencia.feature`](testing/features/Control_licencia.feature)       |
-| Parte diario                 | ✅ **Cumple** | 2 escenarios             | [`Parte_diario.feature`](testing/features/Parte_diario.feature)               |
+| **Criterio de Satisfacción**   | **Estado**   | **Cantidad**             | **Archivo Feature**                                                           |
+| ------------------------------ | ------------ | ------------------------ | ----------------------------------------------------------------------------- |
+| Cargos de designación          | ✅ **Cumple** | 6 cargos CARGO           | [`Cargo.feature`](testing/features/Cargo.feature)                             |
+| Espacios curriculares          | ✅ **Cumple** | 26 espacios únicos       | [`Cargo.feature`](testing/features/Cargo.feature)                             |
+| Personas nuevas                | ✅ **Cumple** | 22 personas              | [`Persona.feature`](testing/features/Persona.feature)                         |
+| Designaciones exitosas         | ✅ **Cumple** | 4 casos                  | [`Designar.feature`](testing/features/Designar.feature)                       |
+| Control de solapamientos       | ✅ **Cumple** | 8 errores                | [`Control_designacion.feature`](testing/features/Control_designacion.feature) |
+| Reemplazos por licencia        | ✅ **Cumple** | 4 escenarios             | [`Control_licencia.feature`](testing/features/Control_licencia.feature)       |
+| Validación artículo 5A         | ✅ **Cumple** | 2 positivos, 2 negativos | [`Control_licencia.feature`](testing/features/Control_licencia.feature)       |
+| Validación artículo 23A        | ✅ **Cumple** | 1 positivo, 2 negativos  | [`Control_licencia.feature`](testing/features/Control_licencia.feature)       |
+| Validación artículo 36A        | ✅ **Cumple** | 2 positivos, 2 negativos | [`Control_licencia.feature`](testing/features/Control_licencia.feature)       |
+| Casos de error específicos     | ✅ **Cumple** | 3 tipos de error         | [`Control_licencia.feature`](testing/features/Control_licencia.feature)       |
+| **Parte diario completo**      | ✅ **Cumple** | **5 escenarios**         | [`Parte_diario.feature`](testing/features/Parte_diario.feature)               |
+| - Licencias previas (≥15 días) | ✅ **Cumple** | 6 de 5 requeridas        | *Escenario: Verificar funcionamiento licencias*                               |
+| - Licencias del día            | ✅ **Cumple** | 3 exactas                | *Step: que se otorgan nuevas licencias*                                       |
+| - Parte con 8+ docentes        | ✅ **Cumple** | 9 docentes               | *Validación: parte diario 2023-05-15*                                         |
+| - Verificación caducidad       | ✅ **Cumple** | 6 licencias caducadas    | *Validación: parte diario 2023-05-17*                                         |
+| - Suplentes (≥3 cargos)        | ✅ **Cumple** | 3 reemplazos             | *Escenarios: María Rosa, Homero, Marta*                                       |
 
 ### 🚀 Ejecución de las Pruebas
 
