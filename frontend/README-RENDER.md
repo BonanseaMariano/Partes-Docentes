@@ -14,16 +14,28 @@
 ## Archivos necesarios
 
 1. **`Dockerfile.prod`** - Construye y sirve la aplicación Angular
-2. **`nginx.conf`** - Configuración para servir la SPA y proxy al backend
+2. **`nginx.conf`** - Configuración para servir la SPA (proxy comentado temporalmente)
 
-## Importante
+## ⚠️ Configuración del Backend
 
-- Cuando despliegues el backend, actualiza la URL en `nginx.conf` línea 21:
-  ```
-  proxy_pass http://TU-BACKEND-URL.render.com/;
-  ```
+**Actualmente el proxy al backend está comentado** en `nginx.conf` para permitir que el frontend se despliegue sin errores.
 
-- El frontend estará disponible en la URL que te asigne Render
+**Cuando tengas el backend desplegado:**
+
+1. Descomenta las líneas 20-26 en `nginx.conf`
+2. Reemplaza `tu-backend-url.render.com` con la URL real de tu backend
+3. Haz commit y push para redesplegar
+
+```nginx
+# Descomentar y actualizar cuando tengas el backend:
+location /rest/ {
+    proxy_pass http://TU-BACKEND-REAL-URL.render.com/;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+}
+```
 
 ## Variables de entorno en Render
 
