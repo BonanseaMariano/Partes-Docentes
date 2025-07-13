@@ -34,15 +34,21 @@ SPRING_PROFILES_ACTIVE=prod
 FRONTEND_URL=https://partes-docentes.onrender.com
 ```
 
-### 4. Conectar Base de Datos
+### 4. Configurar Base de Datos
 
 **En el Web Service del backend:**
-1. Ve a la pestaña **Environment**
-2. En la sección **"Add from Database"**
-3. Selecciona tu base de datos `partes-docentes-db`
-4. Render automáticamente agregará la variable `DATABASE_URL`
+1. Ve a **Environment Variables**
+2. Agrega manualmente:
+   ```
+   DATABASE_URL=postgresql://user:password@host/database
+   ```
+   
+**Ejemplo con tu base de datos:**
+```
+DATABASE_URL=postgresql://app:DBV7tl5Ubf3BRC592rgkAPOY7t0vEzen@dpg-d1phmn49c44c738krmcg-a/labprog_4xii
+```
 
-**✅ FÁCIL:** La clase `DatabaseConfig.java` convierte automáticamente la `DATABASE_URL` de Render al formato que Spring Boot necesita.
+**✅ La clase `DatabaseConfig.java` convierte automáticamente esta URL al formato JDBC que Spring Boot necesita.**
 
 ## 🔗 Conectar Frontend con Backend
 

@@ -12,6 +12,9 @@ import org.springframework.context.annotation.Profile;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Configuration
 @Profile("prod")
 public class DatabaseConfig {
@@ -21,12 +24,30 @@ public class DatabaseConfig {
 
     @Bean
     public DataSource dataSource() {
-        // Convertir DATABASE_URL de Render (postgres://...) a formato JDBC
+        log.info("Configurando DataSource con DATABASE_URL");
+        
+        // Convertir DATABASE_URL de Render
+        // Formato actual: postgresql://user:pass@host:port/database
+        // Necesario: jdbc:postgresql://host:port/database
         URI dbUri = URI.create(databaseUrl);
         
-        String jdbcUrl = "jdbc:postgresql://" + dbUri.getHost() + ":" + dbUri.getPort() + dbUri.getPath();
+        String jdbcUrl;
+        if (databaseUrl.startsWith("postgresql://")) {
+            // Ya está en formato correcto, solo cambiar el protocolo
+            jdbcUrl = databaseUrl.replace("postgresql://", "jdbc:postgresql://");
+        } else if (databaseUrl.startsWith("postgres://")) {
+            // Convertir de postgres:// a jdbc:postgresql://
+            jdbcUrl = databaseUrl.replace("postgres://", "jdbc:postgresql://");
+        } else {
+            // Asumir que ya es jdbc:postgresql://
+            jdbcUrl = databaseUrl;
+        }
+        
         String username = dbUri.getUserInfo().split(":")[0];
         String password = dbUri.getUserInfo().split(":")[1];
+
+        log.info("Usuario: {}", username);
+        log.info("Host: {}", dbUri.getHost());
 
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl(jdbcUrl);
