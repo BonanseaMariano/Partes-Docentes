@@ -16,33 +16,17 @@
 1. **`Dockerfile.prod`** - Construye y sirve la aplicación Angular
 2. **`nginx.conf`** - Configuración para servir la SPA (proxy comentado temporalmente)
 
-## ⚠️ Configuración del Backend
+## ✅ Conexión con Backend COMPLETADA
 
-**Actualmente el proxy al backend está comentado** en `nginx.conf` para permitir que el frontend se despliegue sin errores.
+**Backend conectado:** `https://partes-docentes-1.onrender.com`
 
-**Cuando tengas el backend desplegado:**
+La aplicación Angular ahora puede realizar llamadas a:
+- `GET /rest/divisiones`
+- `POST /rest/personas`
+- `PUT /rest/cargos`
+- etc.
 
-1. Descomenta las líneas 43-49 en `nginx.conf`
-2. Reemplaza `tu-backend-url.render.com` con la URL real de tu backend
-3. Haz commit y push para redesplegar
-
-```nginx
-# Descomentar y actualizar cuando tengas el backend:
-location /rest/ {
-    proxy_pass http://TU-BACKEND-REAL-URL.render.com/;
-    proxy_set_header Host $host;
-    proxy_set_header X-Real-IP $remote_addr;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    proxy_set_header X-Forwarded-Proto $scheme;
-}
-```
-
-## 🐛 Troubleshooting
-
-Si ves "Welcome to nginx!" en lugar de tu app:
-- Los archivos de debug se muestran durante el build
-- Verificar que el build de Angular sea exitoso
-- Verificar que nginx use nuestra configuración personalizada
+**Próximo paso:** Hacer commit y redesplegar para activar la conexión.
 
 ## Variables de entorno en Render
 

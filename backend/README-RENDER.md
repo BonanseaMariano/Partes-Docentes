@@ -78,9 +78,16 @@ location /rest/ {
 ## 🚀 Orden de despliegue
 
 1. ✅ Frontend desplegado
-2. 🔄 **Base de datos PostgreSQL** (crear primero)
-3. 🔄 **Backend** (configurar con la DB URL)
-4. 🔄 **Actualizar frontend** con URL del backend
+2. ✅ **Base de datos PostgreSQL** 
+3. ✅ **Backend** 
+4. ✅ **Frontend conectado al backend**
+
+## 🎉 DESPLIEGUE COMPLETADO
+
+**URLs de la aplicación:**
+- **Frontend:** https://partes-docentes.onrender.com
+- **Backend:** https://partes-docentes-1.onrender.com
+- **Base de datos:** Conectada y funcionando
 
 ## ⚠️ Notas importantes
 
