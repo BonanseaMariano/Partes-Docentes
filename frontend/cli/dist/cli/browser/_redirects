@@ -1,1 +1,9 @@
+# Redirect all traffic to Angular app
 /*    /index.html   200
+
+# Handle specific routes
+/personas    /index.html   200
+/divisiones  /index.html   200
+/cargos      /index.html   200
+/designaciones /index.html   200
+/licencias   /index.html   200
