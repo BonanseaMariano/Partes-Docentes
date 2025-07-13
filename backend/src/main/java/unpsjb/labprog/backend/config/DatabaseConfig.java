@@ -28,26 +28,23 @@ public class DatabaseConfig {
         
         // Convertir DATABASE_URL de Render
         // Formato actual: postgresql://user:pass@host:port/database
-        // Necesario: jdbc:postgresql://host:port/database
+        // Necesario: jdbc:postgresql://host:port/database (sin credenciales en la URL)
         URI dbUri = URI.create(databaseUrl);
         
-        String jdbcUrl;
-        if (databaseUrl.startsWith("postgresql://")) {
-            // Ya está en formato correcto, solo cambiar el protocolo
-            jdbcUrl = databaseUrl.replace("postgresql://", "jdbc:postgresql://");
-        } else if (databaseUrl.startsWith("postgres://")) {
-            // Convertir de postgres:// a jdbc:postgresql://
-            jdbcUrl = databaseUrl.replace("postgres://", "jdbc:postgresql://");
-        } else {
-            // Asumir que ya es jdbc:postgresql://
-            jdbcUrl = databaseUrl;
-        }
+        // Construir la URL JDBC correctamente sin credenciales
+        String host = dbUri.getHost();
+        int port = dbUri.getPort() != -1 ? dbUri.getPort() : 5432;
+        String database = dbUri.getPath(); // ya incluye el /
+        
+        String jdbcUrl = "jdbc:postgresql://" + host + ":" + port + database;
         
         String username = dbUri.getUserInfo().split(":")[0];
         String password = dbUri.getUserInfo().split(":")[1];
 
         log.info("Usuario: {}", username);
-        log.info("Host: {}", dbUri.getHost());
+        log.info("Host: {}:{}", host, port);
+        log.info("Database: {}", database);
+        log.info("JDBC URL: {}", jdbcUrl);
 
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl(jdbcUrl);

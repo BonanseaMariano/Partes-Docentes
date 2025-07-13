@@ -48,7 +48,10 @@ FRONTEND_URL=https://partes-docentes.onrender.com
 DATABASE_URL=postgresql://app:DBV7tl5Ubf3BRC592rgkAPOY7t0vEzen@dpg-d1phmn49c44c738krmcg-a/labprog_4xii
 ```
 
-**✅ La clase `DatabaseConfig.java` convierte automáticamente esta URL al formato JDBC que Spring Boot necesita.**
+**✅ La clase `DatabaseConfig.java` hace la conversión correcta:**
+- **Entrada:** `postgresql://app:pass@host/database`
+- **Salida JDBC:** `jdbc:postgresql://host:5432/database`
+- **Credenciales:** Se extraen y configuran por separado
 
 ## 🔗 Conectar Frontend con Backend
 
