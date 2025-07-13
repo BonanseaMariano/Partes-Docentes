@@ -22,7 +22,7 @@
 
 **Cuando tengas el backend desplegado:**
 
-1. Descomenta las líneas 20-26 en `nginx.conf`
+1. Descomenta las líneas 43-49 en `nginx.conf`
 2. Reemplaza `tu-backend-url.render.com` con la URL real de tu backend
 3. Haz commit y push para redesplegar
 
@@ -36,6 +36,13 @@ location /rest/ {
     proxy_set_header X-Forwarded-Proto $scheme;
 }
 ```
+
+## 🐛 Troubleshooting
+
+Si ves "Welcome to nginx!" en lugar de tu app:
+- Los archivos de debug se muestran durante el build
+- Verificar que el build de Angular sea exitoso
+- Verificar que nginx use nuestra configuración personalizada
 
 ## Variables de entorno en Render
 
