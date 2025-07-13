@@ -19,7 +19,7 @@ import { ReporteResponse } from '../../models/reporte';
   providedIn: 'root'
 })
 export class PersonaService {
-  private personasUrl = "/rest/personas";
+  private personasUrl = "https://partes-docentes-1.onrender.com/personas";
 
   /**
    * Constructor del servicio.

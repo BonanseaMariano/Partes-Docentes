@@ -19,7 +19,7 @@ import { DateUtils } from '../../utils/date-utils';
     providedIn: 'root'
 })
 export class DesignacionService {
-    private designacionesUrl = "/rest/designaciones";
+    private designacionesUrl = "https://partes-docentes-1.onrender.com/designaciones";
 
     /**
      * Constructor del servicio.

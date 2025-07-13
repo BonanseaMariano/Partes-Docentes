@@ -21,7 +21,7 @@ import { DataPackage } from '../../models/data-package';
 })
 export class ArticuloLicenciaService {
     /** URL base para las operaciones REST de artículos de licencia */
-    private articulosLicenciasUrl = "/rest/articulos-licencias";
+    private articulosLicenciasUrl = "https://partes-docentes-1.onrender.com/articulos-licencias";
 
     /**
      * Constructor del servicio ArticuloLicenciaService.

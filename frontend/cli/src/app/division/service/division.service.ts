@@ -18,7 +18,7 @@ import { Division } from '../../models/division';
     providedIn: 'root'
 })
 export class DivisionService {
-    private divisionesUrl = "/rest/divisiones";
+    private divisionesUrl = "https://partes-docentes-1.onrender.com/divisiones";
 
     /**
      * Constructor del servicio.

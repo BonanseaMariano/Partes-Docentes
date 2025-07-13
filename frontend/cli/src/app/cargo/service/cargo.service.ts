@@ -22,7 +22,7 @@ import { Turno } from '../../models/turno';
     providedIn: 'root'
 })
 export class CargoService {
-    private cargosUrl = "/rest/cargos";
+    private cargosUrl = "https://partes-docentes-1.onrender.com/cargos";
 
     /**
      * Constructor del servicio.

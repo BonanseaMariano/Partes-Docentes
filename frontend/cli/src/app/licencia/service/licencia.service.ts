@@ -18,7 +18,7 @@ import { Licencia } from '../../models/licencia';
     providedIn: 'root'
 })
 export class LicenciaService {
-    private licenciasUrl = "/rest/licencias";
+    private licenciasUrl = "https://partes-docentes-1.onrender.com/licencias";
 
     /**
      * Constructor del servicio.
