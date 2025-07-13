@@ -4,47 +4,45 @@
 
 ### 1. Base de Datos PostgreSQL
 
-**Tipo de servicio:** PostgreSQL
-
-**Configuración:**
-- **Name:** `partes-docentes-db`
-- **Database:** `labprog`
-- **User:** `APP`
-- **Region:** Mismo que el backend
-
-**Importante:** Guarda la **Internal Database URL** que se genera.
+**Crear servicio PostgreSQL:**
+1. En Render Dashboard → New → PostgreSQL
+2. **Name:** `partes-docentes-db`
+3. **Database:** `labprog`
+4. **User:** `APP`
+5. **Region:** Mismo que el backend
+6. Crear y esperar que esté disponible
 
 ### 2. Backend (Spring Boot)
 
-**Tipo de servicio:** Web Service
+**Crear Web Service:**
+1. New → Web Service
+2. **Repositorio:** BonanseaMariano/Partes-Docentes
+3. **Rama:** Render
+4. **Root Directory:** `backend`
+5. **Runtime:** Docker
+6. **Dockerfile Path:** `Dockerfile.prod`
 
-**Configuración:**
-- **Repositorio:** BonanseaMariano/Partes-Docentes
-- **Rama:** Render
-- **Root Directory:** `backend`
-- **Runtime:** Docker
-- **Dockerfile Path:** `Dockerfile.prod`
+### 3. Variables de Entorno
 
-### 3. Variables de Entorno para el Backend
-
-En Render, configura estas variables de entorno:
+**Solo necesitas configurar estas 2 variables:**
 
 ```env
 # Perfil de Spring Boot
 SPRING_PROFILES_ACTIVE=prod
 
-# Base de datos - Render proporciona estas automáticamente al conectar la DB
-DB_HOST=tu-db-host.render.com
-DB_PORT=5432
-DB_NAME=labprog
-DB_USER=APP
-DB_PASSWORD=tu_password
-
 # URL del frontend para CORS
 FRONTEND_URL=https://partes-docentes.onrender.com
 ```
 
-**✅ FÁCIL:** Cuando conectes la base de datos PostgreSQL al backend en Render, estas variables se configuran automáticamente. Solo necesitas agregar `SPRING_PROFILES_ACTIVE=prod` y `FRONTEND_URL`.
+### 4. Conectar Base de Datos
+
+**En el Web Service del backend:**
+1. Ve a la pestaña **Environment**
+2. En la sección **"Add from Database"**
+3. Selecciona tu base de datos `partes-docentes-db`
+4. Render automáticamente agregará la variable `DATABASE_URL`
+
+**✅ FÁCIL:** La clase `DatabaseConfig.java` convierte automáticamente la `DATABASE_URL` de Render al formato que Spring Boot necesita.
 
 ## 🔗 Conectar Frontend con Backend
 
@@ -64,8 +62,9 @@ location /rest/ {
 ## 📁 Archivos de configuración
 
 1. **`Dockerfile.prod`** - Build y runtime optimizado para producción
-2. **`application-prod.properties`** - Configuración para producción con variables de entorno
-3. **`CorsConfig.java`** - Configuración CORS para permitir el frontend
+2. **`application-prod.properties`** - Configuración para producción
+3. **`DatabaseConfig.java`** - Convierte automáticamente DATABASE_URL de Render
+4. **`CorsConfig.java`** - Configuración CORS para permitir el frontend
 
 ## 🚀 Orden de despliegue
 
