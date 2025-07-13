@@ -27,16 +27,24 @@
 
 ### 3. Variables de Entorno para el Backend
 
+En Render, configura estas variables de entorno:
+
 ```env
 # Perfil de Spring Boot
 SPRING_PROFILES_ACTIVE=prod
 
-# Base de datos (usar la Internal Database URL de Render)
-DATABASE_URL=postgresql://APP:PASSWORD@HOST:5432/labprog
+# Base de datos - Render proporciona estas automáticamente al conectar la DB
+DB_HOST=tu-db-host.render.com
+DB_PORT=5432
+DB_NAME=labprog
+DB_USER=APP
+DB_PASSWORD=tu_password
 
 # URL del frontend para CORS
 FRONTEND_URL=https://partes-docentes.onrender.com
 ```
+
+**✅ FÁCIL:** Cuando conectes la base de datos PostgreSQL al backend en Render, estas variables se configuran automáticamente. Solo necesitas agregar `SPRING_PROFILES_ACTIVE=prod` y `FRONTEND_URL`.
 
 ## 🔗 Conectar Frontend con Backend
 
