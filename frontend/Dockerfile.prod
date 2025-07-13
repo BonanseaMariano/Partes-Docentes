@@ -1,0 +1,35 @@
+# Dockerfile para producción en Render
+# Aplicación Angular - Frontend
+
+# Etapa 1: Construcción
+FROM node:18-alpine AS build
+
+# Establecer directorio de trabajo
+WORKDIR /app
+
+# Copiar archivos de dependencias
+COPY cli/package*.json ./
+
+# Instalar todas las dependencias (incluyendo devDependencies para el build)
+RUN npm install
+
+# Copiar el código fuente
+COPY cli/ ./
+
+# Construir la aplicación para producción
+RUN npm run build
+
+# Etapa 2: Servir con nginx
+FROM nginx:alpine
+
+# Copiar la configuración personalizada de nginx
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# Copiar los archivos construidos
+COPY --from=build /app/dist/cli /usr/share/nginx/html
+
+# Exponer puerto 80
+EXPOSE 80
+
+# Comando por defecto
+CMD ["nginx", "-g", "daemon off;"]
