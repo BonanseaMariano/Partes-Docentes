@@ -1,0 +1,45 @@
+# Dockerfile para producción en Render
+# Aplicación Spring Boot - Backend
+
+# Etapa 1: Construcción
+FROM maven:3-eclipse-temurin-17-alpine AS build
+
+# Establecer directorio de trabajo
+WORKDIR /app
+
+# Copiar archivos de configuración Maven
+COPY pom.xml .
+
+# Descargar dependencias (para aprovechar cache de Docker)
+RUN mvn dependency:go-offline -B
+
+# Copiar el código fuente
+COPY src ./src
+
+# Construir la aplicación
+RUN mvn clean package -DskipTests -B
+
+# Etapa 2: Runtime
+FROM eclipse-temurin:17-jre-alpine
+
+# Crear usuario no-root para seguridad
+RUN addgroup -g 1001 -S spring && \
+    adduser -u 1001 -S spring -G spring
+
+# Establecer directorio de trabajo
+WORKDIR /app
+
+# Copiar el JAR construido
+COPY --from=build /app/target/*.jar app.jar
+
+# Cambiar propietario de archivos
+RUN chown spring:spring app.jar
+
+# Cambiar a usuario no-root
+USER spring:spring
+
+# Exponer puerto 8080
+EXPOSE 8080
+
+# Comando para ejecutar la aplicación
+ENTRYPOINT ["java", "-jar", "app.jar"]
